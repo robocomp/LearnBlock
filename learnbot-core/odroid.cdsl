@@ -1,0 +1,11 @@
+import "/robocomp/interfaces/IDSLs/Ultrasound.idsl";
+import "/robocomp/interfaces/IDSLs/DifferentialRobot.idsl";
+
+Component Odroid
+{
+	Communications
+	{
+		implements Ultrasound, DifferentialRobot;
+	};
+	language python;
+};
