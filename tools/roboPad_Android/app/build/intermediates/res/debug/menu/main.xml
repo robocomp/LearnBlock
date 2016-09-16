@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/menu_settings"
+        android:title="@string/menu_settings"
+        android:orderInCategory="100" />
+
+</menu>
+<!-- From: file:/home/mario/learnbotbitbucket/learnbotclient/mobile/android/RoboPad/app/src/main/res/menu/main.xml -->
