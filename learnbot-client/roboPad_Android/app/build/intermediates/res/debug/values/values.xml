@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/mario/learnbotbitbucket/learnbotclient/mobile/android/RoboPad/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="app_name">RoboPad</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">RoboPad</string>
+    <!-- From: file:/home/mario/learnbotbitbucket/learnbotclient/mobile/android/RoboPad/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar"/>
+</resources>
