@@ -20,6 +20,7 @@
 # Import required Python libraries
 import time
 import RPi.GPIO as GPIO
+import wiringpi2 as wpi
 
 from PySide import *
 from genericworker import *
@@ -30,12 +31,10 @@ import os, sys
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
-		os.system('export LD_LIBRARY_PATH=/home/odroid/mjpeg-streamer/mjpg-streamer/mjpg-streamer')
-		os.system('/home/odroid/mjpeg-streamer/mjpg-streamer/mjpg-streamer/./mjpg_streamer -i "input_uvc.so -y YUYV -r 320x240 -f 30 -d /dev/video0" -o "output_http.so -p 8080 -w /var/www" &')
+		os.system('export LD_LIBRARY_PATH=/home/odroid/software/mjpg-streamer/mjpg-streamer')
+		os.system('/home/odroid/software/mjpg-streamer/mjpg-streamer/./mjpg_streamer -i "input_uvc.so -y YUYV -r 320x240 -f 30 -d /dev/video0" -o "output_http.so -p 8080 -w /var/www" &')
 
 
-		self.GPIO_WHEELROTATION_LEFT=6
-		self.GPIO_WHEELROTATION_RIGHT=9
 		GPIO.setmode(GPIO.BCM)
                 GPIO.setwarnings(False)
 
@@ -64,6 +63,7 @@ class SpecificWorker(GenericWorker):
 		
                 self.adv = 0
 		self.rot = 0
+		wpi.wiringPiSetup()
 
 		self.timer.timeout.connect(self.compute)
 		self.Period = 3000
@@ -132,84 +132,17 @@ class SpecificWorker(GenericWorker):
 	def computeRobotSpeed(self, vAdv, vRot):
 		radius = 65 # milimetros
  		K = 11 # constante
-		leftSwitch = 1
-		rightSwitch = 1
-
-
-#  		dutyRight = (radius*vRot+2*vAdv)/2
-#  		dutyLeft = 2*vAdv-dutyRight
-#		print "+++ " +str(vAdv)+ " +++"+ str(vRot)
-#		print "--- " +str(dutyLeft)+ " ---"+ str(dutyRight)
-		# Computar el sentido del giro
-#		if (dutyRight<0):
-#			rightSwitch = 0
-#			dutyRight = -dutyRight
-#		if (dutyLeft<0):
-#                       leftSwitch = 0
-#                       dutyLeft = -dutyLeft
-
-
-		# Filtramos el valor para que este en los margenes del pwm del motor
-#		if(dutyRight<300):
-#			dutyRight=300
-#		if(dutyRight>1024):
-#                       dutyRight=1024
-
-##		if(dutyLeft<300):
-##                      dutyLeft=300
-#               if(dutyLeft>1024):
-#                       dutyLeft=1024
 
 		if (vRot == 0):
 			vRot = 0.000000001
-		Rrot = vAdv / vRot
+		Rrot = vAdv / (vRot * 0.7)
 		Rl = Rrot - radius
 		velLeft = vRot * Rl
 		Rr = Rrot + radius
 		velRight = vRot * Rr
 
-#                print "+++ " +str(vAdv)+ " +++"+ str(vRot)
-#                print "--- " +str(velLeft)+ " ---"+ str(velRight)
-                # Computar el sentido del giro
-                if (velRight<0):
-                        rightSwitch = 0
-                        velRight *= -1
-                if (velLeft<0):
-                        leftSwitch = 0
-                        velLeft *= -1
-
-
-#		velLeft *= 5.
-#		velRight *= 5.
-
-#		print "--- " +str(velLeft)+ " ---"+ str(velRight)
-
-                # Filtramos el valor para que este en los margenes del pwm del motor
-                if(velRight>1024):
-                        velRight=1024
-                if(velLeft>1024):
-                        velLeft=1024
-
-#		return valueLeftScale, valueRightScale
-
-####################################################################################
-# Anadido debido a que los cables estan cambiados en el controlador de los motores #
-####################################################################################
-		if rightSwitch == 0:
-			rightSwitch = 1
-		else:
-			rightSwitch = 0
-		if leftSwitch == 0:
-			leftSwitch = 1
-		else:
-			leftSwitch = 0
-		aux = velLeft
-		velLeft = velRight
-		velRight = aux
-###################################################################################
-		return velLeft, leftSwitch, velRight, rightSwitch
-
-
+#		return velLeft, velRight
+		return velRight, velLeft
 
 #########################################################################
 
@@ -244,34 +177,31 @@ class SpecificWorker(GenericWorker):
 #########################################################################
 
 	def setSpeedBase(self, adv, rot):
-		#leftDuty, leftSwitch, rightDuty, rightSwitch =	computeRobotSpeed(adv,rot)
-		dutyLeft, leftSwitch, dutyRight, rightSwitch = self.computeRobotSpeed(adv,rot)
-		# llamar a PWM
+		LEFT_PIN = 14
+		RIGHT_PIN = 13
 
-		if (leftSwitch==0):
-			GPIO.output(self.GPIO_WHEELROTATION_LEFT, 0)
+		wpi.pinMode(LEFT_PIN, 1)
+    		wpi.pinMode(RIGHT_PIN, 1)
+
+
+		velLeft, velRight = self.computeRobotSpeed(adv,rot)
+		if (velLeft>=0):
+			wpi.digitalWrite(LEFT_PIN, 0)
 		else:
-			GPIO.output(self.GPIO_WHEELROTATION_LEFT, 1)
+			wpi.digitalWrite(LEFT_PIN,1)
 		time.sleep(0.1)
-                if (rightSwitch==0):
-		        GPIO.output(self.GPIO_WHEELROTATION_RIGHT, 0)
-                else:
-                        GPIO.output(self.GPIO_WHEELROTATION_RIGHT, 1)
+		if (velRight>=0):
+			wpi.digitalWrite(RIGHT_PIN, 0)
+		else:
+			wpi.digitalWrite(RIGHT_PIN,1)
 		time.sleep(0.1)
 
-		if leftSwitch == 0:
-			leftSwitch = -1
-		if rightSwitch == 0:
-			rightSwitch = -1
-	
-#		print str(dutyLeft*leftSwitch) +" --- "+str(dutyRight*rightSwitch)
-
-                fileWheelRight = open('/sys/devices/platform/pwm-ctrl/duty0','w')
-		fileWheelRight.write(str(dutyLeft))
+		fileWheelRight = open('/sys/devices/platform/pwm-ctrl/duty0','w')
+		fileWheelRight.write(str(abs(velLeft)))
 		fileWheelRight.close()
-                fileWheelLeft = open('/sys/devices/platform/pwm-ctrl/duty1','w')
-                fileWheelLeft.write(str(dutyRight))
-                fileWheelLeft.close()
+		fileWheelLeft = open('/sys/devices/platform/pwm-ctrl/duty1','w')
+		fileWheelLeft.write(str(abs(velRight)))
+		fileWheelLeft.close()
 
 #		pass
 
