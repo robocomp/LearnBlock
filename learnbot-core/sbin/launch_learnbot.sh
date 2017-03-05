@@ -1,4 +1,4 @@
-
+#!/bin/sh
 
 sudo modprobe pwm-meson npwm=2
 sudo modprobe pwm-ctrl

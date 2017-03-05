@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 by YOUR NAME HERE
+# Copyright (C) 2017 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
 #
@@ -23,9 +23,10 @@ ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except:
-	pass
+	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	ROBOCOMP = '/opt/robocomp'
 if len(ROBOCOMP)<1:
-	print ('ROBOCOMP environment variable not set! Exiting.')
+	print 'ROBOCOMP environment variable not set! Exiting.'
 	sys.exit()
 	
 
@@ -38,12 +39,16 @@ class UltrasoundI(Ultrasound):
 	def __init__(self, worker):
 		self.worker = worker
 
-	def getAllSensorData(self, c):
-		return self.worker.getAllSensorData()
-	def getSensorData(self, sensor, c):
-		return self.worker.getSensorData(sensor)
+	def getAllSensorDistances(self, c):
+		return self.worker.getAllSensorDistances()
+	def getSensorDistance(self, sensor, c):
+		return self.worker.getSensorDistance(sensor)
+	def getAllSensorParams(self, c):
+		return self.worker.getAllSensorParams()
 	def getBusParams(self, c):
 		return self.worker.getBusParams()
+	def getSensorParams(self, sensor, c):
+		return self.worker.getSensorParams(sensor)
 
 
 

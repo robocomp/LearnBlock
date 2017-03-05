@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2015 by YOUR NAME HERE
+# Copyright (C) 2017 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
 #
@@ -17,241 +17,172 @@
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Import required Python libraries
-import time
-import RPi.GPIO as GPIO
-import wiringpi2 as wpi
+import sys, os, Ice, traceback, time
 
 from PySide import *
 from genericworker import *
+
+ROBOCOMP = ''
+try:
+	ROBOCOMP = os.environ['ROBOCOMP']
+except:
+	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	ROBOCOMP = '/opt/robocomp'
+if len(ROBOCOMP)<1:
+	print 'genericworker.py: ROBOCOMP environment variable not set! Exiting.'
+	sys.exit()
+
+
+preStr = "-I"+ROBOCOMP+"/interfaces/ --all "+ROBOCOMP+"/interfaces/"
+Ice.loadSlice(preStr+"Ultrasound.ice")
+from RoboCompUltrasound import *
+Ice.loadSlice(preStr+"DifferentialRobot.ice")
+from RoboCompDifferentialRobot import *
+
+
 from ultrasoundI import *
 from differentialrobotI import *
-import os, sys
+
+
+try:
+	import wiringpi2 as wpi
+except ImportError:
+	print "Wiring pi not found. Please, download and install"
+	print "Odroid: https://github.com/hardkernel/wiringPi" 
+	print "Raspberry: http://wiringpi.com/download-and-install"
+	exit()
+
 
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
-		os.system('export LD_LIBRARY_PATH=/home/odroid/software/mjpg-streamer/mjpg-streamer')
-		os.system('/home/odroid/software/mjpg-streamer/mjpg-streamer/./mjpg_streamer -i "input_uvc.so -y YUYV -r 320x240 -f 30 -d /dev/video0" -o "output_http.so -p 8080 -w /var/www" &')
-
-
-		GPIO.setmode(GPIO.BCM)
-                GPIO.setwarnings(False)
-
-                GPIO.setup(6,GPIO.OUT)  # Direction Motor 1
-                GPIO.setup(9,GPIO.OUT)  # Direction Motor 2
-                GPIO.setup(23,GPIO.OUT)  # Trigger
-		GPIO.setup(18,GPIO.OUT)  # LED Verde
-                GPIO.setup(4,GPIO.OUT)  # LED Rojo
-                GPIO.output(4,False)
-		GPIO.output(18,True)
-                GPIO.setup(17,GPIO.IN)      # Echo
-                GPIO.setup(22,GPIO.IN)      # Echo
-                GPIO.setup(24,GPIO.IN)      # Echo
-                GPIO.setup(27,GPIO.IN)      # Echo
-
-#################
-#                self.ultrasound = {"sensor3": {"dist": 0, "angle":270, "GPIO-TRIGGER":23, "GPIO-ECHO":22}}
-#                self.ultrasound = {"sensor0": {"dist": 0, "angle":180, "GPIO-TRIGGER":23, "GPIO-ECHO":24}}
-#                self.ultrasound = {"sensor1": {"dist": 0, "angle":0, "GPIO-TRIGGER":23, "GPIO-ECHO":27}}
-#                self.ultrasound = {"sensor2": {"dist": 0, "angle":90, "GPIO-TRIGGER":23, "GPIO-ECHO":17}}
-################
-
-
-                self.ultrasound = {"sensor0": {"dist": 0, "angle":180, "GPIO-TRIGGER":23, "GPIO-ECHO":24}, "sensor1": {"dist": 0, "angle":0, "GPIO-TRIGGER":23, "GPIO-ECHO":27}, "sensor2": {"dist": 0, "angle":90, "GPIO-TRIGGER":23, "GPIO-ECHO":17}, "sensor3": {"dist": 0, "angle":270, "GPIO-TRIGGER":23, "GPIO-ECHO":22}}
-
-		
-                self.adv = 0
-		self.rot = 0
-		wpi.wiringPiSetup()
-
 		self.timer.timeout.connect(self.compute)
 		self.Period = 3000
 		self.timer.start(self.Period)
 
+		#os.system('/home/odroid/software/mjpg-streamer/mjpg-streamer/./mjpg_streamer -i "input_uvc.so -y YUYV -r 320x240 -f 30 -d /dev/video0" -o "output_http.so -p 8080 -w /var/www" &')
+		os.system('sbin/./launch_learnbot.sh')
+		time.sleep(2)
 
-	def setParams(self, params):
-		#// 	try
-		#// 	{
-		#// 		RoboCompCommonBehavior::Parameter par = params.at("InnerModelPath");
-		#// 		innermodel_path=par.value;
-		#// 		innermodel = new InnerModel(innermodel_path);
-		#// 	}
-		#// 	catch(std::exception e) { qFatal("Error reading config params"); }
-		return True
+		# Initialize the sonar.
+		wpi.pinMode(4, 1) #trigger
+		for id_pin in [0,2,3,50]: # echos
+			wpi.pinMode(id_pin, 0)
+
+		self.sonar_values = {"sensor0": {"dist": 0, "angle":180, "PIN-TRIGGER":4, "PIN-ECHO":5},\
+							"sensor1": {"dist": 0, "angle":0, "PIN-TRIGGER":4, "PIN-ECHO":2},\
+							"sensor2": {"dist": 0, "angle":90, "PIN-TRIGGER":4, "PIN-ECHO":0},\
+							"sensor3": {"dist": 0, "angle":270, "PIN-TRIGGER":4, "PIN-ECHO":3}}
+		self.left_wheel_pin  = 14
+		self.right_wheel_pin = 13
+
+
+	def show_pin_conections(self):
+		print "TRIGER_PIN = 1"
+		print "ECHO_SENSOR_1 = 5"
+		print "ECHO_SENSOR_2 = 2"
+		print "ECHO_SENSOR_3 = 0"
+		print "ECHO_SENSOR_4 = 3"
+		print "PINOUT: http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143703355573&tab_idx=2"
+
+
+	def read_ultrasound(self):
+		# instead of physical pin numbers
+		for _, sensor  in self.ultrasound.items():
+			if (sensor.has_key("PIN-TRIGGER")) and (sensor.has_key("PIN-ECHO")):
+				PIN_TRIGGER = sensor["PIN-TRIGGER"]
+				PIN_ECHO = sensor["PIN-ECHO"]
+
+				# Set trigger to False (Low)
+				wpi.digitalWrite(PIN_TRIGGER, 0)
+				# Allow module to settle
+				time.sleep(0.1)
+
+				# Send 10us pulse to trigger
+				wpi.digitalWrite(PIN_TRIGGER, 1)
+				time.sleep(0.00001)
+				wpi.digitalWrite(PIN_TRIGGER, 0)
+	
+				time_start = time.time()
+				while wpi.digitalRead(PIN_ECHO) == 0:
+					start = time.time()
+					if (time_start - start > 3000):
+						start = -1
+						break
+				if start == -1
+					print "WARNING", "PIN_TRIGGER:",PIN_TRIGGER, "not work!"
+					sensor["dist"] = -1
+				else:
+					while wpi.digitalRead(GPIO_ECHO) == 1:
+						stop = time.time()
+						if (stop - start > 3000):
+							stop = -1
+							break
+					if stop == -1:
+						print "WARNING", "PIN_ECHO:",PIN_ECHO, "not work!"
+						sensor["dist"] = -1
+					else:
+						# Calculate pulse length
+						elapsed = stop-start
+						# Distance pulse travelled in that time is time
+						# multiplied by the speed of sound (cm/s)
+						distance = elapsed * 34000
+						# That was the distance there and back so halve the value
+						sensor["dist"] = distance / 2.
+		return True	
 
 
 	@QtCore.Slot()
 	def compute(self):
-#		print 'SpecificWorker.compute...'
-		#Ultrasound adquisition
-		self.readUltrasound()
-		return True
+		print "working!"
+		read_ultrasound()
 
 
-	def readUltrasound(self):
-		# instead of physical pin numbers
-		for nombre, sensor  in self.ultrasound.items():
-			# Define GPIO to use on Pi
-#                	GPIO_TRIGGER = sensor["GPIO-TRIGGER"]
-			if (sensor.has_key("GPIO-TRIGGER") is True) and (sensor.has_key("GPIO-ECHO") is True):
-				GPIO_TRIGGER = sensor["GPIO-TRIGGER"]
-	                	GPIO_ECHO = sensor["GPIO-ECHO"]
-
-        	        	# Set trigger to False (Low)
-	        	        GPIO.output(GPIO_TRIGGER, False)
-
-	        	        # Allow module to settle
-        	        	time.sleep(0.1)
-
-	        	        # Send 10us pulse to trigger
-#				while True:
-        	        	GPIO.output(GPIO_TRIGGER, True)
-	                	time.sleep(0.00001)
-		                GPIO.output(GPIO_TRIGGER, False)
-			
-     			        start = time.time()				
-                		while GPIO.input(GPIO_ECHO)==0:
-		                  start = time.time()
-				while GPIO.input(GPIO_ECHO)==1:
-        		          stop = time.time()
-				# Calculate pulse length
-	                	elapsed = stop-start
-					
-	        	        # Distance pulse travelled in that time is time
-        	        	# multiplied by the speed of sound (cm/s)
-	                	distance = elapsed * 34000
-
-		                # That was the distance there and back so halve the value
-        		        distance = distance / 2
-				sensor["dist"]=distance
-		return True	
-
-
-
-	def computeRobotSpeed(self, vAdv, vRot):
+	def compute_robot_speed(self, vAdv, vRot):
 		radius = 65 # milimetros
- 		K = 11 # constante
+ 		#K = 11 # constant
+ 		m = 0.7 # constant to adapt reducer of motor
+ 		
+		vRot = 1e-30 if (vRot == 0) else vRot # correct vrot minimal when not rotation
+		Rrot = vAdv / (vRot * m)
+		velRight = vRot * (Rrot + radius)
+		velLeft = vRot * (Rrot - radius)
 
-		if (vRot == 0):
-			vRot = 0.000000001
-		Rrot = vAdv / (vRot * 0.7)
-		Rl = Rrot - radius
-		velLeft = vRot * Rl
-		Rr = Rrot + radius
-		velRight = vRot * Rr
+		return velLeft, velRight
 
-#		return velLeft, velRight
-		return velRight, velLeft
 
-#########################################################################
+	def getAllSensorDistances(self):
+		return str(self.sonar_values)
 
-	def getAllSensorData(self):
-                return str(self.ultrasound)
-#		print self.SensorParamsList
-#		return self.SensorParamsList
 
-	def getSensorData(self, sensor):
-
-		if sensor in self.ultrasound.keys():
-			return self.ultrasound[sensor]	
+	def getSensorDistance(self, sensor_id):
+		if sensor_id in self.ultrasound.keys():
+			return self.sonar_values[sensor_id]	
 		else:
-			print "sheep"
+			print "not sensor locate!"
 			return {}
-	
-		ret = int()
-		#
-		# YOUR CODE HERE
-		#
-                # Use BCM GPIO references
-               
-		return ret
 
-	def getBusParams(self):
-		ret = BusParams()
-		#
-		# YOUR CODE HERE
-		#
-		return ret
 
-#########################################################################
+	def stopBase(self):
+		for id_duty in range(2):
+			with open('/sys/devices/platform/pwm-ctrl/duty'+str(id_duty), 'w') as file_duty:
+				file_duty.write(str(0))
+
 
 	def setSpeedBase(self, adv, rot):
-		LEFT_PIN = 14
-		RIGHT_PIN = 13
-
-		wpi.pinMode(LEFT_PIN, 1)
-    		wpi.pinMode(RIGHT_PIN, 1)
-
+		wpi.pinMode(self.leftt_wheel_pin, 1)
+		wpi.pinMode(self.right_wheel_pin, 1)
 
 		velLeft, velRight = self.computeRobotSpeed(adv,rot)
-		if (velLeft>=0):
-			wpi.digitalWrite(LEFT_PIN, 0)
-		else:
-			wpi.digitalWrite(LEFT_PIN,1)
-		time.sleep(0.1)
-		if (velRight>=0):
-			wpi.digitalWrite(RIGHT_PIN, 0)
-		else:
-			wpi.digitalWrite(RIGHT_PIN,1)
-		time.sleep(0.1)
 
-		fileWheelRight = open('/sys/devices/platform/pwm-ctrl/duty0','w')
-		fileWheelRight.write(str(abs(velLeft)))
-		fileWheelRight.close()
-		fileWheelLeft = open('/sys/devices/platform/pwm-ctrl/duty1','w')
-		fileWheelLeft.write(str(abs(velRight)))
-		fileWheelLeft.close()
+		for pin, speed in zip([self.left_wheel_pin, self.right_wheel_pin], [velLeft,velRight]):
+			direction = 0 if (speed >= 0) else 1
+			wpi.digitalWrite(pin, direction)
+			time.sleep(0.1)
 
-#		pass
+		for id_duty, speed in zip(range(2), [self.left_wheel_pin, self.right_wheel_pin]):
+			with open('/sys/devices/platform/pwm-ctrl/duty'+str(id_duty), 'w') as file_duty:
+				file_duty.write(str(abs(speed)))
 
 
-
-	def correctOdometer(self, x, z, alpha):
-                #
-                # YOUR CODE HERE
-                #
-                pass
-
-	def getBasePose(self):
-                #
-                # YOUR CODE HERE
-                #
-                x = int()
-                z = int()
-                alpha = float()
-                return [x, z, alpha]
-        def resetOdometer(self):
-                #
-                # YOUR CODE HERE
-                #
-                pass
-
-        def setOdometer(self, state):
-                #
-                # YOUR CODE HERE
-                #
-                pass
-
-        def getBaseState(self):
-                #
-                # YOUR CODE HERE
-                #
-                state = TBaseState()
-                return state
-
-        def setOdometerPose(self, x, z, alpha):
-                #
-                # YOUR CODE HERE
-                #
-                pass
-
-        def stopBase(self):
-                #
-                # YOUR CODE HERE
-                #
-                pass
-
-#        def setSpeedBase(self, adv, rot):                        
-#		pass
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# Copyright (C) 2015 by YOUR NAME HERE
+# Copyright (C) 2017 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
 #
@@ -55,27 +55,11 @@
 #
 #
 
-import sys, traceback, Ice, IceStorm, subprocess, threading, time, Queue, os
+import sys, traceback, Ice, IceStorm, subprocess, threading, time, Queue, os, copy
 
 # Ctrl+c handling
 import signal
-# GPIO
-import RPi.GPIO as GPIO
-#signal.signal(signal.SIGINT, signal.SIG_DFL)
-
-# poweroffLED
-def signal_handler(signal, frame):
-    print('Bye bye :-)')
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(18,GPIO.OUT)  # LED
-    GPIO.setup(4,GPIO.OUT)
-    GPIO.output(18, False)
-    GPIO.output(4, True)
-    sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
-
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 from PySide import *
 
@@ -85,13 +69,14 @@ ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except:
-	pass
+	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	ROBOCOMP = '/opt/robocomp'
 if len(ROBOCOMP)<1:
 	print 'ROBOCOMP environment variable not set! Exiting.'
 	sys.exit()
 
 
-preStr = "-I"+ROBOCOMP+"/interfaces/ --all "+ROBOCOMP+"/interfaces/"
+preStr = "-I"+ROBOCOMP+"/interfaces/ -I/opt/robocomp/interfaces/ --all "+ROBOCOMP+"/interfaces/"
 Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 Ice.loadSlice(preStr+"Ultrasound.ice")
@@ -128,7 +113,13 @@ class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
 
 if __name__ == '__main__':
 	app = QtCore.QCoreApplication(sys.argv)
-	ic = Ice.initialize(sys.argv)
+	params = copy.deepcopy(sys.argv)
+	if len(params) > 1:
+		if not params[1].startswith('--Ice.Config='):
+			params[1] = '--Ice.Config=' + params[1]
+	elif len(params) == 1:
+		params.append('--Ice.Config=config')
+	ic = Ice.initialize(params)
 	status = 0
 	mprx = {}
 
