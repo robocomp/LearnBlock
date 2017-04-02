@@ -1,6 +1,6 @@
 <innerModel>
 	<differentialrobot id="base" port="10004">
-		<mesh id="baseLearnBot" file="textures/Ensamblaje.stl"  tx="-57" ty="68" tz="-20" scale="10" />
+		<mesh id="baseLearnBot" file="/home/robocomp/robocomp/components/learnbot/learnbot-desings/STL/currentVersion/"  tx="-57" ty="68" tz="-20" scale="10" />
 		
 		<transform id="laserPoseFront" tx="0" ty="68" tz="75" >
 			<laser id="laserFront" measures="3" min="30" max="1000" angle="0.5236" port="10104" />
