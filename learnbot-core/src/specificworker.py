@@ -109,7 +109,7 @@ class SpecificWorker(GenericWorker):
 					if (time_start - start > 3000):
 						start = -1
 						break
-				if start == -1
+				if start == -1:
 					print "WARNING", "PIN_TRIGGER:",PIN_TRIGGER, "not work!"
 					sensor["dist"] = -1
 				else:
