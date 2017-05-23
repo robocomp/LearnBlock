@@ -1,0 +1,14 @@
+import "DifferentialRobot.idsl";
+import "Laser.idsl";
+import "RGBD.idsl";
+
+Component simdisplaybot
+{
+	Communications
+	{
+		requires DifferentialRobot, Laser, Laser, Laser, Laser, RGBD; 
+	};
+	language python;
+	gui Qt(QWidget);
+};
+
