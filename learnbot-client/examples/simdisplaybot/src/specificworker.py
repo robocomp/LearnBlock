@@ -66,11 +66,8 @@ class myGraphicsSceneJoyStick(QtGui.QGraphicsScene):
     self.timerJoystick = QtCore.QTime.currentTime()
     
     self.setSceneRect(-100,-100,200,200)
-    # Regla de 3. Para extrapolar el valor de la escena que va de 0 a 100 a los de 0 a 1024 del pwm
-    # El negativo es porque en el scene el punto el 0,1 es en el centro hacia abajo.
-    self.vAdvanceRobot = -800/100
-    # No le pongo el negativo porque izquierda y derecha es correcto.
-    self.vRotationRobot = .1#10/100
+    self.vAdvanceRobot = 10
+    self.vRotationRobot = 0.05
     
     posX = 0
     posY = 0
@@ -96,10 +93,9 @@ class myGraphicsSceneJoyStick(QtGui.QGraphicsScene):
       self.vacaW = self.addLine(self.crosslineW)
       self.vacaH = self.addLine(self.crosslineH)
       self.update()
-      if self.timerJoystick.elapsed() > 500:
-        print "Avance: ", posY*self.vAdvanceRobot, " <--> Rotacion: ", posX*self.vRotationRobot
-	self.parent.setRobotSpeed(posY*self.vAdvanceRobot,posX*self.vRotationRobot)
-	self.timerJoystick.restart()
+      print "Advance speed:", -posY*self.vAdvanceRobot, " <--> Rotation speed: ", posX*self.vRotationRobot
+      self.parent.setRobotSpeed(-posY*self.vAdvanceRobot,posX*self.vRotationRobot)
+      self.timerJoystick.restart()
   
   def mousePressEvent(self,event):
     self.press = True
@@ -139,8 +135,6 @@ class SpecificWorker(GenericWorker):
 		self.qimage = QtGui.QImage(320,240,QtGui.QImage.Format_RGB888)		   
 		self.ui.graphicsViewCamera.setScene(self.sceneCamera)
 		
-#		self.cap = cv2.VideoCapture('http://odroid.local:8080/?action=stream')
-		#self.stream = urllib.urlopen('http://odroid.local:8080/?action=stream')
 		self.bytes=''		
 
 ################################
@@ -153,7 +147,6 @@ class SpecificWorker(GenericWorker):
 		
 		self.sceneUltrasound.addEllipse(-5,-5,10,10)
 		
-		self.oveja = None
 		self.gatoN = None
 		self.gatoS = None
 		self.gatoE = None
@@ -165,12 +158,12 @@ class SpecificWorker(GenericWorker):
 		self.sceneJoyStick.update()
 
 		self.timer.timeout.connect(self.getImage)
-		self.PeriodCamera = 2
+		self.PeriodCamera = 33
 		self.timer.start(self.PeriodCamera)
 
 		self.timerU = QtCore.QTimer(self)
 		self.timerU.timeout.connect(self.computeUltrasound)
-		self.PeriodUltrasound = 300
+		self.PeriodUltrasound = 33
 		self.timerU.start(self.PeriodUltrasound)
 
 
@@ -231,73 +224,46 @@ class SpecificWorker(GenericWorker):
 		radians90 = 180 * 90 / math.pi
 
 
+		usData = self.getUltrasound()
 
-		l1data = self.laser1_proxy.getLaserData()
-		minD1 = l1data[0].dist
-		for data in l1data:
-			if minD1 > data.dist:
-				minD1 = data.dist
+		usData[0] = usData[0]/10
 
-		l2data = self.laser2_proxy.getLaserData()
-		minD2 = l2data[0].dist
-		for data in l2data:
-			if minD2 > data.dist:
-				minD2 = data.dist
-
-		l3data = self.laser3_proxy.getLaserData()
-		minD3 = l3data[0].dist
-		for data in l3data:
-			if minD3 > data.dist:
-				minD3 = data.dist
-
-		l4data = self.laser4_proxy.getLaserData()
-		minD4 = l4data[0].dist
-		for data in l4data:
-			if minD4 > data.dist:
-				minD4 = data.dist
-
-		print minD1, minD2, minD3, minD4
-
-		minD1=minD1/10
-
-		h = (math.sin(radians90) * minD1) / math.sin(radians75)
-		a = (math.sin(radians15) * minD1) / math.sin(radians75)	      	      
-		polygonN.push_back(QtCore.QPoint(0,marginImage))     
-		polygonN.push_back(QtCore.QPoint(0+a,h+marginImage))
-		polygonN.push_back(QtCore.QPoint(0-a,h+marginImage))
-		polygonN.push_back(QtCore.QPoint(0,marginImage))	
-
-		minD2=minD2/10      
-
-		h = (math.sin(radians90) * minD2) / math.sin(radians75)
-		a = (math.sin(radians15) * minD2) / math.sin(radians75)	      
-		polygonE.push_back(QtCore.QPoint(marginImage,0))
-		polygonE.push_back(QtCore.QPoint(h+marginImage,0+a))
-		polygonE.push_back(QtCore.QPoint(h+marginImage,0-a))
-		polygonE.push_back(QtCore.QPoint(marginImage,0))
+		h = (math.sin(radians90) * usData[0]) / math.sin(radians75)
+		a = (math.sin(radians15) * usData[0]) / math.sin(radians75)	      	      
+		polygonN.push_back(QtCore.QPoint(0,-marginImage))      
+		polygonN.push_back(QtCore.QPoint(0+a,-(h+marginImage)))
+		polygonN.push_back(QtCore.QPoint(0-a,-(h+marginImage)))
+		polygonN.push_back(QtCore.QPoint(0,-marginImage))	
 
 
-		minD3=minD3/10
+		usData[1] = usData[1]/10
 
-		h = (math.sin(radians90) * minD3) / math.sin(radians75)
-		a = (math.sin(radians15) * minD3) / math.sin(radians75)	      
-		polygonW.push_back(QtCore.QPoint(-marginImage,0))
-		polygonW.push_back(QtCore.QPoint(-(h+marginImage),0+a))
-		polygonW.push_back(QtCore.QPoint(-(h+marginImage),0-a))
-		polygonW.push_back(QtCore.QPoint(-marginImage,0))
-
-
-		minD4=minD4/10
-
-		h = (math.sin(radians90) * minD4) / math.sin(radians75)
-		a = (math.sin(radians15) * minD4) / math.sin(radians75)
-		polygonS.push_back(QtCore.QPoint(0,-marginImage))      
-		polygonS.push_back(QtCore.QPoint(0+a,-(h+marginImage)))
-		polygonS.push_back(QtCore.QPoint(0-a,-(h+marginImage)))
-		polygonS.push_back(QtCore.QPoint(0,-marginImage))	
+		h = (math.sin(radians90) * usData[1]) / math.sin(radians75)
+		a = (math.sin(radians15) * usData[1]) / math.sin(radians75)	      
+		polygonE.push_back(QtCore.QPoint(-marginImage,0))
+		polygonE.push_back(QtCore.QPoint(-(h+marginImage),0+a))
+		polygonE.push_back(QtCore.QPoint(-(h+marginImage),0-a))
+		polygonE.push_back(QtCore.QPoint(-marginImage,0))
 
 
+		usData[2] = usData[2]/10
 
+		h = (math.sin(radians90) * usData[2]) / math.sin(radians75)
+		a = (math.sin(radians15) * usData[2]) / math.sin(radians75)	      
+		polygonW.push_back(QtCore.QPoint(marginImage,0))
+		polygonW.push_back(QtCore.QPoint(h+marginImage,0+a))
+		polygonW.push_back(QtCore.QPoint(h+marginImage,0-a))
+		polygonW.push_back(QtCore.QPoint(marginImage,0))
+
+
+		usData[3] = usData[3]/10
+
+		h = (math.sin(radians90) * usData[3]) / math.sin(radians75)
+		a = (math.sin(radians15) * usData[3]) / math.sin(radians75)
+		polygonS.push_back(QtCore.QPoint(0,marginImage))     
+		polygonS.push_back(QtCore.QPoint(0+a,h+marginImage))
+		polygonS.push_back(QtCore.QPoint(0-a,h+marginImage))
+		polygonS.push_back(QtCore.QPoint(0,marginImage))	
 
 		self.gatoN = self.sceneUltrasound.addPolygon(polygonN)
 		self.gatoS = self.sceneUltrasound.addPolygon(polygonS)
@@ -306,6 +272,44 @@ class SpecificWorker(GenericWorker):
 		self.sceneUltrasound.update()
 
 		return True
+
+	def getUltrasound(self):
+
+		usList = []
+
+		l1data = self.laser1_proxy.getLaserData()
+		minD1 = l1data[0].dist
+		for data in l1data:
+			if minD1 > data.dist:
+				minD1 = data.dist
+
+		usList.append(minD1)
+
+		l2data = self.laser2_proxy.getLaserData()
+		minD2 = l2data[0].dist
+		for data in l2data:
+			if minD2 > data.dist:
+				minD2 = data.dist
+
+		usList.append(minD2)
+
+		l3data = self.laser3_proxy.getLaserData()
+		minD3 = l3data[0].dist
+		for data in l3data:
+			if minD3 > data.dist:
+				minD3 = data.dist
+
+		usList.append(minD3)
+
+		l4data = self.laser4_proxy.getLaserData()
+		minD4 = l4data[0].dist
+		for data in l4data:
+			if minD4 > data.dist:
+				minD4 = data.dist
+
+		usList.append(minD4)
+
+		return usList
 
 	
 	def setRobotSpeed(self,vAdvance,vRotation):	  
