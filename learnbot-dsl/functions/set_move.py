@@ -1,4 +1,4 @@
-def set_move(self, params):
+def set_move(lbot, params):
 	assert len(params) == 2, ('bad params in move robot [vRot, vAdv]',len(params))
 	vAdv, vRot = params
-	self.setRobotSpeed(vAdv, vRot)
+	lbot.setRobotSpeed(vAdv, vRot)

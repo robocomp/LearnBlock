@@ -1,3 +1,3 @@
-def get_image(params=None):
+def get_image(lbot, params=None):
 	frame = lbot.getImage()
-	return sonarsValue
+	return frame

@@ -1,5 +1,3 @@
-import ast
-
-def get_distance(params=None):
-	sonarsValue = ast.literal_eval(lbot.getSonars())
+def get_distance(lbot,params=None):
+	sonarsValue = lbot.getSonars()
 	return sonarsValue
