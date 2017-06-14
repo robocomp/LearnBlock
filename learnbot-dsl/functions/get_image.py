@@ -1,3 +1,3 @@
-def get_image(lbot, params=None):
+def get_image(lbot):
 	frame = lbot.getImage()
 	return frame

@@ -3,7 +3,7 @@
 
 import sys, traceback, Ice, os, math, time, json, ast, copy
 import json
-import cv
+# import cv
 import cv2
 import urllib
 from collections import namedtuple
