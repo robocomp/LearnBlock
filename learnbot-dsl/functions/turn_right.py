@@ -1,5 +1,8 @@
-import time
-def turn_right(lbot):
-	lbot.setRobotSpeed(lbot.adv, 1.57)
-	print('~ Learnbot turning right ...')
+import time, math
+from __future__ import division, print_function
+
+def set_turn_right(lbot, params=None, verbose=False):
+	lbot.setRobotSpeed(lbot.adv, math.pi/2)
+	if verbose:
+		print('~ Learnbot turning right ...')
 	time.sleep(1)
