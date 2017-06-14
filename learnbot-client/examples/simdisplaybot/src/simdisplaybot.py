@@ -56,7 +56,7 @@
 #
 
 import sys, traceback, IceStorm, subprocess, threading, time, Queue, os, copy
-
+from __future__ import print_function
 # Ctrl+c handling
 import signal
 
@@ -77,14 +77,14 @@ class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
 		try:
 			return self.handler.timeAwake()
 		except:
-			print 'Problem getting timeAwake'
+			print ('Problem getting timeAwake')
 	def killYourSelf(self, current = None):
 		self.handler.killYourSelf()
 	def getAttrList(self, current = None):
 		try:
 			return self.handler.getAttrList(self.communicator)
 		except:
-			print 'Problem getting getAttrList'
+			print ('Problem getting getAttrList')
 			traceback.print_exc()
 			status = 1
 			return
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 	try:
 		topicManager = IceStorm.TopicManagerPrx.checkedCast(obj)
 	except Ice.ConnectionRefusedException, e:
-		print 'Cannot connect to IceStorm! ('+proxy+')'
+		print ('Cannot connect to IceStorm! ('+proxy+')')
 		sys.exit(-1)
 
 	# Remote object connection for RGBD
@@ -123,12 +123,12 @@ if __name__ == '__main__':
 			rgbd_proxy = RGBDPrx.checkedCast(basePrx)
 			mprx["RGBDProxy"] = rgbd_proxy
 		except Ice.Exception:
-			print 'Cannot connect to the remote object (RGBD)', proxyString
+			print ('Cannot connect to the remote object (RGBD)', proxyString)
 			#traceback.print_exc()
 			status = 1
 	except Ice.Exception, e:
-		print e
-		print 'Cannot get RGBDProxy property.'
+		print (e)
+		print ('Cannot get RGBDProxy property.')
 		status = 1
 
 
@@ -140,12 +140,12 @@ if __name__ == '__main__':
 			laser1_proxy = LaserPrx.checkedCast(basePrx)
 			mprx["LaserProxy1"] = laser1_proxy
 		except Ice.Exception:
-			print 'Cannot connect to the remote object (Laser)', proxyString
+			print ('Cannot connect to the remote object (Laser)', proxyString)
 			#traceback.print_exc()
 			status = 1
 	except Ice.Exception, e:
-		print e
-		print 'Cannot get LaserProxy property.'
+		print (e)
+		print ('Cannot get LaserProxy property.')
 		status = 1
 
 
@@ -157,12 +157,12 @@ if __name__ == '__main__':
 			laser2_proxy = LaserPrx.checkedCast(basePrx)
 			mprx["LaserProxy2"] = laser2_proxy
 		except Ice.Exception:
-			print 'Cannot connect to the remote object (Laser)', proxyString
+			print ('Cannot connect to the remote object (Laser)', proxyString)
 			#traceback.print_exc()
 			status = 1
 	except Ice.Exception, e:
-		print e
-		print 'Cannot get LaserProxy property.'
+		print (e)
+		print ('Cannot get LaserProxy property.')
 		status = 1
 
 
@@ -174,12 +174,12 @@ if __name__ == '__main__':
 			differentialrobot_proxy = DifferentialRobotPrx.checkedCast(basePrx)
 			mprx["DifferentialRobotProxy"] = differentialrobot_proxy
 		except Ice.Exception:
-			print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
+			print ('Cannot connect to the remote object (DifferentialRobot)', proxyString)
 			#traceback.print_exc()
 			status = 1
 	except Ice.Exception, e:
-		print e
-		print 'Cannot get DifferentialRobotProxy property.'
+		print (e)
+		print ('Cannot get DifferentialRobotProxy property.')
 		status = 1
 
 
@@ -191,12 +191,12 @@ if __name__ == '__main__':
 			laser3_proxy = LaserPrx.checkedCast(basePrx)
 			mprx["LaserProxy3"] = laser3_proxy
 		except Ice.Exception:
-			print 'Cannot connect to the remote object (Laser)', proxyString
+			print ('Cannot connect to the remote object (Laser)', proxyString)
 			#traceback.print_exc()
 			status = 1
 	except Ice.Exception, e:
-		print e
-		print 'Cannot get LaserProxy property.'
+		print (e)
+		print ('Cannot get LaserProxy property.')
 		status = 1
 
 
@@ -208,12 +208,12 @@ if __name__ == '__main__':
 			laser4_proxy = LaserPrx.checkedCast(basePrx)
 			mprx["LaserProxy4"] = laser4_proxy
 		except Ice.Exception:
-			print 'Cannot connect to the remote object (Laser)', proxyString
+			print ('Cannot connect to the remote object (Laser)', proxyString)
 			#traceback.print_exc()
 			status = 1
 	except Ice.Exception, e:
-		print e
-		print 'Cannot get LaserProxy property.'
+		print (e)
+		print ('Cannot get LaserProxy property.')
 		status = 1
 
 	if status == 0:

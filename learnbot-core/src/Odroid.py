@@ -62,17 +62,17 @@ import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 from PySide import *
-
+from __future__ import print_function
 from specificworker import *
 
 ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
+	print ('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
 
@@ -97,14 +97,14 @@ class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
 		try:
 			return self.handler.timeAwake()
 		except:
-			print 'Problem getting timeAwake'
+			print ('Problem getting timeAwake')
 	def killYourSelf(self, current = None):
 		self.handler.killYourSelf()
 	def getAttrList(self, current = None):
 		try:
 			return self.handler.getAttrList(self.communicator)
 		except:
-			print 'Problem getting getAttrList'
+			print ('Problem getting getAttrList')
 			traceback.print_exc()
 			status = 1
 			return

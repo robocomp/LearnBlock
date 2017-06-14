@@ -18,6 +18,7 @@
 
 import sys
 from PySide import *
+from __future__ import print_function
 
 
 class GenericWorker(QtCore.QObject):
@@ -45,6 +46,6 @@ class GenericWorker(QtCore.QObject):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print "Period changed", p
+		print ("Period changed", p)
 		Period = p
 		timer.start(Period)

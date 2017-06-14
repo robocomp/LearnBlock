@@ -18,7 +18,7 @@
 #
 
 import sys, os, Ice, traceback, time
-
+from __future__ import print_function
 from PySide import *
 from genericworker import *
 
@@ -26,10 +26,10 @@ ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 if len(ROBOCOMP)<1:
-	print 'genericworker.py: ROBOCOMP environment variable not set! Exiting.'
+	print ('genericworker.py: ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
 preStr = "-I"+ROBOCOMP+"/interfaces/ --all "+ROBOCOMP+"/interfaces/"
@@ -376,5 +376,5 @@ class SpecificWorker(GenericWorker):
 
 		except Ice.Exception, e:
 				traceback.print_exc()
-				print e
+				print (e)
 		return True
