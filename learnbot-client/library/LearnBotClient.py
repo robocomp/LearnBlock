@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from __future__ import print_function
 import sys, traceback, Ice, os, math, time, json, ast
 import json
 import cv2
@@ -28,7 +28,7 @@ class Client(Ice.Application):
 		
 	def run(self, argv):
 #	  	ic = Ice.initialize(sys.argv)
-		print "RUN!"
+		print ("RUN!")
 	  	global ic
 	  	ic = self.communicator()
 		status = 0
@@ -40,11 +40,11 @@ class Client(Ice.Application):
 					basePrx = ic.stringToProxy(proxyString)
 					self.differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)
 				except Ice.Exception:
-					print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
+					print ('Cannot connect to the remote object (DifferentialRobot)', proxyString)
 					sys.exit(1)
 			except Ice.Exception, e:
-				print e
-				print 'Cannot get DifferentialRobotProxy property.'
+				print (e)
+				print ('Cannot get DifferentialRobotProxy property.')
 				sys.exit(1)
 			# Remote object connection for Ultrasound
 			try:
@@ -53,11 +53,11 @@ class Client(Ice.Application):
 					basePrx = ic.stringToProxy(proxyString)
 					self.ultrasound_proxy = RoboCompUltrasound.UltrasoundPrx.checkedCast(basePrx)
 				except Ice.Exception:
-					print 'Cannot connect to the remote object (Ultrasound)', proxyString
+					print ('Cannot connect to the remote object (Ultrasound)', proxyString)
 					sys.exit(1)
 			except Ice.Exception, e:
-				print e
-				print 'Cannot get UltrasoundProxy property.'
+				print (e)
+				print ('Cannot get UltrasoundProxy property.')
 				sys.exit(1)
 		except:
 				traceback.print_exc()
@@ -109,28 +109,28 @@ class Client(Ice.Application):
 			for (x, y, w, h) in faces:
 				cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 		else:
-			print faces
+			print (faces)
 
 ############################################################################################
 	def avanza(self, metros):
 		tiempo = float(metros/0.05)
-		print "||  Para ",metros,"metros , avanza durante ",tiempo," segundos"
+		print ("||  Para ",metros,"metros , avanza durante ",tiempo," segundos")
 		#self.setRobotSpeed(1024, 0.47)
 		self.setRobotSpeed(1024, 0)
 		time.sleep(tiempo)
 		
 	def gira(self, grados):
 		tiempo = grados/float(90)#s+0.27		
-		print "||  Para ",grados," grados, gira durante ",tiempo," segundos"
+		print ("||  Para ",grados," grados, gira durante ",tiempo," segundos")
 		self.setRobotSpeed(0, 13)
 		time.sleep(tiempo)		
 		
 	def para(self):
-		print "PARANDO!!"
+		print ("PARANDO!!")
 		self.setRobotSpeed(0,0)
 	
 	def corre(self):
-		print "CORRIENDO!!!"
+		print ("CORRIENDO!!!")
 		self.setRobotSpeed(1000,0)
 ############################################################################################
 	def reconocerCara(self):

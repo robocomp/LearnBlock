@@ -16,12 +16,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
 import sys
 from PySide import *
 try:
 	from ui_mainUI import *
 except:
-	print "Can't import UI file. Did you run 'make'?"
+	print ("Can't import UI file. Did you run 'make'?")
 	sys.exit(-1)
 
 
@@ -55,6 +56,6 @@ class GenericWorker(QtGui.QWidget):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print "Period changed", p
+		print ("Period changed", p)
 		Period = p
 		timer.start(Period)

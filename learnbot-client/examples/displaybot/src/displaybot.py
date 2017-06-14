@@ -54,7 +54,7 @@
 #
 #
 #
-
+from __future__ import print_function
 import sys, traceback, Ice, IceStorm, subprocess, threading, time, Queue, os
 
 # Ctrl+c handling
@@ -71,7 +71,7 @@ try:
 except:
 	pass
 if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
+	print('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
 
@@ -96,14 +96,14 @@ class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
 		try:
 			return self.handler.timeAwake()
 		except:
-			print 'Problem getting timeAwake'
+			print ('Problem getting timeAwake')
 	def killYourSelf(self, current = None):
 		self.handler.killYourSelf()
 	def getAttrList(self, current = None):
 		try:
 			return self.handler.getAttrList(self.communicator)
 		except:
-			print 'Problem getting getAttrList'
+			print ('Problem getting getAttrList')
 			traceback.print_exc()
 			status = 1
 			return
@@ -124,14 +124,14 @@ if __name__ == '__main__':
 				basePrx = ic.stringToProxy(proxyString)
 				differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)
 				mprx["DifferentialRobotProxy"] = differentialrobot_proxy
-				print "bien differential"
+				print ("bien differential")
 			except Ice.Exception:
-				print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
+				print ('Cannot connect to the remote object (DifferentialRobot)', proxyString)
 				#traceback.print_exc()
 				status = 1
 		except Ice.Exception, e:
-			print e
-			print 'Cannot get DifferentialRobotProxy property.'
+			print (e)
+			print ('Cannot get DifferentialRobotProxy property.')
 			status = 1
 
 
@@ -142,14 +142,14 @@ if __name__ == '__main__':
 				basePrx = ic.stringToProxy(proxyString)
 				ultrasound_proxy = RoboCompUltrasound.UltrasoundPrx.checkedCast(basePrx)
 				mprx["UltrasoundProxy"] = ultrasound_proxy
-				print "bien ultrasound"
+				print ("bien ultrasound")
 			except Ice.Exception:
-				print 'Cannot connect to the remote object (Ultrasound)', proxyString
+				print ('Cannot connect to the remote object (Ultrasound)', proxyString)
 				#traceback.print_exc()
 				status = 1
 		except Ice.Exception, e:
-			print e
-			print 'Cannot get UltrasoundProxy property.'
+			print (e)
+			print ('Cannot get UltrasoundProxy property.')
 			status = 1
 
 	except:

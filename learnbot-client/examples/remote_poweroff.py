@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # sudo pip install paramiko
-
+from __future__ import print_function
 import sys
 import socket
 import paramiko
@@ -34,7 +34,7 @@ class PySSH(object):
             self.ssh.connect(hostname,port,username,password)
             self.transport=self.ssh.get_transport()
         except (socket.error,paramiko.AuthenticationException) as message:
-            print "ERROR: SSH connection to "+self.hostname+" failed: " +str(message)
+            print ("ERROR: SSH connection to "+self.hostname+" failed: " +str(message))
             sys.exit(1)
         return  self.transport is not None
  
@@ -67,5 +67,5 @@ if __name__ == '__main__':
     ssh = PySSH()
     ssh.connect(hostname,username,password)
     output=ssh.runcmd('sudo poweroff')
-    print output
+    print (output)
     ssh.disconnect()

@@ -1,0 +1,8 @@
+start
+left 300
+what is speed
+left 400
+left 300
+left 400
+halt
+quit
