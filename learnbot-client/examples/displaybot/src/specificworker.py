@@ -18,7 +18,6 @@
 #
 
 import sys, os, Ice
-
 from PySide import *
 from genericworker import *
 
@@ -33,6 +32,9 @@ import math
 #import datetime as time
 from PyQt4.QtGui import *#QImage, qRgb		
 
+#To make it compatible with python 3
+from __future__ import print_function
+from __future__ import division
 
 ROBOCOMP = ''
 try:
@@ -40,7 +42,7 @@ try:
 except:
 	pass
 if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
+	print ('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
 
@@ -96,7 +98,7 @@ class myGraphicsSceneJoyStick(QtGui.QGraphicsScene):
       self.vacaH = self.addLine(self.crosslineH)
       self.update()
       if self.timerJoystick.elapsed() > 500:
-        print "Avance: ", posY*self.vAdvanceRobot, " <--> Rotacion: ", posX*self.vRotationRobot
+        print ("Avance: ", posY*self.vAdvanceRobot, " <--> Rotacion: ", posX*self.vRotationRobot)
 	self.parent.setRobotSpeed(posY*self.vAdvanceRobot,posX*self.vRotationRobot)
 	self.timerJoystick.restart()
   
@@ -213,7 +215,7 @@ class SpecificWorker(GenericWorker):
 		self.oveja = self.sceneCamera.addPixmap(QtGui.QPixmap.fromImage(self.qimage))	      
 		self.sceneCamera.update()
 	      except:
-		print "sheep"
+		print ("sheep")
 		return None
 	    return True
 
@@ -283,7 +285,7 @@ class SpecificWorker(GenericWorker):
 	      polygonW.push_back(QtCore.QPoint(-marginImage,0))
 
 	    else:
-	      print "sheep"
+	      print ("sheep")
 	      
 	  self.gatoN = self.sceneUltrasound.addPolygon(polygonN)
 	  self.gatoS = self.sceneUltrasound.addPolygon(polygonS)

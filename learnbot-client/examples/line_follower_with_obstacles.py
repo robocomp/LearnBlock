@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import cv2
-
 import ast
 import sys, time
 import LearnBotClient
+
+#To make it compatible with python 3
+from __future__ import print_function
+from __future__ import division
 
 # Ctrl+c handling
 import signal
@@ -20,7 +23,7 @@ class MiClase(LearnBotClient.Client):
   def code(self):  
     encontrado = False
     while(True):
-      print encontrado
+      print (encontrado)
       # Capture frame-by-frame
       frame = self.getImage()
       # Concertir a gris
@@ -55,29 +58,29 @@ class MiClase(LearnBotClient.Client):
         # 0 atras -- 1 delante -- 2 derecha -- 3 izquierda
 	if sensor["dist"]<20 and name == "sensor1" and encontrado is False:
 	  self.setRobotSpeed(0,0)
-	  print "pared detectada"
+	  print ("pared detectada")
 	  time.sleep(4)
-	  print "A POR ELLA!!!"
+	  print ("A POR ELLA!!!")
 	  encontrado = True
 	elif sensor["dist"]<20 and name == "sensor1" or (sensor["dist"]<20 and name == "sensor2" or sensor["dist"]<20) and encontrado is True:
 	  if numWall >= 2:
 	    self.setRobotSpeed(0,0)
-	    print "He llegado a casa :-)"
+	    print ("He llegado a casa :-)")
 	    sys.exit(1)
 	  else:
 	    numWall+=1
 	if encontrado is False:
 	  if maxIndex is 0:
-	    print "gira derecha"
+	    print ("gira derecha")
 	    self.setRobotSpeed(150,-3)
 	  elif maxIndex is 2:
-	    print "gira izquierda"
+	    print ("gira izquierda")
 	    self.setRobotSpeed(150,3)    
 	  elif maxIndex is 1:
-	    print "recto"
+	    print ("recto")
 	    self.setRobotSpeed(450,0)
 	else:
-	  print "Quiero llegar a casa"
+	  print ("Quiero llegar a casa")
 	  self.setRobotSpeed(750,0)
   # Display the resulting frame
       cv2.imshow('edges',otsu)  

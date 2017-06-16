@@ -18,10 +18,14 @@
 
 import sys
 from PySide import *
+
+#To make it compatible with python 3
+from __future__ import print_function
+
 try:
 	from ui_mainUI import *
 except:
-	print "Can't import UI file. Did you run 'make'?"
+	print ("Can't import UI file. Did you run 'make'?")
 	sys.exit(-1)
 
 
@@ -55,6 +59,6 @@ class GenericWorker(QtGui.QWidget):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print "Period changed", p
+		print ("Period changed", p)
 		Period = p
 		timer.start(Period)

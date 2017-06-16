@@ -9,11 +9,14 @@ import urllib
 from collections import namedtuple
 import numpy as np
 
+#To make it compatible with python 3
+from __future__ import print_function
+
 ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except KeyError:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
@@ -58,16 +61,16 @@ class Client(Ice.Application):
 			# Remote object connection for DifferentialRobot
 			try:
 				proxyString = ic.getProperties().getProperty('DifferentialRobotProxy')
-				print proxyString
+				print (proxyString)
 				try:
 					basePrx = ic.stringToProxy(proxyString)
 					self.differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)
 				except Ice.Exception:
-					print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
+					print ('Cannot connect to the remote object (DifferentialRobot)', proxyString)
 					sys.exit(1)
 			except Ice.Exception, e:
-				print e
-				print 'Cannot get DifferentialRobotProxy property.'
+				print (e)
+				print ('Cannot get DifferentialRobotProxy property.')
 				sys.exit(1)
 			# Remote object connection for Laser1
 			try:
@@ -76,11 +79,11 @@ class Client(Ice.Application):
 					basePrx = ic.stringToProxy(proxyString)
 					self.laser1_proxy = RoboCompLaser.LaserPrx.checkedCast(basePrx)
 				except Ice.Exception:
-					print 'Cannot connect to the remote object (Laser)', proxyString
+					print ('Cannot connect to the remote object (Laser)', proxyString)
 					sys.exit(1)
 			except Ice.Exception, e:
-				print e
-				print 'Cannot get Laser1Proxy property.'
+				print (e)
+				print ('Cannot get Laser1Proxy property.')
 				sys.exit(1)
 			# Remote object connection for Laser2
 			try:
@@ -89,11 +92,11 @@ class Client(Ice.Application):
 					basePrx = ic.stringToProxy(proxyString)
 					self.laser2_proxy = RoboCompLaser.LaserPrx.checkedCast(basePrx)
 				except Ice.Exception:
-					print 'Cannot connect to the remote object (Laser)', proxyString
+					print ('Cannot connect to the remote object (Laser)', proxyString)
 					sys.exit(1)
 			except Ice.Exception, e:
-				print e
-				print 'Cannot get Laser2Proxy property.'
+				print (e)
+				print ('Cannot get Laser2Proxy property.')
 				sys.exit(1)
 			# Remote object connection for Laser3
 			try:
@@ -102,11 +105,11 @@ class Client(Ice.Application):
 					basePrx = ic.stringToProxy(proxyString)
 					self.laser3_proxy = RoboCompLaser.LaserPrx.checkedCast(basePrx)
 				except Ice.Exception:
-					print 'Cannot connect to the remote object (Laser)', proxyString
+					print ('Cannot connect to the remote object (Laser)', proxyString)
 					sys.exit(1)
 			except Ice.Exception, e:
-				print e
-				print 'Cannot get Laser3Proxy property.'
+				print (e)
+				print ('Cannot get Laser3Proxy property.')
 				sys.exit(1)
 			# Remote object connection for Laser4
 			try:
@@ -115,11 +118,11 @@ class Client(Ice.Application):
 					basePrx = ic.stringToProxy(proxyString)
 					self.laser4_proxy = RoboCompLaser.LaserPrx.checkedCast(basePrx)
 				except Ice.Exception:
-					print 'Cannot connect to the remote object (Laser)', proxyString
+					print ('Cannot connect to the remote object (Laser)', proxyString)
 					sys.exit(1)
 			except Ice.Exception, e:
-				print e
-				print 'Cannot get Laser4Proxy property.'
+				print (e)
+				print ('Cannot get Laser4Proxy property.')
 				sys.exit(1)
 			# Remote object connection for RGBD
 			try:
@@ -128,11 +131,11 @@ class Client(Ice.Application):
 					basePrx = ic.stringToProxy(proxyString)
 					self.rgbd_proxy = RoboCompRGBD.RGBDPrx.checkedCast(basePrx)
 				except Ice.Exception:
-					print 'Cannot connect to the remote object (RGBD)', proxyString
+					print ('Cannot connect to the remote object (RGBD)', proxyString)
 					sys.exit(1)
 			except Ice.Exception, e:
-				print e
-				print 'Cannot get RGBDProxy property.'
+				print (e)
+				print ('Cannot get RGBDProxy property.')
 				sys.exit(1)
 
 
@@ -192,7 +195,7 @@ class Client(Ice.Application):
 		try:
 			self.color, self.depth, self.headState, self.baseState = self.rgbd_proxy.getData()
 			if (len(self.color) == 0) or (len(self.depth) == 0):
-                                print 'Error retrieving images!'
+                                print ('Error retrieving images!')
                 except Ice.Exception:
                         traceback.print_exc()		
 
