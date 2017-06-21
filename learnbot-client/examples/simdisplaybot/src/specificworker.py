@@ -18,7 +18,6 @@
 #
 
 import sys, os, Ice
-
 from PySide import *
 from genericworker import *
 
@@ -32,8 +31,11 @@ import json
 import ast
 import math
 #import datetime as time
-from PyQt4.QtGui import *#QImage, qRgb		
+from PyQt4.QtGui import *#QImage, qRgb
 
+#To make it compatible with python 3
+from __future__ import print_function
+from __future__ import division
 
 ROBOCOMP = ''
 try:
@@ -41,7 +43,7 @@ try:
 except:
 	pass
 if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
+	print ('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
 
@@ -93,7 +95,7 @@ class myGraphicsSceneJoyStick(QtGui.QGraphicsScene):
       self.vacaW = self.addLine(self.crosslineW)
       self.vacaH = self.addLine(self.crosslineH)
       self.update()
-      print "Advance speed:", -posY*self.vAdvanceRobot, " <--> Rotation speed: ", posX*self.vRotationRobot
+      print ("Advance speed:", -posY*self.vAdvanceRobot, " <--> Rotation speed: ", posX*self.vRotationRobot)
       self.parent.setRobotSpeed(-posY*self.vAdvanceRobot,posX*self.vRotationRobot)
       self.timerJoystick.restart()
   
@@ -184,7 +186,7 @@ class SpecificWorker(GenericWorker):
 		try:
 			self.color, self.depth, self.headState, self.baseState = self.rgbd_proxy.getData()
 			if (len(self.color) == 0) or (len(self.depth) == 0):
-                                print 'Error retrieving images!'
+                                print ('Error retrieving images!')
                 except Ice.Exception:
                         traceback.print_exc()		
 
@@ -194,7 +196,7 @@ class SpecificWorker(GenericWorker):
 			self.sceneCamera.addPixmap(QtGui.QPixmap.fromImage(self.qimage))	      
 			self.sceneCamera.update()
 		except:
-			print "problem showing image..."
+			print ("problem showing image...")
 			return None
 	
 

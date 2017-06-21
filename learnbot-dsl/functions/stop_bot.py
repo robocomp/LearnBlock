@@ -1,3 +1,4 @@
+#To make it compatible with python 3
 from __future__ import print_function
 
 def stop_bot(lbot, params=None, verbose=False):

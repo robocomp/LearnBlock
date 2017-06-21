@@ -3,10 +3,11 @@ import cv2
 import LearnBotClient
 from functions import *
 import time
-
 global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
+#To make it compatible with python 3
+from __future__ import print_function
 
 #####################
 #	 CODE BEGINS	#
@@ -37,7 +38,7 @@ functions.get("stop_bot")(lbot)
 
 # GETTING DISTANCE
 
-print functions.get("get_distance")(lbot)
+print (functions.get("get_distance")(lbot))
 
 
 # GETTING IMAGE FROM CAMERA

@@ -18,18 +18,21 @@
 #
 
 import sys, os, Ice, traceback, time
-
 from PySide import *
 from genericworker import *
+
+#To make it compatible with python 3
+from __future__ import print_function
+from __future__ import division
 
 ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 if len(ROBOCOMP)<1:
-	print 'genericworker.py: ROBOCOMP environment variable not set! Exiting.'
+	print ('genericworker.py: ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
 
@@ -47,9 +50,9 @@ from differentialrobotI import *
 try:
 	import wiringpi2 as wpi
 except ImportError:
-	print "Wiring pi not found. Please, download and install"
-	print "Odroid: https://github.com/hardkernel/wiringPi" 
-	print "Raspberry: http://wiringpi.com/download-and-install"
+	print ("Wiring pi not found. Please, download and install")
+	print ("Odroid: https://github.com/hardkernel/wiringPi")
+	print ("Raspberry: http://wiringpi.com/download-and-install")
 	exit()
 
 
@@ -78,12 +81,12 @@ class SpecificWorker(GenericWorker):
 
 
 	def show_pin_conections(self):
-		print "TRIGER_PIN = 1"
-		print "ECHO_SENSOR_1 = 5"
-		print "ECHO_SENSOR_2 = 2"
-		print "ECHO_SENSOR_3 = 0"
-		print "ECHO_SENSOR_4 = 3"
-		print "PINOUT: http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143703355573&tab_idx=2"
+		print ("TRIGER_PIN = 1")
+		print ("ECHO_SENSOR_1 = 5")
+		print ("ECHO_SENSOR_2 = 2")
+		print ("ECHO_SENSOR_3 = 0")
+		print ("ECHO_SENSOR_4 = 3")
+		print ("PINOUT: http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143703355573&tab_idx=2")
 
 
 	def read_ultrasound(self):
@@ -110,7 +113,7 @@ class SpecificWorker(GenericWorker):
 						start = -1
 						break
 				if start == -1:
-					print "WARNING", "PIN_TRIGGER:",PIN_TRIGGER, "not work!"
+					print ("WARNING", "PIN_TRIGGER:",PIN_TRIGGER, "not work!")
 					sensor["dist"] = -1
 				else:
 					while wpi.digitalRead(GPIO_ECHO) == 1:
@@ -119,7 +122,7 @@ class SpecificWorker(GenericWorker):
 							stop = -1
 							break
 					if stop == -1:
-						print "WARNING", "PIN_ECHO:",PIN_ECHO, "not work!"
+						print ("WARNING", "PIN_ECHO:",PIN_ECHO, "not work!")
 						sensor["dist"] = -1
 					else:
 						# Calculate pulse length
@@ -134,7 +137,7 @@ class SpecificWorker(GenericWorker):
 
 	@QtCore.Slot()
 	def compute(self):
-		print "working!"
+		print ("working!")
 		read_ultrasound()
 
 
@@ -159,7 +162,7 @@ class SpecificWorker(GenericWorker):
 		if sensor_id in self.ultrasound.keys():
 			return self.sonar_values[sensor_id]	
 		else:
-			print "not sensor locate!"
+			print ("not sensor locate!")
 			return {}
 
 

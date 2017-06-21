@@ -9,6 +9,8 @@ import time
 import zipfile
 import json
 import datetime
+#To make it compatible with python 3
+from __future__ import print_function
 
 def createHeader(codeInInit=''):
   head = '#!/usr/bin/env python\n'
@@ -111,7 +113,7 @@ def codeWorker (codeJSON,identation):
           codePython += codeTemp
           identation -= 2
         else:
-          print 'aaa'
+          print ('aaa')
       
       elif str(str(codeJSON).split(' ')[0]).translate(None,"u,'[]") in questions:        
         #################################################################
@@ -189,7 +191,7 @@ def main():
   try:
       os.system('cp '+sourceFile+' temp.zip')
   except IOError:
-      print 'cannot open', sourceFile
+      print ('cannot open', sourceFile)
   else:    
       fh = open('temp.zip', 'rb')
       z = zipfile.ZipFile(fh)
@@ -207,21 +209,21 @@ def main():
             else:
               if code[2][0][0] == 'whenGreenFlag':
                 identation=4
-                print code[2][1]
-                print '-----------------'
-                print '-----------------'
-                print '-----------------'
+                print (code[2][1])
+                print ('-----------------')
+                print ('-----------------')
+                print ('-----------------')
                 # code[2][1] porque es donde esta el codigo
                 locate,codePython = codeWorker(code[2][1],identation)
               else:
-                print 'Not init block program'
+                print ('Not init block program')
           
       if locate is False:
-        print 'The content of file is not correct :-('
+        print ('The content of file is not correct :-(')
       else:
-        print createHeader() + '\n' + codePython + '\n'+ '\n'+ '\n' + createTail()
+        print (createHeader() + '\n' + codePython + '\n'+ '\n'+ '\n' + createTail())
         #print codePython
-        print "Opening the file..."       
+        print ("Opening the file...")
         try:
 	  filename = sourceFile.split('.')[0]
 	  with open(filename+'.py', "w") as outfile:
@@ -229,7 +231,7 @@ def main():
 	  outfile.close()
 	  os.system('python '+filename+'.py --Ice.Config=LearnBotClient.conf')
 	except IOError:
-	  print "oops! I don't write de file"
+	  print ("oops! I don't write de file")
       os.system('rm temp.zip')
 
 
