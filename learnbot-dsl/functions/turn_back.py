@@ -1,5 +1,5 @@
-import time, math
 from __future__ import division
+import time, math
 
 def turn_back(lbot, params=None, verbose=False):
 	lbot.setRobotSpeed(lbot.adv, math.pi)
