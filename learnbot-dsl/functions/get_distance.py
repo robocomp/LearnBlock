@@ -1,4 +1,4 @@
-def get_distance(lbot, params=None, verbose=False):
+def get_distance(lbot, verbose=False):
 	sonarsValue = lbot.getSonars()
 	if verbose:
 		print(sonarsValue)
