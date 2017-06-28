@@ -58,7 +58,6 @@ class Client(Ice.Application):
 			# Remote object connection for DifferentialRobot
 			try:
 				proxyString = ic.getProperties().getProperty('DifferentialRobotProxy')
-				print proxyString
 				try:
 					basePrx = ic.stringToProxy(proxyString)
 					self.differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)
