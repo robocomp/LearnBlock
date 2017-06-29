@@ -7,6 +7,8 @@ ignore = [
 ]
 
 functions = {}
+params = {}
+paramsDefaults = {}
 dirnames = ['functions']
 
 for dirname in dirnames:
@@ -22,6 +24,8 @@ for dirname in dirnames:
 		module_name = dirname.replace('/','.') + '.' + name
 
 		func = getattr(import_module(module_name), name)
-		#args = inspect.getargspec(func)
+		args = inspect.getargspec(func)
 		functions[name] = func
+		params[name] = args.args[1:]
+		paramsDefaults[name] = args.defaults
 

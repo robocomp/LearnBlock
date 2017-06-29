@@ -9,7 +9,7 @@ global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
 for f in functions:
-	print f
+	print f, params[f], paramsDefaults[f]
 
 func1 = functions.get("get_distance")
 usList = func1(lbot)
