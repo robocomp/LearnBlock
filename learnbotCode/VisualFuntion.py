@@ -3,6 +3,9 @@ import copy
 
 import threading
 from math import *
+import numpy as np
+import cv2
+from toQImage import *
 
 TOP = 0
 BOTTOM = 1
@@ -10,7 +13,8 @@ BOTTOMIN = -1
 RIGHT = 3
 LEFT = 4
 
-
+SIMPLEBLOCK = 1
+COMPLEXBLOCK = 2
 
 class connection:
     def __init__(self, point, parent, type,):
@@ -27,8 +31,12 @@ class connection:
         self.__item = item
     def getItem(self):
         return self.__item
-    def getPoint(self):
+    def setPoint(self,point):
+        self.__point = point
+    def getPosPoint(self):
         return self.__point + self.__parent.pos()
+    def getPoint(self):
+        return self.__point
     def getConnect(self):
         return self.__connect
     def setConnect(self,connect):
@@ -44,12 +52,21 @@ def EuclideanDist(p1,p2):
 
 
 class BlockItem(QtGui.QGraphicsPixmapItem):
-    def __init__(self,x, y, nameFuntion, file, vars, parent=None, scene=None, connections=None):
+    def __init__(self,x, y, nameFuntion, file, vars, parent=None, scene=None, connections=None, type = SIMPLEBLOCK):
         self.nameFuntion = nameFuntion
         QtGui.QGraphicsPixmapItem.__init__(self)
-        image = QtGui.QImage(file)
-        self.img =QtGui.QPixmap(image)
+        self.cvImg = cv2.imread(file,cv2.IMREAD_UNCHANGED)
+        self.cvImg = np.require(self.cvImg, np.uint8, 'C')
+        qImage = toQImage(self.cvImg)
+        try:
+            self.header = copy.copy(self.cvImg[0:39,0:149])
+            self.foot = copy.copy(self.cvImg[69:104,0:149])
+        except:
+            pass
 
+        #image = QtGui.QImage(file)
+        self.img =QtGui.QPixmap(qImage)
+        self.__type = type
         self.setFlags(QtGui.QGraphicsItem.ItemIsMovable)
         self.setZValue(1)
         self.setPos(x,y)
@@ -62,33 +79,74 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         self.timer2 = QtCore.QTimer()
         QtCore.QTimer.connect(self.timer2, QtCore.SIGNAL("timeout()"), self.updateConnections)
         self.timer2.start(5)
-
-
+        self.connections = []
+        self.posmouseinItem = None
         self.table = None
         if vars is not None:
             tabVar = QtGui.QTableWidget()
             tabVar.verticalHeader().setVisible(False)
             tabVar.horizontalHeader().setVisible(False)
             tabVar.setColumnCount(2)
-            tabVar.setRowCount(4)
-            tabVar.setFixedSize(tabVar.columnWidth(0)*2+2, tabVar.rowHeight(0)*4+2)
+            tabVar.setRowCount(len(vars)+1)
+            i = 0
+            for var in vars:
+                tabVar.setCellWidget(i,0,QtGui.QLabel(var[1]))
+                widget = None
+                if "float" in var[1]:
+                    pass
+                elif "int" in var[1]:
+                    pass
+                elif "string" in var[1]:
+                    pass
+                edit = QtGui.QLineEdit()
+                edit.setValidator(QtGui.QDoubleValidator())
+                tabVar.setCellWidget(i, 1, edit)
+                i+=1
+
+            tabVar.setFixedSize(tabVar.columnWidth(0)*2+2, tabVar.rowHeight(0)*tabVar.rowCount()+2)
             self.table = self.scene.addWidget(tabVar)
             self.table.setZValue(1);
             self.table.setPos(x,y)
             self.scene.setTable(self.table)
             self.table.setVisible(False)
 
-
-        self.connections = []
-        self.posmouseinItem = None
+    def delete(self):
+        self.scene.removeItem(self)
 
     def addConnection(self,point,type):
         self.connections.append(connection(point, self, type))
 
+    def generateBlock(self,n,size):
+        line = self.cvImg[50:51, 0:149]
+        im = np.ones((self.header.shape[0]+self.foot.shape[0]+size-4, 149, 4), dtype=np.uint8)
+
+        im[0:self.header.shape[0],0:149]=self.header
+        im[im.shape[0]-self.foot.shape[0]:im.shape[0],0:149] = self.foot
+        for i in range(39,im.shape[0]-self.foot.shape[0]):
+            im[i:i+line.shape[0],0:149] = copy.copy(line)
+
+
+        return im
+
     def updateConnections(self):
+        if self.__type is COMPLEXBLOCK:
+            nSubBlock, size  = self.getNumSub()
+            if size is 0:
+                size = 34
+            im = self.generateBlock(nSubBlock,size)
+            self.cvImg = np.require(im, np.uint8, 'C')
+            qImage = toQImage(self.cvImg)
+            self.img = QtGui.QPixmap(qImage)
+            self.setPixmap(self.img)
+            for c in self.connections:
+                if c.getType() is BOTTOM:
+                    c.setPoint(QtCore.QPointF(c.getPoint().x(),im.shape[0] - 5))
+                    if c.getItem() is not None:
+                        c.getItem().moveToPos(self.pos() + QtCore.QPointF(0,self.img.height()-5))
+
         for c in self.connections:
             if c.getConnect() is not None:
-                if EuclideanDist(c.getPoint(),c.getConnect().getPoint()) != 5:
+                if EuclideanDist(c.getPosPoint(), c.getConnect().getPosPoint()) != 5:
                     c.getConnect().setItem(None)
                     c.getConnect().setConnect(None)
                     c.setItem(None)
@@ -106,9 +164,15 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
                     c.getConnect().setConnect(None)
                     c.setItem(None)
                     c.setConnect(None)
-            elif c.getType() in (BOTTOM,BOTTOMIN,RIGHT):
+            elif c.getType() is BOTTOM:
                 if c.getItem() is not None:
                     c.getItem().moveToPos(self.pos() + QtCore.QPointF(0, self.img.height()-5), connect)
+            elif c.getType() is BOTTOMIN:
+                if c.getItem() is not None:
+                    c.getItem().moveToPos(self.pos() + QtCore.QPointF(17, 33), connect)
+            elif c.getType() is RIGHT:
+                if c.getItem() is not None:
+                    c.getItem().moveToPos(self.pos() + QtCore.QPointF(self.img.width() - 5, 0), connect)
 
     def getLastItem(self):
         for c in self.connections:
@@ -166,3 +230,40 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         for c in self.connections:
             if c.getType() is TOP:
                 return c.getItem()
+
+    def getNumSubBottom(self,n=0,size=0):
+        size += self.cvImg.shape[0]-5
+        for c in self.connections:
+            if c.getType() is BOTTOM:
+                if c.getConnect() is None:
+                    return n+1,size+1
+                else:
+                    return c.getItem().getNumSubBottom(n + 1,size)
+
+    def getNumSub(self, n=0):
+        for c in self.connections:
+            if c.getType() is BOTTOMIN:
+                if c.getConnect() is not None:
+                    return c.getItem().getNumSubBottom()
+                else:
+                    return 0,0
+        return 0,0
+
+    def getInstructions(self,inst=[]):
+
+        for c in self.connections:
+            if c.getType() is RIGHT:
+                if c.getItem() is not None:
+                    if len(inst) is 0:
+                        inst.append(c.getItem().getInstructions())
+                    else:
+                        inst.append(c.getItem().getInstructions())
+            elif c.getType() is BOTTOMIN:
+                if c.getItem() is not None:
+                    inst.append(c.getItem().getInstructions(inst))
+            elif c.getType() is BOTTOM:
+                if c.getItem() is not None:
+                    inst.append(c.getItem().getInstructions(inst))
+
+        inst.append(self.nameFuntion)
+        return inst

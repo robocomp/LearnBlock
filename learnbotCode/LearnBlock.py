@@ -4,7 +4,7 @@ from View import *
 import gui,sys
 import os
 import cv2
-
+from parserConfigBlock import *
 
 def loadfile(file):
     fh = open(file, "r")
@@ -13,16 +13,22 @@ def loadfile(file):
     return code
 
 class MyButtom(QtGui.QPushButton):
-    def __init__(self,text,view,scene,imgFile,connections, vars):
-        QtGui.QPushButton.__init__(self,text)
+    def __init__(self,text,view,scene,imgFile,connections, vars, blockType,table,row):
+        QtGui.QPushButton.__init__(self)
+        im = cv2.imread(imgFile)
+        table.setRowHeight(row-1,im.shape[0])
+        self.setIcon(QtGui.QIcon(imgFile))
+        self.setIconSize(QtCore.QSize(100,100))
+        self.setFixedSize(QtCore.QSize(150, im.shape[0]))
         self.clicked.connect(self.clickedButton)
         self.view = view
         self.scene = scene
         self.file = imgFile
         self.connections = connections
         self.vars = vars
+        self.blockType = blockType
     def clickedButton(self):
-        item = BlockItem(0, 0, self.text(),self.file, self.vars, self.view, self.scene)
+        item = BlockItem(0, 0, self.text(),self.file, self.vars, self.view, self.scene,None,self.blockType)
         for point, type in self.connections:
             item.addConnection(point, type)
         self.scene.addItem(item)
@@ -42,35 +48,73 @@ class LearnBlock:
         self.scene = MyScene()
         self.view.setScene(self.scene)
         self.view.show()
-        functions = {}
-        for base, dirs, files in os.walk('learnbot-dsl/functions'):
-            for file in files:
-                functions[file.replace(".py", "")] = file, file.replace(".py", ""), loadfile(base + "/" + file)
-        del functions["__init__"]
-
         tableControl = self.ui.tableControl
         tableControl.verticalHeader().setVisible(False)
         tableControl.horizontalHeader().setVisible(False)
         tableControl.setColumnCount(1)
-        tableControl.setRowCount(len(functions))
+        tableControl.setRowCount(0)
+        #READ FUNTIONS
+        functions = parserConfigBlock("config")
 
-        block = cv2.imread("/home/ivan/gsoc17/learnbotCode/blocks/block5.png", cv2.IMREAD_UNCHANGED)
+        listTmpFiles = []
         try:
             os.mkdir("tmp")
         except:
             pass
         i = 0
         for f in functions:
+            for img in f[1]["img"]:
+                block = cv2.imread(img, cv2.IMREAD_UNCHANGED)
+                fileTmpImg = "tmp/" + f[1]["name"][0] + str(i) +".png"
+                listTmpFiles.append(fileTmpImg)
+                cv2.putText(block, f[1]["name"][0], (10, 23), cv2.FONT_HERSHEY_TRIPLEX, 0.5, (0, 0, 0, 255), 1)
+                cv2.imwrite(fileTmpImg, block, (cv2.IMWRITE_PNG_COMPRESSION, 9))
+                fh = open(img.replace(".png",""), "r")
+                text = fh.readlines()
+                fh.close()
+                connections = []
+                for line in text:
+                    line = line.replace("\n","")
+                    line = line.replace(" ", "")
+                    c = line.split(",")
+                    type = None
+                    if "TOP" in c[2] :
+                        type = TOP
+                    elif "BOTTOMIN" in c[2]:
+                        type = BOTTOMIN
+                    elif "BOTTOM" in c[2]:
+                        type = BOTTOM
+                    elif "RIGHT" in c[2]:
+                        type = RIGHT
+                    elif "LEFT" in c[2]:
+                        type = LEFT
 
-            button = MyButtom(f,self.view,self.scene,"tmp/" + f + ".png",[(QtCore.QPointF(75, 99), BOTTOM),(QtCore.QPointF(75, 5), TOP)],1)
+                    connections.append((QtCore.QPointF(int(c[0]), int(c[1])), type))
+                variable = None
+                if "variables" in f[1]:
+                    variable = f[1]["variables"]
+                blockType =  f[1]["blocktype"][0]
+                if "simple" in blockType:
+                    blockType = SIMPLEBLOCK
+                elif "complex" in blockType:
+                    blockType = COMPLEXBLOCK
+
+                tableControl.insertRow(tableControl.rowCount())
+                button = MyButtom(f[1]["name"][0], self.view, self.scene, fileTmpImg, connections, variable, blockType,tableControl,tableControl.rowCount())
+                tableControl.setCellWidget(i, 0, button)
+                i+=1
+
+            #[(QtCore.QPointF(75, 33), BOTTOM), (QtCore.QPointF(75, 5), TOP)]
+            """
+            button = MyButtom(f,self.view,self.scene,"tmp/" + f + ".png",[(QtCore.QPointF(5, 15), LEFT),(QtCore.QPointF(94, 15), RIGHT)],1)
             tableControl.setCellWidget(i,0,button)
             img = block.copy()
             cv2.putText(img, f, (10, 23), cv2.FONT_HERSHEY_TRIPLEX, 0.5, (0, 0, 0, 255), 1)
             cv2.imwrite("tmp/" + f + ".png", img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
-            i+=1
+            """
 
         tableControl.insertRow(tableControl.rowCount())
-        button = MyButtom("Init_Program", self.view, self.scene, "initProgram.png",[(QtCore.QPointF(75, 33), BOTTOM)],None)
+        button = MyButtom("Init_Program", self.view, self.scene, "initProgram.png",[(QtCore.QPointF(75, 33), BOTTOM)],None,SIMPLEBLOCK,tableControl,tableControl.rowCount())
         tableControl.setCellWidget(i, 0, button)
 
         self.timer = QtCore.QTimer()
@@ -79,8 +123,8 @@ class LearnBlock:
 
         r = app.exec_()
 
-        for f in functions:
-            os.remove("tmp/" + f + ".png")
+        for f in listTmpFiles:
+            os.remove(f)
         os.rmdir("tmp")
         sys.exit(r)
 

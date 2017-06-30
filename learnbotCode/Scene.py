@@ -13,12 +13,15 @@ class MyScene(QtGui.QGraphicsScene):
         self.listItem = []
         self.timer = QtCore.QTimer()
         QtCore.QTimer.connect(self.timer, QtCore.SIGNAL("timeout()"), self.update)
-        self.timer.start(0)
+        self.timer.start(5)
         self.table = None
         self.posibleConnect = []
-        self.imgPosibleConnect = QtGui.QGraphicsPixmapItem("Connect.png")
-        super(MyScene, self).addItem(self.imgPosibleConnect)
-        self.imgPosibleConnect.setVisible(False)
+        self.imgPosibleConnectH = QtGui.QGraphicsPixmapItem("blocks/ConnectH.png")
+        super(MyScene, self).addItem(self.imgPosibleConnectH)
+        self.imgPosibleConnectH.setVisible(False)
+        self.imgPosibleConnectV = QtGui.QGraphicsPixmapItem("blocks/ConnectV.png")
+        super(MyScene, self).addItem(self.imgPosibleConnectV)
+        self.imgPosibleConnectV.setVisible(False)
 
     def itemSelected(self, item):
         self.itemSelec = item
@@ -34,6 +37,9 @@ class MyScene(QtGui.QGraphicsScene):
         self.listItem.append(item)
         super(MyScene, self).addItem(item)
 
+    def removeItem(self,item):
+        self.listItem.remove(item)
+        super(MyScene, self).removeItem(item)
 
     def update(self):
         min_c, min_cItS = self.getClosestItem()
@@ -41,13 +47,31 @@ class MyScene(QtGui.QGraphicsScene):
 
         if min_c is not None:
             if min_c.getType() is TOP:
-                self.imgPosibleConnect.setPos(min_c.getParent().pos())
-            if min_c.getType() is BOTTOM:
-                self.imgPosibleConnect.setPos(min_c.getParent().pos()+QtCore.QPointF(0, min_c.getParent().img.height()-5))
-            self.imgPosibleConnect.setVisible(True)
-            self.imgPosibleConnect.setZValue(1)
+                self.imgPosibleConnectH.setPos(min_c.getParent().pos())
+                self.imgPosibleConnectH.setVisible(True)
+                self.imgPosibleConnectH.setZValue(1)
+            elif min_c.getType() is BOTTOM:
+                self.imgPosibleConnectH.setPos(min_c.getParent().pos() + QtCore.QPointF(0, min_c.getParent().img.height() - 5))
+                self.imgPosibleConnectH.setVisible(True)
+                self.imgPosibleConnectH.setZValue(1)
+            elif min_c.getType() is RIGHT:
+                self.imgPosibleConnectV.setPos(min_c.getParent().pos() + QtCore.QPointF(min_c.getParent().img.width() - 5, 0)+QtCore.QPointF(0,5))
+                self.imgPosibleConnectV.setVisible(True)
+                self.imgPosibleConnectV.setZValue(1)
+            elif min_c.getType() is LEFT:
+                self.imgPosibleConnectV.setPos(min_c.getParent().pos()+QtCore.QPointF(0,5))
+                self.imgPosibleConnectV.setVisible(True)
+                self.imgPosibleConnectV.setZValue(1)
+            elif min_c.getType() is BOTTOMIN:
+                self.imgPosibleConnectH.setPos(min_c.getParent().pos() + QtCore.QPointF(16,38))
+                self.imgPosibleConnectH.setVisible(True)
+                self.imgPosibleConnectH.setZValue(1)
+                pass
+
+
         else:
-            self.imgPosibleConnect.setVisible(False)
+            self.imgPosibleConnectH.setVisible(False)
+            self.imgPosibleConnectV.setVisible(False)
 
     def EuclideanDist(p1, p2):
         p = p1 - p2
@@ -62,20 +86,18 @@ class MyScene(QtGui.QGraphicsScene):
                 if item is not self.itemSelec:
                     item.setZValue(-1)
                     for cItS in self.itemSelec.connections:
-                        if cItS.getType() is BOTTOM and cItS.getItem() is not None:
+                        if cItS.getType() in (BOTTOM, BOTTOMIN,RIGHT) and cItS.getItem() is not None:
                             continue
                         for c in item.connections:
-                            if c.getType() is TOP and c.getItem() is not None:
+                            if c.getType() in  (TOP,LEFT) and c.getItem() is not None:
                                 continue
-                            if cItS.getConnect() is not c or cItS.getConnect() is None:
-                                if abs(cItS.getType()-c.getType()) is 1:
-                                    dist = EuclideanDist(cItS.getPoint(),c.getPoint())
-                                    if dist < min_dist or min_dist is None:
-                                        min_c = c
-                                        min_cItS = cItS
-                                        min_dist = dist
-                else:
-                    self.itemSelec.moveToFront()
+                            if abs(c.getType()-cItS.getType()) == 1 and (cItS.getConnect() is not c or cItS.getConnect() is None):
+                                dist = EuclideanDist(cItS.getPosPoint(), c.getPosPoint())
+                                if dist < min_dist or min_dist is None:
+                                    min_c = c
+                                    min_cItS = cItS
+                                    min_dist = dist
+            self.itemSelec.moveToFront()
         if min_dist is not None and min_dist<30:
             return min_c, min_cItS
         return None, None
@@ -117,7 +139,7 @@ class MyScene(QtGui.QGraphicsScene):
             if c.getItem() is not None:
                 if c.getType() is TOP:
                     pass
-                elif c.getType() is BOTTOM:
+                elif c.getType() in [BOTTOM,BOTTOMIN]:
                     cNext = c.getConnect()
                     cLastIt = cItS.getParent().getLastItem()
                     cLastIt.setItem(cNext.getParent())
@@ -133,3 +155,10 @@ class MyScene(QtGui.QGraphicsScene):
                 itemS.moveToPos(c.getParent().pos() + QtCore.QPointF(0, -itemS.img.height()+5), True)
             elif c.getType() is BOTTOM:
                 itemS.moveToPos(c.getParent().pos() + QtCore.QPointF(0, c.getParent().img.height()-5), True)
+            elif c.getType() is RIGHT:
+                itemS.moveToPos(c.getParent().pos() + QtCore.QPointF(c.getParent().img.width()-5, 0), True)
+            elif c.getType() is LEFT:
+                itemS.moveToPos(c.getParent().pos() + QtCore.QPointF(-itemS.img.width()+5, 0), True)
+            elif c.getType() is BOTTOMIN:
+                itemS.moveToPos(c.getParent().pos() + QtCore.QPointF(17, 33), True)
+

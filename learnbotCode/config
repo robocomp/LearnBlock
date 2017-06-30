@@ -1,0 +1,158 @@
+get_distance1{
+    type control
+    name get_distance
+    file learnbot-dsl/funtions/get_distance.py
+    img blocks/block4.png, blocks/block3.png
+    blocktype simple
+}
+
+get_image{
+    type control
+    name get_image
+    file learnbot-dsl/funtions/get_image.py
+    img blocks/block4.png, blocks/block3.png
+    blocktype simple
+}
+
+get_move{
+    type control
+    name get_move
+    file learnbot-dsl/funtions/get_move.py
+    img blocks/block4.png, blocks/block3.png
+    blocktype simple
+}
+
+move_left{
+    type control
+    name move_left
+    file learnbot-dsl/funtions/move_left.py
+    variables{
+        int duration
+    }
+    img blocks/block1.png
+    blocktype simple
+}
+
+move_right{
+    type control
+    name move_right
+    file learnbot-dsl/funtions/move_right.py
+    variables{
+        int duration
+    }
+    img blocks/block1.png
+    blocktype simple
+}
+
+move_straight{
+    type control
+    name move_straight
+    file learnbot-dsl/funtions/move_straight.py
+    variables{
+        int duration
+    }
+    img blocks/block1.png
+    blocktype simple
+}
+
+set_move{
+    type control
+    name set_move
+    file learnbot-dsl/funtions/set_move.py
+    variables{
+        float rotation
+        float advance
+    }
+    img blocks/block1.png
+    blocktype simple
+}
+
+stop_bot{
+    type control
+    name stop_bot
+    file learnbot-dsl/funtions/stop_bot.py
+    img blocks/block1.png
+    blocktype simple
+}
+
+turn{
+    type control
+    name turn
+    file learnbot-dsl/funtions/turn.py
+    variables{
+        float angle
+    }
+    img blocks/block1.png
+    blocktype simple
+}
+
+turn_back{
+    type control
+    name turn_back
+    file learnbot-dsl/funtions/turn_back.py
+    img blocks/block1.png
+    blocktype simple
+}
+
+turn_left{
+    type control
+    name turn_left
+    file learnbot-dsl/funtions/turn_left.py
+    img blocks/block1.png
+    blocktype simple
+}
+
+turn_right{
+    type control
+    name turn_right
+    file learnbot-dsl/funtions/turn_right.py
+    img blocks/block1.png
+    blocktype simple
+}
+
+def{
+    type control
+    name def
+    file None
+    img blocks/block8.png
+    blocktype complex
+}
+
+end{
+    type control
+    name end
+    file None
+    img blocks/block7.png
+    blocktype simple
+}
+
+if{
+    type control
+    name if
+    file None
+    img blocks/block6.png
+    blocktype complex
+}
+
+elif{
+    type control
+    name elif
+    file None
+    img blocks/block6.png
+    blocktype complex
+}
+else{
+    type control
+    name else
+    file None
+    img blocks/block5.png
+    blocktype complex
+}
+
+prueba{
+    type control
+    name prueba
+    file None
+    img blocks/block2.png
+    blocktype simple
+}

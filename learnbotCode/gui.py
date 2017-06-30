@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'interface.ui'
 #
-# Created: Wed Jun 28 19:27:16 2017
+# Created: Fri Jun 30 02:30:06 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -69,7 +69,7 @@ class Ui_MainWindow(object):
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
         self.tabWidget_2 = QtGui.QTabWidget(self.splitter)
-        self.tabWidget_2.setMaximumSize(QtCore.QSize(149, 16777215))
+        self.tabWidget_2.setMaximumSize(QtCore.QSize(500, 16777215))
         font = QtGui.QFont()
         font.setPointSize(9)
         font.setWeight(50)
