@@ -3,6 +3,9 @@ from subprocess import call
 if call(["pyside-uic","-o","gui.py","interface.ui"]) is 1:
     print "Error al generar gui.py"
     exit(-1)
+if call(["pyside-uic","-o","var.py","var.ui"]) is 1:
+    print "Error al generar var.py"
+    exit(-1)
 
 import gui,sys
 from PySide import QtGui, QtCore

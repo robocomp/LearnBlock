@@ -105,15 +105,9 @@ class MyScene(QtGui.QGraphicsScene):
     def getListInstructions(self):
         listPrograms=[]
         for item in self.listItem:
-            if "Init_Program" == item.nameFuntion:
-                listInst = []
-                listInst.append(item.nameFuntion)
-                nextIt = item.getItemBottomConnect()
-                while (nextIt is not None):
-                    listInst.append(nextIt.nameFuntion)
-                    nextIt = nextIt.getItemBottomConnect()
-                listPrograms.append(listInst)
-        return listPrograms
+            if "def" in item.getNameFuntion():
+                inst = item.getInstructions()
+                return inst
 
     def mouseMoveEvent(self, event):
         if isinstance(self.itemSelec, BlockItem):
@@ -122,17 +116,19 @@ class MyScene(QtGui.QGraphicsScene):
     def mousePressEvent(self, event):
         item = self.itemAt(event.scenePos())
         if self.table is not None and item is not self.table:
-            self.table.setVisible(False)
+            self.table.close()
             self.table = None
         if isinstance(item, BlockItem):
             item.mousePressEvent(event)
 
     def mouseReleaseEvent(self, event):
         itemS = self.itemSelec
+        self.itemSelec = None
         pos = event.scenePos()
         item = self.itemAt(pos)
         if isinstance(item, BlockItem):
             item.mouseReleaseEvent(event)
+
         if self.posibleConnect[0] is not None:
             c, cItS = self.posibleConnect
 

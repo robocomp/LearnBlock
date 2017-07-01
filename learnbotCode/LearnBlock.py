@@ -1,9 +1,7 @@
 from Scene import *
 from VisualFuntion import *
 from View import *
-import gui,sys
-import os
-import cv2
+import gui,sys,os,cv2
 from parserConfigBlock import *
 
 def loadfile(file):
@@ -12,26 +10,33 @@ def loadfile(file):
     fh.close()
     return code
 
+
 class MyButtom(QtGui.QPushButton):
     def __init__(self,text,view,scene,imgFile,connections, vars, blockType,table,row):
+        self.__text=text
+        self.tmpFile = "tmp/"+text+str(row)+".png"
         QtGui.QPushButton.__init__(self)
-        im = cv2.imread(imgFile)
+        im = cv2.imread(imgFile,cv2.IMREAD_UNCHANGED)
         table.setRowHeight(row-1,im.shape[0])
-        self.setIcon(QtGui.QIcon(imgFile))
+        img = generateBlock2(im,34,text,blockType,connections)
+        cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
+        self.setIcon(QtGui.QIcon(self.tmpFile))
         self.setIconSize(QtCore.QSize(100,100))
         self.setFixedSize(QtCore.QSize(150, im.shape[0]))
         self.clicked.connect(self.clickedButton)
-        self.view = view
-        self.scene = scene
-        self.file = imgFile
-        self.connections = connections
-        self.vars = vars
-        self.blockType = blockType
+        self.__view = view
+        self.__scene = scene
+        self.__file = imgFile
+        self.__connections = connections
+        self.__vars = vars
+        self.__blockType = blockType
+    def removeTmpFile(self):
+        os.remove(self.tmpFile)
     def clickedButton(self):
-        item = BlockItem(0, 0, self.text(),self.file, self.vars, self.view, self.scene,None,self.blockType)
-        for point, type in self.connections:
+        item = BlockItem(0, 0, self.__text, self.__file, self.__vars, self.__view, self.__scene, None, self.__blockType)
+        for point, type in self.__connections:
             item.addConnection(point, type)
-        self.scene.addItem(item)
+        self.__scene.addItem(item)
 
 class LearnBlock:
     def __init__(self):
@@ -56,7 +61,7 @@ class LearnBlock:
         #READ FUNTIONS
         functions = parserConfigBlock("config")
 
-        listTmpFiles = []
+        listButtons = []
         try:
             os.mkdir("tmp")
         except:
@@ -64,11 +69,6 @@ class LearnBlock:
         i = 0
         for f in functions:
             for img in f[1]["img"]:
-                block = cv2.imread(img, cv2.IMREAD_UNCHANGED)
-                fileTmpImg = "tmp/" + f[1]["name"][0] + str(i) +".png"
-                listTmpFiles.append(fileTmpImg)
-                cv2.putText(block, f[1]["name"][0], (10, 23), cv2.FONT_HERSHEY_TRIPLEX, 0.5, (0, 0, 0, 255), 1)
-                cv2.imwrite(fileTmpImg, block, (cv2.IMWRITE_PNG_COMPRESSION, 9))
                 fh = open(img.replace(".png",""), "r")
                 text = fh.readlines()
                 fh.close()
@@ -100,38 +100,40 @@ class LearnBlock:
                     blockType = COMPLEXBLOCK
 
                 tableControl.insertRow(tableControl.rowCount())
-                button = MyButtom(f[1]["name"][0], self.view, self.scene, fileTmpImg, connections, variable, blockType,tableControl,tableControl.rowCount())
+                button = MyButtom(f[1]["name"][0], self.view, self.scene, img, connections, variable, blockType,tableControl,tableControl.rowCount())
+                listButtons.append(button)
                 tableControl.setCellWidget(i, 0, button)
                 i+=1
 
-            #[(QtCore.QPointF(75, 33), BOTTOM), (QtCore.QPointF(75, 5), TOP)]
-            """
-            button = MyButtom(f,self.view,self.scene,"tmp/" + f + ".png",[(QtCore.QPointF(5, 15), LEFT),(QtCore.QPointF(94, 15), RIGHT)],1)
-            tableControl.setCellWidget(i,0,button)
-            img = block.copy()
-            cv2.putText(img, f, (10, 23), cv2.FONT_HERSHEY_TRIPLEX, 0.5, (0, 0, 0, 255), 1)
-            cv2.imwrite("tmp/" + f + ".png", img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
-            """
-
-        tableControl.insertRow(tableControl.rowCount())
-        button = MyButtom("Init_Program", self.view, self.scene, "initProgram.png",[(QtCore.QPointF(75, 33), BOTTOM)],None,SIMPLEBLOCK,tableControl,tableControl.rowCount())
-        tableControl.setCellWidget(i, 0, button)
-
         self.timer = QtCore.QTimer()
-        # QtCore.QTimer.connect(self.timer, QtCore.SIGNAL("timeout()"), self.scene.update())
         self.timer.start(1000)
 
         r = app.exec_()
 
-        for f in listTmpFiles:
-            os.remove(f)
+        for b in listButtons:
+            b.removeTmpFile()
         os.rmdir("tmp")
         sys.exit(r)
 
-
     def printProgram(self):
-        listPrograms = self.scene.getListInstructions()
-        for listInst in listPrograms:
-            for inst in listInst:
-                self.ui.plainTextEdit_2.appendPlainText(inst + "(vars)")
-            self.ui.plainTextEdit_2.appendPlainText("\n\n")
+        inst = self.scene.getListInstructions()
+        self.ui.plainTextEdit_2.clear()
+        self.ui.plainTextEdit_2.appendPlainText(self.printInst(inst))
+
+    def printInst(self,inst,ntab=0):
+        text = inst[0]
+        if inst[1]["VARIABLES"] is not None:
+            text += "("
+            for var in inst[1]["VARIABLES"]:
+                text += var+","
+            text = text[0:-1]+")"
+
+        if inst[1]["RIGHT"] is not None:
+            text += " " + self.printInst(inst[1]["RIGHT"])
+        if inst[1]["BOTTOMIN"] is not None:
+            ntab+=1
+            text += "\n"+"\t"*ntab + self.printInst(inst[1]["BOTTOMIN"],ntab)
+        if inst[1]["BOTTOM"] is not None:
+            ntab-=1
+            text += "\n"+"\t"*ntab + self.printInst(inst[1]["BOTTOM"],ntab)
+        return text
