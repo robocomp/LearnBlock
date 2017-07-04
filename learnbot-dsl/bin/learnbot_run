@@ -1,0 +1,2 @@
+#!/bin/bash
+python ~/robocomp/components/learnbot/learnbot-dsl/$1.py
