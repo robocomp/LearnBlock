@@ -1,0 +1,3 @@
+#!/bin/bash
+cat  ~/robocomp/components/learnbot/learnbot-dsl/$(basename $1 .lb).py
+python ~/robocomp/components/learnbot/learnbot-dsl/translator.py $1 ~/robocomp/components/learnbot/learnbot-dsl/LearnBotClient.py
