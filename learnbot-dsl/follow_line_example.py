@@ -9,6 +9,7 @@ from functions import *
 global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
+
 while True:
 
 	centerLine = functions.get("center_black_line")(lbot)
@@ -19,13 +20,13 @@ while True:
 		functions.get("set_move")(lbot,[40, 0])
 		print "go ahead"
 	elif rightLine:
-		functions.get("set_move")(lbot,[40, 0.2])
+		functions.get("set_move")(lbot,[20, 0.2])
 		print "turn right"
 	elif leftLine:
-		functions.get("set_move")(lbot,[40, -0.2])
+		functions.get("set_move")(lbot,[20, -0.2])
 		print "turn left"
 	else:
 		functions.get("stop_bot")(lbot)
 		print "stop"
 
-	time.sleep(0.5) 
+	time.sleep(0.15) 
