@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'var.ui'
+# Form implementation generated from reading ui file 'guis/var.ui'
 #
-# Created: Sat Jul  1 15:54:41 2017
+# Created: Wed Jul 12 14:12:22 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!

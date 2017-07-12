@@ -1,9 +1,17 @@
 import os
 from subprocess import call
-if call(["pyside-uic","-o","gui.py","interface.ui"]) is 1:
+if call(["pyside-uic","-o","gui.py","guis/interface.ui"]) is 1:
     print "Error al generar gui.py"
     exit(-1)
-if call(["pyside-uic","-o","var.py","var.ui"]) is 1:
+if call(["pyside-uic","-o","var.py","guis/var.ui"]) is 1:
+    print "Error al generar var.py"
+    exit(-1)
+
+if call(["pyside-uic","-o","createBlock.py","guis/createBlock.ui"]) is 1:
+    print "Error al generar var.py"
+    exit(-1)
+
+if call(["pyside-uic","-o","addVar.py","guis/addVar.ui"]) is 1:
     print "Error al generar var.py"
     exit(-1)
 

@@ -42,6 +42,9 @@ class Client(Ice.Application):
 	def __init__(self, argv):
 	  	global ic
 
+		self.adv = 0
+		self.rot = 0
+
 		params = copy.deepcopy(sys.argv)
 		if len(params) > 1:
 			if not params[1].startswith('--Ice.Config='):
@@ -58,7 +61,6 @@ class Client(Ice.Application):
 			# Remote object connection for DifferentialRobot
 			try:
 				proxyString = ic.getProperties().getProperty('DifferentialRobotProxy')
-				print proxyString
 				try:
 					basePrx = ic.stringToProxy(proxyString)
 					self.differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)

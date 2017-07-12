@@ -1,6 +1,6 @@
 # Proxies for required interfaces
-DifferentialRobotProxy = differentialrobot:tcp -h odroid.local -p 10004
-UltrasoundProxy = ultrasound:tcp -h odroid.local -p 10104
+DifferentialRobotProxy = differentialrobot:tcp -h localhost -p 10004
+UltrasoundProxy = ultrasound:tcp -h localhost -p 10104
 
 
 

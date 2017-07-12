@@ -7,14 +7,12 @@ import time
 global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
+# To keep track of the speed of Learnbot
+lbot.adv, lbot.rot= 0,0
 
 #####################
 #	 CODE BEGINS	#
 #####################
-
-# To keep track of the speed of Learnbot
-lbot.adv, lbot.rot= 0,0
-	
 
 # MOVEMENTS
 
