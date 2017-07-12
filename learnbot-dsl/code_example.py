@@ -17,6 +17,13 @@ print usList
 
 print functions.get("obstacle_free")(lbot)
 
+centerLine = functions.get("center_black_line")(lbot)
+
+if centerLine:
+	print "go ahead"
+else:
+	print "turn"
+
 #while functions.get("get_distance")(lbot)["front"]>100:
 #	functions.get("set_move")(lbot, [50,0])
 	

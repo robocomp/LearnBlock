@@ -22,7 +22,7 @@
 			<laser id="laserBack" measures="7" min="30" max="1000" angle="0.5236" port="10107" />
 		</transform>					
 		
-		<transform id="rgbdTraslation" tx="0" ty="115" tz="75" rx="0.3">
+		<transform id="rgbdTraslation" tx="0" ty="115" tz="75" rx="1.0">
 			<rgbd id="rgbdLearnBot" focal="480" width="320" height="240" port="10097" noise="0.00" ifconfig="40000,10004" />
 		</transform>
 		

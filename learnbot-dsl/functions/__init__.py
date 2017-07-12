@@ -3,7 +3,8 @@ import inspect
 from importlib import import_module
 
 ignore = [
-    '__init__.py'
+    '__init__.py',
+    'visual_auxiliary.py'
 ]
 
 functions = {}
