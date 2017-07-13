@@ -1,0 +1,77 @@
+
+block{
+    type operador
+    name +
+    file None
+    img blocks/block3
+}
+
+block{
+    type operador
+    name -
+    file None
+    img blocks/block3
+}
+
+block{
+    type operador
+    name *
+    file None
+    img blocks/block3
+}
+
+block{
+    type operador
+    name /
+    file None
+    img blocks/block3
+}
+
+block{
+    type operador
+    name =
+    file None
+    img blocks/block3
+}
+
+block{
+    type operador
+    name True
+    file None
+    img blocks/block4
+}
+
+block{
+    type operador
+    name False
+    file None
+    img blocks/block4
+}
+
+block{
+    type operador
+    name <
+    file None
+    img blocks/block3
+}
+
+block{
+    type operador
+    name >
+    file None
+    img blocks/block3
+}
+
+block{
+    type operador
+    name AND
+    file None
+    img blocks/block3
+}
+
+block{
+    type operador
+    name OR
+    file None
+    img blocks/block3
+}

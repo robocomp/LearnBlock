@@ -1,0 +1,117 @@
+
+block{
+    type perceptual
+    name back_obstacle
+    file learnbot-dsl/funtions/perceptual/back_obstacle.py
+    variables{
+        float threshold 200
+    }
+    img blocks/block4, blocks/block3
+}
+
+
+block{
+    type perceptual
+    name center_black_line
+    file learnbot-dsl/funtions/perceptual/center_black_line.py
+    img blocks/block4, blocks/block3
+}
+
+
+block{
+    type perceptual
+    name center_red_line
+    file learnbot-dsl/funtions/perceptual/center_red_line.py
+    img blocks/block4, blocks/block3
+}
+
+
+block{
+    type perceptual
+    name front_obstacle
+    file learnbot-dsl/funtions/perceptual/front_obstacle.py
+    variables{
+        float threshold 200
+    }
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name get_distance
+    file learnbot-dsl/funtions/perceptual/get_distance.py
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name get_image
+    file learnbot-dsl/funtions/perceptual/get_image.py
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name left_black_line
+    file learnbot-dsl/funtions/perceptual/left_black_line.py
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name left_obstacle
+    file learnbot-dsl/funtions/perceptual/left_obstacle.py
+    variables{
+        float threshold 200
+    }
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name left_red_line
+    file learnbot-dsl/funtions/perceptual/left_red_line.py
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name line_crossing
+    file learnbot-dsl/funtions/perceptual/line_crossing.py
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name obstacle_free
+    file learnbot-dsl/funtions/perceptual/obstacle_free.py
+    variables{
+        float threshold 200
+    }
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name right_black_line
+    file learnbot-dsl/funtions/perceptual/right_black_line.py
+    img blocks/block4, blocks/block3
+}
+
+block{
+    type perceptual
+    name right_obstacle
+    file learnbot-dsl/funtions/perceptual/right_obstacle.py
+    variables{
+        float threshold 200
+    }
+    img blocks/block4, blocks/block3
+}
+
+
+block{
+    type perceptual
+    name right_red_line
+    file learnbot-dsl/funtions/perceptual/right_red_line.py
+    img blocks/block4, blocks/block3
+}
