@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot-dsl/learnbotCode/guis/interface.ui'
 #
-# Created: Thu Jul 13 10:19:41 2017
+# Created: Thu Jul 13 10:38:52 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,6 +26,7 @@ class Ui_MainWindow(object):
         self.Tabwi.setTabShape(QtGui.QTabWidget.Rounded)
         self.Tabwi.setObjectName("Tabwi")
         self.program_text = QtGui.QWidget()
+        self.program_text.setEnabled(False)
         self.program_text.setObjectName("program_text")
         self.horizontalLayout = QtGui.QHBoxLayout(self.program_text)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -130,6 +131,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.addWidget(self.tableOperadores)
         self.tabWidget_2.addTab(self.vars, "")
         self.tab = QtGui.QWidget()
+        self.tab.setEnabled(False)
         self.tab.setObjectName("tab")
         self.verticalLayout = QtGui.QVBoxLayout(self.tab)
         self.verticalLayout.setObjectName("verticalLayout")

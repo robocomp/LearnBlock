@@ -38,6 +38,9 @@
        <number>1</number>
       </property>
       <widget class="QWidget" name="program_text">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <attribute name="title">
         <string>Text Code</string>
        </attribute>
@@ -205,6 +208,9 @@
             </layout>
            </widget>
            <widget class="QWidget" name="tab">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <attribute name="title">
              <string>Variables</string>
             </attribute>
