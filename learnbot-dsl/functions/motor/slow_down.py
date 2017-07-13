@@ -12,5 +12,4 @@ def slow_down(lbot, decAdv=-0.2, decRot=-0.001):
 	if sR!=numpy.sign(lbot.rot):
 		lbot.rot=0
 	
-	print("adv, rot", lbot.adv, lbot.rot)	
 	lbot.setRobotSpeed(lbot.adv, lbot.rot)
