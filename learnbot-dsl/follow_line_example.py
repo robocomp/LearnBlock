@@ -26,7 +26,7 @@ while True:
 		functions.get("set_move")(lbot,[20, -0.1])
 		print "turn left"
 	else:
-		functions.get("stop_bot")(lbot)
-		print "stop"
+		functions.get("slow_down")(lbot)
+		print "slow_down"
 
 	time.sleep(0.15) 

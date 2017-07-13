@@ -205,8 +205,11 @@ class Client(Ice.Application, threading.Thread):
 	def getSonars(self):
 		return self.usList
 	 	     
-	def setRobotSpeed(self, vAdvance, vRotation):
-		self.differentialrobot_proxy.setSpeedBase(vAdvance,vRotation)	 
+	def setRobotSpeed(self, vAdvance=0, vRotation=0):
+		if vAdvance!=0 or vRotation!=0:
+			self.adv = vAdvance
+			self.rot = vRotation
+		self.differentialrobot_proxy.setSpeedBase(self.adv,self.rot)	 
 				
 	def getImage(self):
 		
