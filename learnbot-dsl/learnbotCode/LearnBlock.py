@@ -256,16 +256,17 @@ lbot = LearnBotClient.Client(sys.argv)
             fh.close()
             while True:
                 try:
-                    execfile("../main_tmp.py",{"":"../config"})
+                    execfile("main_tmp.py",{"":"config"})
                     break
                 except Exception as e:
+                    print e
                     msgBox = QtGui.QMessageBox()
                     msgBox.setText("Error to the execute program.")
                     msgBox.setInformativeText(e.message)
                     msgBox.setStandardButtons(QtGui.QMessageBox.Retry | QtGui.QMessageBox.Ok)
                     msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                     ret = msgBox.exec_()
-                    if ret == QtGui.QMessageBox.Ok:
+                    if ret is not  QtGui.QMessageBox.Retry:
                         break
 
     def toLBotPy(self,inst,ntab=1):

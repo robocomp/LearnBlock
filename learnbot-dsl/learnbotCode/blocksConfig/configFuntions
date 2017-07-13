@@ -6,7 +6,7 @@ block{
     variables{
         float duration 0
     }
-    img blocks/block1
+    img block1
 }
 
 block{
@@ -16,7 +16,7 @@ block{
     variables{
         float duration 0
     }
-    img blocks/block1
+    img block1
 }
 
 block{
@@ -26,7 +26,7 @@ block{
     variables{
         float duration 0
     }
-    img blocks/block1
+    img block1
 }
 
 block{
@@ -37,14 +37,14 @@ block{
         float avance  0
         float rotacion 0
     }
-    img blocks/block1
+    img block1
 }
 
 block{
     type motor
     name stop_bot
     file learnbot-dsl/funtions/motor/stop_bot.py
-    img blocks/block1
+    img block1
 }
 
 block{
@@ -54,28 +54,28 @@ block{
     variables{
         int angle 0
     }
-    img blocks/block1
+    img block1
 }
 
 block{
     type motor
     name turn_back
     file learnbot-dsl/funtions/motor/turn_back.py
-    img blocks/block1
+    img block1
 }
 
 block{
     type motor
     name turn_left
     file learnbot-dsl/funtions/motor/turn_left.py
-    img blocks/block1
+    img block1
 }
 
 block{
     type motor
     name turn_right
     file learnbot-dsl/funtions/motor/turn_right.py
-    img blocks/block1
+    img block1
 }
 
 

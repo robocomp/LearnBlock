@@ -2,6 +2,7 @@ from PySide import QtCore, QtGui
 from VisualFuntion import *
 from math import *
 import sys
+from blocksConfig import pathImgBlocks
 
 
 class MyScene(QtGui.QGraphicsScene):
@@ -16,10 +17,10 @@ class MyScene(QtGui.QGraphicsScene):
         self.timer.start(5)
         self.table = None
         self.posibleConnect = []
-        self.imgPosibleConnectH = QtGui.QGraphicsPixmapItem("blocks/ConnectH.png")
+        self.imgPosibleConnectH = QtGui.QGraphicsPixmapItem(pathImgBlocks+"/ConnectH.png")
         super(MyScene, self).addItem(self.imgPosibleConnectH)
         self.imgPosibleConnectH.setVisible(False)
-        self.imgPosibleConnectV = QtGui.QGraphicsPixmapItem("blocks/ConnectV.png")
+        self.imgPosibleConnectV = QtGui.QGraphicsPixmapItem(pathImgBlocks+"/ConnectV.png")
         super(MyScene, self).addItem(self.imgPosibleConnectV)
         self.imgPosibleConnectV.setVisible(False)
         self.dicBlockItem = {}

@@ -3,6 +3,6 @@ block{
     type proprioceptive
     name get_move
     file learnbot-dsl/funtions/perceptual/get_move.py
-    img blocks/block4, blocks/block3
+    img block4, block3
 }
 
