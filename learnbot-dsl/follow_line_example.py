@@ -12,22 +12,18 @@ lbot = LearnBotClient.Client(sys.argv)
 
 while True:
 
-	centerLine = functions.get("center_red_line")(lbot)
-	leftLine = functions.get("left_red_line")(lbot)
-	rightLine = functions.get("right_red_line")(lbot)
-
 	if functions.get("line_crossing")(lbot):
 		print "LINE CROSSING!!!"
 
 
-	if centerLine:
+	if functions.get("center_red_line")(lbot):
 		functions.get("set_move")(lbot,[40, 0])
 		print "go ahead"
-	elif rightLine:
-		functions.get("set_move")(lbot,[20, 0.2])
+	elif functions.get("right_red_line")(lbot):
+		functions.get("set_move")(lbot,[20, 0.1])
 		print "turn right"
-	elif leftLine:
-		functions.get("set_move")(lbot,[20, -0.2])
+	elif functions.get("left_red_line")(lbot):
+		functions.get("set_move")(lbot,[20, -0.1])
 		print "turn left"
 	else:
 		functions.get("stop_bot")(lbot)
