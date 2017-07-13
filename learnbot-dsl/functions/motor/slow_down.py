@@ -8,7 +8,7 @@ def slow_down(lbot, decAdv=-0.1, decRot=-0.01):
 		lbot.adv=0
 
 	sR = numpy.sign(lbot.rot)
-	lbot.rot = lbot.rot + decRot
+	lbot.rot = lbot.rot + decRot*sR
 	if sR!=numpy.sign(lbot.rot):
 		lbot.rot=0
 		
