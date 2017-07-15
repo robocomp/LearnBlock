@@ -17,16 +17,15 @@ while True:
 
 
 	if functions.get("center_red_line")(lbot):
-		functions.get("set_move")(lbot,[60, 0])
+		functions.get("set_move")(lbot,[40, 0])
 		print "go ahead"
 	elif functions.get("right_red_line")(lbot):
-		functions.get("set_move")(lbot,[30, 0.2])
+		functions.get("set_move")(lbot,[20, 0.2])
 		print "turn right"
 	elif functions.get("left_red_line")(lbot):
-		functions.get("set_move")(lbot,[30, -0.2])
+		functions.get("set_move")(lbot,[20, -0.2])
 		print "turn left"
 	else:
 		functions.get("slow_down")(lbot)
 		print "slow_down"
 
-	time.sleep(0.15) 
