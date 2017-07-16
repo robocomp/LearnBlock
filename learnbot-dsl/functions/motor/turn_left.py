@@ -7,4 +7,5 @@ def turn_left(lbot, duration=0, rotSpeed=-0.2, verbose=False):
 		print('~ Learnbot turning left ...')
 	if duration != 0:
 		time.sleep(duration)
+		lbot.setRobotSpeed(0, 0)
 
