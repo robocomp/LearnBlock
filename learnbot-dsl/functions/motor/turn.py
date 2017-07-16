@@ -2,6 +2,7 @@ from __future__ import print_function
 import time, math
 
 def turn(lbot, angle=0, verbose=False):
+	angle= angle%360
 	lbot.setRobotSpeed(lbot.adv, math.radians(angle))
 	time.sleep(1)
 	if verbose:
