@@ -43,6 +43,7 @@ class Client(Ice.Application, threading.Thread):
 
 		self.adv = 0
 		self.rot = 0
+		self.max_rot= 0.4
 		self.image = np.zeros((240,320,3), np.uint8)
 		self.usList = {'front':1000, 'right':1000, 'left':1000, 'back':1000}
 

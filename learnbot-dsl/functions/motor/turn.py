@@ -6,3 +6,4 @@ def turn(lbot, angle=0, verbose=False):
 	time.sleep(1)
 	if verbose:
 		print('~ Learnbot has turned by ' + str(angle) + ' degrees')
+	lbot.rot= 0

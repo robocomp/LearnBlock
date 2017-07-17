@@ -1,6 +1,6 @@
 <innerModel>
 	
-	<transform id="caja1" tx="0" tz="1000" ty="0" >
+	<transform id="caja1" tx="0" tz="600" ty="0" >
 			<plane id="cajaMesh1" nx="1" size="500,500,500"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
 	</transform>
 	

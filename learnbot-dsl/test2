@@ -39,14 +39,27 @@ repeat 10 times
 move_left 2
 end
 
-# Alt. for loop
+
 y1= get_image
 y2=get_distance
 y3= get_move
 
+# Alt. for loop
 repeat i from 1 to 5
 print 5*i
 set_move 5*i 0	
+end
+
+# While loop
+a=5
+while a>0
+print a
+a=a-1
+end
+
+# Temporal Loop
+repeat 1 seconds
+print 5
 end
 
 stop_bot
