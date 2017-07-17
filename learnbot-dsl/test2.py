@@ -1,7 +1,7 @@
 """
 This is automatically generated python script
 Author: aniq55 (C) 2017, for RoboComp Learnbot
-Generated on: Mon Jul 17 09:10:35 2017
+Generated on: Mon Jul 17 10:52:28 2017
 """
 
 import sys
@@ -29,7 +29,7 @@ else:
 # Mathematical operations
 gamma = alpha*beta - (alpha+beta)
 # Simple loop
-for var_35850756 in range(10):
+for var_48973463 in range(10):
 	functions.get("move_left")(lbot, 2)
 y1=functions.get("get_image")(lbot)
 y2=functions.get("get_distance")(lbot)
@@ -44,8 +44,8 @@ while a>0:
 	print(a)
 	a=a-1
 # Temporal Loop
-var_35850822= time.time()
-while int(time.time() - var_35850822) <1:
+var_48974402= time.time()
+while int(time.time() - var_48974402) <1:
 	print(5)
 functions.get("stop_bot")(lbot)
 # Taking user input and deciding datatype
