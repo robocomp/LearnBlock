@@ -39,6 +39,7 @@ Relationship of files:
 | Name of component              |  Units   |  Seller     |  Link                  |
 |--------------------------------|----------|-------------|------------------------|
 | Odroid C1+                     |  1       | Hardkernel  |http://www.hardkernel.com/main/products/prdt_info.php?g_code=G143703355573 |
+| Raspberry pi3 Model b                     |  1       | Bricogeek  |http://tienda.bricogeek.com/placas-raspberry-pi/811-raspberry-pi-3.html |
 | Dual motor driver              |  1       | Pololu      | https://www.pololu.com/product/2753/specs |
 | Laser              |  7       | TME     | http://www.tme.eu/en/details/pololu-2490/sensor-modules/pololu/vl53l0x-time-of-flight-distance-sensor/       |
 | Battery                        |  1       | Hobbyking      | https://hobbyking.com/en_us/zippy-5000mah-2s1p-20c-hardcase-pack-1.html        |
@@ -51,6 +52,7 @@ Relationship of files:
 | Servomotor                    |  1       | Bricogeek      | http://tienda.bricogeek.com/servomotores/968-micro-servo-miniatura-sg90.html       |
 | USB female                    |  1       | Amazon      | https://www.amazon.es/SODIAL-zocalo-conector-enchufe-Reparacion/dp/B00NG8CIFS/ref=sr_1_1?ie=UTF8&qid=1499080889&sr=8-1&keywords=conector+usb+hembra       |
 
+You can choose raspberry or odroid to do your Learnbot
 
 
 ### Learnbot1.0 files
