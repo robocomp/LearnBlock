@@ -113,7 +113,7 @@ while line_number < total_lines:
 	elif line.strip() == 'end':
 		inblock-=1
 
-	# Loop
+	
 	elif words[0] == 'repeat' and 'times' in line:	#Loop Type 1
 		indentor()
 		x = 'for var_'+ str(int(1000000*time.time()))[-8:]  +' in range('+words[1]+'):'
@@ -128,13 +128,32 @@ while line_number < total_lines:
 		target.write('\n')
 		inblock+=1
 
+	elif words[0] == 'repeat' and words[2].rstrip('\n') == 'seconds':	#Loop Type 3
+		indentor()
+		var_name= 'var_'+ str(int(1000000*time.time()))[-8:]
+		y= var_name +'= time.time()\n'
+		target.write(y)
+		y= 'while int(time.time() - '+ var_name +') <'+ str(int(words[1]))+':\n'
+		target.write(y)
+		inblock+=1
+
+	elif words[0] == 'while':						#Loop Type 4
+		indentor()
+		x= line.strip()+':'
+		target.write(x)
+		target.write('\n')
+		inblock+=1
+
+
+
+
 	elif line.strip() == '```':
 		line_number +=1
 		line_number=ignore(line_number)
 
 	else:
 		if n==1:
-			if words[0] in ['move_straight', 'move_left', 'move_right', 'get_move', 'stop_bot', 'turn_left', 'turn_right', 'turn_back','front_obstacle','back_obstacle','left_obstacle','right_obstacle']:
+			if words[0].strip('\n') in ['move_straight', 'move_left', 'move_right', 'get_move', 'stop_bot', 'turn_left', 'turn_right', 'turn_back','front_obstacle','back_obstacle','left_obstacle','right_obstacle']:
 				x= 'functions.get("'+words[0].strip()+'")(lbot)'
 				indentor()
 				target.write(x)	
