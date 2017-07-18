@@ -144,8 +144,9 @@ while line_number < total_lines:
 		target.write('\n')
 		inblock+=1
 
-
-
+	elif line.strip() == 'exitloop':
+		indentor()
+		target.write('break\n')
 
 	elif line.strip() == '```':
 		line_number +=1
