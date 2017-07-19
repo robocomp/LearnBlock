@@ -205,6 +205,13 @@ class Client(Ice.Application, threading.Thread):
 
 	def getSonars(self):
 		return self.usList
+
+	def getImage(self):
+		return self.image
+
+	def getPose(self):
+		x, y, alpha = self.differentialrobot_proxy.getBasePose()	 
+		return x, y, alpha
 	 	     
 	def setRobotSpeed(self, vAdvance=0, vRotation=0):
 		if vAdvance!=0 or vRotation!=0:
@@ -212,9 +219,6 @@ class Client(Ice.Application, threading.Thread):
 			self.rot = vRotation
 		self.differentialrobot_proxy.setSpeedBase(self.adv,self.rot)	 
 				
-	def getImage(self):
-		
-		return self.image
 
 	def __del__(self):
         	self.active = False
