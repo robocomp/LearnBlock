@@ -38,13 +38,13 @@ Ice.loadSlice(preStr+"Ultrasound.ice")
 from RoboCompUltrasound import *
 Ice.loadSlice(preStr+"DifferentialRobot.ice")
 from RoboCompDifferentialRobot import *
-Ice.loadSlice(preStr+"Servo.ice")
-from RoboCompServo import *
+Ice.loadSlice(preStr+"JointMotor.ice")
+from RoboCompJointMotor import *
 
 
 from ultrasoundI import *
 from differentialrobotI import *
-from servoI import *
+from jointmotorI import *
 
 
 try:
@@ -189,9 +189,53 @@ class SpecificWorker(GenericWorker):
 
 
 	#
-	# setAngleServo
+	# getAllMotorParams
 	#
-	def setAngleServo(self, angle):
+	def getAllMotorParams(self):
+		ret = MotorParamsList()
+		#
+		# YOUR CODE HERE
+		#
+		return ret
+
+
+	#
+	# getAllMotorState
+	#
+	def getAllMotorState(self):
+		#
+		# YOUR CODE HERE
+		#
+		mstateMap = MotorStateMap()
+		return mstateMap
+
+
+	#
+	# getMotorParams
+	#
+	def getMotorParams(self, motor):
+		ret = MotorParams()
+		#
+		# YOUR CODE HERE
+		#
+		return ret
+
+
+	#
+	# getMotorState
+	#
+	def getMotorState(self, motor):
+		ret = MotorState()
+		#
+		# YOUR CODE HERE
+		#
+		return ret
+
+
+	#
+	# setSyncVelocity
+	#
+	def setSyncVelocity(self, listGoals):
 		#
 		# YOUR CODE HERE
 		#
@@ -199,12 +243,72 @@ class SpecificWorker(GenericWorker):
 
 
 	#
-	# getAngleServo
+	# setZeroPos
 	#
-	def getAngleServo(self):
-		ret = float()
+	def setZeroPos(self, name):
+		#
+		# YOUR CODE HERE
+		#
+		pass
+
+
+	#
+	# getBusParams
+	#
+	def getBusParams(self):
+		ret = BusParams()
 		#
 		# YOUR CODE HERE
 		#
 		return ret
 
+
+	#
+	# setSyncZeroPos
+	#
+	def setSyncZeroPos(self):
+		#
+		# YOUR CODE HERE
+		#
+		pass
+
+
+	#
+	# setSyncPosition
+	#
+	def setSyncPosition(self, listGoals):
+		#
+		# YOUR CODE HERE
+		#
+		pass
+
+
+	#
+	# getMotorStateMap
+	#
+	def getMotorStateMap(self, mList):
+		ret = MotorStateMap()
+		#
+		# YOUR CODE HERE
+		#
+		return ret
+
+
+	#
+	# setPosition
+	#
+	def setPosition(self, goal):
+		#
+		# YOUR CODE HERE
+		#
+		pass
+
+
+	#
+	# setVelocity
+	#
+	def setVelocity(self, goal):
+		#
+		# YOUR CODE HERE
+		#
+		pass
