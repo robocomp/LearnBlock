@@ -38,10 +38,13 @@ Ice.loadSlice(preStr+"Ultrasound.ice")
 from RoboCompUltrasound import *
 Ice.loadSlice(preStr+"DifferentialRobot.ice")
 from RoboCompDifferentialRobot import *
+Ice.loadSlice(preStr+"Servo.ice")
+from RoboCompServo import *
 
 
 from ultrasoundI import *
 from differentialrobotI import *
+from servoI import *
 
 
 try:
@@ -185,4 +188,23 @@ class SpecificWorker(GenericWorker):
 				file_duty.write(str(abs(speed)))
 
 
+	#
+	# setAngleServo
+	#
+	def setAngleServo(self, angle):
+		#
+		# YOUR CODE HERE
+		#
+		pass
+
+
+	#
+	# getAngleServo
+	#
+	def getAngleServo(self):
+		ret = float()
+		#
+		# YOUR CODE HERE
+		#
+		return ret
 

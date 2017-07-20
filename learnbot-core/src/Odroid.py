@@ -83,6 +83,8 @@ Ice.loadSlice(preStr+"Ultrasound.ice")
 import RoboCompUltrasound
 Ice.loadSlice(preStr+"DifferentialRobot.ice")
 import RoboCompDifferentialRobot
+Ice.loadSlice(preStr+"Servo.ice")
+import RoboCompServo
 
 
 class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
@@ -135,6 +137,11 @@ if __name__ == '__main__':
 
 		adapter = ic.createObjectAdapter('DifferentialRobot')
 		adapter.add(DifferentialRobotI(worker), ic.stringToIdentity('differentialrobot'))
+		adapter.activate()
+
+
+		adapter = ic.createObjectAdapter('Servo')
+		adapter.add(ServoI(worker), ic.stringToIdentity('servo'))
 		adapter.activate()
 
 
