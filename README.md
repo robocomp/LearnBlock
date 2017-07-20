@@ -4,7 +4,8 @@ LearnBot is a social low cost robot that has been designed in to  the  area  of 
 
 
 # Use the robot!
-1. [Install Robocomp framework in your computer.](https://github.com/robocomp/robocomp)
+1. [Get hardware](https://github.com/robocomp/learnbot/tree/master/learnbot-desings)
+2. [Install Robocomp framework in your computer.](https://github.com/robocomp/robocomp)
 2. Enjoy!
 
 # Citting
