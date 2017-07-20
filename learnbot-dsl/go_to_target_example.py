@@ -10,7 +10,7 @@ global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
 targetX = 0
-targetY = 1800
+targetY = 0
 
 while not functions.get("near_to_target")(lbot, targetX, targetY):
 
@@ -18,8 +18,8 @@ while not functions.get("near_to_target")(lbot, targetX, targetY):
 
 	if not functions.get("obstacle_free")(lbot, 400):
 
-		if functions.get("front_obstacle")(lbot, 400):
-			if functions.get("left_obstacle")(lbot, 400):
+		if functions.get("front_obstacle")(lbot):
+			if functions.get("left_obstacle")(lbot):
 				functions.get("turn_right")(lbot)
 				print "avoiding: turning right"
 			else:
