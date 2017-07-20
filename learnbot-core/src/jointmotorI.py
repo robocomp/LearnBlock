@@ -32,17 +32,37 @@ if len(ROBOCOMP)<1:
 
 preStr = "-I"+ROBOCOMP+"/interfaces/ --all "+ROBOCOMP+"/interfaces/"
 
-Ice.loadSlice(preStr+"Servo.ice")
-from RoboCompServo import *
+Ice.loadSlice(preStr+"JointMotor.ice")
+from RoboCompJointMotor import *
 
-class ServoI(Servo):
+class JointMotorI(JointMotor):
 	def __init__(self, worker):
 		self.worker = worker
 
-	def setAngleServo(self, angle, c):
-		return self.worker.setAngleServo(angle)
-	def getAngleServo(self, c):
-		return self.worker.getAngleServo()
+	def getAllMotorParams(self, c):
+		return self.worker.getAllMotorParams()
+	def getAllMotorState(self, c):
+		return self.worker.getAllMotorState()
+	def getMotorParams(self, motor, c):
+		return self.worker.getMotorParams(motor)
+	def getMotorState(self, motor, c):
+		return self.worker.getMotorState(motor)
+	def setSyncVelocity(self, listGoals, c):
+		return self.worker.setSyncVelocity(listGoals)
+	def setZeroPos(self, name, c):
+		return self.worker.setZeroPos(name)
+	def getBusParams(self, c):
+		return self.worker.getBusParams()
+	def setSyncZeroPos(self, c):
+		return self.worker.setSyncZeroPos()
+	def setSyncPosition(self, listGoals, c):
+		return self.worker.setSyncPosition(listGoals)
+	def getMotorStateMap(self, mList, c):
+		return self.worker.getMotorStateMap(mList)
+	def setPosition(self, goal, c):
+		return self.worker.setPosition(goal)
+	def setVelocity(self, goal, c):
+		return self.worker.setVelocity(goal)
 
 
 

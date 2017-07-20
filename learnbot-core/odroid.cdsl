@@ -1,12 +1,12 @@
 import "/robocomp/interfaces/IDSLs/Ultrasound.idsl";
 import "/robocomp/interfaces/IDSLs/DifferentialRobot.idsl";
-import "/robocomp/interfaces/IDSLs/Servo.idsl";
+import "/robocomp/interfaces/IDSLs/JointMotor.idsl";
 
 Component Odroid
 {
 	Communications
 	{
-		implements Ultrasound, DifferentialRobot, Servo;
+		implements Ultrasound, DifferentialRobot, JointMotor;
 	};
 	language python;
 };
