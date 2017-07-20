@@ -10,7 +10,7 @@ global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
 targetX = 0
-targetY = 0
+targetY = 1800
 
 while not functions.get("near_to_target")(lbot, targetX, targetY):
 
