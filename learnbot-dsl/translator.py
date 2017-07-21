@@ -38,7 +38,7 @@ target.write('lbot = LearnBotClient.Client(sys.argv)\n')
 
 target.write('lbot.adv, lbot.rot= 0,0\n')
 
-
+from functions import *
 
 
 # Functions
@@ -152,30 +152,27 @@ while line_number < total_lines:
 		line_number +=1
 		line_number=ignore(line_number)
 
+	elif functions.has_key(words[0].strip()):
+		params= []
+		t=1
+		while t<n:
+			params.append(words[t].strip().strip('\n'))
+			t=t+1
+
+		l= len(params)
+		t=0
+		p_string=''
+		while t<l:
+			p_string= p_string + ','+params[t]
+			t=t+1
+
+		x= 'functions.get("'+words[0].strip()+'")(lbot'+ p_string+ ')'
+		indentor()
+		target.write(x)	
+		target.write('\n')
 	else:
-		if n==1:
-			if words[0].strip('\n') in ['move_straight', 'move_left', 'move_right', 'get_move', 'stop_bot', 'turn_left', 'turn_right', 'turn_back','front_obstacle','back_obstacle','left_obstacle','right_obstacle']:
-				x= 'functions.get("'+words[0].strip()+'")(lbot)'
-				indentor()
-				target.write(x)	
-				target.write('\n')
-		elif n==2:
-			if words[0] in ['move_straight', 'move_left', 'move_right','front_obstacle','back_obstacle','left_obstacle','right_obstacle']:
-				x= 'functions.get("'+words[0].strip()+'")(lbot, '+  words[1].strip() +')'
-				indentor()
-				target.write(x)
-				target.write('\n')
-			elif words[0] == 'delay':
-				indentor()
-				x= 'time.sleep('+words[1].strip()+')'
-				target.write(x)
-				target.write('\n')
-		elif n==3:
-			if words[0] == 'set_move':
-				indentor()
-				x='functions.get("set_move")(lbot, ['+words[1].strip()+','+words[2].strip()+'])'
-				target.write(x)
-				target.write('\n')
+		pass
+
 
 	line_number += 1
 
