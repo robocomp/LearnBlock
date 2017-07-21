@@ -2,22 +2,22 @@
 	<differentialrobot id="base" port="10004">
 		<mesh id="baseLearnBot" file="/home/robocomp/robocomp/components/learnbot/learnbot-desings/Learnbot1.0/STL/currentVersion/Ensamblaje.stl"  tx="-58.5" ty="68" tz="-22.5" scale="9.755" />
 		
-		<transform id="laserPoseFront" tx="0" ty="68" tz="75" >
+		<transform id="laserPoseFront" tx="0" ty="68" tz="95" >
 <!--			<plane id="deF" px="0" py="0" pz="0" nz="1" size="15,15,15"/>-->
 			<laser id="laserFront" measures="7" min="30" max="1000" angle="0.5236" port="10104" />
 		</transform>
 		
-		<transform id="laserPoseLeft" tx="-75" ty="68" tz="0" ry="-1.56">
+		<transform id="laserPoseLeft" tx="-95" ty="68" tz="0" ry="-1.56">
 <!--			<plane id="deL" px="0" py="0" pz="0" nz="1" size="15,15,15"/>-->
 			<laser id="laserLeft" measures="7" min="30" max="1000" angle="0.5236" port="10105" />
 		</transform>
 		
-		<transform id="laserPoseRight" tx="75" ty="68" tz="0" ry="1.56">
+		<transform id="laserPoseRight" tx="95" ty="68" tz="0" ry="1.56">
 <!--			<plane id="deR" px="0" py="0" pz="0" nz="1" size="15,15,15"/>-->
 			<laser id="laserRight" measures="7" min="30" max="1000" angle="0.5236" port="10106" />
 		</transform>
 		
-		<transform id="laserPoseBack" tx="0" ty="68" tz="-75" ry="3.1416">
+		<transform id="laserPoseBack" tx="0" ty="68" tz="-95" ry="3.1416">
 <!--			<plane id="deB" px="0" py="0" pz="0" nz="1" size="15,15,15"/>-->
 			<laser id="laserBack" measures="7" min="30" max="1000" angle="0.5236" port="10107" />
 		</transform>					

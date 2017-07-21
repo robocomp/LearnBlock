@@ -1,6 +1,5 @@
 from __future__ import print_function
-from functions import *
-
+import time
 
 def move_left(lbot, params, verbose=False):
 	def_params=[0,20,-0.2]
@@ -14,4 +13,5 @@ def move_left(lbot, params, verbose=False):
 	duration,advSpeed,rotSpeed= params
 	functions.get("move_straight")(lbot, [0, advSpeed], verbose)
 	functions.get("turn_left")(lbot, [duration, rotSpeed], verbose)
+
 
