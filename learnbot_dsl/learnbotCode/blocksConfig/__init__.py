@@ -5,12 +5,13 @@ path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 from blocks import pathBlocks
 
 from parserConfigBlock import *
-__all__ = ["configBlocks", "pathImgBlocks"]
+__all__ = ["configBlocks", "pathImgBlocks","pathConfig"]
+pathConfig = path
 
-functions = parserConfigBlock(path+"/configFuntions")
+functions = parserConfigBlock(path+"/configMotor")
 functions += parserConfigBlock(path+"/configControl")
 functions += parserConfigBlock(path+"/configPerceptual")
-functions += parserConfigBlock(path+"/configPropiopercetive")
+functions += parserConfigBlock(path+"/configPropriopercetive")
 functions += parserConfigBlock(path+"/configOperators")
 
 for f in functions:

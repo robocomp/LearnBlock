@@ -52,6 +52,12 @@
          <height>27</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string extracomment="Name of block"/>
+       </property>
+       <property name="placeholderText">
+        <string>Name Block</string>
+       </property>
       </widget>
      </item>
      <item>
@@ -105,51 +111,9 @@
              <height>27</height>
             </size>
            </property>
-           <item>
-            <property name="text">
-             <string>Block 1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Block 2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Block 3</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Block 4</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Block 5</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Block 6</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Block 7</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Block 8</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Block 9</string>
-            </property>
-           </item>
+           <property name="toolTip">
+            <string extracomment="You can select diferents blocks"/>
+           </property>
           </widget>
          </item>
          <item>
@@ -163,10 +127,16 @@
            <property name="text">
             <string>Add</string>
            </property>
+           <property name="autoDefault">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="pushButtonRemoveBlockImage">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="maximumSize">
             <size>
              <width>70</width>
@@ -175,6 +145,9 @@
            </property>
            <property name="text">
             <string>Remove</string>
+           </property>
+           <property name="autoDefault">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -238,70 +211,6 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="minimumSize">
-        <size>
-         <width>102</width>
-         <height>27</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>102</width>
-         <height>27</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>Funtion type:</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="comboBoxFuntionType">
-       <property name="maximumSize">
-        <size>
-         <width>110</width>
-         <height>27</height>
-        </size>
-       </property>
-       <item>
-        <property name="text">
-         <string>CONTROL</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>FUNTION</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>OPERATOR</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
-   </item>
-   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label_6">
@@ -356,6 +265,11 @@
        <item>
         <property name="text">
          <string>OPERATOR</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>VARIABLE</string>
         </property>
        </item>
       </widget>
@@ -413,12 +327,18 @@
          <height>27</height>
         </size>
        </property>
+       <property name="placeholderText">
+        <string>None</string>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonSelectFile">
        <property name="text">
         <string>Select File</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -498,19 +418,6 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButtonRemoveVar">
-             <property name="maximumSize">
-              <size>
-               <width>70</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="text">
-              <string>Remove</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="QPushButton" name="pushButtonAddVar">
              <property name="maximumSize">
               <size>
@@ -520,6 +427,28 @@
              </property>
              <property name="text">
               <string>Add</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonRemoveVar">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>70</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Remove</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -635,6 +564,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>pushButtonOK</tabstop>
+  <tabstop>lineEditName</tabstop>
+  <tabstop>comboBoxBlockImage</tabstop>
+  <tabstop>pushButtonAddBlockImage</tabstop>
+  <tabstop>pushButtonRemoveBlockImage</tabstop>
+  <tabstop>listWidgetBlockImage</tabstop>
+  <tabstop>comboBoxBlockType</tabstop>
+  <tabstop>lineEditFile</tabstop>
+  <tabstop>pushButtonSelectFile</tabstop>
+  <tabstop>pushButtonRemoveVar</tabstop>
+  <tabstop>tableWidgetVars</tabstop>
+  <tabstop>pushButtonCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

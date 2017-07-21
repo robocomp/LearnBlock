@@ -184,6 +184,16 @@ class MyScene(QtGui.QGraphicsScene):
         if isinstance(item, BlockItem):
             item.mousePressEvent(event)
 
+    def mouseDoubleClickEvent(self,event):
+        print "hola"
+        item = self.itemAt(event.scenePos())
+        if self.table is not None and item is not self.table:
+            self.table.close()
+            self.table = None
+        if isinstance(item, BlockItem):
+            print "entro"
+            item.mouseDoubleClickEvent(event)
+
     def mouseReleaseEvent(self, event):
         itemS = self.getItemSelected()
         self.idItemS = None

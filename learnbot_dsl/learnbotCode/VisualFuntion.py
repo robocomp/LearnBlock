@@ -345,6 +345,16 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
                 self.DialogVar.open()
                 self.scene.setTable(self.DialogVar)
 
+    def mouseDoubleClickEvent(self,event):
+        print 1
+        if event.button() is QtCore.Qt.MouseButton.LeftButton:
+            self.scene.setIdItemSelected(None)
+            if self.DialogVar is not None:
+                self.DialogVar.open()
+                self.scene.setTable(self.DialogVar)
+        if event.button() is QtCore.Qt.MouseButton.RightButton:
+            pass
+
     def mouseReleaseEvent(self,event):
         if event.button() is QtCore.Qt.MouseButton.LeftButton:
             self.posmouseinItem = None

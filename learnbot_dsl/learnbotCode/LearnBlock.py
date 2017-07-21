@@ -234,7 +234,6 @@ class LearnBlock:
                 print e
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("Error to the execute program.")
-                msgBox.setInformativeText(e.message)
                 msgBox.setStandardButtons(QtGui.QMessageBox.Retry | QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
