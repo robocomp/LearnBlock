@@ -3,7 +3,16 @@ import numpy
 import time
 
 
-def slow_down(lbot, duration=0.15, decAdv=-0.2, decRot=-0.001):
+def slow_down(lbot, params):
+	def_params=[0.15,-0.2,-0.001]
+	assert len(params)<=len(def_params),('bad params in slow_down [duration,decAdv,decRot]',len(params))
+	if len(params)<len(def_params):
+		t= len(params)
+		while t<len(def_params):
+			params.append(def_params[t])
+			t=t+1
+
+	duration,decAdv,decRot= params
 	lbot.adv = lbot.adv + decAdv
 	if lbot.adv<0:
 		lbot.adv=0
