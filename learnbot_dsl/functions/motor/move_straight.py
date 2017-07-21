@@ -1,4 +1,3 @@
-from learnbot_dsl.functions import *
 import time
 
 
@@ -8,4 +7,4 @@ def move_straight(lbot, duration=0, advSpeed=40, verbose=False):
 		print('~ Learnbot moving straight ...')
 	if duration != 0:	# 0 means until next command
 		time.sleep(duration)
-		functions.get("stop_bot")(lbot)
+		lbot.setRobotSpeed(0, 0)

@@ -1,7 +1,8 @@
-from learnbot_dsl.functions import *
-
+from __future__ import print_function
 
 def move_right(lbot, duration=0, advSpeed=20, rotSpeed=0.2, verbose=False):
-	functions.get("move_straight")(lbot, 0, advSpeed, verbose)
-	functions.get("turn_right")(lbot,duration, rotSpeed, verbose)
+	lbot.setRobotSpeed(advSpeed, rotSpeed)
+	if duration != 0:
+		time.sleep(duration)
+		lbot.setRobotSpeed(0, 0)
 

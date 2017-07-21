@@ -4,7 +4,7 @@ import time
 import LearnBotClient
 from functions import *
 
-#EXECUTION: python code_example.py Ice.Config=config
+#EXECUTION: python code_example.py
 
 global lbot
 lbot = LearnBotClient.Client(sys.argv)

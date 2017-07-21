@@ -36,6 +36,7 @@ class GenericWorker(QtCore.QObject):
 		self.timer = QtCore.QTimer(self)
 
 
+
 	@QtCore.Slot()
 	def killYourSelf(self):
 		rDebug("Killing myself")
@@ -48,3 +49,14 @@ class GenericWorker(QtCore.QObject):
 		print "Period changed", p
 		Period = p
 		timer.start(Period)
+
+
+	@QtCore.Slot()
+	def stormCheck(self):
+		try:
+			IceStorm.TopicManagerPrx.checkedCast(self.mprx["topicManager"])
+		except KeyError:
+			print "please set Storm Endpoints "
+		except:
+			print "STORM not running"
+
