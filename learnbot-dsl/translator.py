@@ -153,23 +153,27 @@ while line_number < total_lines:
 		line_number=ignore(line_number)
 
 	elif functions.has_key(words[0].strip()):
-		params= []
+		param= []
 		t=1
 		while t<n:
-			params.append(words[t].strip().strip('\n'))
+			param.append(words[t].strip().strip('\n'))
 			t=t+1
 
-		l= len(params)
-		t=0
-		p_string=''
-		while t<l:
-			p_string= p_string + ','+params[t]
-			t=t+1
+		l= len(param)
 
-		x= 'functions.get("'+words[0].strip()+'")(lbot'+ p_string+ ')'
-		indentor()
-		target.write(x)	
-		target.write('\n')
+		if l<= len(params.get(words[0].strip())):
+			t=0
+			p_string=''
+			while t<l:
+				p_string= p_string + ','+param[t]
+				t=t+1
+
+			x= 'functions.get("'+words[0].strip()+'")(lbot'+ p_string+ ')'
+			indentor()
+			target.write(x)	
+			target.write('\n')
+		else:
+			print("Error: Bad parameters in line "+ str(line_number+1))
 	else:
 		pass
 
