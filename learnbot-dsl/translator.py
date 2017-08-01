@@ -17,7 +17,7 @@ line_number=0
 # Line indentation control
 inblock= 0
 filename= filepath.split('/')[-1]
-write_path= "/home/aniq55/robocomp/components/learnbot/learnbot-dsl/"+filename+".py"
+write_path= "./"+filename+".py"
 target= open(write_path, 'w')
 
 # Write the code generation details in the file
