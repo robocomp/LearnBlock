@@ -12,12 +12,11 @@ total_lines = len(lines)
 # File flow control
 line_number=0
 
-inWhen= False	# To prevent nesting in case of when block
 
 # Line indentation control
 inblock= 0		# To mark indentation level
 filename= filepath.split('/')[-1]
-write_path= "./"+filename+".py"
+write_path= "/home/aniq55/robocomp/components/learnbot/learnbot-dsl/"+filename+".py"
 target= open(write_path, 'w')
 
 # Write the code generation details in the file
@@ -167,15 +166,6 @@ while line_number < total_lines:
 	elif line.strip() == '```':
 		line_number +=1
 		line_number=ignore(line_number)
-
-	elif words[0]=='when':
-		if not inWhen and inblock==0 and functions.has_key(words[1].strip()):	# Nesting not allowed in any form
-			inWhen= True
-			x= 'if '+  fn_eval(' '.join(words[1:-1]))  +' == True:'
-			indentor()
-			inblock= inblock+1
-			target.write(x)	
-			target.write('\n')
 
 	elif functions.has_key(words[0].strip()):
 		param= []
