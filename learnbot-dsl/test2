@@ -68,3 +68,16 @@ stop_bot
 
 x = input
 print x
+
+# When block
+when front_obstacle and left_obstacle do
+print 'front obstacle'
+when left_obstacle do
+print 'left obstacle'
+end
+end
+#no indentation error
+
+when invalid_command do
+print 'invalid command'
+end

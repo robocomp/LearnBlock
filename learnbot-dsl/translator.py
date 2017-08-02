@@ -1,5 +1,3 @@
-#take the sys.argv[1] as file path and start parsing it to translate into specificworker.py code
-
 import sys
 import time
 import getpass
@@ -14,8 +12,10 @@ total_lines = len(lines)
 # File flow control
 line_number=0
 
+inWhen= False	# To prevent nesting in case of when block
+
 # Line indentation control
-inblock= 0
+inblock= 0		# To mark indentation level
 filename= filepath.split('/')[-1]
 write_path= "/home/aniq55/robocomp/components/learnbot/learnbot-dsl/"+filename+".py"
 target= open(write_path, 'w')
@@ -53,6 +53,20 @@ def ignore(line_number):
 		line_number = line_number +1
 	return line_number	
 
+def fn_eval(expression):
+	expression= expression.replace('+',' + ').replace('*',' * ').replace('/',' / ').replace('-',' - ').replace('^',' ^ ')
+	tokens=expression.split()
+	statement=''
+	for t in tokens:
+		if functions.has_key(t.strip()):
+			statement= statement+ 'functions.get("'+t.strip()+'")(lbot)'
+			statement=statement+' '
+		else:
+		# if t in ['+','-','*','/','^','or','and']:
+			statement=statement+t
+			statement=statement+' '
+	return statement
+
 
 # TRANSLATOR CODE
 while line_number < total_lines:
@@ -69,7 +83,7 @@ while line_number < total_lines:
 	# Mathematical and input
 	elif '=' in line and 'if' not in words and 'get' not in line:
 		indentor()
-		target.write(line.rstrip('\n'))		# Mathematical operation or input
+		target.write(fn_eval(line.rstrip('\n')))		# Mathematical operation or input
 		if 'input' in line:	# input command
 			target.write('()')
 		target.write('\n')
@@ -91,7 +105,7 @@ while line_number < total_lines:
 	# Conditional blocks
 	elif words[0] == 'if':
 		indentor()
-		target.write(' '.join(words[:-1]).rstrip('\n'))
+		target.write('if '+ fn_eval(' '.join(words[:-1]).rstrip('\n')))
 		target.write(':\n')
 		inblock+= 1
 
@@ -105,13 +119,16 @@ while line_number < total_lines:
 	elif words[0] == 'else' and words[1] == 'if':
 		inblock-=1
 		indentor()
-		target.write('elif ' + ' '.join(words[2:-1]).rstrip('\n'))
+		target.write('elif '+ fn_eval(' '.join(words[:-1]).rstrip('\n')))
 		target.write(':\n')
 		inblock+= 1		
 		
 	# Indentation marker
 	elif line.strip() == 'end':
-		inblock-=1
+		if inWhen:
+			inWhen= False
+		if inblock>=1:
+			inblock-=1
 
 	
 	elif words[0] == 'repeat' and 'times' in line:	#Loop Type 1
@@ -151,6 +168,15 @@ while line_number < total_lines:
 	elif line.strip() == '```':
 		line_number +=1
 		line_number=ignore(line_number)
+
+	elif words[0]=='when':
+		if not inWhen and inblock==0 and functions.has_key(words[1].strip()):	# Nesting not allowed in any form
+			inWhen= True
+			x= 'if '+  fn_eval(' '.join(words[1:-1]))  +' == True:'
+			indentor()
+			inblock= inblock+1
+			target.write(x)	
+			target.write('\n')
 
 	elif functions.has_key(words[0].strip()):
 		param= []
