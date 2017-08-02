@@ -47,7 +47,7 @@ y3= get_move
 # Alt. for loop
 repeat i from 1 to 5
 print 5*i
-set_move 5*i 0	
+set_move 5*i 0 2
 end
 
 # While loop
@@ -68,3 +68,16 @@ stop_bot
 
 x = input
 print x
+
+# When block
+when front_obstacle and left_obstacle do
+print 'front obstacle'
+when left_obstacle do
+print 'left obstacle'
+end
+end
+#no indentation error
+
+when invalid_command do
+print 'invalid command'
+end

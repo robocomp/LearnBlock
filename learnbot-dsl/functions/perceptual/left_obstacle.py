@@ -5,5 +5,5 @@ def left_obstacle(lbot, threshold= 200, verbose=False):
 			print('Obstacle left of Learnbot')
 		return True
 	if verbose:
-		print('No obstacle right of Learnbot')
+		print('No obstacle left of Learnbot')
 	return False

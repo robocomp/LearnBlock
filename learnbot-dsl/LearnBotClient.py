@@ -181,7 +181,7 @@ class Client(Ice.Application, threading.Thread):
 			if minD2 > data.dist:
 				minD2 = data.dist
 
-		self.usList["right"] = minD2
+		self.usList["left"] = minD2
 
 
 		l3data = self.laser3_proxy.getLaserData()
@@ -190,7 +190,7 @@ class Client(Ice.Application, threading.Thread):
 			if minD3 > data.dist:
 				minD3 = data.dist
 
-		self.usList["left"] = minD2
+		self.usList["right"] = minD3
 
 
 		l4data = self.laser4_proxy.getLaserData()
@@ -199,7 +199,7 @@ class Client(Ice.Application, threading.Thread):
 			if minD4 > data.dist:
 				minD4 = data.dist
 
-		self.usList["back"] = minD2
+		self.usList["back"] = minD4
 
 
 
