@@ -1,7 +1,7 @@
 """
 This is automatically generated python script
 Author: aniq55 (C) 2017, for RoboComp Learnbot
-Generated on: Tue Aug  8 16:54:51 2017
+Generated on: Tue Aug  8 21:38:14 2017
 """
 
 import sys
@@ -77,19 +77,26 @@ def block7():
 		else:
 			functions.get("slow_down")(lbot)
 
+global running
+running=True
+
 def main_loop():
-	block1()
-	block2()
-	block3()
-	block4()
-	block5()
-	block6()
-	block7()
-	functions.get("stop_bot")(lbot)
+	while running:
+		block1()
+		block2()
+		block3()
+		block4()
+		block5()
+		block6()
+		block7()
+
+import threading
+
+threading.Thread(target=main_loop).start()
 
 while True:
-	try:
-		main_loop()
-	except KeyboardInterrupt:
-		break
-
+	exit_prompt= input()
+	if bool(exit_prompt):
+		running=False
+		functions.get("stop_bot")(lbot)
+		exit()

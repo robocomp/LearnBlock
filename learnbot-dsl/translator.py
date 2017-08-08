@@ -288,16 +288,19 @@ while line_number < total_lines:
 
 
 if when_count >0:
-	target.write("\ndef main_loop():\n")
+	target.write("\nglobal running\nrunning=True\n")
+	target.write("\ndef main_loop():\n\twhile running:\n")
 	for i in range(when_count):
-		target.write("\tblock"+str(i+1)+"()\n")
-	target.write('\tfunctions.get("stop_bot")(lbot)')
+		target.write("\t\tblock"+str(i+1)+"()\n")
 
-	target.write("\n\nwhile True:\n")
-	target.write("\ttry:\n")
-	target.write("\t\tmain_loop()\n")
-	target.write("\texcept KeyboardInterrupt:\n")
-	target.write("\t\tbreak\n")
+	target.write("\nimport threading\n")
+	target.write("\nthreading.Thread(target=main_loop).start()\n")
+
+	target.write("\nwhile True:\n\texit_prompt= input()\n")
+	target.write("\tif bool(exit_prompt):\n")
+	target.write("\t\trunning=False\n")
+	target.write('\t\tfunctions.get("stop_bot")(lbot)\n')
+	target.write("\t\texit()")
 
 
 target.write('\n')
