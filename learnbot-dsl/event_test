@@ -7,15 +7,15 @@ when start_following_black do
 activate follow_black
 if not line_crossing then
     deactivate start_following_black
-    active continue_following_black
+    activate continue_following_black
 end
 end
 
-when continue_following_black or left_black_line do
+when continue_following_black do
 if line_crossing then
     deactivate follow_black
     deactivate continue_following_black
-    active start_following_red
+    activate start_following_red
 end
 end
 
@@ -40,7 +40,7 @@ when start_following_red do
 activate follow_red
 if not line_crossing then
     deactivate start_following_red
-    active continue_following_red
+    activate continue_following_red
 end
 end
 
@@ -48,7 +48,7 @@ when continue_following_red do
 if line_crossing then
     deactivate follow_red
     deactivate continue_following_red
-    active start_following_black
+    activate start_following_black
 end
 end
 
