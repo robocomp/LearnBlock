@@ -1,0 +1,66 @@
+when init do
+activate start_following_black
+    deactivate init
+end
+
+when start_following_black do
+activate follow_black
+if not line_crossing then
+    deactivate start_following_black
+    active continue_following_black
+end
+end
+
+when continue_following_black or left_black_line do
+if line_crossing then
+    deactivate follow_black
+    deactivate continue_following_black
+    active start_following_red
+end
+end
+
+  define 
+ var1 = True
+        var2= True
+end
+
+when follow_black do
+    if center_black_line then
+        move_straight
+    else if right_black_line then
+        move_right
+    else if left_black_line then
+        move_left
+    else
+        slow_down
+    end
+end
+
+when start_following_red do
+activate follow_red
+if not line_crossing then
+    deactivate start_following_red
+    active continue_following_red
+end
+end
+
+when continue_following_red do
+if line_crossing then
+    deactivate follow_red
+    deactivate continue_following_red
+    active start_following_black
+end
+end
+
+
+when follow_red do
+    if center_red_line then
+        move_straight
+    else if right_red_line then
+        move_right
+    else if left_red_line then
+        move_left
+    else
+        slow_down
+    end
+end
