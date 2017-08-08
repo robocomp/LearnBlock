@@ -25,7 +25,6 @@ target.write('"""\n\n')
 
 target.write('import sys\n')
 target.write('import cv2\n')
-target.write('import threading\n')
 target.write('import LearnBotClient\n')
 target.write('from functions import *\n')
 target.write('import time\n\n')
@@ -112,13 +111,14 @@ predef={}
 predef['init']=True
 predef['always']= True
 
+# Overriding the values of predefined event variables
+for e_var in predef:
+	activationList[e_var]=predef[e_var]
+
 target.write("\n#Declaring Event Variables\n")
 for e_var in activationList:
 	target.write("activationList['"+e_var+"']="+str(activationList[e_var])+"\n")	# Initialized to False
 
-# Overriding the values of predefined event variables
-for e_var in predef:
-	target.write("activationList['"+e_var+"']="+str(predef[e_var])+"\n")	# Initialized to False
 
 target.write("\n")
 
@@ -288,16 +288,10 @@ while line_number < total_lines:
 
 
 if when_count >0:
-	target.write("\n#Running the when blocks concurrently\n")
-
-
-	target.write("def main_loop():\n\tjobs=[]\n")
-	target.write("\tfor i in range("+str(when_count)+"):\n")
+	target.write("\ndef main_loop():\n")
 	for i in range(when_count):
-		target.write("\t\tprocess=threading.Thread(target=block"+str(i+1)+")\n")
-		target.write("\t\tprocess.start()\n")
-		target.write("\t\tjobs.append(process)\n")
-	target.write("\tfor j in jobs:\n\t\tj.join()\n")
+		target.write("\tblock"+str(i+1)+"()\n")
+	target.write('\tfunctions.get("stop_bot")(lbot)')
 
 	target.write("\n\nwhile True:\n")
 	target.write("\ttry:\n")

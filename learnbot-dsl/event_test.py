@@ -1,12 +1,11 @@
 """
 This is automatically generated python script
 Author: aniq55 (C) 2017, for RoboComp Learnbot
-Generated on: Mon Aug  7 20:44:33 2017
+Generated on: Tue Aug  8 16:54:51 2017
 """
 
 import sys
 import cv2
-import threading
 import LearnBotClient
 from functions import *
 import time
@@ -21,14 +20,13 @@ activationList={}
 activationList['var1']=True
 activationList['follow_red']=False
 activationList['follow_black']=False
+activationList['always']=True
 activationList['var2']=True
 activationList['continue_following_black']=False
-activationList['init']=False
+activationList['init']=True
 activationList['start_following_red']=False
 activationList['start_following_black']=False
 activationList['continue_following_red']=False
-activationList['always']=True
-activationList['init']=True
 
 def block1():
 	if activationList['init'] :
@@ -39,11 +37,13 @@ def block2():
 		activationList['follow_black']=True
 		if not functions.get("line_crossing")(lbot) :
 			activationList['start_following_black']=False
+			activationList['continue_following_black']=True
 def block3():
-	if activationList['continue_following_black'] or functions.get("left_black_line")(lbot) :
+	if activationList['continue_following_black'] :
 		if functions.get("line_crossing")(lbot) :
 			activationList['follow_black']=False
 			activationList['continue_following_black']=False
+			activationList['start_following_red']=True
 def block4():
 	if activationList['follow_black'] :
 		if functions.get("center_black_line")(lbot) :
@@ -59,11 +59,13 @@ def block5():
 		activationList['follow_red']=True
 		if not functions.get("line_crossing")(lbot) :
 			activationList['start_following_red']=False
+			activationList['continue_following_red']=True
 def block6():
 	if activationList['continue_following_red'] :
 		if functions.get("line_crossing")(lbot) :
 			activationList['follow_red']=False
 			activationList['continue_following_red']=False
+			activationList['start_following_black']=True
 def block7():
 	if activationList['follow_red'] :
 		if functions.get("center_red_line")(lbot) :
@@ -75,34 +77,15 @@ def block7():
 		else:
 			functions.get("slow_down")(lbot)
 
-#Running the when blocks concurrently
 def main_loop():
-	jobs=[]
-	for i in range(7):
-		process=threading.Thread(target=block1)
-		process.start()
-		jobs.append(process)
-		process=threading.Thread(target=block2)
-		process.start()
-		jobs.append(process)
-		process=threading.Thread(target=block3)
-		process.start()
-		jobs.append(process)
-		process=threading.Thread(target=block4)
-		process.start()
-		jobs.append(process)
-		process=threading.Thread(target=block5)
-		process.start()
-		jobs.append(process)
-		process=threading.Thread(target=block6)
-		process.start()
-		jobs.append(process)
-		process=threading.Thread(target=block7)
-		process.start()
-		jobs.append(process)
-	for j in jobs:
-		j.join()
-
+	block1()
+	block2()
+	block3()
+	block4()
+	block5()
+	block6()
+	block7()
+	functions.get("stop_bot")(lbot)
 
 while True:
 	try:
