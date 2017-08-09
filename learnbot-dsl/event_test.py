@@ -1,7 +1,7 @@
 """
 This is automatically generated python script
-Author: aniq55 (C) 2017, for RoboComp Learnbot
-Generated on: Tue Aug  8 21:38:14 2017
+Author: pilar (C) 2017, for RoboComp Learnbot
+Generated on: Wed Aug  9 14:45:49 2017
 """
 
 import sys
@@ -92,11 +92,18 @@ def main_loop():
 
 import threading
 
-threading.Thread(target=main_loop).start()
+main_thread=threading.Thread(target=main_loop)
+
+main_thread.start()
 
 while True:
-	exit_prompt= input()
+	try:
+		exit_prompt= input()
+	except NameError:
+		exit_prompt= 'q'
 	if bool(exit_prompt):
 		running=False
+		while main_thread.is_alive():
+			pass
 		functions.get("stop_bot")(lbot)
 		exit()

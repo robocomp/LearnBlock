@@ -294,11 +294,16 @@ if when_count >0:
 		target.write("\t\tblock"+str(i+1)+"()\n")
 
 	target.write("\nimport threading\n")
-	target.write("\nthreading.Thread(target=main_loop).start()\n")
+	target.write("\nmain_thread=threading.Thread(target=main_loop)\n")
+	target.write("\nmain_thread.start()\n")
 
-	target.write("\nwhile True:\n\texit_prompt= input()\n")
+	target.write("\nwhile True:\n\ttry:\n")
+	target.write("\t\texit_prompt= input()\n")
+	target.write("\texcept NameError:\n")
+	target.write("\t\texit_prompt= 'q'\n")
 	target.write("\tif bool(exit_prompt):\n")
 	target.write("\t\trunning=False\n")
+	target.write("\t\twhile main_thread.is_alive():\n\t\t\tpass\n")
 	target.write('\t\tfunctions.get("stop_bot")(lbot)\n')
 	target.write("\t\texit()")
 
