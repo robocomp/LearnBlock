@@ -1,6 +1,13 @@
 when init do
-activate start_following_black
+if center_black_line or right_black_line or left_black_line then
+    activate start_following_black
     deactivate init
+else if center_red_line or right_red_line or left_red_line then
+    activate start_following_red
+    deactivate init
+else
+    turn_right
+end
 end
 
 when start_following_black do

@@ -1,7 +1,7 @@
 """
 This is automatically generated python script
 Author: pilar (C) 2017, for RoboComp Learnbot
-Generated on: Wed Aug  9 14:45:49 2017
+Generated on: Thu Aug 10 14:32:15 2017
 """
 
 import sys
@@ -30,8 +30,14 @@ activationList['continue_following_red']=False
 
 def block1():
 	if activationList['init'] :
-		activationList['start_following_black']=True
-		activationList['init']=False
+		if functions.get("center_black_line")(lbot) or functions.get("right_black_line")(lbot) or functions.get("left_black_line")(lbot) :
+			activationList['start_following_black']=True
+			activationList['init']=False
+		elif functions.get("center_red_line")(lbot) or functions.get("right_red_line")(lbot) or functions.get("left_red_line")(lbot) :
+			activationList['start_following_red']=True
+			activationList['init']=False
+		else:
+			functions.get("turn_right")(lbot)
 def block2():
 	if activationList['start_following_black'] :
 		activationList['follow_black']=True

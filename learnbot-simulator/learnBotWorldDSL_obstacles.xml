@@ -1,20 +1,29 @@
 <innerModel>
 	
 	<transform id="caja1" tx="0" tz="1000" ty="0" >
-			<plane id="cajaMesh1" nx="1" size="200,200,200"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
+			<plane id="cajaMesh1" nx="1" size="400,400,400"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
 	</transform>
 
 	<transform id="caja2" tx="1000" tz="2000" ty="0" >
-			<plane id="cajaMesh2" nx="1" size="200,200,200"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
+			<plane id="cajaMesh2" nx="1" size="400,400,400"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
 	</transform>
 
 	<transform id="caja3" tx="-1000" tz="-1500" ty="0" >
-			<plane id="cajaMesh3" nx="1" size="200,200,200"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
+			<plane id="cajaMesh3" nx="1" size="400,400,400"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
 	</transform>
 
-	<transform id="caja4" tx="1500" tz="-2000" ty="0" >
-			<plane id="cajaMesh4" nx="1" size="200,200,200"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
+	<transform id="caja4" tx="-1500" tz="-200" ty="0" >
+			<plane id="cajaMesh4" nx="1" size="400,400,400"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
 	</transform>
+
+	<transform id="caja5" tx="1500" tz="-2000" ty="0" >
+			<plane id="cajaMesh5" nx="1" size="400,400,400"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
+	</transform>
+
+	<transform id="caja6" tx="1500" tz="200" ty="0" >
+			<plane id="cajaMesh6" nx="1" size="400,400,400"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
+	</transform>
+
 
 	
 	<transform id="world">

@@ -1,0 +1,30 @@
+when obstacle_free do
+	move_straight 0 100
+	deactivate start_avoiding
+end
+
+when not obstacle_free and not start_avoiding do
+	if right_obstacle then
+		activate avoiding_right_obstacle
+	else
+		activate avoiding_left_obstacle
+	end
+	activate start_avoiding
+end
+
+when avoiding_right_obstacle do
+	if not obstacle_free then
+		turn_left 0 -0.4
+	else
+		deactivate avoiding_right_obstacle
+	end
+end
+
+when avoiding_left_obstacle do
+	if not obstacle_free then
+		turn_right 0 0.4
+	else
+		deactivate avoiding_left_obstacle
+	end
+end
+
