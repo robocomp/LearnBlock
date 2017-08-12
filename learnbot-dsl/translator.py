@@ -4,11 +4,10 @@ import getpass
 import ast
 
 filepath= sys.argv[1]
-print(filepath)
 
 inWhen= False	# To prevent nesting in case of when block
 inDef= False	# To store variables in the state variable dictionary
-when_count= 0
+when_count= 0	
 
 # Line indentation control
 inblock= 0		# To mark indentation level
