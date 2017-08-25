@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/interface.ui'
 #
-# Created: Fri Jul 21 13:09:40 2017
+# Created: Fri Aug 25 16:00:01 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -182,6 +182,29 @@ class Ui_MainWindow(object):
         self.tableVariables.setRowCount(0)
         self.verticalLayout.addWidget(self.tableVariables)
         self.tabWidget_2.addTab(self.tab, "")
+        self.tab_2 = QtGui.QWidget()
+        self.tab_2.setObjectName("tab_2")
+        self.verticalLayout_13 = QtGui.QVBoxLayout(self.tab_2)
+        self.verticalLayout_13.setObjectName("verticalLayout_13")
+        self.verticalLayout_8 = QtGui.QVBoxLayout()
+        self.verticalLayout_8.setObjectName("verticalLayout_8")
+        self.createFunctionsPushButton = QtGui.QPushButton(self.tab_2)
+        self.createFunctionsPushButton.setEnabled(True)
+        self.createFunctionsPushButton.setObjectName("createFunctionsPushButton")
+        self.verticalLayout_8.addWidget(self.createFunctionsPushButton)
+        self.deleteFuntionsPushButton = QtGui.QPushButton(self.tab_2)
+        self.deleteFuntionsPushButton.setEnabled(False)
+        self.deleteFuntionsPushButton.setObjectName("deleteFuntionsPushButton")
+        self.verticalLayout_8.addWidget(self.deleteFuntionsPushButton)
+        self.verticalLayout_13.addLayout(self.verticalLayout_8)
+        self.tableUserfunctions = QtGui.QTableWidget(self.tab_2)
+        self.tableUserfunctions.setShowGrid(False)
+        self.tableUserfunctions.setGridStyle(QtCore.Qt.NoPen)
+        self.tableUserfunctions.setObjectName("tableUserfunctions")
+        self.tableUserfunctions.setColumnCount(0)
+        self.tableUserfunctions.setRowCount(0)
+        self.verticalLayout_13.addWidget(self.tableUserfunctions)
+        self.tabWidget_2.addTab(self.tab_2, "")
         self.layoutWidget = QtGui.QWidget(self.splitter)
         self.layoutWidget.setObjectName("layoutWidget")
         self.verticalLayout_3 = QtGui.QVBoxLayout(self.layoutWidget)
@@ -238,7 +261,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.Tabwi.setCurrentIndex(1)
-        self.tabWidget_2.setCurrentIndex(5)
+        self.tabWidget_2.setCurrentIndex(6)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -257,6 +280,9 @@ class Ui_MainWindow(object):
         self.deleteVarPushButton.setText(QtGui.QApplication.translate("MainWindow", "Delete Variable", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_6.setText(QtGui.QApplication.translate("MainWindow", "Add List", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab), QtGui.QApplication.translate("MainWindow", "Variables", None, QtGui.QApplication.UnicodeUTF8))
+        self.createFunctionsPushButton.setText(QtGui.QApplication.translate("MainWindow", "Create Functions", None, QtGui.QApplication.UnicodeUTF8))
+        self.deleteFuntionsPushButton.setText(QtGui.QApplication.translate("MainWindow", "Delete Functions", None, QtGui.QApplication.UnicodeUTF8))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_2), QtGui.QApplication.translate("MainWindow", "User functions", None, QtGui.QApplication.UnicodeUTF8))
         self.startPushButton.setText(QtGui.QApplication.translate("MainWindow", "Start", None, QtGui.QApplication.UnicodeUTF8))
         self.stopPushButton.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.Tabwi.setTabText(self.Tabwi.indexOf(self.program_visual), QtGui.QApplication.translate("MainWindow", "LearnBlock", None, QtGui.QApplication.UnicodeUTF8))

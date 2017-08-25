@@ -26,64 +26,6 @@ listconfig = ["configControl",
               "configPerceptual"
               "configPropriopercetive"]
 
-
-def generateBlock2(img, x, name, typeBlock, connections=None, vars=None, type=None):
-    im = None
-    sizeleter = 12
-    varText = ""
-    if type is FUNTION:
-        varText = "("
-        if vars is not None:
-            for var in vars:
-                varText += var + ","
-            varText = varText[:-1] + ")"
-        else:
-            varText = "()"
-    elif type is VARIABLE:
-        if vars is not None:
-            for var in vars:
-                varText =  " poner a " + var
-    if typeBlock is COMPLEXBLOCK:
-        if vars is None:
-            varText = ""
-        left = img[0:img.shape[0], 0:73]
-        right = img[0:img.shape[0], img.shape[1] - 10:img.shape[1]]
-        line = img[0:img.shape[0], 72:73]
-        im = np.ones((left.shape[0], left.shape[1] + right.shape[1] + ((len(name)+len(varText)) * sizeleter) - 23, 4), dtype=np.uint8)
-        im[0:left.shape[0], 0:left.shape[1]] = copy.copy(left)
-        im[0:right.shape[0], im.shape[1] - right.shape[1]:im.shape[1]] = copy.copy(right)
-        for i in range(left.shape[1], im.shape[1] - right.shape[1]):
-            im[0:line.shape[0], i:i + 1] = copy.copy(line)
-        header = copy.copy(im[0:39, 0:149])
-        foot = copy.copy(im[69:104, 0:149])
-        line = copy.copy(im[50:51, 0:im.shape[1]])
-        im = np.ones((header.shape[0] + foot.shape[0] + x - 4, header.shape[1], 4), dtype=np.uint8)
-        im[0:header.shape[0], 0:header.shape[1]] = header
-        im[im.shape[0] - foot.shape[0]:im.shape[0], 0:foot.shape[1]] = foot
-        for i in range(39, im.shape[0] - foot.shape[0]):
-            im[i:i + line.shape[0], 0:header.shape[1]] = copy.copy(line)
-    else:
-        left = img[0:img.shape[0], 0:43]
-        right = img[0:img.shape[0], img.shape[1] - 10:img.shape[1]]
-        line = img[0:img.shape[0], 43:44]
-        im = np.ones((left.shape[0], left.shape[1] + right.shape[1] + ((len(name)+len(varText)) * sizeleter) , 4), dtype=np.uint8)
-        im[0:left.shape[0], 0:left.shape[1]] = copy.copy(left)
-        im[0:right.shape[0], im.shape[1] - right.shape[1]:im.shape[1]] = copy.copy(right)
-        for i in range(left.shape[1], im.shape[1] - right.shape[1]):
-            im[0:line.shape[0], i:i + 1] = copy.copy(line)
-    cv2.putText(im, name+varText, (10, 27), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 1,25)
-    if connections is not None and len(connections) > 0:
-        if not isinstance(connections[0],Connection):
-            for point, t in connections:
-                if t is RIGHT:
-                    point.setX(im.shape[1]-5)
-        else:
-            for c in connections:
-                if c.getType() is RIGHT:
-                    c.getPoint().setX(im.shape[1] - 5)
-    return im
-
-
 class guiCreateBlock(QtGui.QDialog):
 
     def __init__(self):
@@ -121,7 +63,7 @@ class guiCreateBlock(QtGui.QDialog):
         img = cv2.imread(listBlock[index],cv2.IMREAD_UNCHANGED)
         archivo, extension = os.path.splitext(listBlock[index])
         blockType, connections = self.__loadConfigBlock(archivo)
-        img = generateBlock2(img, 34, self.ui.lineEditName.text(), blockType, None,
+        img = generateBlock(img, 34, self.ui.lineEditName.text(), blockType, None,
                              None)
         qImage = toQImage(img)
         self.ui.BlockImage.setPixmap(QtGui.QPixmap(qImage))

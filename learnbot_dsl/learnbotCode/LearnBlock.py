@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import cPickle as pickle
 import os
 from blocksConfig import configBlocks
@@ -5,6 +8,7 @@ import threading
 import guis.addVar as addVar
 import guis.gui as gui
 import guis.delVar as delVar
+import guis.createFunctions as guiCreateFunctions
 from Block import *
 from Scene import *
 from View import *
@@ -34,7 +38,7 @@ class MyButtom(QtGui.QPushButton):
         if len(args) is 10:
             self.__text, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType,\
             self.__table, self.__row, self.__type = args
-            self.tmpFile = "tmp/" + self.__text + str(self.__row) + ".png"
+            self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
 
         elif len(args) is 5:
             abstracBlockItem, self.__view, self.__scene, self.__table, self.__row = args
@@ -44,16 +48,17 @@ class MyButtom(QtGui.QPushButton):
             self.__vars = abstracBlockItem.vars
             self.__blockType = abstracBlockItem.typeBlock
             self.__type = abstracBlockItem.type
-            self.tmpFile = "tmp/" + self.__text + str(self.__row) + ".png"
+            self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
 
         QtGui.QPushButton.__init__(self)
         im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
-        self.__table.setRowHeight(self.__row - 1, im.shape[0])
-        img = generateBlock2(im, 34, self.__text, self.__blockType, self.__connections, None, self.__type)
+
+        img = generateBlock(im, 34, self.__text, self.__blockType, self.__connections, None, self.__type)
         cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
         self.setIcon(QtGui.QIcon(self.tmpFile))
         self.setIconSize(QtCore.QSize(135, im.shape[0]))
         self.setFixedSize(QtCore.QSize(150, im.shape[0]))
+        self.__table.setRowHeight(self.__row, im.shape[0])
         self.clicked.connect(self.clickedButton)
         self.__item = self.__table.item(self.__row,0)
 
@@ -93,9 +98,15 @@ class MyButtom(QtGui.QPushButton):
 class LearnBlock:
 
     def __init__(self):
+        self.delUserFunctionsGui = None
+        self.delUserFunctionsDialgo = None
         self.delVarGui = None
         self.delVarDialgo = None
+        self.userFunctionsGui = None
+        self.userFunctionsDialgo = None
+        self.listNameUserFunctions = []
         self.listNameVars = []
+        self.listNameBlock = []
         self.__fileProject = None
         app = QtGui.QApplication(sys.argv)
         self.Dialog = QtGui.QMainWindow()
@@ -114,6 +125,7 @@ class LearnBlock:
         self.ui.openpushButton.setIconSize(QtCore.QSize(24,22))
         self.ui.savepushButton.setIconSize(QtCore.QSize(24,22))
         self.listVars = []
+        self.listUserFunctions = []
         self.addVarGui = None
         self.addVarDialgo = None
         self.view = MyView(self.ui.frame)
@@ -124,7 +136,6 @@ class LearnBlock:
         self.view.show()
         self.createBlockGui = None
         #READ FUNTIONS
-        functions = configBlocks
         #process
         self.hilo = None
 
@@ -132,7 +143,8 @@ class LearnBlock:
         #self.hilo = threading.Thread(target=self.execTmp, args=[])
 
         self.dicTables = {'control':self.ui.tableControl,'motor':self.ui.tableMotor, 'perceptual':self.ui.tablePerceptual,
-                     'proprioceptive':self.ui.tablePropioperceptive,'operador':self.ui.tableOperadores,'variables':self.ui.tableVariables}
+                     'proprioceptive':self.ui.tablePropioperceptive,'operador':self.ui.tableOperadores,'variables':self.ui.tableVariables,
+                          'funtions':self.ui.tableUserfunctions}
         for t in self.dicTables:
             table = self.dicTables[t]
             table.verticalHeader().setVisible(False)
@@ -146,7 +158,35 @@ class LearnBlock:
             os.mkdir("tmp")
         except:
             pass
+
+        self.load_blocks()
+
+        self.timer = QtCore.QTimer()
+        self.timer.start(1000)
+        self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
+        self.ui.actionSave.triggered.connect(self.saveInstance)
+        self.ui.actionSave_As.triggered.connect(self.saveAs)
+        self.ui.savepushButton.clicked.connect(self.saveInstance)
+        self.ui.actionOpen_Proyect.triggered.connect(self.openProyect)
+        self.ui.openpushButton.clicked.connect(self.openProyect)
+        self.ui.deleteVarPushButton.clicked.connect(self.deleteVar)
+        self.ui.createFunctionsPushButton.clicked.connect(self.newUserFunctions)
+        self.ui.deleteFuntionsPushButton.clicked.connect(self.deleteUserFunctions)
+        self.ui.tabWidget_2.setFixedWidth(221)
+        self.scene.setlistNameVars(self.listNameVars)
+        r = app.exec_()
+
+        for b in self.listButtons:
+            b.removeTmpFile()
+        os.rmdir("tmp")
+        sys.exit(r)
+
+    def load_blocks(self):
+        functions = configBlocks
         for f in functions:
+            if f[1]["name"][0] in self.listNameBlock:
+                continue
+            self.listNameBlock.append(f[1]["name"][0])
             variables = []
             if "variables" in f[1]:
                 for v in f[1]["variables"]:
@@ -167,30 +207,11 @@ class LearnBlock:
                 blockType, connections = self.loadConfigBlock(img)
                 table = self.dicTables[f[1]["type"][0]]
                 table.insertRow(table.rowCount())
-                button = MyButtom((f[1]["name"][0], self.view, self.scene, img+".png", connections, variables, blockType,
-                                  table,table.rowCount(),funtionType))
+                button = MyButtom(
+                    (f[1]["name"][0], self.view, self.scene, img + ".png", connections, variables, blockType,
+                     table, table.rowCount()-1, funtionType))
                 self.listButtons.append(button)
-                table.setCellWidget(table.rowCount()-1, 0, button)
-
-        self.timer = QtCore.QTimer()
-        self.timer.start(1000)
-        self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
-        self.ui.actionSave.triggered.connect(self.saveInstance)
-        self.ui.actionSave_As.triggered.connect(self.saveAs)
-        self.ui.savepushButton.clicked.connect(self.saveInstance)
-        self.ui.actionOpen_Proyect.triggered.connect(self.openProyect)
-        self.ui.openpushButton.clicked.connect(self.openProyect)
-        self.ui.deleteVarPushButton.clicked.connect(self.deleteVar)
-        self.ui.tabWidget_2.setFixedWidth(221)
-        self.scene.setlistNameVars(self.listNameVars)
-        r = app.exec_()
-
-
-
-        for b in self.listButtons:
-            b.removeTmpFile()
-        os.rmdir("tmp")
-        sys.exit(r)
+                table.setCellWidget(table.rowCount() - 1, 0, button)
 
     def loadConfigBlock(self, img):
         fh = open(img, "r")
@@ -249,7 +270,7 @@ class LearnBlock:
                 self.saveInstance()
         if self.__fileProject is not None:
             with open(self.__fileProject, 'wb') as fichero:
-                pickle.dump((self.scene.dicBlockItem,self.listVars), fichero,0)
+                pickle.dump((self.scene.dicBlockItem,self.listVars,self.listUserFunctions,self.listNameVars,self.listNameUserFunctions), fichero,0)
 
     def saveAs(self):
         fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.',
@@ -279,13 +300,29 @@ class LearnBlock:
                     d = pickle.load(fichero)
                     self.scene.setBlockDict(d[0])
                     self.scene.startAllblocks()
-                    table = self.dicTables['variables']
+                    for name in self.listNameUserFunctions:
+                        self.delUserFunction(name)
+                    for name in self.listNameVars:
+                        self.delVar(name)
+
                     for blockButton in d[1]:
+                        table = self.dicTables['variables']
                         table.insertRow(table.rowCount())
                         button = MyButtom((blockButton,self.view,self.scene,table,table.rowCount()-1))
                         self.listButtons.append(button)
                         table.setCellWidget(table.rowCount() - 1, 0, button)
                         self.listVars.append(button.getAbstracBlockItem())
+
+                    for blockButton in d[2]:
+                        table = self.dicTables['funtions']
+                        table.insertRow(table.rowCount())
+                        button = MyButtom((blockButton, self.view, self.scene, table, table.rowCount() - 1))
+                        self.listButtons.append(button)
+                        table.setCellWidget(table.rowCount() - 1, 0, button)
+                        self.listUserFunctions.append(button.getAbstracBlockItem())
+
+                    self.listNameVars = d[3]
+                    self.listNameUserFunctions = d[4]
 
 
         else:
@@ -303,13 +340,14 @@ class LearnBlock:
 
     def showCreateBlock(self):
         self.createBlockGui = guiCreateBlock()
+        self.createBlockGui.ui.pushButtonOK.clicked.connect(self.load_blocks)
         self.createBlockGui.open()
 
     def printProgram(self):
-        inst = self.scene.getListInstructions()
-        if inst is not None:
+        blocks = self.scene.getListInstructions()
+        if blocks is not None:
             self.ui.plainTextEdit_2.clear()
-            self.ui.plainTextEdit_2.appendPlainText(self.toLBotPy(inst[1]["BOTTOMIN"]))
+            self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
             self.generateTmpFile()
 
     def printInst(self,inst,ntab=1):
@@ -329,9 +367,8 @@ class LearnBlock:
         return text
 
     def generateTmpFile(self):
-        inst = self.scene.getListInstructions()
-        if inst is not None:
-            text = """
+        blocks = self.scene.getListInstructions()
+        text = """
 
 #EXECUTION: python code_example.py config
 
@@ -339,7 +376,8 @@ global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
 """
-            text += self.toLBotPy(inst[1]["BOTTOMIN"])
+        if blocks is not None:
+            text += self.parserBlocks(blocks,self.toLBotPy)
             fh = open("main_tmp.py","wr")
             fh.writelines(text)
             fh.close()
@@ -356,9 +394,33 @@ lbot = LearnBotClient.Client(sys.argv)
         except Exception as e:
             pass
 
+    def parserBlocks(self,blocks,funtion):
+        text = ""
+        print blocks
+        text = "class User:\n"
+        for b in blocks:
+            if "main" not in b[0]:
+                text += "\tdef "+b[0]+"(self)\n"
+                if b[1]["BOTTOMIN"] is not None:
+                    text += "\t\t" + funtion(b[1]["BOTTOMIN"],3)
+                else:
+                    text += "pass"
+                text += "\n\n"
+        for b in blocks:
+            if "main" in b[0]:
+                if b[1]["BOTTOMIN"] is not None:
+                    text += funtion(b[1]["BOTTOMIN"])
+                else:
+                    text += "pass"
+                text += "\n\n"
+        print text
+        return text
+
     def toLBotPy(self,inst,ntab=1):
         text = inst[0]
-        if inst[1]["TYPE"] is FUNTION:
+        if inst[1]["TYPE"] is USERFUNCTION:
+            text = "User()."+inst[0]+"()"
+        if inst[1]["TYPE"] is FUNTION :
             text = "functions.get(\"" + inst[0] + "\")(lbot"
             if inst[1]["VARIABLES"] is not None:
                 text += ", ["
@@ -399,6 +461,27 @@ lbot = LearnBotClient.Client(sys.argv)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
+            if " " in name:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("The name can't contain ' '")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name.find("ñ") is -1:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("The name can't contain 'ñ'")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name[0].isdigit():
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("The name can't start by number")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
             self.ui.deleteVarPushButton.setEnabled(True)
             imgs = ['block2','block3','block4']
 
@@ -407,7 +490,7 @@ lbot = LearnBotClient.Client(sys.argv)
             table = self.dicTables['variables']
             table.insertRow(table.rowCount())
             variables =[]
-            variables.append(Variable("float","poner a ", "0"))
+            variables.append(Variable("float","set to ", "0"))
             button = MyButtom((name , self.view, self.scene, pathBlocks+"/block1" + ".png", connections, variables, blockType,
                               table, table.rowCount()-1, VARIABLE))
             self.listButtons.append(button)
@@ -440,14 +523,106 @@ lbot = LearnBotClient.Client(sys.argv)
     def retdelVarGui(self, ret):
         if ret is 1:
             name = self.delVarGui.listVarcomboBox.currentText()
-            table = self.dicTables['variables']
-            rango = reversed(range(0,table.rowCount()))
-            for row in rango:
-                item = table.cellWidget(row, 0)
-                if item.getText() == name:
-                    item.delete(row)
-            self.listNameVars.remove(name)
+            self.delVar(name)
         self.delVarDialgo.close()
         if len(self.listNameVars) == 0:
             self.ui.deleteVarPushButton.setEnabled(False)
 
+    def delVar(self,name):
+        table = self.dicTables['variables']
+        rango = reversed(range(0, table.rowCount()))
+        for row in rango:
+            item = table.cellWidget(row, 0)
+            if item.getText() == name:
+                item.delete(row)
+                item.removeTmpFile()
+                self.listButtons.remove(item)
+        self.listNameVars.remove(name)
+
+    def newUserFunctions(self):
+        self.userFunctionsGui = guiCreateFunctions.Ui_Dialog()
+        self.userFunctionsDialgo = QtGui.QDialog()
+        self.userFunctionsGui.setupUi(self.userFunctionsDialgo)
+        self.userFunctionsDialgo.open()
+        self.userFunctionsGui.cancelPushButton.clicked.connect(lambda: self.retUserFunctions(0))
+        self.userFunctionsGui.okPushButton.clicked.connect(lambda: self.retUserFunctions(1))
+
+    def retUserFunctions(self,ret):
+        if ret is 1:
+            name = self.userFunctionsGui.nameLineEdit.text()
+            if name in self.listNameUserFunctions:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("This name alredy exist")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if " " in name:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("The name can't contain ' '")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name.find("n") is -1:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("The name can't contain 'ñ'")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name[0].isdigit():
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("The name can't start by number")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            self.ui.deleteFuntionsPushButton.setEnabled(True)
+            imgs = ['block8','block1']
+            self.listNameUserFunctions.append(name)
+            table = self.dicTables['funtions']
+            i= 0
+            for img in imgs:
+                blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
+                table.insertRow(table.rowCount())
+                button = MyButtom(
+                    (name, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType,
+                     table, table.rowCount()-1, USERFUNCTION))
+                self.listButtons.append(button)
+                table.setCellWidget(table.rowCount() - 1, 0, button)
+                self.listUserFunctions.append(button.getAbstracBlockItem())
+                i+=1
+
+        self.userFunctionsDialgo.close()
+
+    def deleteUserFunctions(self):
+        self.delUserFunctionsGui = delVar.Ui_Dialog()
+        self.delUserFunctionsDialgo = QtGui.QDialog()
+        self.delUserFunctionsGui.setupUi(self.delUserFunctionsDialgo)
+        self.delUserFunctionsDialgo.open()
+        self.delUserFunctionsGui.listVarcomboBox.clear()
+        self.delUserFunctionsGui.listVarcomboBox.currentText()
+        for name in self.listNameUserFunctions:
+            self.delUserFunctionsGui.listVarcomboBox.addItem(name)
+        self.delUserFunctionsGui.cancelPushButton.clicked.connect(lambda: self.retdelUserFunctionsGui(0))
+        self.delUserFunctionsGui.okPushButton.clicked.connect(lambda: self.retdelUserFunctionsGui(1))
+
+    def retdelUserFunctionsGui(self,ret):
+        if ret is 1:
+            name = self.delUserFunctionsGui.listVarcomboBox.currentText()
+            self.delUserFunction(name)
+        self.delUserFunctionsDialgo.close()
+        if len(self.listNameUserFunctions) == 0:
+            self.ui.deleteFuntionsPushButton.setEnabled(False)
+
+    def delUserFunction(self,name):
+        table = self.dicTables['funtions']
+        rango = reversed(range(0, table.rowCount()))
+        for row in rango:
+            item = table.cellWidget(row, 0)
+            if item.getText() == name:
+                item.delete(row)
+                item.removeTmpFile()
+                self.listButtons.remove(item)
+        self.listNameUserFunctions.remove(name)

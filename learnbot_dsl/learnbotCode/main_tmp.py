@@ -5,4 +5,6 @@
 global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
-aux = 0
+main
+functions.get("move_left")(lbot, [0])
+

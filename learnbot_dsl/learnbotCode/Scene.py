@@ -67,7 +67,7 @@ class MyScene(QtGui.QGraphicsScene):
             super(MyScene, self).addItem(visualItem)
             self.dicBlockItem[blockItem.id] = blockItem
             self.dictVisualItem[blockItem.id] = visualItem
-            if self.nextIdItem < int(id):
+            if self.nextIdItem <= int(id):
                 self.nextIdItem = int(id)+1
         while self.shouldSave is True:
             self.shouldSave = False
@@ -165,11 +165,13 @@ class MyScene(QtGui.QGraphicsScene):
         return sqrt(pow(p.x(), 2) + pow(p.y(), 2))
 
     def getListInstructions(self):
+        list = []
         for id in self.dictVisualItem:
             item = self.getVisualItem(id)
-            if "main" in item.getNameFuntion():
+            if item.isBlockDef():
                 inst = item.getInstructions()
-                return inst
+                list.append(inst)
+        return list
 
     def mouseMoveEvent(self, event):
         itemS = self.getItemSelected()
@@ -185,13 +187,11 @@ class MyScene(QtGui.QGraphicsScene):
             item.mousePressEvent(event)
 
     def mouseDoubleClickEvent(self,event):
-        print "hola"
         item = self.itemAt(event.scenePos())
         if self.table is not None and item is not self.table:
             self.table.close()
             self.table = None
         if isinstance(item, BlockItem):
-            print "entro"
             item.mouseDoubleClickEvent(event)
 
     def mouseReleaseEvent(self, event):
