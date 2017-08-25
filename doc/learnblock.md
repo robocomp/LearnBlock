@@ -45,7 +45,6 @@ The user can save and open project, for this the user should click in the next b
 
 In order to use Learnblock, you must first install learnbot, for this you should execute the following lines.
 
-  cd learnbot
+    cd learnbot
 
-
-  sudo python setup.py install
+    sudo python setup.py install
