@@ -27,7 +27,11 @@ for dirname in dirnames:
 		name = os.path.splitext(filename)[0]
 		module_name = dirname.replace('/','.') + '.' + name
 		module_name = module_name[module_name.find("learnbot_dsl"):]
-		func = getattr(import_module(module_name), name)
+
+		try:
+			func = getattr(import_module(module_name), name)
+		except Exception as e:
+			print e, module_name, name
 		args = inspect.getargspec(func)
 		functions[name] = func
 		params[name] = args.args[1:]

@@ -11,6 +11,6 @@ def line_crossing(lbot, params=None, verbose=False):
 		print("Red points", roisR)
 		print("Black points", roisB)
 	
-	if roisR[1]>20 and roisB[1]>20:
+	if roisR[1]>40 and roisB[1]>40:
 		return True
 	return False
