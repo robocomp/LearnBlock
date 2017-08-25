@@ -1,3 +1,3 @@
 
 
-1.  [LearnBlock Documentation](/learnblock)
+1.  [LearnBlock Documentation](/doc/learnblock.md)
