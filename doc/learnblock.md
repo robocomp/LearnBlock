@@ -39,3 +39,13 @@ Create a functions is similar to create a variable,The first step is declare the
 The user can save and open project, for this the user should click in the next buttons.
 
 ![Bottons for save and open project](img/save_and_open.png)
+
+
+# Importam
+
+In order to use Learnblock, you must first install learnbot, for this you should execute the following lines.
+
+  cd learnbot
+
+
+  sudo python setup.py install
