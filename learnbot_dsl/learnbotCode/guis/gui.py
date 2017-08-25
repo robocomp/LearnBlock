@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/interface.ui'
 #
-# Created: Fri Aug 25 17:17:07 2017
+# Created: Fri Aug 25 17:20:09 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -261,7 +261,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.Tabwi.setCurrentIndex(1)
-        self.tabWidget_2.setCurrentIndex(6)
+        self.tabWidget_2.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
