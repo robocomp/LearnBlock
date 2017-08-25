@@ -6,11 +6,11 @@ global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
 while True:
-	if functions.get("center_red_line")(lbot):
+	if functions.get("center_black_line")(lbot):
 		functions.get("set_move")(lbot, 40, 0)
-	elif:
+	elif functions.get("right_black_line")(lbot):
 		functions.get("set_move")(lbot, 20, 0.2)
-	elif:
+	elif functions.get("left_black_line")(lbot):
 		functions.get("set_move")(lbot, 20, -0.2)
 	else:
 		functions.get("stop_bot")(lbot)
