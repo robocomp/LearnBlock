@@ -1,3 +1,3 @@
 
 
-1.  [LearnBlock Documentation](/learnbot/doc/learnblock)
+1.  [LearnBlock Documentation](/learnblock)
