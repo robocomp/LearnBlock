@@ -40,6 +40,7 @@ The user can save and open project, for this the user should click in the next b
 
 ![Bottons for save and open project](img/save_and_open.png)
 
+# Examples
 
 In this repository there are 3 examples:
 
