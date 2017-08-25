@@ -9,9 +9,14 @@ class AbstractBlockItem():
         self.file = file
         self.vars = vars
         self.connections = []
-        if len(connections) > 0 and not isinstance(connections[0],Connection):
-            for point, typeConnection in connections:
-                self.connections.append(Connection(point, self, typeConnection))
+        print connections
+        if len(connections) > 0:
+            if not isinstance(connections[0],Connection):
+                for point, typeConnection in connections:
+                    self.connections.append(Connection(point, self, typeConnection))
+            else:
+                for c in connections:
+                    self.connections.append(c)
         self.typeBlock = typeBlock
         self.type = type
         self.id = id

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/var.ui'
 #
-# Created: Fri Aug 25 23:14:29 2017
+# Created: Sat Aug 26 00:35:15 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!

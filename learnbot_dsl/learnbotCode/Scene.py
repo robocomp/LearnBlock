@@ -184,6 +184,8 @@ class MyScene(QtGui.QGraphicsScene):
             self.table.close()
             self.table = None
         if isinstance(item, BlockItem):
+            for c in item.connections:
+                print 1, c.getPoint()
             item.mousePressEvent(event)
 
     def mouseDoubleClickEvent(self,event):

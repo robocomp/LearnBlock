@@ -73,7 +73,7 @@ class MyButtom(QtGui.QPushButton):
         self.__scene.addItem(block)
 
     def getAbstracBlockItem(self):
-        return AbstractBlockItem(0,0,self.__text,self.__file,copy.deepcopy(self.__vars), self.__connections,self.__blockType,self.__type)
+        return AbstractBlockItem(0,0,self.__text,self.__file,copy.deepcopy(self.__vars), self.__connections, self.__blockType,self.__type)
 
     def delete(self,row):
         self.__table.removeCellWidget(row,0)
@@ -305,7 +305,8 @@ class LearnBlock:
                     for name in self.listNameVars:
                         self.delVar(name)
 
-                    for blockButton in d[1]:
+                    """for blockButton in d[1]:
+                        print blockButton.connections
                         table = self.dicTables['variables']
                         table.insertRow(table.rowCount())
                         button = MyButtom((blockButton,self.view,self.scene,table,table.rowCount()-1))
@@ -320,8 +321,12 @@ class LearnBlock:
                         self.listButtons.append(button)
                         table.setCellWidget(table.rowCount() - 1, 0, button)
                         self.listUserFunctions.append(button.getAbstracBlockItem())
-
+                    """
+                    for name in d[3]:
+                        self.addVariable(name)
                     self.listNameVars = d[3]
+                    for name in d[4]:
+                        self.addUserFunction(name)
                     self.listNameUserFunctions = d[4]
 
 
@@ -483,31 +488,35 @@ lbot = LearnBotClient.Client(sys.argv)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            self.ui.deleteVarPushButton.setEnabled(True)
-            imgs = ['block2','block3','block4']
+            self.addVariable(name)
 
-            self.listNameVars.append(name)
-            blockType, connections = self.loadConfigBlock(pathBlocks+"/block1")
+        self.addVarDialgo.close()
+
+    def addVariable(self,name):
+        self.ui.deleteVarPushButton.setEnabled(True)
+        imgs = ['block2', 'block3', 'block4']
+
+        self.listNameVars.append(name)
+        blockType, connections = self.loadConfigBlock(pathBlocks + "/block1")
+        table = self.dicTables['variables']
+        table.insertRow(table.rowCount())
+        variables = []
+        variables.append(Variable("float", "set to ", "0"))
+        button = MyButtom(
+            (name, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, variables, blockType,
+             table, table.rowCount() - 1, VARIABLE))
+        self.listButtons.append(button)
+        table.setCellWidget(table.rowCount() - 1, 0, button)
+        self.listVars.append(button.getAbstracBlockItem())
+        for img in imgs:
+            blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
             table = self.dicTables['variables']
             table.insertRow(table.rowCount())
-            variables =[]
-            variables.append(Variable("float","set to ", "0"))
-            button = MyButtom((name , self.view, self.scene, pathBlocks+"/block1" + ".png", connections, variables, blockType,
-                              table, table.rowCount()-1, VARIABLE))
+            button = MyButtom((name, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType,
+                               table, table.rowCount() - 1, VARIABLE))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listVars.append(button.getAbstracBlockItem())
-            for img in imgs:
-                blockType, connections = self.loadConfigBlock(pathBlocks+"/"+img)
-                table = self.dicTables['variables']
-                table.insertRow(table.rowCount())
-                button = MyButtom((name, self.view, self.scene, pathBlocks+"/"+img + ".png", connections, [], blockType,
-                                  table, table.rowCount()-1, VARIABLE))
-                self.listButtons.append(button)
-                table.setCellWidget(table.rowCount() - 1, 0, button)
-                self.listVars.append(button.getAbstracBlockItem())
-
-        self.addVarDialgo.close()
 
     def deleteVar(self):
         self.delVarGui = delVar.Ui_Dialog()
@@ -581,24 +590,26 @@ lbot = LearnBotClient.Client(sys.argv)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            self.ui.deleteFuntionsPushButton.setEnabled(True)
-            imgs = ['block8','block1']
-            self.listNameUserFunctions.append(name)
-            table = self.dicTables['funtions']
-            i= 0
-            for img in imgs:
-                blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
-                table.insertRow(table.rowCount())
-                button = MyButtom(
-                    (name, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType,
-                     table, table.rowCount()-1, USERFUNCTION))
-                self.listButtons.append(button)
-                table.setCellWidget(table.rowCount() - 1, 0, button)
-                self.listUserFunctions.append(button.getAbstracBlockItem())
-                i+=1
+            self.addUserFunction(name)
 
         self.userFunctionsDialgo.close()
 
+    def addUserFunction(self,name):
+        self.ui.deleteFuntionsPushButton.setEnabled(True)
+        imgs = ['block8', 'block1']
+        self.listNameUserFunctions.append(name)
+        table = self.dicTables['funtions']
+        i = 0
+        for img in imgs:
+            blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
+            table.insertRow(table.rowCount())
+            button = MyButtom(
+                (name, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType,
+                 table, table.rowCount() - 1, USERFUNCTION))
+            self.listButtons.append(button)
+            table.setCellWidget(table.rowCount() - 1, 0, button)
+            self.listUserFunctions.append(button.getAbstracBlockItem())
+            i += 1
     def deleteUserFunctions(self):
         self.delUserFunctionsGui = delVar.Ui_Dialog()
         self.delUserFunctionsDialgo = QtGui.QDialog()

@@ -1,6 +1,7 @@
 import numpy as np
 import copy
 import cv2
+import PySide.QtCore
 
 TOP = 0
 BOTTOM = 1
