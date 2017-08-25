@@ -413,7 +413,6 @@ lbot = LearnBotClient.Client(sys.argv)
                 else:
                     text += "pass"
                 text += "\n\n"
-        print text
         return text
 
     def toLBotPy(self,inst,ntab=1):
@@ -423,10 +422,10 @@ lbot = LearnBotClient.Client(sys.argv)
         if inst[1]["TYPE"] is FUNTION :
             text = "functions.get(\"" + inst[0] + "\")(lbot"
             if inst[1]["VARIABLES"] is not None:
-                text += ", ["
+                text += ", "
                 for var in inst[1]["VARIABLES"]:
                     text += var + ", "
-                text = text[0:-2] + "]"
+                text = text[0:-2] + ""
             text += ")"
         elif inst[1]["TYPE"] is VARIABLE:
             text = inst[0]
