@@ -467,6 +467,7 @@ lbot = LearnBotClient.Client(sys.argv)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
+            """
             if name.find("ñ") is -1:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("The name can't contain 'ñ'")
@@ -474,6 +475,7 @@ lbot = LearnBotClient.Client(sys.argv)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
+            """
             if name[0].isdigit():
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("The name can't start by number")
@@ -563,13 +565,15 @@ lbot = LearnBotClient.Client(sys.argv)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            if name.find("n") is -1:
+            """
+            if name.find("ñ") is -1:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("The name can't contain 'ñ'")
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
+            """
             if name[0].isdigit():
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("The name can't start by number")

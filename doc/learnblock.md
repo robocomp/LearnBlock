@@ -41,6 +41,14 @@ The user can save and open project, for this the user should click in the next b
 ![Bottons for save and open project](img/save_and_open.png)
 
 
+In this repository there are 3 examples:
+
+1. follow_black_line.blockProject
+2. follow_red_line_with_method.blockProject
+3. follow_black_line_and_stop_counter.blockProject
+
+This examples can open with this IDE.
+
 # Importam
 
 In order to use Learnblock, you must first install learnbot, for this you should execute the following lines.
@@ -48,3 +56,9 @@ In order to use Learnblock, you must first install learnbot, for this you should
     cd learnbot
 
     sudo python setup.py install
+
+For run this IDE you should run the robocomp simulator rcis
+
+The XML to run is
+
+    learnbot/learnbot-simulator/earnBotWorldDSL_lines.xml
