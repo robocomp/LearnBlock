@@ -377,9 +377,9 @@ lbot = LearnBotClient.Client(sys.argv)
 
 """
         if blocks is not None:
-            text += self.parserBlocks(blocks,self.toLBotPy)
+            code = self.parserBlocks(blocks,self.toLBotPy)
             fh = open("main_tmp.py","wr")
-            fh.writelines(text)
+            fh.writelines(text + code)
             fh.close()
             self.hilo = Process(target=self.execTmp)
             self.hilo.start()
@@ -396,11 +396,11 @@ lbot = LearnBotClient.Client(sys.argv)
 
     def parserBlocks(self,blocks,funtion):
         text = ""
-        print blocks
-        text = "class User:\n"
+        if len(blocks) > 1:
+            text = "class User:\n"
         for b in blocks:
             if "main" not in b[0]:
-                text += "\tdef "+b[0]+"(self)\n"
+                text += "\tdef "+b[0]+"(self):\n"
                 if b[1]["BOTTOMIN"] is not None:
                     text += "\t\t" + funtion(b[1]["BOTTOMIN"],3)
                 else:
