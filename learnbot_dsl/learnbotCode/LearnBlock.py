@@ -339,8 +339,9 @@ class LearnBlock:
             #self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
             self.generateTmpFile()
 
+    #TODO Esperar a que termine el parseador de texto
     def generateTmpFilefromText(self):
-        text = self.ui.plainTextEdit_2.toPlainText() #TODO 
+        text = self.ui.plainTextEdit_2.toPlainText() #TODO
         parserFile(text,"main_tmp.py")
 
     def printInst(self,inst,ntab=1):
