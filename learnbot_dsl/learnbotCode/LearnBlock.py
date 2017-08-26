@@ -24,7 +24,7 @@ import learnbot_dsl.LearnBotClient as LearnBotClient
 
 from learnbot_dsl.functions import *
 from blocksConfig.blocks import pathBlocks
-
+from  parserText import parserFile
 def loadfile(file):
     fh = open(file, "r")
     code = fh.read()
@@ -114,7 +114,9 @@ class LearnBlock:
         self.ui.setupUi(self.Dialog)
         self.Dialog.showMaximized()
         self.ui.startPushButton.clicked.connect(self.printProgram)
+        self.ui.startTextPushButton.clicked.connect(self.generateTmpFilefromText)
         self.ui.stopPushButton.clicked.connect(self.stopthread)
+        self.ui.stoptextPushButton.clicked.connect(self.stopthread)
         self.ui.addVarPushButton.clicked.connect(self.newVariable)
         self.ui.stopPushButton.setEnabled(False)
         self.ui.startPushButton.setEnabled(True)
@@ -304,24 +306,6 @@ class LearnBlock:
                         self.delUserFunction(name)
                     for name in self.listNameVars:
                         self.delVar(name)
-
-                    """for blockButton in d[1]:
-                        print blockButton.connections
-                        table = self.dicTables['variables']
-                        table.insertRow(table.rowCount())
-                        button = MyButtom((blockButton,self.view,self.scene,table,table.rowCount()-1))
-                        self.listButtons.append(button)
-                        table.setCellWidget(table.rowCount() - 1, 0, button)
-                        self.listVars.append(button.getAbstracBlockItem())
-
-                    for blockButton in d[2]:
-                        table = self.dicTables['funtions']
-                        table.insertRow(table.rowCount())
-                        button = MyButtom((blockButton, self.view, self.scene, table, table.rowCount() - 1))
-                        self.listButtons.append(button)
-                        table.setCellWidget(table.rowCount() - 1, 0, button)
-                        self.listUserFunctions.append(button.getAbstracBlockItem())
-                    """
                     for name in d[3]:
                         self.addVariable(name)
                     self.listNameVars = d[3]
@@ -351,9 +335,13 @@ class LearnBlock:
     def printProgram(self):
         blocks = self.scene.getListInstructions()
         if blocks is not None:
-            self.ui.plainTextEdit_2.clear()
-            self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
+            #self.ui.plainTextEdit_2.clear()
+            #self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
             self.generateTmpFile()
+
+    def generateTmpFilefromText(self):
+        text = self.ui.plainTextEdit_2.toPlainText() #TODO 
+        parserFile(text,"main_tmp.py")
 
     def printInst(self,inst,ntab=1):
         text = inst[0]
@@ -610,6 +598,7 @@ lbot = LearnBotClient.Client(sys.argv)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listUserFunctions.append(button.getAbstracBlockItem())
             i += 1
+
     def deleteUserFunctions(self):
         self.delUserFunctionsGui = delVar.Ui_Dialog()
         self.delUserFunctionsDialgo = QtGui.QDialog()

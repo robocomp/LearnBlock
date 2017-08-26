@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/interface.ui'
 #
-# Created: Sat Aug 26 00:35:15 2017
+# Created: Sat Aug 26 16:54:01 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -65,12 +65,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addItem(spacerItem1)
         self.horizontalLayout_5 = QtGui.QHBoxLayout()
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.pushButton_3 = QtGui.QPushButton(self.program_text)
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.horizontalLayout_5.addWidget(self.pushButton_3)
-        self.pushButton_4 = QtGui.QPushButton(self.program_text)
-        self.pushButton_4.setObjectName("pushButton_4")
-        self.horizontalLayout_5.addWidget(self.pushButton_4)
+        self.startTextPushButton = QtGui.QPushButton(self.program_text)
+        self.startTextPushButton.setEnabled(False)
+        self.startTextPushButton.setObjectName("startTextPushButton")
+        self.horizontalLayout_5.addWidget(self.startTextPushButton)
+        self.stoptextPushButton = QtGui.QPushButton(self.program_text)
+        self.stoptextPushButton.setEnabled(False)
+        self.stoptextPushButton.setObjectName("stoptextPushButton")
+        self.horizontalLayout_5.addWidget(self.stoptextPushButton)
         self.verticalLayout_5.addLayout(self.horizontalLayout_5)
         self.horizontalLayout.addLayout(self.verticalLayout_5)
         self.Tabwi.addTab(self.program_text, "")
@@ -260,7 +262,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuFile.menuAction())
 
         self.retranslateUi(MainWindow)
-        self.Tabwi.setCurrentIndex(1)
+        self.Tabwi.setCurrentIndex(0)
         self.tabWidget_2.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -268,8 +270,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
         self.Tabwi.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<html><head/><body><p>H</p><p><br/></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Program", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_3.setText(QtGui.QApplication.translate("MainWindow", "Start", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_4.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
+        self.startTextPushButton.setText(QtGui.QApplication.translate("MainWindow", "Start", None, QtGui.QApplication.UnicodeUTF8))
+        self.stoptextPushButton.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.Tabwi.setTabText(self.Tabwi.indexOf(self.program_text), QtGui.QApplication.translate("MainWindow", "Text Code", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.control), QtGui.QApplication.translate("MainWindow", "Control", None, QtGui.QApplication.UnicodeUTF8))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.move), QtGui.QApplication.translate("MainWindow", "Motor", None, QtGui.QApplication.UnicodeUTF8))

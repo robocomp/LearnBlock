@@ -9,7 +9,6 @@ class AbstractBlockItem():
         self.file = file
         self.vars = vars
         self.connections = []
-        print connections
         if len(connections) > 0:
             if not isinstance(connections[0],Connection):
                 for point, typeConnection in connections:
