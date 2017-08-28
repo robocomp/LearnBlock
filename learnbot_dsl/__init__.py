@@ -1,7 +1,4 @@
-import LearnBotClient as client
-from functions import *
+import LearnBotClient
+from functions import * as functions
 
-__all__ = ['LearnBotClient', 'dicFunctions']
-
-LearnBotClient = client
-dicFunctions = functions
+__all__ = ['LearnBotClient', 'functions']
