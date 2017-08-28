@@ -25,6 +25,8 @@ import learnbot_dsl.LearnBotClient as LearnBotClient
 from learnbot_dsl.functions import *
 from blocksConfig.blocks import pathBlocks
 from  parserText import parserFile
+from checkFile import compile
+
 def loadfile(file):
     fh = open(file, "r")
     code = fh.read()
@@ -375,10 +377,17 @@ lbot = LearnBotClient.Client(sys.argv)
             fh = open("main_tmp.py","wr")
             fh.writelines(text + code)
             fh.close()
-            self.hilo = Process(target=self.execTmp)
-            self.hilo.start()
-            self.ui.stopPushButton.setEnabled(True)
-            self.ui.startPushButton.setEnabled(False)
+            if compile("main_tmp"):
+                self.hilo = Process(target=self.execTmp)
+                self.hilo.start()
+                self.ui.stopPushButton.setEnabled(True)
+                self.ui.startPushButton.setEnabled(False)
+            else:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("Your code has an error. Check it out again")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
 
     def stopthread(self):
         try:
