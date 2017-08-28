@@ -1,4 +1,3 @@
 import LearnBotClient
-from functions import * as functions
-
+import functions
 __all__ = ['LearnBotClient', 'functions']

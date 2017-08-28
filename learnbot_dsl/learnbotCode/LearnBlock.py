@@ -377,7 +377,7 @@ lbot = LearnBotClient.Client(sys.argv)
             fh = open("main_tmp.py","wr")
             fh.writelines(text + code)
             fh.close()
-            if compile("main_tmp"):
+            if compile("main_tmp.py"):
                 self.hilo = Process(target=self.execTmp)
                 self.hilo.start()
                 self.ui.stopPushButton.setEnabled(True)
