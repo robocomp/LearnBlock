@@ -13,6 +13,7 @@ from Block import *
 from Scene import *
 from View import *
 from guiCreateBlock import *
+from guiAddNumberOrString import *
 
 
 from multiprocessing import Process
@@ -85,21 +86,11 @@ class MyButtom(QtGui.QPushButton):
 
     def getText(self):
         return self.__text
-    """
-    def mousePressEvent(self,event):
-        if self.__type is VARIABLE and event.button() is QtCore.Qt.MouseButton.RightButton:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setText("Delete Button")
-            msgBox.setStandardButtons(QtGui.QMessageBox.Cancel | QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
-            ret = msgBox.exec_()
-            if ret == QtGui.QMessageBox.Ok:
-                self.delete()
-    """
 
 class LearnBlock:
 
     def __init__(self):
+        self.addNumberOrStringGui = None
         self.delUserFunctionsGui = None
         self.delUserFunctionsDialgo = None
         self.delVarGui = None
@@ -120,6 +111,8 @@ class LearnBlock:
         self.ui.stopPushButton.clicked.connect(self.stopthread)
         self.ui.stoptextPushButton.clicked.connect(self.stopthread)
         self.ui.addVarPushButton.clicked.connect(self.newVariable)
+        self.ui.addNumberpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(1))
+        self.ui.addStringpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(2))
         self.ui.stopPushButton.setEnabled(False)
         self.ui.startPushButton.setEnabled(True)
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
@@ -341,6 +334,19 @@ class LearnBlock:
         self.createBlockGui = guiCreateBlock()
         self.createBlockGui.ui.pushButtonOK.clicked.connect(self.load_blocks)
         self.createBlockGui.open()
+
+    def showGuiAddNumberOrString(self,type):
+        self.addNumberOrStringGui = guiAddNumberOrString(type)
+        self.addNumberOrStringGui.ui.pushButtonOK.clicked.connect(self.addBlockNumberOrString)
+        self.addNumberOrStringGui.open()
+
+    def addBlockNumberOrString(self):
+        text = self.addNumberOrStringGui.value
+        imgPath = self.addNumberOrStringGui.imgName
+        configImgPath = imgPath.replace(".png","")
+        blockType, connections = self.loadConfigBlock(configImgPath)
+        block = AbstractBlockItem(0,0,text,imgPath,[], connections, blockType,VARIABLE)
+        self.scene.addItem(block)
 
     def printProgram(self):
         blocks = self.scene.getListInstructions()
