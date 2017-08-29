@@ -8,6 +8,13 @@ This project have a similar IDE to Scratch.The program, that is created by child
 
 Below explained the steps to follow to program the Learnbot with tis IDE:
 
+## Run LearnBlock
+
+For run this IDE you should execute the follow lines:
+
+    $ chmod +x startLearnblock
+    $ ./startLearnblock
+
 ## Simple program
 
 With this code the LearnBot follow the red lines.
