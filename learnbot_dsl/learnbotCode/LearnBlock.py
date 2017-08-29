@@ -128,6 +128,10 @@ class LearnBlock:
         self.ui.savepushButton.setFixedSize(QtCore.QSize(24,22))
         self.ui.openpushButton.setIconSize(QtCore.QSize(24,22))
         self.ui.savepushButton.setIconSize(QtCore.QSize(24,22))
+        self.ui.zoompushButton.setIcon(QtGui.QIcon("guis/zoom.png"))
+        self.ui.zoompushButton.setIconSize(QtCore.QSize(30,30))
+        self.ui.zoompushButton.setFixedSize(QtCore.QSize(30,30))
+        self.ui.zoompushButton.clicked.connect(self.setZoom)
         self.listVars = []
         self.listUserFunctions = []
         self.addVarGui = None
@@ -138,6 +142,7 @@ class LearnBlock:
         self.scene = MyScene(self.view)
         self.view.setScene(self.scene)
         self.view.show()
+        self.view.setZoom(False)
         self.createBlockGui = None
         #READ FUNTIONS
         #process
@@ -184,6 +189,9 @@ class LearnBlock:
             b.removeTmpFile()
         os.rmdir("tmp")
         sys.exit(r)
+
+    def setZoom(self):
+        self.view.setZoom(self.ui.zoompushButton.isChecked())
 
     def load_blocks(self):
         functions = configBlocks
@@ -372,6 +380,10 @@ global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
 """
+        if len(self.listNameVars)>0:
+            for name in self.listNameVars:
+                text += name + " = None\n"
+
         if blocks is not None:
             code = self.parserBlocks(blocks,self.toLBotPy)
             fh = open("main_tmp.py","wr")
@@ -404,6 +416,9 @@ lbot = LearnBotClient.Client(sys.argv)
         for b in blocks:
             if "main" not in b[0]:
                 text += "\tdef "+b[0]+"(self):\n"
+                if len(self.listNameVars) > 0:
+                    for name in self.listNameVars:
+                        text += "\t\tglobal " + name + "\n"
                 if b[1]["BOTTOMIN"] is not None:
                     text += "\t\t" + funtion(b[1]["BOTTOMIN"],3)
                 else:
