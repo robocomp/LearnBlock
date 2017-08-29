@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/interface.ui'
 #
-# Created: Tue Aug 29 14:59:36 2017
+# Created: Tue Aug 29 18:49:17 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -33,6 +33,12 @@ class Ui_MainWindow(object):
         self.zoompushButton.setCheckable(True)
         self.zoompushButton.setObjectName("zoompushButton")
         self.horizontalLayout_2.addWidget(self.zoompushButton)
+        self.addNumberpushButton = QtGui.QPushButton(self.centralwidget)
+        self.addNumberpushButton.setObjectName("addNumberpushButton")
+        self.horizontalLayout_2.addWidget(self.addNumberpushButton)
+        self.addStringpushButton = QtGui.QPushButton(self.centralwidget)
+        self.addStringpushButton.setObjectName("addStringpushButton")
+        self.horizontalLayout_2.addWidget(self.addStringpushButton)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout_4.addLayout(self.horizontalLayout_2)
@@ -273,6 +279,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        self.addNumberpushButton.setText(QtGui.QApplication.translate("MainWindow", "Add Number", None, QtGui.QApplication.UnicodeUTF8))
+        self.addStringpushButton.setText(QtGui.QApplication.translate("MainWindow", "Add String", None, QtGui.QApplication.UnicodeUTF8))
         self.Tabwi.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<html><head/><body><p>H</p><p><br/></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Program", None, QtGui.QApplication.UnicodeUTF8))
         self.startTextPushButton.setText(QtGui.QApplication.translate("MainWindow", "Start", None, QtGui.QApplication.UnicodeUTF8))

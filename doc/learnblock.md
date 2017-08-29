@@ -47,13 +47,20 @@ The user can save and open project, for this the user should click in the next b
 
 ![Bottons for save and open project](img/save_and_open.png)
 
+## Add Number or String
+
+The user can create Number or String with this buttons:
+
+![Bottons for add Number or String](img/addNumberOrString.png)
+
 # Examples
 
-In this repository there are 3 examples:
+In this repository there are 4 examples:
 
 1. follow_black_line.blockProject
 2. follow_red_line_with_method.blockProject
 3. follow_black_line_and_stop_counter.blockProject
+4. follow_lines_and_change_of_line_with_method_and_variable.blockProject
 
 This examples can open with this IDE.
 

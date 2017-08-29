@@ -26,7 +26,11 @@ if call(["pyside-uic","-o",path+"/delVar.py",path+"/delVar.ui"]) is 1:
 if call(["pyside-uic","-o",path+"/createFunctions.py",path+"/createFunctions.ui"]) is 1:
     print "Error al generar createFunctions.py"
     exit(-1)
-__all__ = ['guiAddVar','guiGui','guiGuiCreateBlock','guiNewVar','guiDelVar','guiCreateFunctions']
+if call(["pyside-uic","-o",path+"/addNumberOrString.py",path+"/addNumberOrString.ui"]) is 1:
+    print "Error al generar addNumberOrString.py"
+    exit(-1)
+
+__all__ = ['guiAddVar','guiGui','guiGuiCreateBlock','guiNewVar','guiDelVar','guiCreateFunctions','guiAddNumberOrString']
 
 
 import addVar
@@ -35,6 +39,7 @@ import createBlock
 import newVar
 import delVar
 import createFunctions
+import addNumberOrString
 
 guiAddVar = addVar
 guiGui = gui
@@ -42,3 +47,4 @@ guiGuiCreateBlock = createBlock
 guiNewVar = newVar
 guiDelVar = delVar
 guiCreateFunctions = createFunctions
+guiAddNumberOrString = addNumberOrString

@@ -45,6 +45,20 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="addNumberpushButton">
+        <property name="text">
+         <string>Add Number</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="addStringpushButton">
+        <property name="text">
+         <string>Add String</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
