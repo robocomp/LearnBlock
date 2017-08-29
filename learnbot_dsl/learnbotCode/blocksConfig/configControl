@@ -1,0 +1,50 @@
+
+block{
+    type control
+    name main
+    file None
+    img block8
+}
+
+block{
+    type control
+    name end
+    file None
+    img block7
+}
+
+block{
+    type control
+    name if
+    file None
+    img block6
+}
+
+block{
+    type control
+    name elif
+    file None
+    img block6
+}
+
+block{
+    type control
+    name else
+    file None
+    img block5
+}
+
+block{
+    type control
+    name for
+    file None
+    img block6
+}
+
+block{
+    type control
+    name while
+    file None
+    img block6
+}
+

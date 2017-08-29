@@ -23,7 +23,6 @@ from PySide import *
 from genericworker import *
 
 import cv2
-import cv
 import traceback
 import numpy as np
 import urllib
@@ -32,7 +31,7 @@ import json
 import ast
 import math
 #import datetime as time
-from PyQt4.QtGui import *#QImage, qRgb		
+from PyQt4.QtGui import *#QImage, qRgb
 
 
 ROBOCOMP = ''
@@ -56,7 +55,7 @@ from RoboCompLaser import *
 
 class myGraphicsSceneJoyStick(QtGui.QGraphicsScene):
   def __init__(self, parent):
-    super(myGraphicsSceneJoyStick,self).__init__()    
+    super(myGraphicsSceneJoyStick,self).__init__()
     self.move = False
     self.press = False
     self.vaca = None
@@ -64,22 +63,22 @@ class myGraphicsSceneJoyStick(QtGui.QGraphicsScene):
     self.vacaH = None
     self.parent = parent
     self.timerJoystick = QtCore.QTime.currentTime()
-    
+
     self.setSceneRect(-100,-100,200,200)
     self.vAdvanceRobot = 10
     self.vRotationRobot = 0.05
-    
+
     posX = 0
     posY = 0
-    self.vaca = self.addEllipse(posX-5,posY-5,10,10)      
+    self.vaca = self.addEllipse(posX-5,posY-5,10,10)
     self.crosslineW = QtCore.QLineF(-self.width()/2,posY,self.width()/2,posY)
     self.crosslineH = QtCore.QLineF(posX,-self.height()/2,posX,self.height()/2)
     self.vacaW = self.addLine(self.crosslineW)
     self.vacaH = self.addLine(self.crosslineH)
     self.update()
     self.parent.setRobotSpeed(0,0)
- 
- 
+
+
   def mousePressAndMoveEvent(self,event):
     if self.press and self.move:
       self.removeItem(self.vaca)
@@ -87,7 +86,7 @@ class myGraphicsSceneJoyStick(QtGui.QGraphicsScene):
       self.removeItem(self.vacaH)
       posX = event.scenePos().x()
       posY = event.scenePos().y()
-      self.vaca = self.addEllipse(posX-5,posY-5,10,10)      
+      self.vaca = self.addEllipse(posX-5,posY-5,10,10)
       self.crosslineW = QtCore.QLineF(-self.width()/2,posY,self.width()/2,posY)
       self.crosslineH = QtCore.QLineF(posX,-self.height()/2,posX,self.height()/2)
       self.vacaW = self.addLine(self.crosslineW)
@@ -96,33 +95,33 @@ class myGraphicsSceneJoyStick(QtGui.QGraphicsScene):
       print "Advance speed:", -posY*self.vAdvanceRobot, " <--> Rotation speed: ", posX*self.vRotationRobot
       self.parent.setRobotSpeed(-posY*self.vAdvanceRobot,posX*self.vRotationRobot)
       self.timerJoystick.restart()
-  
+
   def mousePressEvent(self,event):
     self.press = True
     self.mousePressAndMoveEvent(event)
-    
+
   def mouseMoveEvent(self,event):
     self.move = True
     self.mousePressAndMoveEvent(event)
-    
+
   def mouseReleaseEvent(self,event):
     self.press = False
     self.move = False
-   
+
     self.removeItem(self.vaca)
     self.removeItem(self.vacaW)
     self.removeItem(self.vacaH)
     posX = 0
     posY = 0
-    self.vaca = self.addEllipse(posX-5,posY-5,10,10)      
+    self.vaca = self.addEllipse(posX-5,posY-5,10,10)
     self.crosslineW = QtCore.QLineF(-self.width()/2,posY,self.width()/2,posY)
     self.crosslineH = QtCore.QLineF(posX,-self.height()/2,posX,self.height()/2)
     self.vacaW = self.addLine(self.crosslineW)
     self.vacaH = self.addLine(self.crosslineH)
     self.update()
     self.parent.setRobotSpeed(0,0)
-    
-    
+
+
 
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
@@ -132,27 +131,27 @@ class SpecificWorker(GenericWorker):
 ################################
 		self.sceneCamera = QtGui.QGraphicsScene()
 
-		self.qimage = QtGui.QImage(320,240,QtGui.QImage.Format_RGB888)		   
+		self.qimage = QtGui.QImage(320,240,QtGui.QImage.Format_RGB888)
 		self.ui.graphicsViewCamera.setScene(self.sceneCamera)
-		
-		self.bytes=''		
+
+		self.bytes=''
 
 ################################
 ################################
 		self.sceneUltrasound = QtGui.QGraphicsScene()
-				
+
 		self.sceneUltrasound.setSceneRect(-100,-100,200,200)
 #		self.ui.graphicsViewUltrasound.scale(-1,1)
 		self.ui.graphicsViewUltrasound.setScene(self.sceneUltrasound)
-		
+
 		self.sceneUltrasound.addEllipse(-5,-5,10,10)
-		
+
 		self.gatoN = None
 		self.gatoS = None
 		self.gatoE = None
-		self.gatoW = None	
+		self.gatoW = None
 ################################
-		
+
 		self.sceneJoyStick = myGraphicsSceneJoyStick(self)
 		self.vaca = self.ui.graphicsViewJoyStick.setScene(self.sceneJoyStick)
 		self.sceneJoyStick.update()
@@ -186,17 +185,17 @@ class SpecificWorker(GenericWorker):
 			if (len(self.color) == 0) or (len(self.depth) == 0):
                                 print 'Error retrieving images!'
                 except Ice.Exception:
-                        traceback.print_exc()		
+                        traceback.print_exc()
 
 		self.imageArr = np.fromstring(self.color, dtype=np.uint8).reshape((240, 320, 3))
 		try:
-			self.qimage = QtGui.QImage(self.imageArr,320,240,0,QtGui.QImage.Format_RGB888)	      
-			self.sceneCamera.addPixmap(QtGui.QPixmap.fromImage(self.qimage))	      
+			self.qimage = QtGui.QImage(self.imageArr,320,240,0,QtGui.QImage.Format_RGB888)
+			self.sceneCamera.addPixmap(QtGui.QPixmap.fromImage(self.qimage))
 			self.sceneCamera.update()
 		except:
 			print "problem showing image..."
 			return None
-	
+
 
 
 		#self.getImageStream()
@@ -206,16 +205,16 @@ class SpecificWorker(GenericWorker):
 	def computeUltrasound(self):
 
 		marginImage = 5
-	  
+
 		polygonN = QtGui.QPolygon()
 		polygonS = QtGui.QPolygon()
 		polygonE = QtGui.QPolygon()
 		polygonW = QtGui.QPolygon()
-	  
+
 		if self.gatoN != None:
 			self.sceneUltrasound.removeItem(self.gatoN)
 			self.sceneUltrasound.removeItem(self.gatoS)
-			self.sceneUltrasound.removeItem(self.gatoE)	    
+			self.sceneUltrasound.removeItem(self.gatoE)
 			self.sceneUltrasound.removeItem(self.gatoW)
 
 #	  Degrees to Radians
@@ -229,17 +228,17 @@ class SpecificWorker(GenericWorker):
 		usData[0] = usData[0]/10
 
 		h = (math.sin(radians90) * usData[0]) / math.sin(radians75)
-		a = (math.sin(radians15) * usData[0]) / math.sin(radians75)	      	      
-		polygonN.push_back(QtCore.QPoint(0,-marginImage))      
+		a = (math.sin(radians15) * usData[0]) / math.sin(radians75)
+		polygonN.push_back(QtCore.QPoint(0,-marginImage))
 		polygonN.push_back(QtCore.QPoint(0+a,-(h+marginImage)))
 		polygonN.push_back(QtCore.QPoint(0-a,-(h+marginImage)))
-		polygonN.push_back(QtCore.QPoint(0,-marginImage))	
+		polygonN.push_back(QtCore.QPoint(0,-marginImage))
 
 
 		usData[1] = usData[1]/10
 
 		h = (math.sin(radians90) * usData[1]) / math.sin(radians75)
-		a = (math.sin(radians15) * usData[1]) / math.sin(radians75)	      
+		a = (math.sin(radians15) * usData[1]) / math.sin(radians75)
 		polygonE.push_back(QtCore.QPoint(-marginImage,0))
 		polygonE.push_back(QtCore.QPoint(-(h+marginImage),0+a))
 		polygonE.push_back(QtCore.QPoint(-(h+marginImage),0-a))
@@ -249,7 +248,7 @@ class SpecificWorker(GenericWorker):
 		usData[2] = usData[2]/10
 
 		h = (math.sin(radians90) * usData[2]) / math.sin(radians75)
-		a = (math.sin(radians15) * usData[2]) / math.sin(radians75)	      
+		a = (math.sin(radians15) * usData[2]) / math.sin(radians75)
 		polygonW.push_back(QtCore.QPoint(marginImage,0))
 		polygonW.push_back(QtCore.QPoint(h+marginImage,0+a))
 		polygonW.push_back(QtCore.QPoint(h+marginImage,0-a))
@@ -260,10 +259,10 @@ class SpecificWorker(GenericWorker):
 
 		h = (math.sin(radians90) * usData[3]) / math.sin(radians75)
 		a = (math.sin(radians15) * usData[3]) / math.sin(radians75)
-		polygonS.push_back(QtCore.QPoint(0,marginImage))     
+		polygonS.push_back(QtCore.QPoint(0,marginImage))
 		polygonS.push_back(QtCore.QPoint(0+a,h+marginImage))
 		polygonS.push_back(QtCore.QPoint(0-a,h+marginImage))
-		polygonS.push_back(QtCore.QPoint(0,marginImage))	
+		polygonS.push_back(QtCore.QPoint(0,marginImage))
 
 		self.gatoN = self.sceneUltrasound.addPolygon(polygonN)
 		self.gatoS = self.sceneUltrasound.addPolygon(polygonS)
@@ -311,8 +310,7 @@ class SpecificWorker(GenericWorker):
 
 		return usList
 
-	
-	def setRobotSpeed(self,vAdvance,vRotation):	  
-	  self.differentialrobot_proxy.setSpeedBase(vAdvance,vRotation)	  	  
+
+	def setRobotSpeed(self,vAdvance,vRotation):
+	  self.differentialrobot_proxy.setSpeedBase(vAdvance,vRotation)
 	  return True
-	  

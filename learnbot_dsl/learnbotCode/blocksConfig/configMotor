@@ -1,0 +1,82 @@
+
+block{
+    type motor
+    name move_left
+    file learnbot-dsl/funtions/motor/move_left.py
+    variables{
+        float duration 0
+    }
+    img block1
+}
+
+block{
+    type motor
+    name move_right
+    file learnbot-dsl/funtions/motor/move_right.py
+    variables{
+        float duration 0
+    }
+    img block1
+}
+
+block{
+    type motor
+    name move_straight
+    file learnbot-dsl/funtions/motor/move_straight.py
+    variables{
+        float duration 0
+    }
+    img block1
+}
+
+block{
+    type motor
+    name set_move
+    file learnbot-dsl/funtions/motor/set_move.py
+    variables{
+        float avance  0
+        float rotacion 0
+    }
+    img block1
+}
+
+block{
+    type motor
+    name stop_bot
+    file learnbot-dsl/funtions/motor/stop_bot.py
+    img block1
+}
+
+block{
+    type motor
+    name turn
+    file learnbot-dsl/funtions/motor/turn.py
+    variables{
+        int angle 0
+    }
+    img block1
+}
+
+block{
+    type motor
+    name turn_back
+    file learnbot-dsl/funtions/motor/turn_back.py
+    img block1
+}
+
+block{
+    type motor
+    name turn_left
+    file learnbot-dsl/funtions/motor/turn_left.py
+    img block1
+}
+
+block{
+    type motor
+    name turn_right
+    file learnbot-dsl/funtions/motor/turn_right.py
+    img block1
+}
+
+
+
