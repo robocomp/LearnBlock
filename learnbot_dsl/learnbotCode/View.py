@@ -2,31 +2,36 @@ from PySide import QtCore, QtGui
 from VisualFuntion import *
 
 class MyView(QtGui.QGraphicsView):
+
     def __init__(self,parent,arg=None):
+        self.zoom = None
         QtGui.QGraphicsView.__init__(self,parent)
 
+    def setZoom(self,zoom):
+        self.zoom=zoom
     def wheelEvent(self, event):
-        # Zoom Factor
-        zoomInFactor = 1.25
-        zoomOutFactor = 1 / zoomInFactor
+        if self.zoom:
+            # Zoom Factor
+            zoomInFactor = 1.25
+            zoomOutFactor = 1 / zoomInFactor
 
-        # Set Anchors
-        self.setTransformationAnchor(QtGui.QGraphicsView.NoAnchor)
-        self.setResizeAnchor(QtGui.QGraphicsView.NoAnchor)
+            # Set Anchors
+            self.setTransformationAnchor(QtGui.QGraphicsView.NoAnchor)
+            self.setResizeAnchor(QtGui.QGraphicsView.NoAnchor)
 
-        # Save the scene pos
-        oldPos = self.mapToScene(event.pos())
+            # Save the scene pos
+            oldPos = self.mapToScene(event.pos())
 
-        # Zoom
-        if event.delta() > 0:
-            zoomFactor = zoomInFactor
-        else:
-            zoomFactor = zoomOutFactor
-        self.scale(zoomFactor, zoomFactor)
+            # Zoom
+            if event.delta() > 0:
+                zoomFactor = zoomInFactor
+            else:
+                zoomFactor = zoomOutFactor
+            self.scale(zoomFactor, zoomFactor)
 
-        # Get the new position
-        newPos = self.mapToScene(event.pos())
+            # Get the new position
+            newPos = self.mapToScene(event.pos())
 
-        # Move scene to old position
-        delta = newPos - oldPos
-        self.translate(delta.x(), delta.y())
+            # Move scene to old position
+            delta = newPos - oldPos
+            self.translate(delta.x(), delta.y())

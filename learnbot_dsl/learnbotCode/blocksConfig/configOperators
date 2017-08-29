@@ -102,3 +102,10 @@ block{
     file None
     img block3
 }
+
+block{
+	type operador
+	name print
+	file None
+	img block2
+}

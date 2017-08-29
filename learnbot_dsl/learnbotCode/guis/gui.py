@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/interface.ui'
 #
-# Created: Tue Aug 29 02:00:58 2017
+# Created: Tue Aug 29 14:59:36 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,6 +28,11 @@ class Ui_MainWindow(object):
         self.savepushButton.setText("")
         self.savepushButton.setObjectName("savepushButton")
         self.horizontalLayout_2.addWidget(self.savepushButton)
+        self.zoompushButton = QtGui.QPushButton(self.centralwidget)
+        self.zoompushButton.setText("")
+        self.zoompushButton.setCheckable(True)
+        self.zoompushButton.setObjectName("zoompushButton")
+        self.horizontalLayout_2.addWidget(self.zoompushButton)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.verticalLayout_4.addLayout(self.horizontalLayout_2)
