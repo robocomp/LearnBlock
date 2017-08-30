@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+x=$1
+
+A="install"
+B="uninstall"
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+if [ -z ${x} ]
+then
+  echo You must specify an argument install or uninstall.
+elif [ $1 = "install" ]
+then
+  python setup.py install --record files.txt
+  echo Completed install successfully
+elif [ $1 = "uninstall" ]
+then
+  cat files.txt | xargs rm -rf
+  echo Completed uninstall successfully
+else
+  echo You must specify an argument install or uninstall.
+fi
