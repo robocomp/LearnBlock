@@ -55,7 +55,7 @@ The user can create Number or String with this buttons:
 
 # Examples
 
-In this repository there are 3 examples:
+In this repository there are 4 examples:
 
 1. follow_black_line.blockProject
 2. follow_red_line_with_method.blockProject
