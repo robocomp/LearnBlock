@@ -69,7 +69,8 @@ This examples can open with this IDE.
 In order to use Learnblock, you must first install learnbot, for this you should execute the following lines.
 
     $ cd learnbot/
-    $ sudo python setup.py install
+    $ chmod +x setupLearnBlock
+    $ sudo ./setupLearnBlock install
 
 For run this IDE you should run the robocomp simulator rcis
 
