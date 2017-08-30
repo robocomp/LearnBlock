@@ -275,7 +275,11 @@ class LearnBlock:
                 self.saveInstance()
         if self.__fileProject is not None:
             with open(self.__fileProject, 'wb') as fichero:
-                pickle.dump((self.scene.dicBlockItem,self.listVars,self.listUserFunctions,self.listNameVars,self.listNameUserFunctions), fichero,0)
+                dic=copy.deepcopy(self.scene.dicBlockItem)
+                for id in dic:
+                    block = dic[id]
+                    block.file = block.file.replace(pathImgBlocks,"")
+                pickle.dump((dic,self.listVars,self.listUserFunctions,self.listNameVars,self.listNameUserFunctions), fichero,0)
 
     def saveAs(self):
         fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.',
@@ -303,6 +307,10 @@ class LearnBlock:
                 self.__fileProject = fileName[0]
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
+                    dictBlock = d[0]
+                    for id in dictBlock:
+                        block = dictBlock[id]
+                        block.file = pathImgBlocks + block.file
                     self.scene.setBlockDict(d[0])
                     self.scene.startAllblocks()
                     for name in self.listNameUserFunctions:
