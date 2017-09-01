@@ -69,6 +69,7 @@ class MyScene(QtGui.QGraphicsScene):
             self.dictVisualItem[blockItem.id] = visualItem
             if self.nextIdItem <= int(id):
                 self.nextIdItem = int(id)+1
+
         while self.shouldSave is True:
             self.shouldSave = False
             for id in self.dictVisualItem:
@@ -164,6 +165,9 @@ class MyScene(QtGui.QGraphicsScene):
         p = p1 - p2
         return sqrt(pow(p.x(), 2) + pow(p.y(), 2))
 
+    def activeShouldSave(self):
+        self.shouldSave = True
+
     def getListInstructions(self):
         list = []
         for id in self.dictVisualItem:
@@ -210,12 +214,19 @@ class MyScene(QtGui.QGraphicsScene):
                 elif c.getType() in [BOTTOM,BOTTOMIN]:
                     cNext = c.getConnect()
                     cLastIt = self.getVisualItem(cItS.getParent().id).getLastItem()
-                    if cLastIt is None:
-                        return
-                    cLastIt.setItem(cNext.getParent().id)
-                    cLastIt.setConnect(cNext)
-                    cNext.setItem(cLastIt.getParent().id)
-                    cNext.setConnect(cLastIt)
+                    if cLastIt is not None:
+                        cLastIt.setItem(cNext.getParent().id)
+                        cLastIt.setConnect(cNext)
+                        cNext.setItem(cLastIt.getParent().id)
+                        cNext.setConnect(cLastIt)
+                elif c.getType() is RIGHT:
+                    cNext = c.getConnect()
+                    cLastIt = self.getVisualItem(cItS.getParent().id).getLastRightItem()
+                    if cLastIt is not None:
+                        cLastIt.setItem(cNext.getParent().id)
+                        cLastIt.setConnect(cNext)
+                        cNext.setItem(cLastIt.getParent().id)
+                        cNext.setConnect(cLastIt)
             c.setItem(cItS.getParent().id)
             c.setConnect(cItS)
             cItS.setItem(c.getParent().id)

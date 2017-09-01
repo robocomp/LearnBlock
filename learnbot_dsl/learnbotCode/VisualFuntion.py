@@ -53,7 +53,7 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         self.setFlags(QtGui.QGraphicsItem.ItemIsMovable)
         self.setZValue(1)
         self.setPos(self.parentBlock.pos)
-        self.scene.shouldSave = True
+        self.scene.activeShouldSave()
         self.setPixmap(self.img)
 
 
@@ -195,9 +195,19 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         else:
             im = generateBlock(self.cvImg, 34, self.parentBlock.name, self.__typeBlock, None, self.getVars(),
                                 self.__type)
-            qImage = toQImage(im)
-            self.img = QtGui.QPixmap(qImage)
-            self.setPixmap(self.img)
+            size = im.shape[1]
+            if self.sizeIn != size:
+                self.sizeIn = size
+                qImage = toQImage(im)
+                self.img = QtGui.QPixmap(qImage)
+                self.setPixmap(self.img)
+
+                for c in self.connections:
+                    if c.getType() is RIGHT:
+                        c.setPoint(QtCore.QPointF(im.shape[1] - 5,c.getPoint().y() ))
+                        if c.getIdItem() is not None:
+                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                                self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
 
     def updateVarValues(self):
 
@@ -237,7 +247,7 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
             pos = pos - self.posmouseinItem
         self.setPos(pos)
         self.parentBlock.setPos(copy.deepcopy(self.pos()))
-        self.scene.shouldSave = True
+        self.scene.activeShouldSave()
         for c in self.connections:
             if c.getType() in (TOP,LEFT) and self is self.scene.getItemSelected() and connect is not True:
                 if c.getIdItem() is not None:
@@ -264,6 +274,15 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
                     return self.scene.getVisualItem(c.getIdItem()).getLastItem()
         return None
 
+    def getLastRightItem(self):
+        for c in self.connections:
+            if c.getType() is RIGHT:
+                if c.getConnect() is None:
+                    return c
+                else:
+                    return self.scene.getVisualItem(c.getIdItem()).getLastItem()
+        return None
+
     def moveToFront(self):
         self.setZValue(1)
         for c in self.connections:
@@ -274,7 +293,7 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
     def mouseMoveEvent(self,event):
         self.setPos(event.scenePos()-self.posmouseinItem)
         self.parentBlock.setPos(self.pos())
-        self.scene.shouldSave = True
+        self.scene.activeShouldSave()
 
     def mousePressEvent(self, event):
         if event.button() is QtCore.Qt.MouseButton.LeftButton:
