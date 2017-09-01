@@ -123,7 +123,7 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars=None, type=Non
         im[0:right.shape[0], im.shape[1] - right.shape[1]:im.shape[1]] = copy.copy(right)
         for i in range(left.shape[1], im.shape[1] - right.shape[1]):
             im[0:line.shape[0], i:i + 1] = copy.copy(line)
-    cv2.putText(im, name+varText, (10, 27), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 1,25)
+    cv2.putText(im, name+varText, (10, 27), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 2,25)
     if connections is not None and len(connections) > 0:
         if not isinstance(connections[0],Connection):
             for point, t in connections:
