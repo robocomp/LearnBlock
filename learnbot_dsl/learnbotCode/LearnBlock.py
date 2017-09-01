@@ -3,7 +3,7 @@
 
 import cPickle as pickle
 import os
-from blocksConfig import configBlocks
+from blocksConfig import reload_functions
 import threading
 import guis.addVar as addVar
 import guis.gui as gui
@@ -187,7 +187,8 @@ class LearnBlock:
         self.view.setZoom(self.ui.zoompushButton.isChecked())
 
     def load_blocks(self):
-        functions = configBlocks
+        functions = reload_functions()
+        print "load_blocks"
         for f in functions:
             if f[1]["name"][0] in self.listNameBlock:
                 continue
@@ -270,8 +271,12 @@ class LearnBlock:
         if self.__fileProject is None:
             fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.',
                                                          'Block Project file (*.blockProject)')
-            if fileName[0] != "":
-                self.__fileProject = fileName[0]
+            file = fileName[0]
+            if "." in file:
+                file = file.split(".")[0]
+            file = file+".blockProject"
+            if file != "":
+                self.__fileProject = file
                 self.saveInstance()
         if self.__fileProject is not None:
             with open(self.__fileProject, 'wb') as fichero:
@@ -339,8 +344,8 @@ class LearnBlock:
                 self.openProyect()
 
     def showCreateBlock(self):
-        self.createBlockGui = guiCreateBlock()
-        self.createBlockGui.ui.pushButtonOK.clicked.connect(self.load_blocks)
+        self.createBlockGui = guiCreateBlock(self.load_blocks)
+        #self.createBlockGui.ui.pushButtonOK.clicked.connect(self.load_blocks)
         self.createBlockGui.open()
 
     def showGuiAddNumberOrString(self,type):
