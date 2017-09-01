@@ -28,8 +28,9 @@ listconfig = ["configControl",
 
 class guiCreateBlock(QtGui.QDialog):
 
-    def __init__(self):
+    def __init__(self,load_block):
         QtGui.QDialog.__init__(self)
+        self.load_blocks = load_block
         self.blockType = None
         self.FuntionType = None
         self.img = None
@@ -42,6 +43,7 @@ class guiCreateBlock(QtGui.QDialog):
         for name in listNameBlocks:
             self.ui.comboBoxBlockImage.addItem(name)
         self.ui.comboBoxBlockImage.currentIndexChanged.connect(self.__updateImage)
+        self.ui.comboBoxBlockType.currentIndexChanged.connect(self.__updateBlockType)
         self.ui.pushButtonSelectFile.clicked.connect(self.__clickedSelectFile)
         self.ui.pushButtonAddVar.clicked.connect(self.__addVar)
         self.ui.pushButtonRemoveVar.clicked.connect(self.__delVar)
@@ -193,9 +195,10 @@ block{\n"""
                 print "escribiendo", self.config
                 with open(pathConfig+"/"+self.config, 'a') as file:
                     file.write(text)
+                    file.close()
             else:
                 return
-
+        self.load_blocks()
         self.close()
 
     def __repitNameVar(self):
