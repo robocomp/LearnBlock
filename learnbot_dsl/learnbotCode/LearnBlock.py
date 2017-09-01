@@ -18,6 +18,7 @@ from guiAddNumberOrString import *
 
 from multiprocessing import Process
 
+import shutil
 import sys
 import cv2
 import time
@@ -180,7 +181,9 @@ class LearnBlock:
 
         for b in self.listButtons:
             b.removeTmpFile()
-        os.rmdir("tmp")
+
+        shutil.rmtree("tmp")
+        #os.rmdir("tmp")
         sys.exit(r)
 
     def setZoom(self):
@@ -188,7 +191,6 @@ class LearnBlock:
 
     def load_blocks(self):
         functions = reload_functions()
-        print "load_blocks"
         for f in functions:
             if f[1]["name"][0] in self.listNameBlock:
                 continue
@@ -285,6 +287,7 @@ class LearnBlock:
                     block = dic[id]
                     block.file = block.file.replace(pathImgBlocks,"")
                 pickle.dump((dic,self.listVars,self.listUserFunctions,self.listNameVars,self.listNameUserFunctions), fichero,0)
+        self.scene.shouldSave = False
 
     def saveAs(self):
         fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.',

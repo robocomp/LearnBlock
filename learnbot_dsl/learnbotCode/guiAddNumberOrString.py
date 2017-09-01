@@ -10,9 +10,11 @@ for base, dirs, files in os.walk(pathBlocks):
     for f in files:
         archivo, extension = os.path.splitext(base+"/"+f)
         if extension == ".png" and "block" in f and "azul" not in f:
-            listBlock.append(base+"/"+f)
-            archivo, extension = os.path.splitext(f)
-            listNameBlocks.append(archivo)
+            if "block3" in f or "block4" in f:
+                listBlock.append(base+"/"+f)
+                archivo, extension = os.path.splitext(f)
+                listNameBlocks.append(archivo)
+
 
 listTypeBlock = ["control",
                  "motor",
@@ -29,6 +31,7 @@ listconfig = ["configControl",
 class guiAddNumberOrString(QtGui.QDialog):
 
     def __init__(self,type):
+        self.type = type
         QtGui.QDialog.__init__(self)
         self.blockType = None
         self.FuntionType = None
@@ -48,8 +51,11 @@ class guiAddNumberOrString(QtGui.QDialog):
         self.ui.lineEditName.textChanged.connect(lambda :self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
         if type is 1:
             self.ui.lineEditName.setValidator(QtGui.QDoubleValidator())
+
     def __updateImage(self,index):
         self.value = self.ui.lineEditName.text()
+        if self.type is 2:
+            self.value = '"'+ self.value +'"'
         self.img=listNameBlocks[index]
         self.imgName=listBlock[index]
         img = cv2.imread(listBlock[index],cv2.IMREAD_UNCHANGED)

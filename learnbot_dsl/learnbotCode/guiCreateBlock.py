@@ -192,7 +192,6 @@ block{\n"""
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             ret = msgBox.exec_()
             if ret == QtGui.QMessageBox.Ok:
-                print "escribiendo", self.config
                 with open(pathConfig+"/"+self.config, 'a') as file:
                     file.write(text)
                     file.close()
