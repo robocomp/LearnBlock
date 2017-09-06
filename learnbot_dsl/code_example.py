@@ -1,6 +1,6 @@
-import sys
+import sys, time
 import cv2
-import LearnBotClient
+import LearnBotClient_PhysicalRobot as LearnBotClient
 from functions import *
 
 #EXECUTION: python code_example.py Ice.Config=config
@@ -8,12 +8,20 @@ from functions import *
 global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
-for f in functions:
-	print f, params[f], paramsDefaults[f]
-
-func1 = functions.get("get_distance")
-usList = func1(lbot)
-print usList
+i=0
+while i<100:
+	func1 = functions.get("get_distance")
+	usList = func1(lbot)
+	print usList
+	image = lbot.getImage()
+	image = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+	cv2.namedWindow("im")
+	cv2.imshow("im",image)
+	keypress=cv2.waitKey(1)
+	if keypress & 0xFF == 113: 
+		i=100
+	time.sleep(1)
+	i = i+1
 
 print functions.get("obstacle_free")(lbot)
 

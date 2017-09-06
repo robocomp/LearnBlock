@@ -169,7 +169,7 @@ class SpecificWorker(GenericWorker):
 
 		self.timerU = QtCore.QTimer(self)
 		self.timerU.timeout.connect(self.computeUltrasound)
-		self.PeriodUltrasound = 300
+		self.PeriodUltrasound = 5
 		self.timerU.start(self.PeriodUltrasound)
 
 

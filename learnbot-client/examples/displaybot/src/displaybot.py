@@ -112,7 +112,13 @@ class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
 
 if __name__ == '__main__':
 	app = QtGui.QApplication(sys.argv)
-	ic = Ice.initialize(sys.argv)
+	params = copy.deepcopy(sys.argv)
+	if len(params) > 1:
+		if not params[1].startswith('--Ice.Config='):
+			params[1] = '--Ice.Config=' + params[1]
+	elif len(params) == 1:
+		params.append('--Ice.Config=config')
+	ic = Ice.initialize(params)
 	status = 0
 	mprx = {}
 	try:
@@ -124,7 +130,6 @@ if __name__ == '__main__':
 				basePrx = ic.stringToProxy(proxyString)
 				differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)
 				mprx["DifferentialRobotProxy"] = differentialrobot_proxy
-				print "bien differential"
 			except Ice.Exception:
 				print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
 				#traceback.print_exc()
