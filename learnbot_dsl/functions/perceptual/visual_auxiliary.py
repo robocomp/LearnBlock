@@ -12,7 +12,7 @@ def detect_black_line(frame):
 	for channel in rgb:
 		maxrgb = cv2.max(maxrgb, channel)
 
-	err, binary = cv2.threshold( maxrgb, 20, 255, cv2.THRESH_BINARY_INV)
+	err, binary = cv2.threshold( maxrgb, 100, 255, cv2.THRESH_BINARY_INV)
 
 	rois = [0,0,0]
 	rois[0]=cv2.countNonZero(binary[10:240,0:120])

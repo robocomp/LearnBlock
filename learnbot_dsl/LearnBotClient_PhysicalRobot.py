@@ -41,6 +41,8 @@ class Client(Ice.Application, threading.Thread):
 	def __init__(self, argv):
 		threading.Thread.__init__(self)
 
+		self.mutex = threading.Lock()
+
 		self.adv = 0
 		self.rot = 0
 		self.max_rot= 0.4
@@ -106,22 +108,26 @@ class Client(Ice.Application, threading.Thread):
 			self.getImageStream()
 			self.readSonars()
 
-			time.sleep(0.01)
+			time.sleep(0.002)
 
 
 	def getImageStream(self):
-		self.bytes += self.stream.read(1024)	    
+		self.bytes += self.stream.read(5120)	    
 		a = self.bytes.find('\xff\xd8')
 		b = self.bytes.find('\xff\xd9')
 		if a!=-1 and b!=-1:
 			jpg = self.bytes[a:b+2]
 			self.bytes = self.bytes[b+2:]
-			self.image = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+			image = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
 			try:
-				self.image = cv2.cvtColor(self.image,cv2.COLOR_BGR2RGB)
+				tempimage = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
+				image = cv2.flip(tempimage, 0)
 			except:
 				print "Error retrieving images!"
 				return None
+			self.mutex.acquire()
+			self.image = image
+			self.mutex.release()
 		return True
 
 
@@ -143,16 +149,21 @@ class Client(Ice.Application, threading.Thread):
 		return self.usList
 
 	def getImage(self):
-		return self.image
+		self.mutex.acquire()
+		simage = self.image
+		self.mutex.release()
+		
+		return simage
 
 	def getPose(self):
 		x, y, alpha = self.differentialrobot_proxy.getBasePose()	 
 		return x, y, alpha
 	 	     
 	def setRobotSpeed(self, vAdvance=0, vRotation=0):
+		print vAdvance, vRotation
 		if vAdvance!=0 or vRotation!=0:
-			self.adv = vAdvance
-			self.rot = vRotation
+			self.adv = -vAdvance*10
+			self.rot = vRotation*14
 		self.differentialrobot_proxy.setSpeedBase(self.adv,self.rot)	 
 				
 
