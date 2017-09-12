@@ -257,6 +257,7 @@ class LearnBlock:
     def execTmp(self):
         while True:
             try:
+		sys.argv = [' ','configSimulated']
                 execfile("main_tmp.py", globals())
                 break
             except Exception as e:
@@ -271,6 +272,7 @@ class LearnBlock:
 
     def stopExecTmp(self):
          try:
+	     sys.argv = [' ','configSimulated']
              execfile("stop_main_tmp.py", globals())
          except Exception as e:
              print e
