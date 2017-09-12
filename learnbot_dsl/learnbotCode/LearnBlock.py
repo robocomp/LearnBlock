@@ -269,6 +269,13 @@ class LearnBlock:
                 if ret is not QtGui.QMessageBox.Retry:
                     break
 
+    def stopExecTmp(self):
+         try:
+             execfile("stop_main_tmp.py", globals())
+         except Exception as e:
+             print e
+
+
     def saveInstance(self):
         if self.__fileProject is None:
             fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.',
@@ -423,9 +430,28 @@ lbot = LearnBotClient.Client(sys.argv)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
 
+    def generateStopTmpFile(self):
+        text = """
+
+#EXECUTION: python code_example.py config
+
+global lbot
+lbot = LearnBotClient.Client(sys.argv)
+
+functions.get("stop_bot")(lbot)
+"""
+        fh = open("stop_main_tmp.py","wr")
+        fh.writelines(text)
+        fh.close()
+
+
     def stopthread(self):
         try:
             self.hilo.terminate()
+	    self.generateStopTmpFile()
+            self.hilo = Process(target=self.stopExecTmp)
+            self.hilo.start()
+            self.hilo.join()
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
         except Exception as e:
