@@ -23,6 +23,7 @@ import sys
 import cv2
 import time
 import learnbot_dsl.LearnBotClient as LearnBotClient
+import learnbot_dsl.LearnBotClient_PhysicalRobot as LearnBotClientPR
 
 from learnbot_dsl.functions import *
 from blocksConfig.blocks import pathBlocks
@@ -108,6 +109,7 @@ class LearnBlock:
         self.ui.setupUi(self.Dialog)
         self.Dialog.showMaximized()
         self.ui.startPushButton.clicked.connect(self.printProgram)
+        self.ui.startPRPushButton.clicked.connect(self.printProgramPR)
         self.ui.startTextPushButton.clicked.connect(self.generateTmpFilefromText)
         self.ui.stopPushButton.clicked.connect(self.stopthread)
         self.ui.stoptextPushButton.clicked.connect(self.stopthread)
@@ -144,6 +146,8 @@ class LearnBlock:
 
         #thread
         #self.hilo = threading.Thread(target=self.execTmp, args=[])
+
+        self.physicalRobot = False
 
         self.dicTables = {'control':self.ui.tableControl,'motor':self.ui.tableMotor, 'perceptual':self.ui.tablePerceptual,
                      'proprioceptive':self.ui.tablePropioperceptive,'operador':self.ui.tableOperadores,'variables':self.ui.tableVariables,
@@ -257,7 +261,6 @@ class LearnBlock:
     def execTmp(self):
         while True:
             try:
-		sys.argv = [' ','configSimulated']
                 execfile("main_tmp.py", globals())
                 break
             except Exception as e:
@@ -272,7 +275,6 @@ class LearnBlock:
 
     def stopExecTmp(self):
          try:
-	     sys.argv = [' ','configSimulated']
              execfile("stop_main_tmp.py", globals())
          except Exception as e:
              print e
@@ -378,7 +380,17 @@ class LearnBlock:
         if blocks is not None:
             #self.ui.plainTextEdit_2.clear()
             #self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
+	    self.physicalRobot = False
             self.generateTmpFile()
+
+    def printProgramPR(self):
+        blocks = self.scene.getListInstructions()
+        if blocks is not None:
+            #self.ui.plainTextEdit_2.clear()
+            #self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
+	    self.physicalRobot = True
+            self.generateTmpFile()
+
 
     #TODO Esperar a que termine el parseador de texto
     def generateTmpFilefromText(self):
@@ -403,14 +415,26 @@ class LearnBlock:
 
     def generateTmpFile(self):
         blocks = self.scene.getListInstructions()
-        text = """
+	if self.physicalRobot:
+	        text = """
 
-#EXECUTION: python code_example.py config
+#EXECUTION: python code_example.py configSimulated
+
+global lbot
+lbot = LearnBotClientPR.Client(sys.argv)
+
+"""
+		sys.argv = [' ','configPhysical']
+	else:
+	        text = """
+#EXECUTION: python code_example.py configSimulated
 
 global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
 """
+		sys.argv = [' ','configSimulated']
+
         if len(self.listNameVars)>0:
             for name in self.listNameVars:
                 text += name + " = None\n"
@@ -425,6 +449,7 @@ lbot = LearnBotClient.Client(sys.argv)
                 self.hilo.start()
                 self.ui.stopPushButton.setEnabled(True)
                 self.ui.startPushButton.setEnabled(False)
+                self.ui.startPRPushButton.setEnabled(False)
             else:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("Your code has an error. Check it out again")
@@ -433,15 +458,28 @@ lbot = LearnBotClient.Client(sys.argv)
                 ret = msgBox.exec_()
 
     def generateStopTmpFile(self):
-        text = """
+	if self.physicalRobot:
+	        text = """
 
-#EXECUTION: python code_example.py config
+#EXECUTION: python code_example.py configSimulated
+
+global lbot
+lbot = LearnBotClientPR.Client(sys.argv)
+
+functions.get("stop_bot")(lbot)
+"""
+		sys.argv = [' ','configPhysical']
+	else:
+	        text = """
+#EXECUTION: python code_example.py configSimulated
 
 global lbot
 lbot = LearnBotClient.Client(sys.argv)
 
 functions.get("stop_bot")(lbot)
 """
+		sys.argv = [' ','configSimulated']
+
         fh = open("stop_main_tmp.py","wr")
         fh.writelines(text)
         fh.close()
@@ -456,6 +494,7 @@ functions.get("stop_bot")(lbot)
             self.hilo.join()
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
+            self.ui.startPRPushButton.setEnabled(True)
         except Exception as e:
             pass
 

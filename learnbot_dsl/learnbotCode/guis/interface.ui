@@ -425,7 +425,14 @@
                  </size>
                 </property>
                 <property name="text">
-                 <string>Start</string>
+                 <string>Start (simulated robot)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="startPRPushButton">
+                <property name="text">
+                 <string>Start (physical robot)</string>
                 </property>
                </widget>
               </item>
