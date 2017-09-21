@@ -3,9 +3,6 @@ block{
     type motor
     name move_left
     file learnbot_dsl/funtions/motor/move_left.py
-    variables{
-        float duration 0
-    }
     img block1
 }
 
@@ -13,9 +10,6 @@ block{
     type motor
     name move_right
     file learnbot_dsl/funtions/motor/move_right.py
-    variables{
-        float duration 0
-    }
     img block1
 }
 
@@ -23,9 +17,6 @@ block{
     type motor
     name move_straight
     file learnbot_dsl/funtions/motor/move_straight.py
-    variables{
-        float duration 0
-    }
     img block1
 }
 

@@ -42,11 +42,13 @@ class Client(Ice.Application, threading.Thread):
 		threading.Thread.__init__(self)
 
 		self.mutex = threading.Lock()
+		self.newImg = False
 
 		self.adv = 0
 		self.rot = 0
 		self.max_rot= 0.4
 		self.image = np.zeros((240,320,3), np.uint8)
+		self.simage = self.image
 		self.usList = {'front':1000, 'right':1000, 'left':1000, 'back':1000}
 
 	  	global ic
@@ -125,9 +127,10 @@ class Client(Ice.Application, threading.Thread):
 			except:
 				print "Error retrieving images!"
 				return None
-			self.mutex.acquire()
+#			self.mutex.acquire()
 			self.image = image
-			self.mutex.release()
+			self.newImg = True
+#			self.mutex.release()
 		return True
 
 
@@ -149,20 +152,24 @@ class Client(Ice.Application, threading.Thread):
 		return self.usList
 
 	def getImage(self):
-		self.mutex.acquire()
-		simage = self.image
-		self.mutex.release()
 		
-		return simage
+#		self.mutex.acquire()
+		if self.newImg:
+			self.simage = self.image
+			self.newImg = False
+#		self.mutex.release()
+
+#		time.sleep(0.1)		
+		return self.simage
 
 	def getPose(self):
 		x, y, alpha = self.differentialrobot_proxy.getBasePose()	 
 		return x, y, alpha
 	 	     
 	def setRobotSpeed(self, vAdvance=0, vRotation=0):
-		print vAdvance, vRotation
+		#print vAdvance, vRotation
 		if vAdvance!=0 or vRotation!=0:
-			self.adv = -vAdvance*10
+			self.adv = -vAdvance*8
 			self.rot = vRotation*14
 		self.differentialrobot_proxy.setSpeedBase(self.adv,self.rot)	 
 				

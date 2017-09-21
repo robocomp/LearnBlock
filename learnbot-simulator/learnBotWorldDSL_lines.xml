@@ -6,7 +6,7 @@
 	
 	<transform id="world">
 			<include path="learnBotDSL.xml"/>
-			<plane id="ddG" ny="1"  px="-0" py="0" pz="0" size="5000,5000,10" texture="textures/lines.jpg" />
+			<plane id="ddG" ny="1"  px="200" py="0" pz="0" size="5000,5000,10" texture="textures/lines.jpg" />
 
 	</transform>
 			

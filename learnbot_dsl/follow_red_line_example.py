@@ -16,8 +16,8 @@ finish = False
 #while True:
 while not finish:
 
-	if functions.get("line_crossing")(lbot):
-		print "LINE CROSSING!!!"
+	#if functions.get("line_crossing")(lbot):
+	#	print "LINE CROSSING!!!"
 
 
 	if functions.get("center_red_line")(lbot):
@@ -42,5 +42,5 @@ while not finish:
 		finish = True
 		functions.get("stop_bot")(lbot)
 
-	time.sleep(0.1)
+#	time.sleep(0.1)
 
