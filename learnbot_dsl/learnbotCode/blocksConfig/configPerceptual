@@ -1,3 +1,44 @@
+block{
+    type perceptual
+    name center_red_line
+    file learnbot-dsl/funtions/perceptual/center_red_line.py
+    img block4, block3
+}
+
+block{
+    type perceptual
+    name left_red_line
+    file learnbot-dsl/funtions/perceptual/left_red_line.py
+    img block4, block3
+}
+
+block{
+    type perceptual
+    name right_red_line
+    file learnbot-dsl/funtions/perceptual/right_red_line.py
+    img block4, block3
+}
+
+block{
+    type perceptual
+    name center_black_line
+    file learnbot-dsl/funtions/perceptual/center_black_line.py
+    img block4, block3
+}
+
+block{
+    type perceptual
+    name left_black_line
+    file learnbot-dsl/funtions/perceptual/left_black_line.py
+    img block4, block3
+}
+
+block{
+    type perceptual
+    name right_black_line
+    file learnbot-dsl/funtions/perceptual/right_black_line.py
+    img block4, block3
+}
 
 block{
     type perceptual
@@ -8,23 +49,6 @@ block{
     }
     img block4, block3
 }
-
-
-block{
-    type perceptual
-    name center_black_line
-    file learnbot-dsl/funtions/perceptual/center_black_line.py
-    img block4, block3
-}
-
-
-block{
-    type perceptual
-    name center_red_line
-    file learnbot-dsl/funtions/perceptual/center_red_line.py
-    img block4, block3
-}
-
 
 block{
     type perceptual
@@ -50,12 +74,6 @@ block{
     img block4, block3
 }
 
-block{
-    type perceptual
-    name left_black_line
-    file learnbot-dsl/funtions/perceptual/left_black_line.py
-    img block4, block3
-}
 
 block{
     type perceptual
@@ -64,13 +82,6 @@ block{
     variables{
         float threshold 200
     }
-    img block4, block3
-}
-
-block{
-    type perceptual
-    name left_red_line
-    file learnbot-dsl/funtions/perceptual/left_red_line.py
     img block4, block3
 }
 
@@ -91,12 +102,6 @@ block{
     img block4, block3
 }
 
-block{
-    type perceptual
-    name right_black_line
-    file learnbot-dsl/funtions/perceptual/right_black_line.py
-    img block4, block3
-}
 
 block{
     type perceptual
@@ -109,9 +114,4 @@ block{
 }
 
 
-block{
-    type perceptual
-    name right_red_line
-    file learnbot-dsl/funtions/perceptual/right_red_line.py
-    img block4, block3
-}
+
