@@ -19,7 +19,6 @@ while not finish:
 	#if functions.get("line_crossing")(lbot):
 	#	print "LINE CROSSING!!!"
 
-
 	if functions.get("center_red_line")(lbot):
 		functions.get("move_straight")(lbot)
 		print "go ahead"

@@ -43,6 +43,7 @@ class Client(Ice.Application, threading.Thread):
 
 		self.mutex = threading.Lock()
 		self.newImg = False
+		self.reading = False
 
 		self.adv = 0
 		self.rot = 0
@@ -106,10 +107,12 @@ class Client(Ice.Application, threading.Thread):
 		
 	def run(self):
 		while self.active:
-
+			self.reading = True
+			self.mutex.acquire()
 			self.getImageStream()
 			self.readSonars()
-
+			self.mutex.release()
+			self.reading = False
 			time.sleep(0.002)
 
 
@@ -139,27 +142,36 @@ class Client(Ice.Application, threading.Thread):
 
 		for nombre, sensor in ultrasound.items():
 			if (nombre == "sensor0"):
-				self.usList["front"] = sensor["dist"]
+				self.usList["front"] = sensor["dist"]*10
 			elif (nombre == "sensor1"):
-				self.usList["back"] = sensor["dist"]
+				self.usList["back"] = sensor["dist"]*10
 			elif (nombre == "sensor2"):
-				self.usList["right"] = sensor["dist"]
+				self.usList["right"] = sensor["dist"]*10
 			elif (nombre == "sensor3"):
-				self.usList["left"] = sensor["dist"]
+				self.usList["left"] = sensor["dist"]*10
 
 
 	def getSonars(self):
-		return self.usList
+#		self.readSonars()
+		while self.reading:
+			time.sleep(0.005)
+		self.mutex.acquire()
+		localUSList = self.usList
+		print self.usList
+		self.mutex.release()
+#		time.sleep(0.1)
+		return localUSList
 
 	def getImage(self):
-		
-#		self.mutex.acquire()
-		if self.newImg:
-			self.simage = self.image
-			self.newImg = False
-#		self.mutex.release()
+		while self.reading:
+			time.sleep(0.005)
+		self.mutex.acquire()
+		#if self.newImg:
+		self.simage = self.image
+		self.newImg = False
+		self.mutex.release()
 
-#		time.sleep(0.1)		
+#		time.sleep(0.05)		
 		return self.simage
 
 	def getPose(self):

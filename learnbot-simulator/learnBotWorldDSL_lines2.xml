@@ -1,5 +1,9 @@
 <innerModel>
 	
+	<transform id="caja1" tx="200" tz="400" ty="0" >
+			<plane id="cajaMesh1" nx="1" size="100,200,100"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
+	</transform>
+	
 	<transform id="world">
 			<include path="learnBotDSL.xml"/>
 			<plane id="ddG" ny="1"  px="200" py="0" pz="0" size="5000,5000,10" texture="textures/lines.jpg" />
