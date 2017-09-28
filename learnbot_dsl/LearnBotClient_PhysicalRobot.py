@@ -183,7 +183,7 @@ class Client(Ice.Application, threading.Thread):
 		if vAdvance!=0 or vRotation!=0:
 			self.adv = vAdvance
 			self.rot = vRotation
-		self.differentialrobot_proxy.setSpeedBase(self.adv*8,self.rot*15)	 
+		self.differentialrobot_proxy.setSpeedBase(-self.adv*8,self.rot*15)	 
 				
 
 	def __del__(self):
