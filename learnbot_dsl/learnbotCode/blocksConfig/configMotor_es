@@ -1,21 +1,18 @@
 block{
     type motor
     name mover_recto
-    file learnbot_dsl/funtions/motor/mover_recto.py
     img block1
 }
 
 block{
     type motor
     name mover_izquierda
-    file learnbot_dsl/funtions/motor/mover_izquierda.py
     img block1
 }
 
 block{
     type motor
     name mover_derecha
-    file learnbot_dsl/funtions/motor/mover_derecha.py
     img block1
 }
 
@@ -23,28 +20,24 @@ block{
 block{
     type motor
     name girar_izquierda
-    file learnbot_dsl/funtions/motor/girar_izquierda.py
     img block1
 }
 
 block{
     type motor
     name girar_derecha
-    file learnbot_dsl/funtions/motor/girar_derecha.py
     img block1
 }
 
 block{
 	type motor
 	name desacelerar
-	file learnbot_dsl/functions/motor/desacelerar.py
 	img block1
 }
 
 block{
     type motor
     name parar_robot
-    file learnbot_dsl/funtions/motor/parar_robot.py
     img block1
 }
 
@@ -52,11 +45,9 @@ block{
 block{
     type motor
     name mover
-    file learnbot_dsl/funtions/motor/mover.py
     variables{
         float avance  0
         float rotacion 0
     }
     img block1
 }
-

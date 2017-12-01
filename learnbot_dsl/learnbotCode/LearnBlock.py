@@ -15,6 +15,8 @@ from View import *
 from guiCreateBlock import *
 from guiAddNumberOrString import *
 
+from Language import *
+
 
 from multiprocessing import Process
 
@@ -27,7 +29,7 @@ import learnbot_dsl.LearnBotClient_PhysicalRobot as LearnBotClientPR
 
 from learnbot_dsl.functions import *
 from blocksConfig.blocks import pathBlocks
-from  parserText import parserFile
+from parserText import parserFile
 from checkFile import compile
 
 def loadfile(file):
@@ -36,18 +38,18 @@ def loadfile(file):
     fh.close()
     return code
 
-
 class MyButtom(QtGui.QPushButton):
 
     def __init__(self,args):
-        if len(args) is 10:
-            self.__text, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType,\
+        if len(args) is 11:
+            self.__text, self.__dicTrans, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType,\
             self.__table, self.__row, self.__type = args
             self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
 
         elif len(args) is 5:
             abstracBlockItem, self.__view, self.__scene, self.__table, self.__row = args
             self.__text = abstracBlockItem.name
+            self.__dicTrans = abstracBlockItem.dicTrans
             self.__file = abstracBlockItem.file
             self.__connections = abstracBlockItem.connections
             self.__vars = abstracBlockItem.vars
@@ -57,8 +59,14 @@ class MyButtom(QtGui.QPushButton):
 
         QtGui.QPushButton.__init__(self)
         im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
+        self.showtext = self.__text
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.updateImg)
 
-        img = generateBlock(im, 34, self.__text, self.__blockType, self.__connections, None, self.__type)
+        if len( self.__dicTrans ) is not 0:
+            self.showtext = self.__dicTrans[ getLanguage() ]
+            self.timer.start(10)
+        img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, None, self.__type)
         cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
         self.setIcon(QtGui.QIcon(self.tmpFile))
         self.setIconSize(QtCore.QSize(135, im.shape[0]))
@@ -67,18 +75,29 @@ class MyButtom(QtGui.QPushButton):
         self.clicked.connect(self.clickedButton)
         self.__item = self.__table.item(self.__row,0)
 
+
     def removeTmpFile(self):
         try:
             os.remove(self.tmpFile)
         except Exception as e:
             print e
 
+    def updateImg(self):
+        if len( self.__dicTrans ) is not 0 and self.showtext is not self.__dicTrans[ getLanguage() ]:
+            self.showtext = self.__dicTrans[ getLanguage() ]
+            im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
+            img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, None, self.__type)
+            cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
+            self.setIcon(QtGui.QIcon(self.tmpFile))
+            self.setIconSize(QtCore.QSize(135, im.shape[0]))
+            self.setFixedSize(QtCore.QSize(150, im.shape[0]))
+
     def clickedButton(self):
-        block = AbstractBlockItem(0,0,self.__text,self.__file,copy.deepcopy(self.__vars), self.__connections,self.__blockType,self.__type)
+        block = AbstractBlockItem(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.__connections,self.__blockType,self.__type)
         self.__scene.addItem(block)
 
     def getAbstracBlockItem(self):
-        return AbstractBlockItem(0,0,self.__text,self.__file,copy.deepcopy(self.__vars), self.__connections, self.__blockType,self.__type)
+        return AbstractBlockItem(0,0,self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.__connections, self.__blockType,self.__type)
 
     def delete(self,row):
         self.__table.removeCellWidget(row,0)
@@ -128,6 +147,7 @@ class LearnBlock:
         self.ui.zoompushButton.setIconSize(QtCore.QSize(30,30))
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30,30))
         self.ui.zoompushButton.clicked.connect(self.setZoom)
+        self.ui.language.currentIndexChanged.connect(self.changeLanguage)
         self.listVars = []
         self.listUserFunctions = []
         self.addVarGui = None
@@ -193,35 +213,40 @@ class LearnBlock:
     def setZoom(self):
         self.view.setZoom(self.ui.zoompushButton.isChecked())
 
+    def changeLanguage(self):
+        l = ["ES","EN"]
+        changeLanguageTo(l[self.ui.language.currentIndex()])
+
     def load_blocks(self):
         functions = reload_functions()
         for f in functions:
-            if f[1]["name"][0] in self.listNameBlock:
+            if f.name in self.listNameBlock:
                 continue
-            self.listNameBlock.append(f[1]["name"][0])
+            self.listNameBlock.append( f.name )
             variables = []
-            if "variables" in f[1]:
-                for v in f[1]["variables"]:
+            if "variables" in f:
+                for v in f.variables:
                     variables.append(Variable(v[0], v[1], v[2]))
             funtionType = None
-            if "control" in f[1]["type"][0]:
+            if "control" in f.type:
                 funtionType = CONTROL
-            elif "motor" in f[1]["type"][0]:
+            elif "motor" in f.type:
                 funtionType = FUNTION
-            elif "perceptual" in f[1]["type"][0]:
+            elif "perceptual" in f.type:
                 funtionType = FUNTION
-            elif "proprioceptive" in f[1]["type"][0]:
+            elif "proprioceptive" in f.type:
                 funtionType = FUNTION
-            elif "operador" in f[1]["type"][0]:
+            elif "operador" in f.type:
                 funtionType = OPERATOR
             blockType = None
-            for img in f[1]["img"]:
+            for img in f.img:
                 blockType, connections = self.loadConfigBlock(img)
-                table = self.dicTables[f[1]["type"][0]]
+                table = self.dicTables[f.type[0]]
                 table.insertRow(table.rowCount())
-                button = MyButtom(
-                    (f[1]["name"][0], self.view, self.scene, img + ".png", connections, variables, blockType,
-                     table, table.rowCount()-1, funtionType))
+                dicTrans = {}
+                for l in f.translations:
+                    dicTrans[l.language] = l.translation
+                button = MyButtom((f.name[0], dicTrans, self.view, self.scene, img + ".png", connections, variables, blockType, table, table.rowCount()-1, funtionType))
                 self.listButtons.append(button)
                 table.setCellWidget(table.rowCount() - 1, 0, button)
 
@@ -278,7 +303,6 @@ class LearnBlock:
              execfile("stop_main_tmp.py", globals())
          except Exception as e:
              print e
-
 
     def saveInstance(self):
         if self.__fileProject is None:
@@ -372,7 +396,7 @@ class LearnBlock:
         imgPath = self.addNumberOrStringGui.imgName
         configImgPath = imgPath.replace(".png","")
         blockType, connections = self.loadConfigBlock(configImgPath)
-        block = AbstractBlockItem(0,0,text,imgPath,[], connections, blockType,VARIABLE)
+        block = AbstractBlockItem(0,0,text, {}, imgPath,[], connections, blockType,VARIABLE)
         self.scene.addItem(block)
 
     def printProgram(self):
@@ -415,25 +439,19 @@ class LearnBlock:
 
     def generateTmpFile(self):
         blocks = self.scene.getListInstructions()
-	if self.physicalRobot:
-	        text = """
-
+        text = """
 #EXECUTION: python code_example.py configSimulated
 
 global lbot
-lbot = LearnBotClientPR.Client(sys.argv)
+lbot = <LearnBotClient>.Client(sys.argv)
 
 """
-		sys.argv = [' ','configPhysical']
-	else:
-	        text = """
-#EXECUTION: python code_example.py configSimulated
-
-global lbot
-lbot = LearnBotClient.Client(sys.argv)
-
-"""
-		sys.argv = [' ','configSimulated']
+        if self.physicalRobot:
+            text = text.replace('<LearnBotClient>','LearnBotClientPR')
+            sys.argv = [' ','configPhysical']
+        else:
+            text = text.replace('<LearnBotClient>','LearnBotClient')
+            sys.argv = [' ','configSimulated']
 
         if len(self.listNameVars)>0:
             for name in self.listNameVars:
@@ -458,27 +476,19 @@ lbot = LearnBotClient.Client(sys.argv)
                 ret = msgBox.exec_()
 
     def generateStopTmpFile(self):
-	if self.physicalRobot:
-	        text = """
-
+        text = """
 #EXECUTION: python code_example.py configSimulated
 
 global lbot
-lbot = LearnBotClientPR.Client(sys.argv)
+lbot = <LearnBotClient>.Client(sys.argv)
 
-functions.get("stop_bot")(lbot)
 """
-		sys.argv = [' ','configPhysical']
-	else:
-	        text = """
-#EXECUTION: python code_example.py configSimulated
-
-global lbot
-lbot = LearnBotClient.Client(sys.argv)
-
-functions.get("stop_bot")(lbot)
-"""
-		sys.argv = [' ','configSimulated']
+        if self.physicalRobot:
+            text = text.replace('<LearnBotClient>','LearnBotClientPR')
+            sys.argv = [' ','configPhysical']
+        else:
+            text = text.replace('<LearnBotClient>','LearnBotClient')
+            sys.argv = [' ','configSimulated']
 
         fh = open("stop_main_tmp.py","wr")
         fh.writelines(text)
@@ -604,9 +614,7 @@ functions.get("stop_bot")(lbot)
         table.insertRow(table.rowCount())
         variables = []
         variables.append(Variable("float", "set to ", "0"))
-        button = MyButtom(
-            (name, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, variables, blockType,
-             table, table.rowCount() - 1, VARIABLE))
+        button = MyButtom( ( name, {}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, variables, blockType, table, table.rowCount() - 1, VARIABLE))
         self.listButtons.append(button)
         table.setCellWidget(table.rowCount() - 1, 0, button)
         self.listVars.append(button.getAbstracBlockItem())
@@ -614,8 +622,7 @@ functions.get("stop_bot")(lbot)
             blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
             table = self.dicTables['variables']
             table.insertRow(table.rowCount())
-            button = MyButtom((name, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType,
-                               table, table.rowCount() - 1, VARIABLE))
+            button = MyButtom((name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listVars.append(button.getAbstracBlockItem())
@@ -705,9 +712,7 @@ functions.get("stop_bot")(lbot)
         for img in imgs:
             blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
             table.insertRow(table.rowCount())
-            button = MyButtom(
-                (name, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType,
-                 table, table.rowCount() - 1, USERFUNCTION))
+            button = MyButtom((name, None, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, USERFUNCTION))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listUserFunctions.append(button.getAbstracBlockItem())

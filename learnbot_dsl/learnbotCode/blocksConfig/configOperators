@@ -2,110 +2,100 @@
 block{
     type operador
     name +
-    file None
     img block3
 }
 
 block{
     type operador
     name -
-    file None
     img block3
 }
 
 block{
     type operador
     name *
-    file None
     img block3
 }
 
 block{
     type operador
     name /
-    file None
     img block3
 }
 
 block{
     type operador
     name =
-    file None
     img block3
 
 }
 block{
     type operador
     name +=
-    file None
     img block3
 }
 block{
     type operador
     name True
-    file None
     img block4
+    languages ES: "Verdad", EN: "True"
 }
 
 block{
     type operador
     name False
-    file None
     img block4
+    languages ES: "Falso", EN: "False"
 }
 
 block{
     type operador
     name <
-    file None
     img block3
 }
 
 block{
     type operador
     name >
-    file None
     img block3
 }
 
 block{
     type operador
     name and
-    file None
     img block3
+    languages ES: "Y", EN: "and"
 }
 
 block{
     type operador
     name or
-    file None
     img block3
+    languages ES: "O", EN: "or"
 }
 
 block{
     type operador
     name not
-    file None
     img block3
+    languages ES: "No", EN: "not"
 }
 
 block{
     type operador
     name )
-    file None
     img block3
 }
 
 block{
     type operador
     name (
-    file None
     img block3
 }
 
 block{
 	type operador
 	name print
-	file None
 	img block2
+  languages ES: "Verdad", EN: "True"
 }

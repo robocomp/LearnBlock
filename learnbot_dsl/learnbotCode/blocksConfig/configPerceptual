@@ -1,117 +1,114 @@
 block{
     type perceptual
     name center_red_line
-    file learnbot-dsl/funtions/perceptual/center_red_line.py
     img block4, block3
+    languages ES: "linea_roja_centro", EN: "center_red_line"
 }
 
 block{
     type perceptual
     name left_red_line
-    file learnbot-dsl/funtions/perceptual/left_red_line.py
     img block4, block3
+    languages ES: "linea_roja_izquierda", EN: "left_red_line"
 }
 
 block{
     type perceptual
     name right_red_line
-    file learnbot-dsl/funtions/perceptual/right_red_line.py
     img block4, block3
+    languages ES: "linea_roja_derecha", EN: "right_red_line"
 }
 
 block{
     type perceptual
     name center_black_line
-    file learnbot-dsl/funtions/perceptual/center_black_line.py
     img block4, block3
+    languages ES: "linea_negra_centro", EN: "center_black_line"
 }
 
 block{
     type perceptual
     name left_black_line
-    file learnbot-dsl/funtions/perceptual/left_black_line.py
     img block4, block3
+    languages ES: "linea_negra_izquierda", EN: "left_black_line"
 }
 
 block{
     type perceptual
     name right_black_line
-    file learnbot-dsl/funtions/perceptual/right_black_line.py
     img block4, block3
+    languages ES: "linea_negra_derecha", EN: "right_black_line"
 }
 
 block{
     type perceptual
     name back_obstacle
-    file learnbot-dsl/funtions/perceptual/back_obstacle.py
     variables{
         float threshold 200
     }
     img block4, block3
+    languages ES: "obtaculo_atras", EN: "back_obstacle"
 }
 
 block{
     type perceptual
     name front_obstacle
-    file learnbot-dsl/funtions/perceptual/front_obstacle.py
     variables{
         float threshold 200
     }
     img block4, block3
+    languages ES: "hay_obtaculo_delante", EN: "front_obstacle"
 }
 
 block{
     type perceptual
     name get_distance
-    file learnbot-dsl/funtions/perceptual/get_distance.py
     img block4, block3
+    languages ES: "obtener_distancia", EN: "get_distance"
 }
 
 block{
     type perceptual
     name get_image
-    file learnbot-dsl/funtions/perceptual/get_image.py
     img block4, block3
+    languages ES: "obtener_image", EN: "get_image"
 }
 
 
 block{
     type perceptual
     name left_obstacle
-    file learnbot-dsl/funtions/perceptual/left_obstacle.py
     variables{
         float threshold 200
     }
     img block4, block3
+    languages ES: "hay_obtaculo_izquierda", EN: "left_obstacle"
 }
 
 block{
     type perceptual
     name line_crossing
-    file learnbot-dsl/funtions/perceptual/line_crossing.py
     img block4, block3
+    languages ES: "hay_cruce", EN: "line_crossing"
 }
 
 block{
     type perceptual
     name obstacle_free
-    file learnbot-dsl/funtions/perceptual/obstacle_free.py
     variables{
         float threshold 200
     }
     img block4, block3
+    languages ES: "hay_obtaculos", EN: "obstacle_free"
 }
 
 
 block{
     type perceptual
     name right_obstacle
-    file learnbot-dsl/funtions/perceptual/right_obstacle.py
     variables{
         float threshold 200
     }
     img block4, block3
+    languages ES: "hay_obtaculo_derecha", EN: "right_obstacle"
 }
-
-
-

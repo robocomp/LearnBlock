@@ -71,6 +71,26 @@
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QComboBox" name="language">
+        <property name="maximumSize">
+         <size>
+          <width>85</width>
+          <height>27</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>ES</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>EN</string>
+         </property>
+        </item>
+       </widget>
+      </item>
      </layout>
     </item>
     <item>

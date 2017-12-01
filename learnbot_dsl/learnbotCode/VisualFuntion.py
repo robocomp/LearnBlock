@@ -9,6 +9,8 @@ from AbstracBlockItem import *
 from toQImage import *
 from Block import *
 
+from Language import *
+
 def EuclideanDist(p1,p2):
     p = p1 - p2
     return sqrt(pow(p.x(), 2) + pow(p.y(), 2))
@@ -33,12 +35,18 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         self.__type = self.parentBlock.type
         self.id = self.parentBlock.id
         self.connections = self.parentBlock.connections
+        self.dicTrans = parentBlock.dicTrans
+        self.shouldUpdate = True
+        if len( self.dicTrans ) is 0:
+            self.showtext = self.parentBlock.name
+        else:
+            self.showtext = self.dicTrans[ getLanguage() ]
         QtGui.QGraphicsPixmapItem.__init__(self)
 
         #Load Image of block
         self.cvImg = cv2.imread(self.parentBlock.file,cv2.IMREAD_UNCHANGED)
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
-        img = generateBlock(self.cvImg, 34, self.parentBlock.name, self.parentBlock.typeBlock,None,self.parentBlock.type)
+        img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock,None,self.parentBlock.type)
         qImage = toQImage(img)
         try:
             self.header = copy.copy(self.cvImg[0:39,0:149])
@@ -176,13 +184,14 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         return self.parentBlock.id
 
     def updateImg(self):
+
         if self.__typeBlock is COMPLEXBLOCK:
             nSubBlock, size = self.getNumSub()
             if size is 0:
                 size = 34
-            if self.sizeIn != size:
+            if self.sizeIn != size or self.shouldUpdate:
                 self.sizeIn = size
-                im = generateBlock(self.cvImg, size, self.parentBlock.name, self.__typeBlock)
+                im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock)
                 qImage = toQImage(im)
                 self.img = QtGui.QPixmap(qImage)
                 self.setPixmap(self.img)
@@ -193,7 +202,7 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
                             self.scene.getVisualItem(c.getIdItem()).moveToPos(
                                 self.pos() + QtCore.QPointF(0, self.img.height() - 5))
         else:
-            im = generateBlock(self.cvImg, 34, self.parentBlock.name, self.__typeBlock, None, self.getVars(),
+            im = generateBlock(self.cvImg, 34, self.showtext, self.__typeBlock, None, self.getVars(),
                                 self.__type)
             size = im.shape[1]
             if self.sizeIn != size:
@@ -208,6 +217,7 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
                         if c.getIdItem() is not None:
                             self.scene.getVisualItem(c.getIdItem()).moveToPos(
                                 self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
+        self.shouldUpdate = False
 
     def updateVarValues(self):
 
@@ -225,6 +235,10 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
                     c.setConnect(None)
 
     def update(self):
+        if len( self.dicTrans ) is not 0:
+            self.shouldUpdate=True
+            self.showtext = self.dicTrans[ getLanguage() ]
+
         for row in range(0, self.tabVar.rowCount()):
             combobox = self.tabVar.cellWidget(row, 2)
             items = []

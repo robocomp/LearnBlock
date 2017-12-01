@@ -2,7 +2,6 @@
 block{
     type proprioceptive
     name get_move
-    file learnbot-dsl/funtions/perceptual/get_move.py
     img block4, block3
+    languages ES: "obtener_movimiento", EN: "get_move"
 }
-

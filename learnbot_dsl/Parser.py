@@ -1,5 +1,32 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# ------------------------------------------------------------------
+#   TODO Añadir definition de funciones.
+#
+#
+# ------------------------------------------------------------------
 
 from pyparsing import *
+import sys
+
+header = """
+
+# EXECUTION: python code_example.py configSimulated
+
+global lbot
+lbot = LearnBotClientPR.Client(sys.argv)
+
+
+"""
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 OBRACE,CBRACE,SEMI,OPAR,CPAR = map(Literal, "{};()")
 
@@ -92,10 +119,11 @@ DEACTIVE = Group( Suppress( Literal( "deactive" ) ) + identifier.setResultsName(
 """-----------------FUNTION-------------------------"""
 FUNTION = Group( Suppress( Literal( "function" ) ) + Suppress( point ) + identifier.setResultsName( 'name' ) + Suppress( lpar ) + Group( Optional( identifier ) + ZeroOrMore( Suppress( coma ) + identifier) ).setResultsName( "args" ) + Suppress( rpar )).setResultsName( "FUNCTION" )
 
-
-
 """-----------------LINEA---------------------------"""
-LINE << ( FUNTION | IF | BLOQUEWHILE | NUMVAR | BOOLVAR | ACTIVE | DEACTIVE | STRINGVAR ) # TODO add identifier
+LINE << ( FUNTION | IF | BLOQUEWHILE | NUMVAR | BOOLVAR | ACTIVE | DEACTIVE | STRINGVAR )
+
+"""-----------------DEF----------------------------"""
+# DEF = Group().setResultsName( "DEF" ) # TODO
 
 """-----------------MAIN----------------------------"""
 MAIN = Group( Suppress( Literal( "main" ) ) + COLONS + LINES.setResultsName( 'content' ) ).setResultsName( "MAIN" )
@@ -114,29 +142,37 @@ def parserFromString(text):
     try:
         return LB.parseString(text)
     except Exception as e:
-        print e
+        print bcolors.FAIL + e
         print("line: {}".format(e.line))
-        print("    "+" "*e.col+"^")
-
-
+        print("    "+" "*e.col+"^") + bcolors.ENDC
+        exit(-1)
 
 def generatePy(lines):
+    list_var = []
     # print "-------------------\n", lines, "\n-------------------"
     text = ""
     for x in lines:
-        text = process(x,text)
-    print "-----Final text------\n", text
+        if x.getName() is 'WHEN':
+            list_var.append(x.name[0])
+    for x in lines:
+        text = process(x,list_var,text)
+    if len( list_var ) is not 0:
+        text += "while True:\n"
+        for x in list_var:
+            text += "\twhen_" + x + "()\n"
+    # print "-----Final text------\n", text
+    return text
 
-def process(line, text="", index=0):
-    print "------------Procesando ",line
+def process(line, list_var=[], text="", index=0):
+    # print "------------Procesando ",line
     TYPE = line.getName()
-    print "\t",TYPE, index
+    # print "\t",TYPE, index
 
     if TYPE is 'MAIN':
         for cLine in line.content:
-            text += process(cLine, "",0)
+            text += process(cLine, [], "",0)
     elif TYPE is 'WHEN':
-        text = processWHEN(line, text)
+        text = processWHEN(line, list_var, text)
     elif TYPE is 'WHILE':
         text = processWHILE(line,text,index)
     elif TYPE is 'IF':
@@ -209,17 +245,21 @@ def processWHILE(line, text="", index=0):
 
     index+=1
     for field in line.content:
-        text = process(field, text, index) + "\n"
+        text = process(field, [], text, index) + "\n"
 
     index-=1
     return text
 
-def processWHEN(line, text="", index=0):
-    text += "if " + str(line.name[0]) + ":\n"
+def processWHEN(line, list_var, text="", index=0):
+    text += "def when_" + str(line.name[0]) + "():\n"
+    index += 1
+    for x in list_var:
+        text += "\t"*index + "global " + x + "\n"
+    text += "\t"*index + "if " + str(line.name[0]) + ":\n"
     index += 1
     for cline in line.content:
         # print "\n\n------------------------ \n",cline "\n\n\n---------------------------------\n\n\n"
-        text = process(cline, text, index) + "\n"
+        text = process(cline, [], text, index) + "\n"
     index-=1
     ini = line.name[0] + " = "
     if line.condition is not "":
@@ -248,7 +288,7 @@ def processCOMPOP(line, text="", index=0):
     return text
 
 def processSIMPLECONDITION(line, text="", index=0):
-    print "------------------------", line
+    # print "------------------------", line
     for field in line:
         TYPE = field.getName()
         if TYPE is 'NOT':
@@ -276,14 +316,14 @@ def processELIF(line, text="", index=0):
     text += ":\n"
     index+=1
     for field in line.content:
-        text = process(field, text, index) + "\n"
+        text = process(field, [], text, index) + "\n"
     return text
 
 def processELSE(line, text="", index=0):
     text += "\t"*index + "else:\n"
     index+=1
     for field in line.content:
-        text = process(field, text, index) + "\n"
+        text = process(field, [], text, index) + "\n"
     return text
 
 def processIF(line, text="", index=0):
@@ -294,11 +334,26 @@ def processIF(line, text="", index=0):
 
     index+=1
     for field in line.content:
-        text = process(field, text, index) + "\n"
+        text = process(field, [], text, index) + "\n"
 
     index-=1
     for field in line.OPTIONAL:
-        text = "\t"*index + process(field, text, index)
+        text = "\t"*index + process(field, [], text, index)
     return text
 
-generatePy(parserFromFile("prueba.lb"))
+if __name__ == "__main__":
+    argv = sys.argv[1:]
+    if len( argv ) is not 2:
+        print bcolors.FAIL + "You must give 2 arguments"
+        print "\timputfile\tFile to parser"
+        print "\toutputfile\tFile to parser" + bcolors.ENDC
+        exit(-1)
+    if argv[0] == argv[1]:
+        print bcolors.FAIL + "Imputfile must be different to outputfile" + bcolors.ENDC
+        exit(-1)
+    print bcolors.OKGREEN + "Generating file " + argv[1] + bcolors.ENDC
+    text = generatePy( parserFromFile( argv[0] ) )
+    print bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC
+    with open( argv[1] ,'w') as f:
+        f.write( header )
+        f.write( text )
