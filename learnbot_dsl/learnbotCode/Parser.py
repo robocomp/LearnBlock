@@ -30,7 +30,7 @@ class bcolors:
 
 OBRACE,CBRACE,SEMI,OPAR,CPAR = map(Literal, "{};()")
 
-reserved_words = ( Keyword('>=') | Keyword('<=') | Keyword('<') | Keyword('>') | Keyword('deactive') | Keyword('active') | Keyword('not') | Keyword('True') | Keyword('False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword('elif') | Keyword('when') | Keyword('while') | Keyword('end'))
+reserved_words = ( Keyword('=') | Keyword('funtion.') | Keyword('>=') | Keyword('<=') | Keyword('<') | Keyword('>') | Keyword('deactive') | Keyword('active') | Keyword('not') | Keyword('True') | Keyword('False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword('elif') | Keyword('when') | Keyword('while') | Keyword('end'))
 iden = Word( alphanums+"_")
 identifier = Group( ~reserved_words + iden ).setResultsName( "IDENTIFIER" )
 NUMS = Group( Word( nums ) ).setResultsName( "NUMBER" )
@@ -77,12 +77,12 @@ OPERATION = Group( identifier + ZeroOrMore( SRMD + identifier ) ).setResultsName
 """-----------------OPERACIONES---------------------"""
 ORAND = Group( OR | AND ).setResultsName( 'ORAND' )
 
-"""-----------------FUNTION-------------------------"""
-FUNTION = Forward()
+"""-----------------FUNCTION-------------------------"""
+FUNCTION = Group( Suppress( Literal( "function" ) ) + Suppress( point ) + identifier.setResultsName( 'name' ) + Suppress( lpar ) + Group( Optional( identifier ) + ZeroOrMore( Suppress( coma ) + identifier) ).setResultsName( "args" ) + Suppress( rpar )).setResultsName( "FUNCTION" )
 
 """-----------------CONDICIONES---------------------"""
 COMPOP = Group( OPERATION + COMP + OPERATION ).setResultsName( "COMPOP" )
-OPTIONCONDITION =  COMPOP | FUNTION |identifier | TRUE | FALSE
+OPTIONCONDITION =  FUNCTION | TRUE | FALSE | COMPOP | identifier
 SIMPLECONDITION = Group( Optional( NOT ) + OPTIONCONDITION ).setResultsName( "SIMPLECONDITION")
 CONDITION = Group( SIMPLECONDITION + ZeroOrMore( ORAND + SIMPLECONDITION ) ).setResultsName( "CONDITION" )
 
@@ -113,95 +113,98 @@ BLOQUEWHILE    = Group( SECTAB + Suppress( Literal( "while" ) ) + Group( CONDITI
 BLOQUEWHENCOND = Group( SECTAB + Suppress( Literal( "when" ) ) + identifier.setResultsName("name") + Optional( Suppress( eq )+ Group( CONDITION ).setResultsName( 'condition' ) ) + COLONS + LINES.setResultsName('content') + Literal("end") ).setResultsName( "WHEN" )
 
 """-----------------ACTIVE-CONDITION----------------"""
-ACTIVE   = Group( Suppress( Literal( "active" ) ) + identifier.setResultsName( "name" ) ).setResultsName( "ACTIVE" )
+ACTIVE   = Group( Suppress( Literal( "active" ) )   + identifier.setResultsName( "name" ) ).setResultsName( "ACTIVE" )
 DEACTIVE = Group( Suppress( Literal( "deactive" ) ) + identifier.setResultsName( "name" ) ).setResultsName( "DEACTIVE" )
 
-"""-----------------FUNTION-------------------------"""
-FUNTION = Group( Suppress( Literal( "function" ) ) + Suppress( point ) + identifier.setResultsName( 'name' ) + Suppress( lpar ) + Group( Optional( identifier ) + ZeroOrMore( Suppress( coma ) + identifier) ).setResultsName( "args" ) + Suppress( rpar )).setResultsName( "FUNCTION" )
 
 """-----------------LINEA---------------------------"""
-LINE << ( FUNTION | IF | BLOQUEWHILE | NUMVAR | BOOLVAR | ACTIVE | DEACTIVE | STRINGVAR )
+LINE << ( FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVE | DEACTIVE | STRINGVAR )
 
 """-----------------DEF----------------------------"""
 # DEF = Group().setResultsName( "DEF" ) # TODO
 
 """-----------------MAIN----------------------------"""
-MAIN = Group( Suppress( Literal( "main" ) ) + COLONS + LINES.setResultsName( 'content' ) ).setResultsName( "MAIN" )
+MAIN = Group( Suppress( Literal( "main" ) ) + COLONS + LINES.setResultsName( 'content' ) ).setResultsName( "MAIN" ) + Literal("end")
 LB = MAIN | ZeroOrMore(BLOQUEWHENCOND)
 LB.ignore( pythonStyleComment )
 
+ini = []
 
 
-
-def parserFromFile(file):
+def __parserFromFile(file):
     with open(file) as f:
         text = f.read()
-        return parserFromString(text)
+        ret = __parserFromString(text)
+        print ret
+        return ret
 
-def parserFromString(text):
+def __parserFromString(text):
     try:
         return LB.parseString(text)
     except Exception as e:
         print bcolors.FAIL + e
         print("line: {}".format(e.line))
         print("    "+" "*e.col+"^") + bcolors.ENDC
+        raise e
         exit(-1)
 
-def generatePy(lines):
+def __generatePy(lines):
     list_var = []
     # print "-------------------\n", lines, "\n-------------------"
     text = ""
     for x in lines:
         if x.getName() is 'WHEN':
             list_var.append(x.name[0])
+    global ini
     for x in lines:
-        text = process(x,list_var,text)
+        text = __process(x, list_var, text)
     if len( list_var ) is not 0:
         text += "while True:\n"
+        for line in ini:
+            text += "\t" + line
         for x in list_var:
             text += "\twhen_" + x + "()\n"
-    # print "-----Final text------\n", text
     return text
 
-def process(line, list_var=[], text="", index=0):
+def __process(line, list_var=[], text="", index=0):
     # print "------------Procesando ",line
     TYPE = line.getName()
     # print "\t",TYPE, index
 
     if TYPE is 'MAIN':
         for cLine in line.content:
-            text += process(cLine, [], "",0)
+            text += __process(cLine, [], "",0)
     elif TYPE is 'WHEN':
-        text = processWHEN(line, list_var, text)
+        text = __processWHEN(line, list_var, text)
     elif TYPE is 'WHILE':
-        text = processWHILE(line,text,index)
+        text = __processWHILE(line,text,index)
     elif TYPE is 'IF':
-        text = processIF(line,text,index)
+        text = __processIF(line,text,index)
     elif TYPE is 'ELIF':
-        text = processELIF(line,text,index)
+        text = __processELIF(line,text,index)
     elif TYPE is 'ELSE':
-        text = processELSE(line,text,index)
+        text = __processELSE(line,text,index)
     elif TYPE is 'ACTIVE':
-        text = processACTIVE(line, text, index)
+        text = __processACTIVE(line, text, index)
     elif TYPE is 'DEACTIVE':
-        text = processDEACTIVE(line, text, index)
+        text = __processDEACTIVE(line, text, index)
     elif TYPE in ['NUMVAR', 'BOOLVAR', 'STRINGVAR']:
-        text = processASSIG(line, text, index)
+        text = __processASSIG(line, text, index)
     elif TYPE is 'OPERATION':
-        text = processOP(line, text, index)
+        text = __processOP(line, text, index)
     elif TYPE is 'FUNCTION':
-        text = processFUNCTION(line, text, index)
+        text = __processFUNCTION(line, text, index)
     elif TYPE is 'CONDITION':
-        text = processCONDITION(line, text, index)
+        text = __processCONDITION(line, text, index)
     elif TYPE is 'ASSIGSTRING':
-        text = processASSIGSTRING(line, text, index)
+        text = __processASSIGSTRING(line, text, index)
     elif TYPE in ['FALSE','TRUE','IDENTIFIER', 'SRMD']:
         text = line[0]
     elif TYPE is 'SIMPLECONDITION':
-        text = processSIMPLECONDITION(line, text, index)
+        text = __processSIMPLECONDITION(line, text, index)
     return text
 
-def processFUNCTION(line, text="", index=0):
+def __processFUNCTION(line, text="", index=0):
     if text is not "":
         text += "\t"*index
     text += "functions.get(" + line.name[0] + ")(lbot"
@@ -214,12 +217,12 @@ def processFUNCTION(line, text="", index=0):
 # Process NUMVAR, BOOLVAR, STRINGVAR
 # ---------------------------------------
 
-def processASSIG(line, text="", index=0):
-    # print "------------------------processASSIG-----", line[1]
-    text += "\t"*index + line.name[0] + " = " + process(line[1])
+def __processASSIG(line, text="", index=0):
+    # print "------------------------__processASSIG-----", line[1]
+    text += "\t"*index + line.name[0] + " = " + __process(line[1])
     return text
 
-def processASSIGSTRING(line, text="", index=0):
+def __processASSIGSTRING(line, text="", index=0):
     for field in line:
         if field.getName() is 'STRING':
             text += "\"" + field[0] + "\" "
@@ -229,28 +232,29 @@ def processASSIGSTRING(line, text="", index=0):
             text += field[0] + " "
     return text
 
-def processACTIVE(line, text="", index=0):
+def __processACTIVE(line, text="", index=0):
     text += "\t"*index + line.name[0] + " = True\n"
     return text
 
-def processDEACTIVE(line, text="", index=0):
+def __processDEACTIVE(line, text="", index=0):
     text += "\t"*index + line.name[0] + " = False\n"
     return text
 
-def processWHILE(line, text="", index=0):
+def __processWHILE(line, text="", index=0):
     text += "\t"*index + "while "
     for c in line.condition:
-        text += process(line.condition[0])
+        text += __process(line.condition[0])
     text += ":\n"
 
     index+=1
     for field in line.content:
-        text = process(field, [], text, index) + "\n"
+        text = __process(field, [], text, index) + "\n"
 
     index-=1
     return text
 
-def processWHEN(line, list_var, text="", index=0):
+def __processWHEN(line, list_var, text="", index=0):
+    global ini
     text += "def when_" + str(line.name[0]) + "():\n"
     index += 1
     for x in list_var:
@@ -258,88 +262,99 @@ def processWHEN(line, list_var, text="", index=0):
     text += "\t"*index + "if " + str(line.name[0]) + ":\n"
     index += 1
     for cline in line.content:
-        # print "\n\n------------------------ \n",cline "\n\n\n---------------------------------\n\n\n"
-        text = process(cline, [], text, index) + "\n"
+        text = __process(cline, [], text, index) + "\n"
     index-=1
-    ini = line.name[0] + " = "
-    if line.condition is not "":
-        ini += process(line.condition[0])
-    else:
-        ini += "False"
-    ini +="\n"
 
-    text = ini + text
+    if line.condition is not "":
+        ini.append( line.name[0] + " = " + __process(line.condition[0]) + "\n")
+
+
+    if line.condition is "":
+        text = line.name[0] + " =  None\n" + text
     return text
 
-def processOP(line, text="", index=0):
-    # print "------------------------processOP------------"
+def __processOP(line, text="", index=0):
+    # print "------------------------__processOP------------"
     for field in line:
         text += field[0] + " "
-    # print "-----------------------end-processOP------------"
+    # print "-----------------------end-__processOP------------"
     return text
 
-def processCOMPOP(line, text="", index=0):
+def __processCOMPOP(line, text="", index=0):
     for field in line:
         TYPE = field.getName()
         if TYPE is 'OPERATION':
-            text += process(field)
+            text += __process(field)
         elif TYPE is 'COMP':
             text += field[0] + " "
     return text
 
-def processSIMPLECONDITION(line, text="", index=0):
+def __processSIMPLECONDITION(line, text="", index=0):
     # print "------------------------", line
     for field in line:
         TYPE = field.getName()
         if TYPE is 'NOT':
             text += "not "
         elif TYPE in ['IDENTIFIER','FUNCTION','TRUE','FALSE']:
-            text += process(field)
+            text += __process(field)
         elif TYPE is "COMPOP":
-            text += processCOMPOP(field)
+            text += __processCOMPOP(field)
         # else:
             # text += field
     return text
 
-def processCONDITION(line, text="", index=0):
+def __processCONDITION(line, text="", index=0):
     for field in line:
         if field.getName() is 'SIMPLECONDITION':
-            text += process(field) + " "
+            text += __process(field) + " "
         elif field.getName() is 'ORAND':
             text += field[0] + " "
     return text
 
-def processELIF(line, text="", index=0):
+def __processELIF(line, text="", index=0):
     text += "\t"*index + "elif "
     for c in line.condition:
-        text += process(line.condition[0])
+        text += __process(line.condition[0])
     text += ":\n"
     index+=1
     for field in line.content:
-        text = process(field, [], text, index) + "\n"
+        text = __process(field, [], text, index) + "\n"
     return text
 
-def processELSE(line, text="", index=0):
+def __processELSE(line, text="", index=0):
     text += "\t"*index + "else:\n"
     index+=1
     for field in line.content:
-        text = process(field, [], text, index) + "\n"
+        text = __process(field, [], text, index) + "\n"
     return text
 
-def processIF(line, text="", index=0):
+def __processIF(line, text="", index=0):
     text += "\t"*index + "if "
     for c in line.condition:
-        text += process(line.condition[0])
+        text += __process(line.condition[0])
     text += ":\n"
 
     index+=1
     for field in line.content:
-        text = process(field, [], text, index) + "\n"
+        text = __process(field, [], text, index) + "\n"
 
     index-=1
     for field in line.OPTIONAL:
-        text = "\t"*index + process(field, [], text, index)
+        text = "\t"*index + __process(field, [], text, index)
     return text
+
+def parserLearntBotCode(inputFile, outputFile):
+    print "----------------------------------" + inputFile + "----------------------------------------------"
+    try:
+        text = __generatePy( __parserFromFile( inputFile ) )
+        print "------------------",text
+        with open( outputFile ,'w') as f:
+            f.write( header )
+            f.write( text )
+    except Exception as e:
+        print e
+        raise e
+
 
 if __name__ == "__main__":
     argv = sys.argv[1:]
@@ -352,7 +367,7 @@ if __name__ == "__main__":
         print bcolors.FAIL + "Imputfile must be different to outputfile" + bcolors.ENDC
         exit(-1)
     print bcolors.OKGREEN + "Generating file " + argv[1] + bcolors.ENDC
-    text = generatePy( parserFromFile( argv[0] ) )
+    text = __generatePy( __parserFromFile( argv[0] ) )
     print bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC
     with open( argv[1] ,'w') as f:
         f.write( header )

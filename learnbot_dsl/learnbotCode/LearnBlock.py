@@ -8,12 +8,16 @@ import threading
 import guis.addVar as addVar
 import guis.gui as gui
 import guis.delVar as delVar
+import guis.delWhen as delWhen
 import guis.createFunctions as guiCreateFunctions
+import guis.addWhen as guiAddBlockWhen
+
 from Block import *
 from Scene import *
 from View import *
 from guiCreateBlock import *
 from guiAddNumberOrString import *
+from guiaddWhen import *
 
 from Language import *
 
@@ -32,6 +36,16 @@ from blocksConfig.blocks import pathBlocks
 from parserText import parserFile
 from checkFile import compile
 
+from Parser import parserLearntBotCode
+
+HEADER = ""
+# #EXECUTION: python code_example.py configSimulated
+#
+# global lbot
+# lbot = <LearnBotClient>.Client(sys.argv)
+#
+# """
+
 def loadfile(file):
     fh = open(file, "r")
     code = fh.read()
@@ -42,8 +56,7 @@ class MyButtom(QtGui.QPushButton):
 
     def __init__(self,args):
         if len(args) is 11:
-            self.__text, self.__dicTrans, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType,\
-            self.__table, self.__row, self.__type = args
+            self.__text, self.__dicTrans, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType, self.__table, self.__row, self.__type = args
             self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
 
         elif len(args) is 5:
@@ -93,11 +106,11 @@ class MyButtom(QtGui.QPushButton):
             self.setFixedSize(QtCore.QSize(150, im.shape[0]))
 
     def clickedButton(self):
-        block = AbstractBlockItem(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.__connections,self.__blockType,self.__type)
+        block = AbstractBlockItem(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections,self.__blockType,self.__type)
         self.__scene.addItem(block)
 
     def getAbstracBlockItem(self):
-        return AbstractBlockItem(0,0,self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.__connections, self.__blockType,self.__type)
+        return AbstractBlockItem(0,0,self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections, self.__blockType,self.__type)
 
     def delete(self,row):
         self.__table.removeCellWidget(row,0)
@@ -111,16 +124,11 @@ class MyButtom(QtGui.QPushButton):
 class LearnBlock:
 
     def __init__(self):
-        self.addNumberOrStringGui = None
-        self.delUserFunctionsGui = None
-        self.delUserFunctionsDialgo = None
-        self.delVarGui = None
-        self.delVarDialgo = None
-        self.userFunctionsGui = None
-        self.userFunctionsDialgo = None
         self.listNameUserFunctions = []
         self.listNameVars = []
         self.listNameBlock = []
+        self.listNameWhens = []
+        self.listButtonsWhen = []
         self.__fileProject = None
         app = QtGui.QApplication(sys.argv)
         self.Dialog = QtGui.QMainWindow()
@@ -135,6 +143,8 @@ class LearnBlock:
         self.ui.addVarPushButton.clicked.connect(self.newVariable)
         self.ui.addNumberpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(1))
         self.ui.addStringpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(2))
+        self.ui.addWhenpushButton.clicked.connect(self.showGuiAddWhen)
+        self.ui.useEventscheckBox.stateChanged.connect(lambda: self.avtiveEvents(self.ui.useEventscheckBox.isChecked()))
         self.ui.stopPushButton.setEnabled(False)
         self.ui.startPushButton.setEnabled(True)
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
@@ -148,10 +158,9 @@ class LearnBlock:
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30,30))
         self.ui.zoompushButton.clicked.connect(self.setZoom)
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
+
         self.listVars = []
         self.listUserFunctions = []
-        self.addVarGui = None
-        self.addVarDialgo = None
         self.view = MyView(self.ui.frame)
         self.view.setObjectName("view")
         self.ui.verticalLayout_3.addWidget(self.view)
@@ -159,7 +168,6 @@ class LearnBlock:
         self.view.setScene(self.scene)
         self.view.show()
         self.view.setZoom(False)
-        self.createBlockGui = None
         #READ FUNTIONS
         #process
         self.hilo = None
@@ -187,6 +195,7 @@ class LearnBlock:
             pass
 
         self.load_blocks()
+        self.avtiveEvents(False)
 
         self.timer = QtCore.QTimer()
         self.timer.start(1000)
@@ -197,6 +206,7 @@ class LearnBlock:
         self.ui.actionOpen_Proyect.triggered.connect(self.openProyect)
         self.ui.openpushButton.clicked.connect(self.openProyect)
         self.ui.deleteVarPushButton.clicked.connect(self.deleteVar)
+        self.ui.deleteWhenpushButton.clicked.connect(self.deleteWhen)
         self.ui.createFunctionsPushButton.clicked.connect(self.newUserFunctions)
         self.ui.deleteFuntionsPushButton.clicked.connect(self.deleteUserFunctions)
         self.ui.tabWidget_2.setFixedWidth(221)
@@ -209,6 +219,12 @@ class LearnBlock:
         shutil.rmtree("tmp")
         #os.rmdir("tmp")
         sys.exit(r)
+
+    def avtiveEvents(self,isChecked):
+        self.ui.addWhenpushButton.setEnabled(isChecked)
+        self.mainButton.setEnabled(not isChecked)
+        for b in self.listButtonsWhen:
+            b.setEnabled(isChecked)
 
     def setZoom(self):
         self.view.setZoom(self.ui.zoompushButton.isChecked())
@@ -224,19 +240,19 @@ class LearnBlock:
                 continue
             self.listNameBlock.append( f.name )
             variables = []
-            if "variables" in f:
+            if f.variables:
                 for v in f.variables:
                     variables.append(Variable(v[0], v[1], v[2]))
             funtionType = None
-            if "control" in f.type:
+            if "control" == f.type[0]:
                 funtionType = CONTROL
-            elif "motor" in f.type:
+            elif "motor" == f.type[0]:
                 funtionType = FUNTION
-            elif "perceptual" in f.type:
+            elif "perceptual" == f.type[0]:
                 funtionType = FUNTION
-            elif "proprioceptive" in f.type:
+            elif "proprioceptive" == f.type[0]:
                 funtionType = FUNTION
-            elif "operador" in f.type:
+            elif "operador" == f.type[0]:
                 funtionType = OPERATOR
             blockType = None
             for img in f.img:
@@ -247,6 +263,8 @@ class LearnBlock:
                 for l in f.translations:
                     dicTrans[l.language] = l.translation
                 button = MyButtom((f.name[0], dicTrans, self.view, self.scene, img + ".png", connections, variables, blockType, table, table.rowCount()-1, funtionType))
+                if f.name[0] == "main":
+                    self.mainButton = button
                 self.listButtons.append(button)
                 table.setCellWidget(table.rowCount() - 1, 0, button)
 
@@ -321,7 +339,7 @@ class LearnBlock:
                 for id in dic:
                     block = dic[id]
                     block.file = block.file.replace(pathImgBlocks,"")
-                pickle.dump((dic,self.listVars,self.listUserFunctions,self.listNameVars,self.listNameUserFunctions), fichero,0)
+                pickle.dump((dic,self.listVars,self.listButtonsWhen, self.listNameWhens ,self.listUserFunctions,self.listNameVars,self.listNameUserFunctions), fichero,0)
         self.scene.shouldSave = False
 
     def saveAs(self):
@@ -351,6 +369,8 @@ class LearnBlock:
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
                     dictBlock = d[0]
+                    self.listButtonsWhen = d[1]
+                    self.listNameWhens = d[2]
                     for id in dictBlock:
                         block = dictBlock[id]
                         block.file = pathImgBlocks + block.file
@@ -360,12 +380,12 @@ class LearnBlock:
                         self.delUserFunction(name)
                     for name in self.listNameVars:
                         self.delVar(name)
-                    for name in d[3]:
+                    for name in d[5]:
                         self.addVariable(name)
-                    self.listNameVars = d[3]
-                    for name in d[4]:
+                    self.listNameVars = d[5]
+                    for name in d[6]:
                         self.addUserFunction(name)
-                    self.listNameUserFunctions = d[4]
+                    self.listNameUserFunctions = d[6]
 
 
         else:
@@ -396,15 +416,47 @@ class LearnBlock:
         imgPath = self.addNumberOrStringGui.imgName
         configImgPath = imgPath.replace(".png","")
         blockType, connections = self.loadConfigBlock(configImgPath)
-        block = AbstractBlockItem(0,0,text, {}, imgPath,[], connections, blockType,VARIABLE)
+        block = AbstractBlockItem(0,0,text, {}, imgPath,[], "" , connections, blockType,VARIABLE)
         self.scene.addItem(block)
+
+    def showGuiAddWhen(self):
+        self.addWhenGui = guiAddWhen()
+        self.addWhenGui.ui.pushButtonOK.clicked.connect(self.addBlockWhen)
+        self.addWhenGui.open()
+
+    def addBlockWhen(self):
+        text = self.addWhenGui.value
+        imgPath = self.addWhenGui.imgName
+        configImgPath = imgPath.replace(".png","")
+        blockType, connections = self.loadConfigBlock(configImgPath)
+
+        block = AbstractBlockItem(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,VARIABLE)
+        self.scene.addItem(block)
+        if configImgPath.split('/')[-1] == 'block10':
+            blockType, connections = self.loadConfigBlock(pathBlocks + "/block1")
+            table = self.dicTables['control']
+
+            table.insertRow(table.rowCount())
+            button = MyButtom( ( "active " + self.addWhenGui.nameControl, {'ES':"Activar " + self.addWhenGui.nameControl, 'EN':"Active " + self.addWhenGui.nameControl }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            self.listButtonsWhen.append(button)
+            self.listButtons.append(button)
+            table.setCellWidget(table.rowCount() - 1, 0, button)
+
+            table.insertRow(table.rowCount())
+            button = MyButtom( ( "deactive " + self.addWhenGui.nameControl, {'ES':"Desactivar " + self.addWhenGui.nameControl, 'EN':"Deactive " + self.addWhenGui.nameControl }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            self.listButtonsWhen.append(button)
+            self.listButtons.append(button)
+            table.setCellWidget(table.rowCount() - 1, 0, button)
+
+        self.listNameWhens.append(self.addWhenGui.nameControl)
+        self.ui.deleteWhenpushButton.setEnabled(True)
 
     def printProgram(self):
         blocks = self.scene.getListInstructions()
         if blocks is not None:
             #self.ui.plainTextEdit_2.clear()
             #self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
-	    self.physicalRobot = False
+            self.physicalRobot = False
             self.generateTmpFile()
 
     def printProgramPR(self):
@@ -412,9 +464,8 @@ class LearnBlock:
         if blocks is not None:
             #self.ui.plainTextEdit_2.clear()
             #self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
-	    self.physicalRobot = True
+            self.physicalRobot = True
             self.generateTmpFile()
-
 
     #TODO Esperar a que termine el parseador de texto
     def generateTmpFilefromText(self):
@@ -439,18 +490,11 @@ class LearnBlock:
 
     def generateTmpFile(self):
         blocks = self.scene.getListInstructions()
-        text = """
-#EXECUTION: python code_example.py configSimulated
-
-global lbot
-lbot = <LearnBotClient>.Client(sys.argv)
-
-"""
         if self.physicalRobot:
-            text = text.replace('<LearnBotClient>','LearnBotClientPR')
+            text = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
             sys.argv = [' ','configPhysical']
         else:
-            text = text.replace('<LearnBotClient>','LearnBotClient')
+            text = HEADER.replace('<LearnBotClient>','LearnBotClient')
             sys.argv = [' ','configSimulated']
 
         if len(self.listNameVars)>0:
@@ -459,9 +503,16 @@ lbot = <LearnBotClient>.Client(sys.argv)
 
         if blocks is not None:
             code = self.parserBlocks(blocks,self.toLBotPy)
-            fh = open("main_tmp.py","wr")
+            fh = open("main_tmp.lb","wr")
             fh.writelines(text + code)
             fh.close()
+            try:
+                parserLearntBotCode("main_tmp.lb", "main_tmp.py")
+            except Exception as e:
+                print e
+                print("line: {}".format(e.line))
+                print("    "+" "*e.col+"^")
+                return
             if compile("main_tmp.py"):
                 self.hilo = Process(target=self.execTmp)
                 self.hilo.start()
@@ -476,24 +527,16 @@ lbot = <LearnBotClient>.Client(sys.argv)
                 ret = msgBox.exec_()
 
     def generateStopTmpFile(self):
-        text = """
-#EXECUTION: python code_example.py configSimulated
-
-global lbot
-lbot = <LearnBotClient>.Client(sys.argv)
-
-"""
         if self.physicalRobot:
-            text = text.replace('<LearnBotClient>','LearnBotClientPR')
+            text = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
             sys.argv = [' ','configPhysical']
         else:
-            text = text.replace('<LearnBotClient>','LearnBotClient')
+            text = HEADER.replace('<LearnBotClient>','LearnBotClient')
             sys.argv = [' ','configSimulated']
 
         fh = open("stop_main_tmp.py","wr")
         fh.writelines(text)
         fh.close()
-
 
     def stopthread(self):
         try:
@@ -508,38 +551,72 @@ lbot = <LearnBotClient>.Client(sys.argv)
         except Exception as e:
             pass
 
-    def parserBlocks(self,blocks,funtion):
+    def parserBlocks(self,blocks,function): #TODO add parser for blocks when
         text = ""
-        if len(blocks) > 1:
-            text = "class User:\n"
         for b in blocks:
-            if "main" not in b[0]:
-                text += "\tdef "+b[0]+"(self):\n"
-                if len(self.listNameVars) > 0:
-                    for name in self.listNameVars:
-                        text += "\t\tglobal " + name + "\n"
-                if b[1]["BOTTOMIN"] is not None:
-                    text += "\t\t" + funtion(b[1]["BOTTOMIN"],3)
+            print b
+        if self.ui.useEventscheckBox.isChecked():
+            text = self.parserWhenBlocks(blocks, function)
+        else:
+            text = self.parserOtherBlocks(blocks, function)
+        #
+        # for b in blocks:
+        #     if "main" == b[0]:
+        #         text += "\tdef "+b[0]+"(self):\n"
+        #         if len(self.listNameVars) > 0:
+        #             for name in self.listNameVars:
+        #                 text += "\t\tglobal " + name + "\n"
+        #         if b[1]["BOTTOMIN"] is not None:
+        #             text += "\t\t" + function(b[1]["BOTTOMIN"],3)
+        #         else:
+        #             text += "pass"
+        #         text += "\n\n"
+        # for b in blocks:
+        #     if "main" in b[0]:
+        #         if b[1]["BOTTOMIN"] is not None:
+        #             text += function(b[1]["BOTTOMIN"])
+        #         else:
+        #             text += "pass"
+        #         text += "\n\n"
+        print text
+        return text
+
+    def parserWhenBlocks(self, blocks, function):
+        text = ""
+        for b in blocks:
+            if b[0] == "when":
+                text += "when " + b[1]['NAMECONTROL']
+                if b[1]['RIGHT'] is not None:
+                    text += " = " + function(b[1]['RIGHT'],0)
+                text += ":\n"
+
+                if b[1]['BOTTOMIN'] is not None:
+                    text += "\t" + function(b[1]['BOTTOMIN'],2) + "\n"
                 else:
-                    text += "pass"
-                text += "\n\n"
+                    text += "pass\n"
+                text += "end\n\n"
+        return text
+
+    def parserOtherBlocks(self, blocks, function):
+        text = ""
         for b in blocks:
-            if "main" in b[0]:
+            if "main" == b[0]:
+                text += b[0] + ":\n"
                 if b[1]["BOTTOMIN"] is not None:
-                    text += funtion(b[1]["BOTTOMIN"])
+                    text += "\t" + function(b[1]["BOTTOMIN"],2)
                 else:
                     text += "pass"
                 text += "\n\n"
         return text
 
-    def toLBotPy(self,inst,ntab=1):
+    def toLBotPy(self, inst, ntab = 1):
         text = inst[0]
         if inst[1]["TYPE"] is USERFUNCTION:
-            text = "User()."+inst[0]+"()"
+            text = inst[0]+"()"
         if inst[1]["TYPE"] is FUNTION :
-            text = "functions.get(\"" + inst[0] + "\")(lbot"
+            # function.set_move(30,40)
+            text = "function." + inst[0] + "("
             if inst[1]["VARIABLES"] is not None:
-                text += ", "
                 for var in inst[1]["VARIABLES"]:
                     text += var + ", "
                 text = text[0:-2] + ""
@@ -658,6 +735,38 @@ lbot = <LearnBotClient>.Client(sys.argv)
                 self.listButtons.remove(item)
         self.listNameVars.remove(name)
 
+    def deleteWhen(self):
+        self.delWhenGui = delWhen.Ui_Dialog()
+        self.delWhenDialgo = QtGui.QDialog()
+        self.delWhenGui.setupUi(self.delWhenDialgo)
+        self.delWhenDialgo.open()
+        self.delWhenGui.listWhencomboBox.clear()
+        self.delWhenGui.listWhencomboBox.currentText()
+        for name in self.listNameWhens:
+            self.delWhenGui.listWhencomboBox.addItem(name)
+        self.delWhenGui.cancelPushButton.clicked.connect(lambda :self.retdelWhenGui(0))
+        self.delWhenGui.okPushButton.clicked.connect(lambda :self.retdelWhenGui(1))
+
+    def retdelWhenGui(self, ret):
+        if ret is 1:
+            name = self.delWhenGui.listWhencomboBox.currentText()
+            self.delWhen(name)
+            self.scene.removeByNameControl(name)
+        self.delWhenDialgo.close()
+        if len(self.listNameWhens) == 0:
+            self.ui.deleteWhenpushButton.setEnabled(False)
+
+    def delWhen(self,name):
+        table = self.dicTables['control']
+        rango = reversed(range(0, table.rowCount()))
+        for row in rango:
+            item = table.cellWidget(row, 0)
+            if item.getText() in ["active "+name, "deactive "+name]:
+                item.delete(row)
+                item.removeTmpFile()
+                self.listButtons.remove(item)
+        self.listNameWhens.remove(name)
+
     def newUserFunctions(self):
         self.userFunctionsGui = guiCreateFunctions.Ui_Dialog()
         self.userFunctionsDialgo = QtGui.QDialog()
@@ -712,7 +821,7 @@ lbot = <LearnBotClient>.Client(sys.argv)
         for img in imgs:
             blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
             table.insertRow(table.rowCount())
-            button = MyButtom((name, None, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, USERFUNCTION))
+            button = MyButtom((name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, USERFUNCTION))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listUserFunctions.append(button.getAbstracBlockItem())

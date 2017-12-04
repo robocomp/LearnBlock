@@ -47,10 +47,3 @@ block{
     img block6
     languages ES: "mientras", EN: "while"
 }
-
-block{
-    type control
-    name when
-    img block6, block8
-    languages ES: "cuando", EN: "when"
-}

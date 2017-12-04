@@ -15,7 +15,6 @@ def reload_functions():
     functions += parserConfigBlock(path+"/configPerceptual")
     functions += parserConfigBlock(path+"/configPropriopercetive")
     functions += parserConfigBlock(path+"/configOperators")
-
     for f in functions:
         for i in range( len( f.img ) ):
             f.img[i] = pathBlocks + "/" +f.img[i]

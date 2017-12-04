@@ -59,6 +59,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="useEventscheckBox">
+        <property name="text">
+         <string>Use Events</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -246,6 +253,23 @@
              <string>Control</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_12">
+             <item>
+              <widget class="QPushButton" name="addWhenpushButton">
+               <property name="text">
+                <string>Add When</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="deleteWhenpushButton">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Delete When</string>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QTableWidget" name="tableControl">
                <property name="showGrid">

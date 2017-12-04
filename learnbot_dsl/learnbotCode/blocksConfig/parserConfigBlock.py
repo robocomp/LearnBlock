@@ -36,12 +36,12 @@ name = Group( Suppress( Word( "name" ) ) + identifier ).setResultsName( "name" )
 # typeblock = Group( Suppress( Word( "blocktype" ) ) + identifier )
 
 # -------------------------variables--------------------
-var = Group( identifier.setResultsName( "type" )+identifier.setResultsName( "varName" ) + Word( nums ).setResultsName( "defaultValue" ) ).setResultsName( "variables" )
+var = identifier.setResultsName( "type" )+identifier.setResultsName( "varName" ) + Word( nums ).setResultsName( "defaultValue" )
 
 
 variables = Suppress( Word( "variables" ) )+op+ Group( var )+ZeroOrMore( Group( var ) )+cl
 
-block = Group( Suppress( Literal( "block" ) ) + op +  TYPE + name + Optional( variables ) + img + Optional( translations ) + cl )
+block = Group( Suppress( Literal( "block" ) ) + op +  TYPE + name + Optional( variables ).setResultsName("variables") + img + Optional( translations ) + cl )
 
 parser = block + ZeroOrMore( block )
 
