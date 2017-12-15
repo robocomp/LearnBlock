@@ -184,7 +184,6 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         return self.parentBlock.id
 
     def updateImg(self):
-
         if self.__typeBlock is COMPLEXBLOCK:
             nSubBlock, size = self.getNumSub()
         else:
@@ -214,10 +213,16 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         self.shouldUpdate = False
 
     def updateVarValues(self):
-
         vars = self.getVars()
+        prev_vars = self.parentBlock.getVars()
         if vars is not None:
-            self.parentBlock.updateVars(vars)
+            for i in range(0,len(vars)):
+                if vars[i] != prev_vars:
+                    self.shouldUpdate = True
+                    self.parentBlock.updateVars(vars)
+                    break
+
+
 
     def updateConnections(self):
         for c in self.connections:
@@ -353,7 +358,7 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         del self
 
     def isBlockDef(self):
-        if self.parentBlock.name is "when":
+        if self.parentBlock.name == "when":
             return True
         for c in self.connections:
             if c.getType() in [TOP, BOTTOM,RIGHT,LEFT]:

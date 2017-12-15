@@ -9,12 +9,12 @@
 from pyparsing import *
 import sys
 
-header = """
+HEADER = """
 
 # EXECUTION: python code_example.py configSimulated
 
 global lbot
-lbot = LearnBotClientPR.Client(sys.argv)
+lbot = <LearnBotClient>.Client(sys.argv)
 
 
 """
@@ -38,7 +38,7 @@ NUMS = Group( Word( nums ) ).setResultsName( "NUMBER" )
 QUOTE = Word( "\"" )
 OR    = Word( "or" )
 AND   = Word( "and" )
-NOT   = Word( "not" ).setResultsName( 'NOT' )
+NOT   = Group( Word( "not" ) ).setResultsName( 'NOT' )
 plus  = Word( "+" )
 minus = Word( "-" )
 mult  = Word( "*" )
@@ -207,7 +207,7 @@ def __process(line, list_var=[], text="", index=0):
 def __processFUNCTION(line, text="", index=0):
     if text is not "":
         text += "\t"*index
-    text += "functions.get(" + line.name[0] + ")(lbot"
+    text += "functions.get(\"" + line.name[0] + "\")(lbot"
     for x in line.args:
         text += ", "+ x[0]
     text += ")"
@@ -343,11 +343,15 @@ def __processIF(line, text="", index=0):
         text = "\t"*index + __process(field, [], text, index)
     return text
 
-def parserLearntBotCode(inputFile, outputFile):
+def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     print "----------------------------------" + inputFile + "----------------------------------------------"
     try:
         text = __generatePy( __parserFromFile( inputFile ) )
         print "------------------",text
+        if physicalRobot:
+            header = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
+        else:
+            header = HEADER.replace('<LearnBotClient>','LearnBotClient')
         with open( outputFile ,'w') as f:
             f.write( header )
             f.write( text )

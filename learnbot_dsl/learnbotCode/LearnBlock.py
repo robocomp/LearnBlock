@@ -38,13 +38,13 @@ from checkFile import compile
 
 from Parser import parserLearntBotCode
 
-HEADER = ""
-# #EXECUTION: python code_example.py configSimulated
-#
-# global lbot
-# lbot = <LearnBotClient>.Client(sys.argv)
-#
-# """
+HEADER = """
+#EXECUTION: python code_example.py configSimulated
+
+global lbot
+lbot = <LearnBotClient>.Client(sys.argv)
+
+"""
 
 def loadfile(file):
     fh = open(file, "r")
@@ -432,7 +432,7 @@ class LearnBlock:
 
         block = AbstractBlockItem(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,VARIABLE)
         self.scene.addItem(block)
-        if configImgPath.split('/')[-1] == 'block10':
+        if configImgPath.split('/')[-1] == 'block8':
             blockType, connections = self.loadConfigBlock(pathBlocks + "/block1")
             table = self.dicTables['control']
 
@@ -491,12 +491,12 @@ class LearnBlock:
     def generateTmpFile(self):
         blocks = self.scene.getListInstructions()
         if self.physicalRobot:
-            text = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
+            # text = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
             sys.argv = [' ','configPhysical']
         else:
-            text = HEADER.replace('<LearnBotClient>','LearnBotClient')
+            # text = HEADER.replace('<LearnBotClient>','LearnBotClient')
             sys.argv = [' ','configSimulated']
-
+        text =""
         if len(self.listNameVars)>0:
             for name in self.listNameVars:
                 text += name + " = None\n"
@@ -507,7 +507,7 @@ class LearnBlock:
             fh.writelines(text + code)
             fh.close()
             try:
-                parserLearntBotCode("main_tmp.lb", "main_tmp.py")
+                parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot)
             except Exception as e:
                 print e
                 print("line: {}".format(e.line))

@@ -33,3 +33,5 @@ class AbstractBlockItem():
     def updateVars(self,vars):
         for index in range(len(vars)):
             self.vars[index].defaul = vars[index]
+    def getVars(self):
+        return self.vars
