@@ -106,7 +106,7 @@ INIF   = LINES  &    ( ZeroOrMore( ELSEIF ) + Optional( ELSE ) )
 
 ELSEIF << Group( SECTAB + Suppress( Literal( "elif" ) ) + Group( CONDITION ).setResultsName('condition') + COLONS + LINES.setResultsName('content') ).setResultsName( "ELIF" )
 ELSE   << Group( SECTAB + Suppress( Literal( "else" ) ) +                                                  COLONS + LINES.setResultsName('content') ).setResultsName( "ELSE" )
-IF     =  Group( SECTAB + Suppress( Literal( "if"   ) ) + Group( CONDITION ).setResultsName('condition') + COLONS + LINES.setResultsName('content')  + Group( ZeroOrMore( ELSEIF ) + Optional( ELSE ) ).setResultsName( "OPTIONAL" ) + Suppress( Literal( "end" ) ) ).setResultsName( "IF" )
+IF     =  Group( SECTAB + Suppress( Literal( "if"   ) ) + Group( CONDITION ).setResultsName('condition') + COLONS + LINES.setResultsName('content') + Group( ZeroOrMore( ELSEIF ) + Optional( ELSE ) ).setResultsName( "OPTIONAL" ) + Suppress( Literal( "end" ) ) ).setResultsName( "IF" )
 
 """-----------------LOOP----------------------------"""
 BLOQUEWHILE    = Group( SECTAB + Suppress( Literal( "while" ) ) + Group( CONDITION ).setResultsName('condition') + COLONS + LINES.setResultsName('content') + Suppress( Literal("end") ) ).setResultsName("WHILE")
@@ -126,12 +126,11 @@ LINE << ( FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVE | DEACTIVE | S
 # DEF = Group().setResultsName( "DEF" ) # TODO
 
 """-----------------MAIN----------------------------"""
-MAIN = Group( Suppress( Literal( "main" ) ) + COLONS + LINES.setResultsName( 'content' ) ).setResultsName( "MAIN" ) + Literal("end")
+MAIN = Group( Suppress( Literal( "main" ) ) + COLONS + LINES.setResultsName( 'content' ) ).setResultsName( "MAIN" ) + Suppress( Literal("end") )
 LB = MAIN | ZeroOrMore(BLOQUEWHENCOND)
 LB.ignore( pythonStyleComment )
 
 ini = []
-
 
 def __parserFromFile(file):
     with open(file) as f:
@@ -257,7 +256,7 @@ def __processWHILE(line, text="", index=0):
 
 def __processWHEN(line, list_var, text="", index=0):
     global ini
-    text += "def when_" + str(line.name[0]) + "():\n"
+    text += "\ndef when_" + str(line.name[0]) + "():\n"
     index += 1
     for x in list_var:
         text += "\t"*index + "global " + x + "\n"
