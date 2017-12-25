@@ -36,13 +36,12 @@ if call(["pyside-uic","-o",path+"/delWhen.py",path+"/delWhen.ui"]) is 1:
     print "Error al generar addWhen.py"
     exit(-1)
 
-__all__ = ['guiAddVar', 'guiGui', 'guiGuiCreateBlock', 'guiNewVar', 'guiDelVar', 'guiCreateFunctions', 'guiAddNumberOrString', 'guiAddWhen', 'guiDelWhen']
+__all__ = ['guiAddVar', 'guiGui', 'guiGuiCreateBlock', 'guiDelVar', 'guiCreateFunctions', 'guiAddNumberOrString', 'guiAddWhen', 'guiDelWhen']
 
 
 import addVar as guiAddVar
 import gui as guiGui
 import createBlock as guiGuiCreateBlock
-import newVar as guiNewVar
 import delVar as guiDelVar
 import createFunctions as guiCreateFunctions
 import addNumberOrString as guiAddNumberOrString

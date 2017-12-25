@@ -137,7 +137,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="plainTextEdit_2"/>
+           <widget class="QPlainTextEdit" name="textCode"/>
           </item>
          </layout>
         </item>

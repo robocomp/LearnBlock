@@ -5,12 +5,7 @@ import cPickle as pickle
 import os
 from blocksConfig import reload_functions
 import threading
-import guis.addVar as addVar
-import guis.gui as gui
-import guis.delVar as delVar
-import guis.delWhen as delWhen
-import guis.createFunctions as guiCreateFunctions
-import guis.addWhen as guiAddBlockWhen
+from guis import addVar, gui, delVar, delWhen, createFunctions as guiCreateFunctions, addWhen as guiAddBlockWhen
 
 from Block import *
 from Scene import *
@@ -20,7 +15,6 @@ from guiAddNumberOrString import *
 from guiaddWhen import *
 
 from Language import *
-
 
 from multiprocessing import Process
 
@@ -453,23 +447,48 @@ class LearnBlock:
     def printProgram(self):
         blocks = self.scene.getListInstructions()
         if blocks is not None:
-            #self.ui.plainTextEdit_2.clear()
-            #self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
             self.physicalRobot = False
             self.generateTmpFile()
 
     def printProgramPR(self):
         blocks = self.scene.getListInstructions()
         if blocks is not None:
-            #self.ui.plainTextEdit_2.clear()
-            #self.ui.plainTextEdit_2.appendPlainText(self.parserBlocks(blocks,self.toLBotPy))
             self.physicalRobot = True
             self.generateTmpFile()
 
     #TODO Esperar a que termine el parseador de texto
     def generateTmpFilefromText(self):
-        text = self.ui.plainTextEdit_2.toPlainText() #TODO
-        parserFile(text,"main_tmp.py")
+        # code = self.ui.textCode.toPlainText() #TODO
+        # if self.physicalRobot:
+        #     # text = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
+        #     sys.argv = [' ','configPhysical']
+        # else:
+        #     # text = HEADER.replace('<LearnBotClient>','LearnBotClient')
+        #     sys.argv = [' ','configSimulated']
+        # text =""
+        # fh = open("main_tmp.lb","wr")
+        # fh.writelines(text + code)
+        # fh.close()
+        # try:
+        #     parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot)
+        # except Exception as e:
+        #     print e
+        #     print("line: {}".format(e.line))
+        #     print("    "+" "*e.col+"^")
+        #     return
+        # if compile("main_tmp.py"):
+        #     self.hilo = Process(target=self.execTmp)
+        #     self.hilo.start()
+        #     self.ui.stopPushButton.setEnabled(True)
+        #     self.ui.startPushButton.setEnabled(False)
+        #     self.ui.startPRPushButton.setEnabled(False)
+        # else:
+        #     msgBox = QtGui.QMessageBox()
+        #     msgBox.setText("Your code has an error. Check it out again")
+        #     msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+        #     msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+        #     ret = msgBox.exec_()
+        pass
 
     def printInst(self,inst,ntab=1):
         text = inst[0]
@@ -505,6 +524,8 @@ class LearnBlock:
             fh = open("main_tmp.lb","wr")
             fh.writelines(text + code)
             fh.close()
+            # self.ui.textCode.clear()
+            # self.ui.textCode.appendPlainText(text + code)
             try:
                 parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot)
             except Exception as e:
