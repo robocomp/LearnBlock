@@ -1,8 +1,6 @@
 #include "LearnBotClient.h"
 
 
-
-
 void readImage(params_image * params)
 {
   while (true)

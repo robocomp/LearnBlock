@@ -33,7 +33,6 @@ OBRACE,CBRACE,SEMI,OPAR,CPAR = map(Literal, "{};()")
 reserved_words = ( Keyword('=') | Keyword('funtion.') | Keyword('>=') | Keyword('<=') | Keyword('<') | Keyword('>') | Keyword('deactive') | Keyword('active') | Keyword('not') | Keyword('True') | Keyword('False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword('elif') | Keyword('when') | Keyword('while') | Keyword('end'))
 iden = Word( alphanums+"_")
 identifier = Group( ~reserved_words + iden ).setResultsName( "IDENTIFIER" )
-NUMS = Group( Word( nums ) ).setResultsName( "NUMBER" )
 
 QUOTE = Word( "\"" )
 OR    = Word( "or" )
@@ -48,12 +47,15 @@ rpar  = Word( ")" )
 TRUE  = Group( Word( "True" ) ).setResultsName( 'TRUE' )
 FALSE = Group( Word( "False" ) ).setResultsName( 'FALSE' )
 eq    = Word( "=" )
-point    = Word( "." )
+point    = Literal('.')
 coma    = Word( "," )
 COLONS= Suppress(Word( ":" ))
 SEMICOL= Word( ";" )
-
-
+plusorminus = Literal('+') | Literal('-')
+e = CaselessLiteral('E')
+number = Word(nums)
+integer = Combine( Optional(plusorminus) + number )
+NUMS = Group( Combine( integer + Optional( point + Optional(number) ) + Optional( e + integer ) ) ).setResultsName( "NUMBER" )
 
 
 L      = Literal( "<" )
@@ -78,7 +80,7 @@ OPERATION = Group( identifier + ZeroOrMore( SRMD + identifier ) ).setResultsName
 ORAND = Group( OR | AND ).setResultsName( 'ORAND' )
 
 """-----------------FUNCTION-------------------------"""
-FUNCTION = Group( Suppress( Literal( "function" ) ) + Suppress( point ) + identifier.setResultsName( 'name' ) + Suppress( lpar ) + Group( Optional( identifier ) + ZeroOrMore( Suppress( coma ) + identifier) ).setResultsName( "args" ) + Suppress( rpar )).setResultsName( "FUNCTION" )
+FUNCTION = Group( Suppress( Literal( "function" ) ) + Suppress( point ) + identifier.setResultsName( 'name' ) + Suppress( lpar ) + Group( Optional( NUMS | identifier ) + ZeroOrMore( Suppress( coma ) + ( NUMS | identifier ) ) ).setResultsName( "args" ) + Suppress( rpar )).setResultsName( "FUNCTION" )
 
 """-----------------CONDICIONES---------------------"""
 COMPOP = Group( OPERATION + COMP + OPERATION ).setResultsName( "COMPOP" )

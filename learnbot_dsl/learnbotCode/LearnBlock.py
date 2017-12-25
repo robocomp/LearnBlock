@@ -33,7 +33,6 @@ import learnbot_dsl.LearnBotClient_PhysicalRobot as LearnBotClientPR
 
 from learnbot_dsl.functions import *
 from blocksConfig.blocks import pathBlocks
-from parserText import parserFile
 from checkFile import compile
 
 from Parser import parserLearntBotCode
@@ -533,7 +532,7 @@ class LearnBlock:
         else:
             text = HEADER.replace('<LearnBotClient>','LearnBotClient')
             sys.argv = [' ','configSimulated']
-
+        text += '\nfunctions.get("stop_bot")(lbot)'
         fh = open("stop_main_tmp.py","wr")
         fh.writelines(text)
         fh.close()
