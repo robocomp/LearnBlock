@@ -2,48 +2,48 @@
 block{
     type control
     name main
-    file None
     img block8
+    languages ES: "principal", EN: "main"
 }
 
 block{
     type control
     name end
-    file None
     img block7
+    languages ES: "fin", EN: "end"
 }
 
 block{
     type control
     name if
-    file None
     img block6
+    languages ES: "si", EN: "if"
 }
 
 block{
     type control
     name elif
-    file None
     img block6
+    languages ES: "sino si", EN: "else if"
 }
 
 block{
     type control
     name else
-    file None
     img block5
+    languages ES: "sino", EN: "else"
 }
 
 block{
     type control
     name for
-    file None
     img block6
+    languages ES: "para", EN: "for"
 }
 
 block{
     type control
     name while
-    file None
     img block6
+    languages ES: "mientras", EN: "while"
 }

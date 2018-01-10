@@ -36,8 +36,8 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 ic = None
 
 
-		
-class Client(Ice.Application, threading.Thread):	
+
+class Client(Ice.Application, threading.Thread):
 	def __init__(self, argv):
 		threading.Thread.__init__(self)
 
@@ -93,18 +93,18 @@ class Client(Ice.Application, threading.Thread):
 				sys.exit(1)
 
 			self.stream = urllib.urlopen('http://odroid.local:8080/?action=stream')
-			self.bytes=''	
+			self.bytes=''
 
 
 
 		except:
 				traceback.print_exc()
-				sys.exit(1)	 
+				sys.exit(1)
 
 		self.active = True
 		self.start()
 
-		
+
 	def run(self):
 		while self.active:
 			self.reading = True
@@ -117,7 +117,7 @@ class Client(Ice.Application, threading.Thread):
 
 
 	def getImageStream(self):
-		self.bytes += self.stream.read(5120)	    
+		self.bytes += self.stream.read(5120)
 		a = self.bytes.find('\xff\xd8')
 		b = self.bytes.find('\xff\xd9')
 		if a!=-1 and b!=-1:
@@ -171,25 +171,20 @@ class Client(Ice.Application, threading.Thread):
 		self.newImg = False
 		self.mutex.release()
 
-#		time.sleep(0.05)		
+#		time.sleep(0.05)
 		return self.simage
 
 	def getPose(self):
-		x, y, alpha = self.differentialrobot_proxy.getBasePose()	 
+		x, y, alpha = self.differentialrobot_proxy.getBasePose()
 		return x, y, alpha
-	 	     
+
 	def setRobotSpeed(self, vAdvance=0, vRotation=0):
-		#print vAdvance, vRotation
+		print vAdvance, vRotation
 		if vAdvance!=0 or vRotation!=0:
 			self.adv = vAdvance
 			self.rot = vRotation
-		self.differentialrobot_proxy.setSpeedBase(-self.adv*8,self.rot*15)	 
-				
+		self.differentialrobot_proxy.setSpeedBase(-self.adv*8,self.rot*15)
+
 
 	def __del__(self):
         	self.active = False
-
-
-	      
-	
-

@@ -1,28 +1,24 @@
 block{
     type perceptual
     name linea_roja_centro
-    file learnbot-dsl/funtions/perceptual/linea_roja_centro.py
     img block4, block3
 }
 
 block{
     type perceptual
     name linea_roja_izquierda
-    file learnbot-dsl/funtions/perceptual/linea_roja_izquierda.py
     img block4, block3
 }
 
 block{
     type perceptual
     name linea_roja_derecha
-    file learnbot-dsl/funtions/perceptual/linea_roja_derecha.py
     img block4, block3
 }
 
 block{
     type perceptual
     name obstaculo_frontal
-    file learnbot-dsl/funtions/perceptual/obstaculo_frontal.py
     variables{
         float threshold 150
     }
@@ -32,7 +28,6 @@ block{
 block{
     type perceptual
     name obstaculo_izquierda
-    file learnbot-dsl/funtions/perceptual/obstaculo_izquierda.py
     variables{
         float threshold 150
     }
@@ -42,7 +37,6 @@ block{
 block{
     type perceptual
     name obstaculo_derecha
-    file learnbot-dsl/funtions/perceptual/obstaculo_derecha.py
     variables{
         float threshold 150
     }
@@ -52,10 +46,8 @@ block{
 block{
     type perceptual
     name obstaculo_detras
-    file learnbot-dsl/funtions/perceptual/obstaculo_detras.py
     variables{
         float threshold 150
     }
     img block4, block3
 }
-

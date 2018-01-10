@@ -36,8 +36,8 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 ic = None
 
 
-		
-class Client(Ice.Application, threading.Thread):	
+
+class Client(Ice.Application, threading.Thread):
 	def __init__(self, argv):
 		threading.Thread.__init__(self)
 
@@ -138,18 +138,14 @@ class Client(Ice.Application, threading.Thread):
 				print e
 				print 'Cannot get RGBDProxy property.'
 				sys.exit(1)
-
-
-
-
 		except:
+				print "Error"
 				traceback.print_exc()
-				sys.exit(1)	 
+				sys.exit(1)
 
 		self.active = True
 		self.start()
 
-		
 	def run(self):
 		while self.active:
 			try:
@@ -157,11 +153,10 @@ class Client(Ice.Application, threading.Thread):
 				if (len(self.color) == 0) or (len(self.depth) == 0):
 	                                print 'Error retrieving images!'
 	                except Ice.Exception:
-	                        traceback.print_exc()		
-	
-			self.image = np.fromstring(self.color, dtype=np.uint8).reshape((240, 320, 3))
+	                        traceback.print_exc()
 
 			self.readSonars()
+			self.image = np.fromstring(self.color, dtype=np.uint8).reshape((240, 320, 3))
 
 			time.sleep(0.01)
 
@@ -172,7 +167,7 @@ class Client(Ice.Application, threading.Thread):
 		for data in l1data:
 			if minD1 > data.dist:
 				minD1 = data.dist
-	
+
 		self.usList["front"] = minD1
 
 		l2data = self.laser2_proxy.getLaserData()
@@ -210,20 +205,15 @@ class Client(Ice.Application, threading.Thread):
 		return self.image
 
 	def getPose(self):
-		x, y, alpha = self.differentialrobot_proxy.getBasePose()	 
+		x, y, alpha = self.differentialrobot_proxy.getBasePose()
 		return x, y, alpha
-	 	     
+
 	def setRobotSpeed(self, vAdvance=0, vRotation=0):
 		if vAdvance!=0 or vRotation!=0:
 			self.adv = vAdvance
 			self.rot = vRotation
-		self.differentialrobot_proxy.setSpeedBase(self.adv,self.rot)	 
-				
+		self.differentialrobot_proxy.setSpeedBase(self.adv,self.rot)
+
 
 	def __del__(self):
         	self.active = False
-
-
-	      
-	
-

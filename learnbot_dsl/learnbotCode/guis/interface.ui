@@ -59,6 +59,13 @@
        </widget>
       </item>
       <item>
+       <widget class="QCheckBox" name="useEventscheckBox">
+        <property name="text">
+         <string>Use Events</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -70,6 +77,26 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QComboBox" name="language">
+        <property name="maximumSize">
+         <size>
+          <width>85</width>
+          <height>27</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>ES</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>EN</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </item>
@@ -110,7 +137,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="plainTextEdit_2"/>
+           <widget class="QPlainTextEdit" name="textCode"/>
           </item>
          </layout>
         </item>
@@ -226,6 +253,23 @@
              <string>Control</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_12">
+             <item>
+              <widget class="QPushButton" name="addWhenpushButton">
+               <property name="text">
+                <string>Add When</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="deleteWhenpushButton">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Delete When</string>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QTableWidget" name="tableControl">
                <property name="showGrid">

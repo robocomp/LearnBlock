@@ -2,76 +2,76 @@
 block{
     type motor
     name move_left
-    file learnbot_dsl/funtions/motor/move_left.py
     img block1
+    languages ES: "mover_izquierda", EN: "move_left"
 }
 
 block{
     type motor
     name move_right
-    file learnbot_dsl/funtions/motor/move_right.py
     img block1
+    languages ES: "mover_derecha", EN: "move_right"
 }
 
 block{
     type motor
     name move_straight
-    file learnbot_dsl/funtions/motor/move_straight.py
     img block1
+    languages ES: "mover_recto", EN: "move_straight"
 }
 
 block{
     type motor
     name set_move
-    file learnbot_dsl/funtions/motor/set_move.py
     variables{
         float avance  0
         float rotacion 0
     }
     img block1
+    languages ES: "poner_movimiento", EN: "set_move"
 }
 
 block{
     type motor
     name stop_bot
-    file learnbot_dsl/funtions/motor/stop_bot.py
     img block1
+    languages ES: "parar", EN: "stop_bot"
 }
 
 block{
     type motor
     name turn
-    file learnbot_dsl/funtions/motor/turn.py
     variables{
         int angle 0
     }
     img block1
+    languages ES: "girar", EN: "turn"
 }
 
 block{
     type motor
     name turn_back
-    file learnbot_dsl/funtions/motor/turn_back.py
     img block1
+    languages ES: "mover_atras", EN: "turn_back"
 }
 
 block{
     type motor
     name turn_left
-    file learnbot_dsl/funtions/motor/turn_left.py
     img block1
+    languages ES: "girar_izquierda", EN: "turn_left"
 }
 
 block{
     type motor
     name turn_right
-    file learnbot_dsl/funtions/motor/turn_right.py
     img block1
+    languages ES: "girar_derecha", EN: "turn_right"
 }
 
 block{
 	type motor
 	name slow_down
-	file learnbot_dsl/functions/motor/slow_down.py
 	img block1
+    languages ES: "mas_despacio", EN: "slow_down"
 }

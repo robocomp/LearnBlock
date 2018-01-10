@@ -101,6 +101,13 @@ class MyScene(QtGui.QGraphicsScene):
                 visualItem.delete()
                 return
 
+    def removeByNameControl(self, name):
+        for id in self.dicBlockItem:
+            visualItem = self.getVisualItem(id)
+            if visualItem.parentBlock.nameControl == name:
+                visualItem.delete()
+                return
+
     def getClosestItem(self):
         min_dist = None
         min_c = None
@@ -243,4 +250,3 @@ class MyScene(QtGui.QGraphicsScene):
                 itemS.moveToPos(c.getParent().pos + QtCore.QPointF(-self.getVisualItem(itemS.id).img.width()+5, 0), True)
             elif c.getType() is BOTTOMIN:
                 itemS.moveToPos(c.getParent().pos + QtCore.QPointF(17, 33), True)
-

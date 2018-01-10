@@ -73,32 +73,40 @@ class Block():
         self.listVar = listVar
         self.file = file
 
-def generateBlock(img, x, name, typeBlock, connections=None, vars=None, type=None):
+def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=None, nameControl =""):
     im = None
-    sizeleter = 13
+    sizeleter = 15
     varText = ""
-    if type in [FUNTION, USERFUNCTION]:
+    if type_ in [FUNTION, USERFUNCTION]:
         varText = "("
-        if vars is not None:
-            for var in vars:
+        if vars_ is not None:
+            for var in vars_:
                 varText += var + ","
             varText = varText[:-1] + ")"
         else:
             varText = "()"
-    elif type is VARIABLE:
-        if vars is not None:
-            for var in vars:
+    elif type_ is VARIABLE:
+        if vars_ is not None:
+            for var in vars_:
                 varText =  " set to " + var
+    elif type_ is VARIABLE:
+        if vars_ is not None:
+            for var in vars_:
+                varText =  " set to " + var
+
     if typeBlock is COMPLEXBLOCK:
-        if vars is None:
+        if vars_ is None:
             varText = ""
         left = img[0:img.shape[0], 0:60]
         right = img[0:img.shape[0], img.shape[1] - 10:img.shape[1]]
         line = img[0:img.shape[0], 72:73]
         h = left.shape[0]
         textSize = ((len(name)+len(varText)) * sizeleter)
+        nameControlSize =(len(nameControl) * sizeleter)
         if textSize is 0:
             textSize = 22
+        if nameControlSize>textSize:
+            textSize=nameControlSize
         w = left.shape[1] + right.shape[1] + textSize - 22
         im = np.ones((h, w, 4), dtype=np.uint8)
         im[0:h, 0:left.shape[1]] = copy.copy(left)
@@ -123,7 +131,10 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars=None, type=Non
         im[0:right.shape[0], im.shape[1] - right.shape[1]:im.shape[1]] = copy.copy(right)
         for i in range(left.shape[1], im.shape[1] - right.shape[1]):
             im[0:line.shape[0], i:i + 1] = copy.copy(line)
+
     cv2.putText(im, name+varText, (10, 27), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 2,25)
+    cv2.putText(im, nameControl, (10, im.shape[0]-10), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 2,25)
+
     if connections is not None and len(connections) > 0:
         if not isinstance(connections[0],Connection):
             for point, t in connections:
@@ -134,4 +145,3 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars=None, type=Non
                 if c.getType() is RIGHT:
                     c.getPoint().setX(im.shape[1] - 5)
     return im
-

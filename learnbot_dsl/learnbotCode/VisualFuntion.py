@@ -9,6 +9,8 @@ from AbstracBlockItem import *
 from toQImage import *
 from Block import *
 
+from Language import *
+
 def EuclideanDist(p1,p2):
     p = p1 - p2
     return sqrt(pow(p.x(), 2) + pow(p.y(), 2))
@@ -33,12 +35,18 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         self.__type = self.parentBlock.type
         self.id = self.parentBlock.id
         self.connections = self.parentBlock.connections
+        self.dicTrans = parentBlock.dicTrans
+        self.shouldUpdate = True
+        if len( self.dicTrans ) is 0:
+            self.showtext = self.parentBlock.name
+        else:
+            self.showtext = self.dicTrans[ getLanguage() ]
         QtGui.QGraphicsPixmapItem.__init__(self)
 
         #Load Image of block
         self.cvImg = cv2.imread(self.parentBlock.file,cv2.IMREAD_UNCHANGED)
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
-        img = generateBlock(self.cvImg, 34, self.parentBlock.name, self.parentBlock.typeBlock,None,self.parentBlock.type)
+        img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type, self.parentBlock.nameControl)
         qImage = toQImage(img)
         try:
             self.header = copy.copy(self.cvImg[0:39,0:149])
@@ -160,16 +168,16 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         instRight = self.getInstructionsRIGHT()
         instBottom = self.getInstructionsBOTTOM()
         instBottomIn = self.getInstructionsBOTTOMIN()
+        nameControl = self.parentBlock.nameControl
+        if nameControl is "":
+            nameControl = None
         dic = {}
-        # if instRight is not None:
+        dic["NAMECONTROL"] = nameControl
         dic["RIGHT"] = instRight
-        # if instBottom is not None:
         dic["BOTTOM"] = instBottom
-        # if instBottomIn is not None:
         dic["BOTTOMIN"] = instBottomIn
         dic["VARIABLES"] = self.getVars()
         dic["TYPE"] = self.__type
-        # inst.insert(0,[self.getNameFuntion(),dic])
         return self.getNameFuntion(), dic
 
     def getId(self):
@@ -178,42 +186,43 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
     def updateImg(self):
         if self.__typeBlock is COMPLEXBLOCK:
             nSubBlock, size = self.getNumSub()
-            if size is 0:
-                size = 34
-            if self.sizeIn != size:
-                self.sizeIn = size
-                im = generateBlock(self.cvImg, size, self.parentBlock.name, self.__typeBlock)
-                qImage = toQImage(im)
-                self.img = QtGui.QPixmap(qImage)
-                self.setPixmap(self.img)
-                for c in self.connections:
-                    if c.getType() is BOTTOM:
-                        c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
-                        if c.getIdItem() is not None:
-                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
-                                self.pos() + QtCore.QPointF(0, self.img.height() - 5))
         else:
-            im = generateBlock(self.cvImg, 34, self.parentBlock.name, self.__typeBlock, None, self.getVars(),
-                                self.__type)
-            size = im.shape[1]
-            if self.sizeIn != size:
-                self.sizeIn = size
-                qImage = toQImage(im)
-                self.img = QtGui.QPixmap(qImage)
-                self.setPixmap(self.img)
+            size = 34
 
-                for c in self.connections:
-                    if c.getType() is RIGHT:
-                        c.setPoint(QtCore.QPointF(im.shape[1] - 5,c.getPoint().y() ))
-                        if c.getIdItem() is not None:
-                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
-                                self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
+        if size is 0:
+            size = 34
+
+        if self.sizeIn != size or self.shouldUpdate:
+            self.sizeIn = size
+            im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(),self.__type,self.parentBlock.nameControl)
+            qImage = toQImage(im)
+            self.img = QtGui.QPixmap(qImage)
+            self.setPixmap(self.img)
+            for c in self.connections:
+                if c.getType() is BOTTOM:
+                    c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
+                    if c.getIdItem() is not None:
+                        self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                            self.pos() + QtCore.QPointF(0, self.img.height() - 5))
+                if c.getType() is RIGHT:
+                    c.setPoint(QtCore.QPointF(im.shape[1] - 5,c.getPoint().y() ))
+                    if c.getIdItem() is not None:
+                        self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                            self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
+
+        self.shouldUpdate = False
 
     def updateVarValues(self):
-
         vars = self.getVars()
+        prev_vars = self.parentBlock.getVars()
         if vars is not None:
-            self.parentBlock.updateVars(vars)
+            for i in range(0,len(vars)):
+                if vars[i] != prev_vars:
+                    self.shouldUpdate = True
+                    self.parentBlock.updateVars(vars)
+                    break
+
+
 
     def updateConnections(self):
         for c in self.connections:
@@ -225,6 +234,10 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
                     c.setConnect(None)
 
     def update(self):
+        if len( self.dicTrans ) is not 0 and self.showtext is not self.dicTrans[ getLanguage() ]:
+            self.shouldUpdate=True
+            self.showtext = self.dicTrans[ getLanguage() ]
+
         for row in range(0, self.tabVar.rowCount()):
             combobox = self.tabVar.cellWidget(row, 2)
             items = []
@@ -345,7 +358,10 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         del self
 
     def isBlockDef(self):
+        if self.parentBlock.name == "when":
+            return True
         for c in self.connections:
             if c.getType() in [TOP, BOTTOM,RIGHT,LEFT]:
                 return False
+
         return True
