@@ -23,7 +23,10 @@
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
-
+	cam = VideoCapture(0);
+	if (!cam.isOpened()) { //check if video device has been initialised
+		cout << "cannot open camera";
+	}
 }
 
 /**
@@ -36,39 +39,13 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-//       THE FOLLOWING IS JUST AN EXAMPLE
-//
-//	try
-//	{
-//		RoboCompCommonBehavior::Parameter par = params.at("InnerModelPath");
-//		innermodel_path = par.value;
-//		innermodel = new InnerModel(innermodel_path);
-//	}
-//	catch(std::exception e) { qFatal("Error reading config params"); }
-
-
-
-
 	timer.start(Period);
-
-
 	return true;
 }
 
 void SpecificWorker::compute()
 {
 	QMutexLocker locker(mutex);
-	//computeCODE
-// 	try
-// 	{
-// 		camera_proxy->getYImage(0,img, cState, bState);
-// 		memcpy(image_gray.data, &img[0], m_width*m_height*sizeof(uchar));
-// 		searchTags(image_gray);
-// 	}
-// 	catch(const Ice::Exception &e)
-// 	{
-// 		std::cout << "Error reading from Camera" << e << std::endl;
-// 	}
 }
 
 
@@ -80,8 +57,15 @@ Registration SpecificWorker::getRegistration()
 
 void SpecificWorker::getData(imgType &rgbMatrix, depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState)
 {
-//implementCODE
-
+	rgbMatrix = RoboCompRGBD::imgType();
+	Mat cameraFrame;
+	cam.read(cameraFrame);
+	uchar *data = cameraFrame.data;
+	qDebug()<<cameraFrame.rows<<" "<<cameraFrame.cols<<" "<<cameraFrame.channels();
+	for(int i=0;i<cameraFrame.rows*cameraFrame.cols*cameraFrame.channels();i++)
+	{
+		rgbMatrix.push_back(data[i]);
+	}
 }
 
 void SpecificWorker::getXYZ(PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState)
@@ -125,5 +109,3 @@ void SpecificWorker::getDepthInIR(depthType &distanceMatrix, RoboCompJointMotor:
 //implementCODE
 
 }
-
-

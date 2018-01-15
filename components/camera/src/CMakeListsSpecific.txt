@@ -4,6 +4,7 @@ SET ( SOURCES
   specificworker.cpp
   specificmonitor.cpp
 )
+INCLUDE( $ENV{ROBOCOMP}/cmake/modules/opencv3.cmake )
 
 # Headers set
 SET ( HEADERS
@@ -11,5 +12,5 @@ SET ( HEADERS
   specificmonitor.h
 )
 
-ADD_DEFINITIONS( -std=c++11 )
+ADD_DEFINITIONS( -std=c++11  )
 

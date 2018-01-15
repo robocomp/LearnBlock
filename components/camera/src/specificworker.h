@@ -29,6 +29,12 @@
 
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <iostream>
+
+using namespace cv;
+using namespace std;
 
 class SpecificWorker : public GenericWorker
 {
@@ -53,6 +59,8 @@ public slots:
 
 private:
 	InnerModel *innerModel;
+	VideoCapture cam;
+
 
 };
 
