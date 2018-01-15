@@ -1,0 +1,10 @@
+import "RGBD.idsl";
+
+Component camera
+{
+	Communications
+	{
+		implements RGBD;
+	};
+	language Cpp;
+};
