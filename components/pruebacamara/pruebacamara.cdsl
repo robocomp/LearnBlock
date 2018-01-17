@@ -1,0 +1,10 @@
+import "RGBD.idsl";
+
+Component pruebacamara
+{
+	Communications
+	{
+		requires RGBD;
+	};
+	language Python;
+};
