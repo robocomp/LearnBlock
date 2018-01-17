@@ -1,5 +1,5 @@
 /*
- *    Copyright (C)2018 by YOUR NAME HERE
+ *    Copyright (C) 2018 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -24,6 +24,10 @@
 
 
 
+
+
+
+
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
@@ -32,6 +36,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
+#include <algorithm>    // std::copy
+#include <vector>
 
 using namespace cv;
 using namespace std;
@@ -40,28 +46,29 @@ class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
 public:
-	SpecificWorker(MapPrx& mprx);
+	SpecificWorker(MapPrx& mprx);	
 	~SpecificWorker();
 	bool setParams(RoboCompCommonBehavior::ParameterList params);
 
 	Registration getRegistration();
-	void getData(imgType &rgbMatrix, depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState);
-	void getXYZ(PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState);
-	void getRGB(ColorSeq &color, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState);
+	void getImage(ColorSeq &color, DepthSeq &depth, PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState);
+	void getXYZ(PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState);
+	void getRGB(ColorSeq &color, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState);
 	TRGBDParams getRGBDParams();
-	void getDepth(DepthSeq &depth, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState);
+	void getDepth(DepthSeq &depth, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState);
 	void setRegistration(const Registration &value);
-	void getImage(ColorSeq &color, DepthSeq &depth, PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState);
-	void getDepthInIR(depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState);
+	void getData(imgType &rgbMatrix, depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState);
+	void getDepthInIR(depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState);
 
 public slots:
-	void compute();
+	void compute(); 	
 
 private:
-	InnerModel *innerModel;
 	VideoCapture cam;
-
-
+	Mat cameraFrame, dst;
+	uchar *writer;
+	uchar *reader;
 };
 
 #endif
+

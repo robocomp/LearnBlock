@@ -20,9 +20,19 @@
 /**
 * \brief Default constructor
 */
-CommonBehaviorI::CommonBehaviorI(GenericMonitor *_monitor)
+CommonBehaviorI::CommonBehaviorI(GenericMonitor *_monitor, QObject *parent) : QObject(parent)
 {
 	monitor = _monitor;
+	//mutex = worker->mutex;       // Shared worker mutex
+	// Component initialization...
+}
+
+/**
+* \brief Default destructor
+*/
+CommonBehaviorI::~CommonBehaviorI()
+{
+	// Free component resources here
 }
 
 // Component functions, implementation

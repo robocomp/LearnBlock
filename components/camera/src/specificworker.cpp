@@ -1,5 +1,5 @@
 /*
- *    Copyright (C)2018 by YOUR NAME HERE
+ *    Copyright (C) 2018 by YOUR NAME HERE
  *
  *    This file is part of RoboComp
  *
@@ -23,7 +23,12 @@
 */
 SpecificWorker::SpecificWorker(MapPrx& mprx) : GenericWorker(mprx)
 {
+	writer = new uchar[240*320*3];
+	reader = new uchar[240*320*3];
 	cam = VideoCapture(0);
+	double fps = cam.get(CV_CAP_PROP_FPS);
+	qDebug()<<fps<<"fps";
+	cam.set(38, 1);
 	if (!cam.isOpened()) { //check if video device has been initialised
 		cout << "cannot open camera";
 	}
@@ -39,73 +44,74 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-	timer.start(Period);
+
+
+
+
+	timer.start(0);
+
+
 	return true;
 }
 
 void SpecificWorker::compute()
 {
+	cam >> cameraFrame;
+	resize(cameraFrame,dst, Size(320,240));
+	copy(dst.data,dst.data+240*320*3,writer);
 	QMutexLocker locker(mutex);
+	swap(writer, reader);
 }
 
 
 Registration SpecificWorker::getRegistration()
 {
-//implementCODE
 
 }
 
-void SpecificWorker::getData(imgType &rgbMatrix, depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState)
+void SpecificWorker::getImage(ColorSeq &color, DepthSeq &depth, PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState)
 {
-	rgbMatrix = RoboCompRGBD::imgType();
-	Mat cameraFrame;
-	cam.read(cameraFrame);
-	uchar *data = cameraFrame.data;
-	qDebug()<<cameraFrame.rows<<" "<<cameraFrame.cols<<" "<<cameraFrame.channels();
-	for(int i=0;i<cameraFrame.rows*cameraFrame.cols*cameraFrame.channels();i++)
-	{
-		rgbMatrix.push_back(data[i]);
-	}
-}
-
-void SpecificWorker::getXYZ(PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState)
-{
-//implementCODE
 
 }
 
-void SpecificWorker::getRGB(ColorSeq &color, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState)
+void SpecificWorker::getXYZ(PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState)
 {
-//implementCODE
+
+}
+
+void SpecificWorker::getRGB(ColorSeq &color, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState)
+{
 
 }
 
 TRGBDParams SpecificWorker::getRGBDParams()
 {
-//implementCODE
 
 }
 
-void SpecificWorker::getDepth(DepthSeq &depth, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState)
+void SpecificWorker::getDepth(DepthSeq &depth, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState)
 {
-//implementCODE
 
 }
 
 void SpecificWorker::setRegistration(const Registration &value)
 {
-//implementCODE
 
 }
 
-void SpecificWorker::getImage(ColorSeq &color, DepthSeq &depth, PointSeq &points, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState)
+void SpecificWorker::getData(imgType &rgbMatrix, depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState)
 {
-//implementCODE
-
+	QMutexLocker locker(mutex);
+	rgbMatrix = RoboCompRGBD::imgType(reader,reader+320*240*3);
 }
 
-void SpecificWorker::getDepthInIR(depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompGenericBase::TBaseState &bState)
+void SpecificWorker::getDepthInIR(depthType &distanceMatrix, RoboCompJointMotor::MotorStateMap &hState, RoboCompDifferentialRobot::TBaseState &bState)
 {
-//implementCODE
 
 }
+
+
+
+
+
+

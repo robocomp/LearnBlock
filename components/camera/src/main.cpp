@@ -71,7 +71,6 @@
 #include <Ice/Application.h>
 
 #include <rapplication/rapplication.h>
-#include <sigwatch/sigwatch.h>
 #include <qlog/qlog.h>
 
 #include "config.h"
@@ -84,8 +83,6 @@
 #include <rgbdI.h>
 
 #include <RGBD.h>
-#include <JointMotor.h>
-#include <GenericBase.h>
 
 
 // User includes here
@@ -93,6 +90,12 @@
 // Namespaces
 using namespace std;
 using namespace RoboCompCommonBehavior;
+
+
+using namespace RoboCompRGBD;
+using namespace RoboCompDifferentialRobot;
+using namespace RoboCompJointMotor;
+
 
 class camera : public RoboComp::Application
 {
@@ -126,10 +129,7 @@ int ::camera::run(int argc, char* argv[])
 	sigaddset(&sigs, SIGTERM);
 	sigprocmask(SIG_UNBLOCK, &sigs, 0);
 
-	UnixSignalWatcher sigwatch;
-	sigwatch.watchForSignal(SIGINT);
-	sigwatch.watchForSignal(SIGTERM);
-	QObject::connect(&sigwatch, SIGNAL(unixSignal(int)), &a, SLOT(quit()));
+
 
 	int status=EXIT_SUCCESS;
 
@@ -148,12 +148,12 @@ int ::camera::run(int argc, char* argv[])
 
 	if ( !monitor->isRunning() )
 		return status;
-
+	
 	while (!monitor->ready)
 	{
 		usleep(10000);
 	}
-
+	
 	try
 	{
 		// Server adapter creation and publication
@@ -195,8 +195,6 @@ int ::camera::run(int argc, char* argv[])
 #endif
 		// Run QT Application Event Loop
 		a.exec();
-
-
 		status = EXIT_SUCCESS;
 	}
 	catch(const Ice::Exception& ex)
@@ -253,3 +251,4 @@ int main(int argc, char* argv[])
 
 	return app.main(argc, argv, configFile.c_str());
 }
+
