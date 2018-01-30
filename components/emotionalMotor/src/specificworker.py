@@ -64,34 +64,34 @@ class SpecificWorker(GenericWorker):
 	# expressFear
 	#
 	def expressFear(self):
-		sendImage("imgs/miedo.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/miedo.png")
 
 	#
 	# expressSurprise
 	#
 	def expressSurprise(self):
-		sendImage("imgs/sorpresa.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/sorpresa.png")
 
 	#
 	# expressAnger
 	#
 	def expressAnger(self):
-		sendImage("imgs/ira.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/ira.png")
 
 	#
 	# expressSadness
 	#
 	def expressSadness(self):
-		sendImage("imgs/tristeza.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/tristeza.png")
 
 	#
 	# expressDisgust
 	#
 	def expressDisgust(self):
-		sendImage("imgs/asco.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/asco.png")
 
 	#
 	# expressJoy
 	#
 	def expressJoy(self):
-		sendImage("imgs/alegria.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/alegria.png")
