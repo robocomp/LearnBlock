@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 by YOUR NAME HERE
+# Copyright (C) 2018 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
 #
@@ -58,5 +58,7 @@ class DisplayI(Display):
 	def __init__(self, worker):
 		self.worker = worker
 
+	def setImageFromFile(self, pathImg, c):
+		return self.worker.setImageFromFile(pathImg)
 	def setImage(self, img, c):
 		return self.worker.setImage(img)

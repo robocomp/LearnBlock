@@ -32,15 +32,16 @@ class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
 		self.timer.timeout.connect(self.compute)
-		self.Period = 2
-		self.timer.start(self.Period)
+		self.Period = 0
+		# self.timer.start(self.Period)
 		self.scene = QtGui.QGraphicsScene()
 		self.image = None
 		self.item_pixmap = None
 		self.changeImage = False
 		self.mutex = threading.RLock()
 		self.showFullScreen()
-		
+		self.imagePath=None
+
 	def setParams(self, params):
 		self.ui.graphic.setScene(self.scene)
 		self.ui.graphic.show()
@@ -52,7 +53,7 @@ class SpecificWorker(GenericWorker):
 		try:
 			if self.changeImage:
 				# self.pixmap = QtGui.QPixmap.fromImage(self.image)
-				self.pixmap = QtGui.QPixmap("tmp.png")
+				self.pixmap = QtGui.QPixmap(self.imagePath)
 				if self.item_pixmap is None:
 					self.item_pixmap = self.scene.addPixmap(self.pixmap)
 				else:
@@ -64,6 +65,18 @@ class SpecificWorker(GenericWorker):
 			self.mutex.release()
 		return True
 
+	#
+	# setImageFromFile
+	#
+	def setImageFromFile(self, pathImg):
+		self.mutex.acquire()
+		try:
+			self.changeImage = False
+			self.imagePath=pathImg
+		except:
+			traceback.print_exc()
+		finally:
+			self.mutex.release()
 
 	#
 	# setImage
@@ -74,6 +87,7 @@ class SpecificWorker(GenericWorker):
 			self.changeImage = True
 			self.image = QtGui.QImage(img.Img,img.width,img.height, QtGui.QImage.Format_ARGB32)
 			self.image.save("tmp.png")
+			self.imagePath="tmp.png"
 		except:
 			traceback.print_exc()
 		finally:

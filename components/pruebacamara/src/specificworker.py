@@ -37,6 +37,8 @@ class SpecificWorker(GenericWorker):
 		self.timer.timeout.connect(self.compute)
 		self.Period = 0
 		self.timer.start(self.Period)
+		self.i = 0
+		self.start = time.time()
 
 	def setParams(self, params):
 		#try:
@@ -48,12 +50,15 @@ class SpecificWorker(GenericWorker):
 
 	@QtCore.Slot()
 	def compute(self):
-		start = time.time()
+	        if self.i == 30:
+			self.end = time.time()
+			seconds = self.end - self.start
+			fps  = self.i / seconds
+			print "FPS: ", fps
+			self.i=0
+			self.start = time.time()
+		self.i=self.i+1
 		color, depth, headState, baseState = self.rgbd_proxy.getData()
 		img = np.fromstring(color, dtype = np.uint8).reshape((240, 320, 3))
 		cv2.imshow('messigray.png',img)
-		end = time.time()
-		seconds = end - start
-		fps  = 1 / seconds;
-		print "Estimated frames per second : {0}".format(fps);
 		return True

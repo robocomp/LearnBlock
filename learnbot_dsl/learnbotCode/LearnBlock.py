@@ -30,6 +30,9 @@ from blocksConfig.blocks import pathBlocks
 from checkFile import compile
 
 from Parser import parserLearntBotCode
+import sys
+print sys.version_info[0]
+import paramiko
 
 HEADER = """
 #EXECUTION: python code_example.py configSimulated
@@ -151,7 +154,7 @@ class LearnBlock:
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30,30))
         self.ui.zoompushButton.clicked.connect(self.setZoom)
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
-
+        
         self.listVars = []
         self.listUserFunctions = []
         self.view = MyView(self.ui.frame)
@@ -203,6 +206,9 @@ class LearnBlock:
         self.ui.createFunctionsPushButton.clicked.connect(self.newUserFunctions)
         self.ui.deleteFuntionsPushButton.clicked.connect(self.deleteUserFunctions)
         self.ui.tabWidget_2.setFixedWidth(221)
+        self.ui.actionStart_components.triggered.connect(self.startRobot)
+        self.ui.actionReboot.triggered.connect(self.rebootRobot)
+        self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.scene.setlistNameVars(self.listNameVars)
         r = app.exec_()
 
@@ -212,6 +218,27 @@ class LearnBlock:
         shutil.rmtree("tmp")
         #os.rmdir("tmp")
         sys.exit(r)
+
+    def startRobot(self):
+        client = paramiko.SSHClient()
+        client.load_system_host_keys()
+        client.set_missing_host_key_policy(paramiko.WarningPolicy)
+        client.connect("192.168.100.1", port=22, username="pi", password="raspberry")
+        stdin, stdout, stderr = client.exec_command("./startDisplay.sh")
+
+    def shutdownRobot(self):
+        client = paramiko.SSHClient()
+        client.load_system_host_keys()
+        client.set_missing_host_key_policy(paramiko.WarningPolicy)
+        client.connect("192.168.100.1", port=22, username="pi", password="raspberry")
+        stdin, stdout, stderr = client.exec_command("sudo shutdown 0")
+
+    def rebootRobot(self):
+        client = paramiko.SSHClient()
+        client.load_system_host_keys()
+        client.set_missing_host_key_policy(paramiko.WarningPolicy)
+        client.connect("192.168.100.1", port=22, username="pi", password="raspberry")
+        stdin, stdout, stderr = client.exec_command("sudo reboot 0")
 
     def avtiveEvents(self,isChecked):
         self.ui.addWhenpushButton.setEnabled(isChecked)

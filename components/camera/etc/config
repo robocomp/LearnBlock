@@ -1,8 +1,8 @@
-CommonBehavior.Endpoints=tcp -p 1
+CommonBehavior.Endpoints=tcp -p 1 -z
 
 
 # Endpoints for implemented interfaces
-RGBD.Endpoints=tcp -p 10097
+RGBD.Endpoints=tcp -p 10097 -z
 
 
 

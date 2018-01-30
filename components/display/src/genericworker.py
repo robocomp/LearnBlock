@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2017 by YOUR NAME HERE
+# Copyright (C) 2018 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
 #
@@ -76,6 +76,7 @@ class GenericWorker(QtGui.QWidget):
 		self.ui = Ui_guiDlg()
 		self.ui.setupUi(self)
 		self.show()
+
 
 		self.mutex = QtCore.QMutex(QtCore.QMutex.Recursive)
 		self.Period = 30
