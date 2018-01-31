@@ -14,7 +14,9 @@ then
   echo You must specify an argument install or uninstall.
 elif [ $1 = "install" ]
 then
+  pip install paramiko
   python setup.py install --record files.txt
+  cat files.txt
   echo Completed install successfully
 elif [ $1 = "uninstall" ]
 then

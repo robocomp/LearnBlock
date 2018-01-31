@@ -1,5 +1,5 @@
 # Proxies for required interfaces
-RGBDProxy = rgbd:tcp -h 192.168.16.1 -p 10097
+RGBDProxy = rgbd:tcp -h 192.168.100.1 -p 10097
 
 
 

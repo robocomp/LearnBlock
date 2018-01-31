@@ -1,0 +1,11 @@
+import "DifferentialRobot.idsl";
+
+Component baserobot
+{
+	Communications
+	{
+		implements DifferentialRobot;
+	};
+	language Cpp;
+};
+

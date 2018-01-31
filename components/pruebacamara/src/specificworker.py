@@ -57,8 +57,15 @@ class SpecificWorker(GenericWorker):
 			print "FPS: ", fps
 			self.i=0
 			self.start = time.time()
-		self.i=self.i+1
 		color, depth, headState, baseState = self.rgbd_proxy.getData()
-		img = np.fromstring(color, dtype = np.uint8).reshape((240, 320, 3))
-		cv2.imshow('messigray.png',img)
+		print len(color)
+		if len(color)>0:
+			self.i += 1
+		#img = np.fromstring(color, dtype = np.uint8).reshape((240, 320, 3))
+		#cv2.imshow('messigray.png',img)
 		return True
+
+
+
+
+

@@ -1,10 +1,10 @@
 # Proxies for required interfaces
-RGBDProxy = rgbd:tcp -h localhost -p 10097 -z
+RGBDProxy = rgbd:udp -p 20005
 
 
 
 # This property is used by the clients to connect to IceStorm.
-TopicManager.Proxy=IceStorm/TopicManager:default -p 9999 -z
+TopicManager.Proxy=IceStorm/TopicManager:default -p 9999
 
 
 Ice.Warn.Connections=0
