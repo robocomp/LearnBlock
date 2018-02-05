@@ -1,0 +1,39 @@
+from pyparsing import *
+import sys, os
+import inspect
+
+path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+
+reserved_words = ( Keyword('=')  | Keyword('command.') | Keyword('learnbot.') | Keyword('ip') | Keyword('user') | Keyword('pass') | Keyword('start') | Keyword('stop'))
+iden = Word( alphanums+"_")
+identifier = Group( ~reserved_words + iden )
+
+IP = Suppress("learnbot.ip") + Suppress("=") + QuotedString( '"' ).setResultsName("ip")
+USER = Suppress("learnbot.user") + Suppress("=") + QuotedString( '"' ).setResultsName("user")
+PASS = Suppress("learnbot.pass") + Suppress("=") + QuotedString( '"' ).setResultsName("pass")
+START = Suppress("learnbot.command.start") + Suppress("=") + QuotedString( '"' ).setResultsName("start")
+STOP = Suppress("learnbot.command.stop") + Suppress("=") + QuotedString( '"' ).setResultsName("stop")
+
+PARSERCONFIG = OneOrMore(IP | USER | PASS | START | STOP )
+
+def __parserFromFile(file):
+    with open(file) as f:
+        text = f.read()
+        ret = __parserFromString(text)
+        print ret
+        return ret
+
+def __parserFromString(text):
+    try:
+        PARSERCONFIG.ignore(pythonStyleComment)
+        return PARSERCONFIG.parseString(text)
+    except Exception as e:
+        print e
+        print("line: {}".format(e.line))
+        print("    "+" "*e.col+"^")
+        raise e
+        exit(-1)
+
+
+configSSH = __parserFromFile(path + "/config")
+__all__ = ['configSSH']

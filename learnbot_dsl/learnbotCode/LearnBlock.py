@@ -33,6 +33,7 @@ from Parser import parserLearntBotCode
 import sys
 print sys.version_info[0]
 import paramiko
+from parserConfig import configSSH
 
 HEADER = """
 #EXECUTION: python code_example.py configSimulated
@@ -154,7 +155,7 @@ class LearnBlock:
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30,30))
         self.ui.zoompushButton.clicked.connect(self.setZoom)
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
-        
+
         self.listVars = []
         self.listUserFunctions = []
         self.view = MyView(self.ui.frame)
@@ -223,21 +224,21 @@ class LearnBlock:
         client = paramiko.SSHClient()
         client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect("192.168.100.1", port=22, username="pi", password="raspberry")
-        stdin, stdout, stderr = client.exec_command("./startDisplay.sh")
+        client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
+        stdin, stdout, stderr = client.exec_command(configSSH["start"])
 
     def shutdownRobot(self):
         client = paramiko.SSHClient()
         client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect("192.168.100.1", port=22, username="pi", password="raspberry")
+        client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
         stdin, stdout, stderr = client.exec_command("sudo shutdown 0")
 
     def rebootRobot(self):
         client = paramiko.SSHClient()
         client.load_system_host_keys()
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect("192.168.100.1", port=22, username="pi", password="raspberry")
+        client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
         stdin, stdout, stderr = client.exec_command("sudo reboot 0")
 
     def avtiveEvents(self,isChecked):

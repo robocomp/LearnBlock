@@ -141,6 +141,7 @@ def __parserFromFile(file):
 
 def __parserFromString(text):
     try:
+        LB.ignore(pythonStyleComment)
         return LB.parseString(text)
     except Exception as e:
         print bcolors.FAIL + e

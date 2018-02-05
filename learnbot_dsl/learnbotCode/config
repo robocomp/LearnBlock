@@ -1,0 +1,5 @@
+learnbot.ip = "192.168.16.1"
+learnbot.user = "odroid"
+learnbot.pass = "odroid"
+learnbot.command.start = "sudo sh launch_learnbot.sh"
+learnbot.command.stop = ""
