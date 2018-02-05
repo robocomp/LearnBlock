@@ -19,7 +19,7 @@ For run this IDE you should execute the follow lines:
 
 With this code the LearnBot follow the red lines.
 
-![Program for the LearnBot follow the red lines](img/follow_red_line.png)
+![Program for the LearnBot follow the red lines](/doc/img/follow_red_line.png)
 
 ## Use of variables
 
@@ -35,7 +35,7 @@ For add a new functions to IDE, the user should complete the next form.
 
 The user can selected diferents blocks and add difrents variables.
 
-![Form for create new block](img/form_new_block.png)
+![Form for create new block](/doc/img/form_new_block.png)
 
 ## Create and used a new functions
 
@@ -45,13 +45,13 @@ Create a functions is similar to create a variable,The first step is declare the
 
 The user can save and open project, for this the user should click in the next buttons.
 
-![Bottons for save and open project](img/save_and_open.png)
+![Bottons for save and open project](/doc/img/save_and_open.png)
 
 ## Add Number or String
 
 The user can create Number or String with this buttons:
 
-![Bottons for add Number or String](img/addNumberOrString.png)
+![Bottons for add Number or String](/doc/img/addNumberOrString.png)
 
 # Examples
 
