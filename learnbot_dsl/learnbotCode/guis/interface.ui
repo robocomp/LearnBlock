@@ -529,6 +529,8 @@
     <property name="title">
      <string>tools robot</string>
     </property>
+    <addaction name="actionStart_Simulator"/>
+    <addaction name="separator"/>
     <addaction name="actionStart_components"/>
     <addaction name="separator"/>
     <addaction name="actionReboot"/>
@@ -581,6 +583,11 @@
   <action name="actionShutdown">
    <property name="text">
     <string>Shutdown</string>
+   </property>
+  </action>
+  <action name="actionStart_Simulator">
+   <property name="text">
+    <string>Start Simulator</string>
    </property>
   </action>
  </widget>

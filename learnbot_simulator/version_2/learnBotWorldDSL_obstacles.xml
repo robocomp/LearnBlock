@@ -27,7 +27,7 @@
 
 
 	<transform id="world">
-			<include path="learnBotDSL.xml"/>
+			<include path="/home/robocomp/robocomp/components/learnbot/learnbot_simulator/version_2/learnBot.xml"/>
 			<plane id="ddG" ny="1"  px="-0" py="0" pz="0" size="5000,5000,10" texture="../textures/wood.jpg" />
 
 			<plane id="ddR" nx="1"  px="2500" py="200" pz="0" size="5000,500,10" texture="#eeeeee" />

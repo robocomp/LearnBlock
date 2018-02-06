@@ -3,24 +3,24 @@
 
 void readImage(params_image * params)
 {
-  while (true)
-  {
-    try
-    {
-      RoboCompRGBD::ColorSeq colorseq;
-      RoboCompRGBD::DepthSeq depthseq;
-      RoboCompGenericBase::TBaseState bState;
-      RoboCompJointMotor::MotorStateMap hState;
-      params->rgbd_proxy->getRGB(colorseq, hState, bState);
-      params->image_mutex->lock();
-      memcpy(params->image->data , &colorseq[0], 320*240*3);
-      params->image_mutex->unlock();
-    }
-    catch(const Ice::Exception &e)
-    {
-      std::cout << "Error reading form RGBD " << e << std::endl;
-    }
-  }
+  // while (true)
+  // {
+  //   try
+  //   {
+  //     RoboCompRGBD::ColorSeq colorseq;
+  //     RoboCompRGBD::DepthSeq depthseq;
+  //     RoboCompGenericBase::TBaseState bState;
+  //     RoboCompJointMotor::MotorStateMap hState;
+  //     params->rgbd_proxy->getRGB(colorseq, hState, bState);
+  //     params->image_mutex->lock();
+  //     memcpy(params->image->data , &colorseq[0], 320*240*3);
+  //     params->image_mutex->unlock();
+  //   }
+  //   catch(const Ice::Exception &e)
+  //   {
+  //     std::cout << "Error reading form RGBD " << e << std::endl;
+  //   }
+  // }
 };
 
 void readSonars(params_sonars *params)
@@ -42,19 +42,7 @@ void readSonars(params_sonars *params)
     }
   }
 }
-//
-// ClientCpp::ClientCpp(const ClientCpp &client)
-// {
-//   adv = client.adv;
-//   rot = client.rot;
-//   max_rot = client.max_rot;
-//   image = client.image;
-//   image_mutex = client.image_mutex;
-//   ic = client.ic;
-//   differentialrobot_proxy = client.differentialrobot_proxy;
-//   rgbd_proxy = client.rgbd_proxy;
-//   args_sonars = client.args_sonars;
-// }
+
 
 ClientCpp::ClientCpp(std::vector<std::string> argv_)
 {
@@ -102,10 +90,10 @@ void ClientCpp::initialize(int argc, char* argv[])
   differentialrobot_proxy = DifferentialRobotPrx::uncheckedCast( ic->stringToProxy( proxyString ) );
   if(!differentialrobot_proxy) throw std::runtime_error("Invalid proxy DifferentialRobotProxy");
 
-
-  proxyString = ic->getProperties()->getProperty("RGBDProxy");
-  rgbd_proxy = RGBDPrx::uncheckedCast( ic->stringToProxy( proxyString ) );
-  if(!rgbd_proxy) throw std::runtime_error("Invalid proxy RGBDProxy");
+  //
+  // proxyString = ic->getProperties()->getProperty("RGBDProxy");
+  // rgbd_proxy = RGBDPrx::uncheckedCast( ic->stringToProxy( proxyString ) );
+  // if(!rgbd_proxy) throw std::runtime_error("Invalid proxy RGBDProxy");
 
 
   image.create(240,320, CV_8UC3);

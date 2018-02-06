@@ -5,8 +5,8 @@
 	</transform>
 
 	<transform id="world">
-			<include path="learnBotDSL.xml"/>
-			<plane id="ddG" ny="1"  px="200" py="0" pz="0" size="5000,5000,10" texture="../textures/lines.jpg" />
+			<include path="/home/robocomp/robocomp/components/learnbot/learnbot_simulator/version_1/learnBotDSL.xml"/>
+			<plane id="ddG" ny="1"  px="200" py="0" pz="0" size="5000,5000,10" texture="/home/robocomp/robocomp/components/learnbot/learnbot_simulator/textures/lines.jpg" />
 
 	</transform>
 

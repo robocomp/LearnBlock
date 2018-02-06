@@ -34,6 +34,7 @@ import sys
 print sys.version_info[0]
 import paramiko
 from parserConfig import configSSH
+import subprocess
 
 HEADER = """
 #EXECUTION: python code_example.py configSimulated
@@ -208,6 +209,7 @@ class LearnBlock:
         self.ui.deleteFuntionsPushButton.clicked.connect(self.deleteUserFunctions)
         self.ui.tabWidget_2.setFixedWidth(221)
         self.ui.actionStart_components.triggered.connect(self.startRobot)
+        self.ui.actionStart_Simulator.triggered.connect(self.startSimulatorRobot)
         self.ui.actionReboot.triggered.connect(self.rebootRobot)
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.scene.setlistNameVars(self.listNameVars)
@@ -226,6 +228,10 @@ class LearnBlock:
         client.set_missing_host_key_policy(paramiko.WarningPolicy)
         client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
         stdin, stdout, stderr = client.exec_command(configSSH["start"])
+
+    def startSimulatorRobot(self):
+        subprocess.Popen(configSSH["start_simulator"], shell=True, stdout=subprocess.PIPE)
+        # os.system(configSSH["start_simulator"])
 
     def shutdownRobot(self):
         client = paramiko.SSHClient()
@@ -552,8 +558,8 @@ class LearnBlock:
             fh = open("main_tmp.lb","wr")
             fh.writelines(text + code)
             fh.close()
-            # self.ui.textCode.clear()
-            # self.ui.textCode.appendPlainText(text + code)
+            self.ui.textCode.clear()
+            self.ui.textCode.appendPlainText(text + code)
             try:
                 parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot)
             except Exception as e:
@@ -607,25 +613,6 @@ class LearnBlock:
             text = self.parserWhenBlocks(blocks, function)
         else:
             text = self.parserOtherBlocks(blocks, function)
-        #
-        # for b in blocks:
-        #     if "main" == b[0]:
-        #         text += "\tdef "+b[0]+"(self):\n"
-        #         if len(self.listNameVars) > 0:
-        #             for name in self.listNameVars:
-        #                 text += "\t\tglobal " + name + "\n"
-        #         if b[1]["BOTTOMIN"] is not None:
-        #             text += "\t\t" + function(b[1]["BOTTOMIN"],3)
-        #         else:
-        #             text += "pass"
-        #         text += "\n\n"
-        # for b in blocks:
-        #     if "main" in b[0]:
-        #         if b[1]["BOTTOMIN"] is not None:
-        #             text += function(b[1]["BOTTOMIN"])
-        #         else:
-        #             text += "pass"
-        #         text += "\n\n"
         print text
         return text
 
@@ -654,7 +641,7 @@ class LearnBlock:
                     text += "\t" + function(b[1]["BOTTOMIN"],2)
                 else:
                     text += "pass"
-                text += "\n\n"
+                text += "\n\nend\n\n"
         return text
 
     def toLBotPy(self, inst, ntab = 1):

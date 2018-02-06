@@ -12,9 +12,10 @@ IP = Suppress("learnbot.ip") + Suppress("=") + QuotedString( '"' ).setResultsNam
 USER = Suppress("learnbot.user") + Suppress("=") + QuotedString( '"' ).setResultsName("user")
 PASS = Suppress("learnbot.pass") + Suppress("=") + QuotedString( '"' ).setResultsName("pass")
 START = Suppress("learnbot.command.start") + Suppress("=") + QuotedString( '"' ).setResultsName("start")
+START_SIMULATOR = Suppress("learnbot.command.start_simulator") + Suppress("=") + QuotedString( '"' ).setResultsName("start_simulator")
 STOP = Suppress("learnbot.command.stop") + Suppress("=") + QuotedString( '"' ).setResultsName("stop")
 
-PARSERCONFIG = OneOrMore(IP | USER | PASS | START | STOP )
+PARSERCONFIG = OneOrMore(IP | USER | PASS | START | STOP | START_SIMULATOR )
 
 def __parserFromFile(file):
     with open(file) as f:
@@ -35,5 +36,5 @@ def __parserFromString(text):
         exit(-1)
 
 
-configSSH = __parserFromFile(path + "/config")
+configSSH = __parserFromFile(path + "/etc/config")
 __all__ = ['configSSH']
