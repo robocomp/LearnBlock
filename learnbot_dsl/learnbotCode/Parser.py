@@ -243,7 +243,8 @@ def __processDEACTIVE(line, text="", index=0):
     return text
 
 def __processWHILE(line, text="", index=0):
-    text += "\t"*index + "while "
+    print "-----------------------------------------------------",index
+    text += "\n" + "\t"*index + "while "
     for c in line.condition:
         text += __process(line.condition[0])
     text += ":\n"
