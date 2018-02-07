@@ -156,6 +156,7 @@ class LearnBlock:
 
     def exit(self):
         if self.scene.shouldSave is False:
+            self.stopthread()
             self.app.quit()
         else:
             msgBox = QtGui.QMessageBox()
