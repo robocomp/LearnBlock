@@ -518,6 +518,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionNew_project"/>
+    <addaction name="separator"/>
     <addaction name="actionCreate_New_block"/>
     <addaction name="actionOpen_Proyect"/>
     <addaction name="actionSave"/>
@@ -588,6 +590,11 @@
   <action name="actionStart_Simulator">
    <property name="text">
     <string>Start Simulator</string>
+   </property>
+  </action>
+  <action name="actionNew_project">
+   <property name="text">
+    <string>New project</string>
    </property>
   </action>
  </widget>

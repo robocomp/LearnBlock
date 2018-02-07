@@ -37,4 +37,9 @@ def __parserFromString(text):
 
 
 configSSH = __parserFromFile(path + "/etc/config")
+
+def reloadConfig():
+    global configSSH
+    configSSH = __parserFromFile(path + "/etc/config")
+    
 __all__ = ['configSSH']
