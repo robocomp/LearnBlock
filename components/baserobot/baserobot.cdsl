@@ -6,6 +6,6 @@ Component baserobot
 	{
 		implements DifferentialRobot;
 	};
-	language Cpp;
+	language Python;
 };
 
