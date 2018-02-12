@@ -92,7 +92,7 @@ class Client(Ice.Application, threading.Thread):
 				print 'Cannot get UltrasoundProxy property.'
 				sys.exit(1)
 
-			self.stream = urllib.urlopen('http://odroid.local:8080/?action=stream')
+			self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
 			self.bytes=''
 
 

@@ -58,11 +58,13 @@ class SpecificWorker(GenericWorker):
 			self.i=0
 			self.start = time.time()
 		color, depth, headState, baseState = self.rgbd_proxy.getData()
-		print len(color)
+		#print len(color)
 		if len(color)>0:
 			self.i += 1
-		#img = np.fromstring(color, dtype = np.uint8).reshape((240, 320, 3))
-		#cv2.imshow('messigray.png',img)
+			img = np.fromstring(color, dtype = np.uint8)
+			img = cv2.imdecode(img, 1)
+			img =cv2.cvtColor(img, cv2.COLOR_YUV2BGR)
+			cv2.imshow('messigray.png',img)
 		return True
 
 

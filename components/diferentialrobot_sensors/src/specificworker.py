@@ -60,7 +60,7 @@ class SpecificWorker(GenericWorker):
 
                 self.ultrasound = {"sensor0": {"dist": 0, "angle":180, "GPIO-TRIGGER":23, "GPIO-ECHO":24}, "sensor1": {"dist": 0, "angle":0, "GPIO-TRIGGER":23, "GPIO-ECHO":27}, "sensor2": {"dist": 0, "angle":90, "GPIO-TRIGGER":23, "GPIO-ECHO":17}, "sensor3": {"dist": 0, "angle":270, "GPIO-TRIGGER":23, "GPIO-ECHO":22}}
 
-		
+
                 self.adv = 0
 		self.rot = 0
 		wpi.wiringPiSetup()
@@ -109,15 +109,15 @@ class SpecificWorker(GenericWorker):
         	        	GPIO.output(GPIO_TRIGGER, True)
 	                	time.sleep(0.00001)
 		                GPIO.output(GPIO_TRIGGER, False)
-			
-     			        start = time.time()				
+
+     			        start = time.time()
                 		while GPIO.input(GPIO_ECHO)==0:
 		                  start = time.time()
 				while GPIO.input(GPIO_ECHO)==1:
         		          stop = time.time()
 				# Calculate pulse length
 	                	elapsed = stop-start
-					
+
 	        	        # Distance pulse travelled in that time is time
         	        	# multiplied by the speed of sound (cm/s)
 	                	distance = elapsed * 34000
@@ -125,7 +125,7 @@ class SpecificWorker(GenericWorker):
 		                # That was the distance there and back so halve the value
         		        distance = distance / 2
 				sensor["dist"]=distance
-		return True	
+		return True
 
 
 
@@ -154,17 +154,17 @@ class SpecificWorker(GenericWorker):
 	def getSensorData(self, sensor):
 
 		if sensor in self.ultrasound.keys():
-			return self.ultrasound[sensor]	
+			return self.ultrasound[sensor]
 		else:
 			print "sheep"
 			return {}
-	
+
 		ret = int()
 		#
 		# YOUR CODE HERE
 		#
                 # Use BCM GPIO references
-               
+
 		return ret
 
 	def getBusParams(self):
@@ -252,6 +252,5 @@ class SpecificWorker(GenericWorker):
                 #
                 pass
 
-#        def setSpeedBase(self, adv, rot):                        
+#        def setSpeedBase(self, adv, rot):
 #		pass
-
