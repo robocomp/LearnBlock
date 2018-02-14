@@ -21,12 +21,8 @@ import sys, os, traceback, time
 
 from PySide import QtGui, QtCore
 from genericworker import *
+from math  import pi
 
-# If RoboComp was compiled with Python bindings you can use InnerModel in Python
-# sys.path.append('/opt/robocomp/lib')
-# import librobocomp_qmat
-# import librobocomp_osgviewer
-# import librobocomp_innermodel
 
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
@@ -34,157 +30,63 @@ class SpecificWorker(GenericWorker):
 		self.timer.timeout.connect(self.compute)
 		self.Period = 2000
 		self.timer.start(self.Period)
+		wiringpi.wiringPiSetupGpio()
+		wiringpi.pinMode(18,1)
+		wiringpi.softPwmCreate(18,0,100)
 
 	def setParams(self, params):
-		#try:
-		#	self.innermodel = InnerModel(params["InnerModelPath"])
-		#except:
-		#	traceback.print_exc()
-		#	print "Error reading config params"
 		return True
 
 	@QtCore.Slot()
 	def compute(self):
 		print 'SpecificWorker.compute...'
-		#computeCODE
-		#try:
-		#	self.differentialrobot_proxy.setSpeedBase(100, 0)
-		#except Ice.Exception, e:
-		#	traceback.print_exc()
-		#	print e
-
-		# The API of python-innermodel is not exactly the same as the C++ version
-		# self.innermodel.updateTransformValues("head_rot_tilt_pose", 0, 0, 0, 1.3, 0, 0)
-		# z = librobocomp_qmat.QVec(3,0)
-		# r = self.innermodel.transform("rgbd", z, "laser")
-		# r.printvector("d")
-		# print r[0], r[1], r[2]
-
 		return True
 
+	def Rad2OutPint(self, angle):
+		if angle < -pi/2:
+			angle = -pi/2
+		elif angle > pi/2:
+			angle = pi/2
+		return (angle + pi/2) * (20 - 4) / (pi/2 + pi*2) + 4;
 
-	#
-	# getAllMotorParams
-	#
 	def getAllMotorParams(self):
 		ret = MotorParamsList()
-		#
-		#implementCODE
-		#
 		return ret
 
-
-	#
-	# getAllMotorState
-	#
 	def getAllMotorState(self):
-		#
-		#implementCODE
-		#
 		mstateMap = MotorStateMap()
 		return mstateMap
 
-
-	#
-	# getMotorParams
-	#
 	def getMotorParams(self, motor):
 		ret = MotorParams()
-		#
-		#implementCODE
-		#
 		return ret
 
-
-	#
-	# getMotorState
-	#
 	def getMotorState(self, motor):
 		ret = MotorState()
-		#
-		#implementCODE
-		#
 		return ret
 
-
-	#
-	# setSyncVelocity
-	#
 	def setSyncVelocity(self, listGoals):
-		#
-		#implementCODE
-		#
 		pass
 
-
-	#
-	# setZeroPos
-	#
 	def setZeroPos(self, name):
-		#
-		#implementCODE
-		#
 		pass
 
-
-	#
-	# getBusParams
-	#
 	def getBusParams(self):
 		ret = BusParams()
-		#
-		#implementCODE
-		#
 		return ret
 
-
-	#
-	# setSyncZeroPos
-	#
 	def setSyncZeroPos(self):
-		#
-		#implementCODE
-		#
 		pass
 
-
-	#
-	# setSyncPosition
-	#
 	def setSyncPosition(self, listGoals):
-		#
-		#implementCODE
-		#
 		pass
 
-
-	#
-	# getMotorStateMap
-	#
 	def getMotorStateMap(self, mList):
 		ret = MotorStateMap()
-		#
-		#implementCODE
-		#
 		return ret
 
-
-	#
-	# setPosition
-	#
 	def setPosition(self, goal):
-		#
-		#implementCODE
-		#
-		pass
+		wiringpi.softPwmWrite(18, Rad2OutPint(goal))
 
-
-	#
-	# setVelocity
-	#
 	def setVelocity(self, goal):
-		#
-		#implementCODE
-		#
 		pass
-
