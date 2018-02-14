@@ -1,5 +1,5 @@
 # Endpoints for implemented interfaces
-JointMotor.Endpoints=tcp -p 0
+JointMotor.Endpoints=tcp -p 10067
 
 
 
@@ -12,5 +12,3 @@ Ice.Trace.Network=0
 Ice.Trace.Protocol=0
 Ice.ACM.Client=10
 Ice.ACM.Server=10
-
-
