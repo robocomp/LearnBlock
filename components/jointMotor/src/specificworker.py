@@ -21,6 +21,7 @@ import sys, os, traceback, time
 
 from PySide import QtGui, QtCore
 from genericworker import *
+import wiringpi
 from math  import pi
 
 
