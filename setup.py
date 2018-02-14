@@ -9,5 +9,5 @@ setup(name="learnbot",
 #      url="",
       license="GPL",
 #      scripts=["ejemplo.py"],
-      packages=["learnbot_dsl","learnbot_dsl/functions","learnbot_dsl/functions/motor","learnbot_dsl/functions/perceptual","learnbot_dsl/functions/proprioceptive"],
+      packages=["learnbot_dsl","learnbot_dsl/functions","learnbot_dsl/functions/motor","learnbot_dsl/functions/perceptual","learnbot_dsl/functions/proprioceptive","learnbot_dsl/functions/expressions"],
       )

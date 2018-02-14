@@ -17,17 +17,20 @@ except KeyError:
 
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
 
-Ice.loadSlice(preStr+"RGBD.ice")
 Ice.loadSlice(preStr+"Ultrasound.ice")
+Ice.loadSlice(preStr+"Laser.ice")
 Ice.loadSlice(preStr+"DifferentialRobot.ice")
 Ice.loadSlice(preStr+"JointMotor.ice")
 Ice.loadSlice(preStr+"GenericBase.ice")
+Ice.loadSlice(preStr+"EmotionalMotor.ice")
 
-import RoboCompRGBD
+
 import RoboCompUltrasound
+import RoboCompLaser
 import RoboCompDifferentialRobot
 import RoboCompJointMotor
 import RoboCompGenericBase
+import RoboCompEmotionalMotor
 
 
 import signal
@@ -38,6 +41,7 @@ ic = None
 
 
 class Client(Ice.Application, threading.Thread):
+
 	def __init__(self, argv):
 		threading.Thread.__init__(self)
 
@@ -65,6 +69,7 @@ class Client(Ice.Application, threading.Thread):
 
 		status = 0
 		try:
+
 			# Remote object connection for DifferentialRobot
 			try:
 				proxyString = ic.getProperties().getProperty('DifferentialRobotProxy')
@@ -78,6 +83,7 @@ class Client(Ice.Application, threading.Thread):
 				print e
 				print 'Cannot get DifferentialRobotProxy property.'
 				sys.exit(1)
+
 			# Remote object connection for Ultrasound
 			try:
 				proxyString = ic.getProperties().getProperty('UltrasoundProxy')
@@ -92,6 +98,33 @@ class Client(Ice.Application, threading.Thread):
 				print 'Cannot get UltrasoundProxy property.'
 				sys.exit(1)
 
+			# Remote object connection for EmotionalMotor
+			try:
+				proxyString = ic.getProperties().getProperty('EmotionalMotorProxy')
+				try:
+					basePrx = ic.stringToProxy(proxyString)
+					self.emotionalmotor_proxy = RoboCompEmotionalMotor.EmotionalMotorPrx.checkedCast(basePrx)
+				except Ice.Exception:
+					print 'Cannot connect to the remote object (EmotionalMotor)', proxyString
+					sys.exit(1)
+			except Ice.Exception, e:
+				print e
+				print 'Cannot get UltrasoundProxy property.'
+				sys.exit(1)
+			# # Remote object connection for JointMotor
+			# try:
+			# 	proxyString = ic.getProperties().getProperty('JointMotorProxy')
+			# 	try:
+			# 		basePrx = ic.stringToProxy(proxyString)
+			# 		self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
+			# 	except Ice.Exception:
+			# 		print 'Cannot connect to the remote object (JointMotor)', proxyString
+			# 		sys.exit(1)
+			# except Ice.Exception, e:
+			# 	print e
+			# 	print 'Cannot get UltrasoundProxy property.'
+			# 	sys.exit(1)
+
 			self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
 			self.bytes=''
 
@@ -104,7 +137,6 @@ class Client(Ice.Application, threading.Thread):
 		self.active = True
 		self.start()
 
-
 	def run(self):
 		while self.active:
 			self.reading = True
@@ -114,7 +146,6 @@ class Client(Ice.Application, threading.Thread):
 			self.mutex.release()
 			self.reading = False
 			time.sleep(0.002)
-
 
 	def getImageStream(self):
 		self.bytes += self.stream.read(5120)
@@ -130,12 +161,11 @@ class Client(Ice.Application, threading.Thread):
 			except:
 				print "Error retrieving images!"
 				return None
-#			self.mutex.acquire()
+			# self.mutex.acquire()
 			self.image = image
 			self.newImg = True
-#			self.mutex.release()
+			# self.mutex.release()
 		return True
-
 
 	def readSonars(self):
 		ultrasound = ast.literal_eval(self.ultrasound_proxy.getAllSensorData())
@@ -150,28 +180,27 @@ class Client(Ice.Application, threading.Thread):
 			elif (nombre == "sensor3"):
 				self.usList["left"] = sensor["dist"]*10
 
-
 	def getSonars(self):
-#		self.readSonars()
+		# self.readSonars()
 		while self.reading:
 			time.sleep(0.005)
 		self.mutex.acquire()
 		localUSList = self.usList
 		print self.usList
 		self.mutex.release()
-#		time.sleep(0.1)
+		# time.sleep(0.1)
 		return localUSList
 
 	def getImage(self):
 		while self.reading:
 			time.sleep(0.005)
 		self.mutex.acquire()
-		#if self.newImg:
+		# if self.newImg:
 		self.simage = self.image
 		self.newImg = False
 		self.mutex.release()
 
-#		time.sleep(0.05)
+		# time.sleep(0.05)
 		return self.simage
 
 	def getPose(self):
@@ -185,6 +214,42 @@ class Client(Ice.Application, threading.Thread):
 			self.rot = vRotation
 		self.differentialrobot_proxy.setSpeedBase(-self.adv*8,self.rot*15)
 
+	def expressJoy(self):
+		print "---------------------------------------------------"
+		try:
+			self.emotionalmotor_proxy.expressJoy()
+		except Exception as e:
+			raise
+
+	def expressSadness(self):
+		try:
+			self.emotionalmotor_proxy.expressSadness()
+		except Exception as e:
+			raise
+
+	def expressSurprise(self):
+		try:
+			self.emotionalmotor_proxy.expressSurprise()
+		except Exception as e:
+			raise
+
+	def expressFear(self):
+		try:
+			self.emotionalmotor_proxy.expressFear()
+		except Exception as e:
+			raise
+
+	def expressAnger(self):
+		try:
+			self.emotionalmotor_proxy.expressAnger()
+		except Exception as e:
+			raise
+
+	def expressDisgust(self):
+		try:
+			self.emotionalmotor_proxy.expressDisgust()
+		except Exception as e:
+			raise
 
 	def __del__(self):
         	self.active = False

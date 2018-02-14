@@ -36,6 +36,3 @@ for dirname in dirnames:
 		functions[name] = func
 		params[name] = args.args[1:]
 		paramsDefaults[name] = args.defaults
-
-
-
