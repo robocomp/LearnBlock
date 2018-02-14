@@ -1,0 +1,42 @@
+
+block{
+    type express
+    name expressJoy
+    img block1
+    languages ES: "expresar_alegria", EN: "express_Joy"
+}
+
+block{
+    type express
+    name expressFear
+    img block1
+    languages ES: "expresar_miedo", EN: "express_Fear"
+}
+
+block{
+    type express
+    name expressSadness
+    img block1
+    languages ES: "expresar_tristeza", EN: "expressSadness"
+}
+
+block{
+    type express
+    name expressAnger
+    img block1
+    languages ES: "expresar_ira", EN: "expressAnger"
+}
+
+block{
+    type express
+    name expressDisgust
+    img block1
+    languages ES: "expresar_asco", EN: "expressDisgust"
+}
+
+block{
+    type express
+    name expressSurprise
+    img block1
+    languages ES: "expresar_sorpresa", EN: "expressSurprise"
+}
