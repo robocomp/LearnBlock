@@ -33,7 +33,7 @@ class SpecificWorker(GenericWorker):
 		self.timer.start(self.Period)
 		wiringpi.wiringPiSetupGpio()
 		wiringpi.pinMode(18,1)
-		wiringpi.softPwmCreate(18,0,100)
+		# wiringpi.softPwmCreate(18,0,100)
 
 	def setParams(self, params):
 		return True
