@@ -10,7 +10,7 @@ pathConfig = path
 def reload_functions():
     global configBlocks
     functions = parserConfigBlock(path+"/configMotor")
-
+    functions += parserConfigBlock(path+"/configOthers")
     functions += parserConfigBlock(path+"/configControl")
     functions += parserConfigBlock(path+"/configPerceptual")
     functions += parserConfigBlock(path+"/configPropriopercetive")

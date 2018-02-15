@@ -125,7 +125,7 @@ class LearnBlock:
 
         self.dicTables = {'control':self.ui.tableControl,'motor':self.ui.tableMotor, 'perceptual':self.ui.tablePerceptual,
                      'proprioceptive':self.ui.tablePropioperceptive,'operador':self.ui.tableOperadores,'variables':self.ui.tableVariables,
-                          'funtions':self.ui.tableUserfunctions, 'express':self.ui.tableExpress}
+                          'funtions':self.ui.tableUserfunctions, 'express':self.ui.tableExpress, 'others':self.ui.tableOthers}
 
         for t in self.dicTables:
             table = self.dicTables[t]
@@ -257,6 +257,8 @@ class LearnBlock:
             elif "operador" == f.type[0]:
                 funtionType = OPERATOR
             elif "express" == f.type[0]:
+                funtionType = FUNTION
+            elif "others" == f.type[0]:
                 funtionType = FUNTION
             blockType = None
             for img in f.img:
