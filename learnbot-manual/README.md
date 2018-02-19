@@ -62,7 +62,7 @@ EndSection
 To get the emotions you have to open a terminal and write:
 ```
 git clone https://github.com/mhaut/learnbot-emotions.git
-cd learnbot-emotions/
+cd learnbot-emotions/tkinter/
 python learnbotFace.py
 
 ```
