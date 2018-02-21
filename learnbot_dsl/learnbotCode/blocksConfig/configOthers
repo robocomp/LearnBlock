@@ -1,0 +1,17 @@
+
+block{
+    type operador
+    name +
+    img block3
+}
+
+
+block{
+    type others
+    name sleep
+    variables{
+        float seconds  1
+    }
+    img block1
+    languages ES: "esperar", EN: "wait"
+}

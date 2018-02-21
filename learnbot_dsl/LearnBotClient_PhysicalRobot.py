@@ -111,19 +111,20 @@ class Client(Ice.Application, threading.Thread):
 				print e
 				print 'Cannot get UltrasoundProxy property.'
 				sys.exit(1)
-			# # Remote object connection for JointMotor
-			# try:
-			# 	proxyString = ic.getProperties().getProperty('JointMotorProxy')
-			# 	try:
-			# 		basePrx = ic.stringToProxy(proxyString)
-			# 		self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
-			# 	except Ice.Exception:
-			# 		print 'Cannot connect to the remote object (JointMotor)', proxyString
-			# 		sys.exit(1)
-			# except Ice.Exception, e:
-			# 	print e
-			# 	print 'Cannot get UltrasoundProxy property.'
-			# 	sys.exit(1)
+
+			# Remote object connection for JointMotor
+			try:
+				proxyString = ic.getProperties().getProperty('JointMotorProxy')
+				try:
+					basePrx = ic.stringToProxy(proxyString)
+					self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
+				except Ice.Exception:
+					print 'Cannot connect to the remote object (JointMotor)', proxyString
+					sys.exit(1)
+			except Ice.Exception, e:
+				print e
+				print 'Cannot get UltrasoundProxy property.'
+				sys.exit(1)
 
 			self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
 			self.bytes=''
@@ -168,17 +169,20 @@ class Client(Ice.Application, threading.Thread):
 		return True
 
 	def readSonars(self):
-		ultrasound = ast.literal_eval(self.ultrasound_proxy.getAllSensorData())
+		try:
+			ultrasound = ast.literal_eval(self.ultrasound_proxy.getAllSensorData())
 
-		for nombre, sensor in ultrasound.items():
-			if (nombre == "sensor0"):
-				self.usList["front"] = sensor["dist"]*10
-			elif (nombre == "sensor1"):
-				self.usList["back"] = sensor["dist"]*10
-			elif (nombre == "sensor2"):
-				self.usList["right"] = sensor["dist"]*10
-			elif (nombre == "sensor3"):
-				self.usList["left"] = sensor["dist"]*10
+			for nombre, sensor in ultrasound.items():
+				if (nombre == "sensor0"):
+					self.usList["front"] = sensor["dist"]*10
+				elif (nombre == "sensor1"):
+					self.usList["back"] = sensor["dist"]*10
+				elif (nombre == "sensor2"):
+					self.usList["right"] = sensor["dist"]*10
+				elif (nombre == "sensor3"):
+					self.usList["left"] = sensor["dist"]*10
+		except Exception as e:
+			print "Error readSonars"
 
 	def getSonars(self):
 		# self.readSonars()
@@ -204,52 +208,65 @@ class Client(Ice.Application, threading.Thread):
 		return self.simage
 
 	def getPose(self):
-		x, y, alpha = self.differentialrobot_proxy.getBasePose()
-		return x, y, alpha
+		try:
+			x, y, alpha = self.differentialrobot_proxy.getBasePose()
+			return x, y, alpha
+		except Exception as e:
+			print "Error getPose"
+
+	def setAngleJointMotor(self, angle):
+		try:
+			goal = RoboCompJointMotor.MotorGoalPosition()
+			goal.position = angle
+			self.jointmotor_proxy.setPosition(goal)
+		except Exception as e:
+			print "Error setAngleJointMotor\n",e, type(angle)
 
 	def setRobotSpeed(self, vAdvance=0, vRotation=0):
-		print vAdvance, vRotation
-		if vAdvance!=0 or vRotation!=0:
-			self.adv = vAdvance
-			self.rot = vRotation
-		self.differentialrobot_proxy.setSpeedBase(-self.adv*8,self.rot*15)
+		try:
+			print vAdvance, vRotation
+			if vAdvance!=0 or vRotation!=0:
+				self.adv = vAdvance
+				self.rot = vRotation
+				self.differentialrobot_proxy.setSpeedBase(-self.adv*8,self.rot*15)
+		except Exception as e:
+			print "Error setRobotSpeed"
 
 	def expressJoy(self):
-		print "---------------------------------------------------"
 		try:
 			self.emotionalmotor_proxy.expressJoy()
 		except Exception as e:
-			raise
+			print "Error expressJoy"
 
 	def expressSadness(self):
 		try:
 			self.emotionalmotor_proxy.expressSadness()
 		except Exception as e:
-			raise
+			print "Error expressSadness"
 
 	def expressSurprise(self):
 		try:
 			self.emotionalmotor_proxy.expressSurprise()
 		except Exception as e:
-			raise
+			print "Error expressSurprise"
 
 	def expressFear(self):
 		try:
 			self.emotionalmotor_proxy.expressFear()
 		except Exception as e:
-			raise
+			print "Error expressFear"
 
 	def expressAnger(self):
 		try:
 			self.emotionalmotor_proxy.expressAnger()
 		except Exception as e:
-			raise
+			print "Error expressAnger"
 
 	def expressDisgust(self):
 		try:
 			self.emotionalmotor_proxy.expressDisgust()
 		except Exception as e:
-			raise
+			print "Error expressDisgust"
 
 	def __del__(self):
         	self.active = False

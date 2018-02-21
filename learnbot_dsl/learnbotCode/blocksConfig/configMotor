@@ -75,3 +75,13 @@ block{
 	img block1
     languages ES: "mas_despacio", EN: "slow_down"
 }
+
+block{
+    type motor
+    name setAngleCamera
+    variables{
+        int angle 0
+    }
+    img block1
+    languages ES: "ponerAnguloCamara", EN: "setAngleCamera"
+}
