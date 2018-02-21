@@ -31,9 +31,11 @@ class SpecificWorker(GenericWorker):
 		self.timer.timeout.connect(self.compute)
 		self.Period = 2000
 		self.timer.start(self.Period)
+		
 		wiringpi.wiringPiSetupGpio()
 		wiringpi.pinMode(18,1)
-		# wiringpi.softPwmCreate(18,0,100)
+		wiringpi.softPwmCreate(18,0,100)
+		wiringpi.softPwmWrite(18, 8)
 
 	def setParams(self, params):
 		return True
@@ -87,7 +89,10 @@ class SpecificWorker(GenericWorker):
 		return ret
 
 	def setPosition(self, goal):
-		wiringpi.softPwmWrite(18, Rad2OutPint(goal))
+		angle = int(self.Rad2OutPint(goal.position))
+		print angle
+		wiringpi.softPwmWrite(18, angle)
+		time.sleep(0.5)
 
 	def setVelocity(self, goal):
 		pass

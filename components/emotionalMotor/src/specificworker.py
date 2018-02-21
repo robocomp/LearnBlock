@@ -33,7 +33,7 @@ class SpecificWorker(GenericWorker):
 		super(SpecificWorker, self).__init__(proxy_map)
 		self.timer.timeout.connect(self.compute)
 		self.Period = 2000
-		self.timer.start(self.Period)
+		# self.timer.start(self.Period)
 
 	def setParams(self, params):
 		#try:
@@ -94,4 +94,5 @@ class SpecificWorker(GenericWorker):
 	# expressJoy
 	#
 	def expressJoy(self):
+		print "expressJoy"
 		self.display_proxy.setImageFromFile("/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/alegria.png")

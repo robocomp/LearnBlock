@@ -33,7 +33,7 @@ class SpecificWorker(GenericWorker):
 		super(SpecificWorker, self).__init__(proxy_map)
 		self.timer.timeout.connect(self.compute)
 		self.Period = 0
-		# self.timer.start(self.Period)
+		self.timer.start(self.Period)
 		self.scene = QtGui.QGraphicsScene()
 		self.image = None
 		self.item_pixmap = None
@@ -52,6 +52,7 @@ class SpecificWorker(GenericWorker):
 		self.mutex.acquire()
 		try:
 			if self.changeImage:
+				print "cargando imagen", self.imagePath
 				# self.pixmap = QtGui.QPixmap.fromImage(self.image)
 				self.pixmap = QtGui.QPixmap(self.imagePath)
 				if self.item_pixmap is None:
@@ -69,9 +70,10 @@ class SpecificWorker(GenericWorker):
 	# setImageFromFile
 	#
 	def setImageFromFile(self, pathImg):
+		print "setImageFromFile"
 		self.mutex.acquire()
 		try:
-			self.changeImage = False
+			self.changeImage = True
 			self.imagePath=pathImg
 		except:
 			traceback.print_exc()
