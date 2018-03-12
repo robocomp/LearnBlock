@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Learnblock
+Comment=
+Exec=/home/robocomp/robocomp/components/learnbot/startLearnblock.sh
+Icon=/home/robocomp/robocomp/components/learnbot/learnbot_dsl/learnbotCode/ico.png
+Path=/home/robocomp/robocomp/components/learnbot
+Terminal=false
+StartupNotify=false
