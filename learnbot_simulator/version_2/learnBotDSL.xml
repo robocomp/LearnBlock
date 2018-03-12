@@ -7,6 +7,7 @@
 				<!-- <plane id="axis1y" py="100" nx="1" size="2,200,2" repeat="1" texture="#00ff00" /> -->
 				<!-- <plane id="axis1x" px="100" nx="1" size="2,2,200" repeat="1" texture="#ff0000" /> -->
 				<!-- <plane id="axis1z" pz="100" nx="1" size="200,2,2" repeat="1" texture="#0000ff" /> -->
+			</display>
 		</transform>
 
 		<transform id="view" tx="37.25" ty="-12" tz="200" ry="3.141592650" rx="-0.2">
