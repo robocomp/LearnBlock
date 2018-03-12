@@ -82,6 +82,9 @@ ORAND = Group( OR | AND ).setResultsName( 'ORAND' )
 """-----------------FUNCTION-------------------------"""
 FUNCTION = Group( Suppress( Literal( "function" ) ) + Suppress( point ) + identifier.setResultsName( 'name' ) + Suppress( lpar ) + Group( Optional( NUMS | identifier ) + ZeroOrMore( Suppress( coma ) + ( NUMS | identifier ) ) ).setResultsName( "args" ) + Suppress( rpar )).setResultsName( "FUNCTION" )
 
+"""-----------------PASS-------------------------"""
+PASS = Group( Literal( "pass" )).setResultsName( "PASS" )
+
 """-----------------CONDICIONES---------------------"""
 COMPOP = Group( OPERATION + COMP + OPERATION ).setResultsName( "COMPOP" )
 OPTIONCONDITION =  FUNCTION | TRUE | FALSE | COMPOP | identifier
@@ -120,7 +123,7 @@ DEACTIVE = Group( Suppress( Literal( "deactive" ) ) + identifier.setResultsName(
 
 
 """-----------------LINEA---------------------------"""
-LINE << ( FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVE | DEACTIVE | STRINGVAR )
+LINE << ( FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVE | DEACTIVE | STRINGVAR | PASS )
 
 """-----------------DEF----------------------------"""
 # DEF = Group().setResultsName( "DEF" ) # TODO
@@ -153,7 +156,7 @@ def __parserFromString(text):
 def __generatePy(lines):
     list_var = []
     # print "-------------------\n", lines, "\n-------------------"
-    text = ""
+    text = "time_global = time.time()"
     for x in lines:
         if x.getName() is 'WHEN':
             list_var.append(x.name[0])
@@ -166,6 +169,7 @@ def __generatePy(lines):
             text += "\t" + line
         for x in list_var:
             text += "\twhen_" + x + "()\n"
+        text += "time_global"
     return text
 
 def __process(line, list_var=[], text="", index=0):
@@ -204,6 +208,8 @@ def __process(line, list_var=[], text="", index=0):
         text = line[0]
     elif TYPE is 'SIMPLECONDITION':
         text = __processSIMPLECONDITION(line, text, index)
+    elif TYPE is 'PASS':
+        text += "\t" * index + "pass\n"
     return text
 
 def __processFUNCTION(line, text="", index=0):
@@ -260,17 +266,26 @@ def __processWHEN(line, list_var, text="", index=0):
     global ini
     text += "\ndef when_" + str(line.name[0]) + "():\n"
     index += 1
+    list_var.append("time_" + str(line.name[0]))
+    list_var.append(str(line.name[0]) + "_start")
     for x in list_var:
         text += "\t"*index + "global " + x + "\n"
+    # text += "\t"*index + "global " + "time_" + str(line.name[0]) + "\n"
+    # text += "\t"*index + "global " + str(line.name[0]) + "_start\n"
+
+    text += "\t"*index + "if time_" + str(line.name[0]) + " is 0:\n\t\t"+ str(line.name[0]) + "_start = time.time()\n"
+
     text += "\t"*index + "if " + str(line.name[0]) + ":\n"
     index += 1
     for cline in line.content:
         text = __process(cline, [], text, index) + "\n"
     index-=1
+    text += "\t\ttime_" + str(line.name[0]) + " = time.time() -" + str(line.name[0]) + "_start\n\telse:\n\t\ttime_" + str(line.name[0]) + " = 0\n"
 
     if line.condition is not "":
         ini.append( line.name[0] + " = " + __process(line.condition[0]) + "\n")
 
+    text ="time_" + str(line.name[0]) + " = 0\n"+str(line.name[0]) + "_start = time.time()\n" + text
 
     if line.condition is "":
         text = line.name[0] + " =  None\n" + text

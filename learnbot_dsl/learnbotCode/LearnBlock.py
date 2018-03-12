@@ -441,6 +441,7 @@ class LearnBlock:
 
         block = AbstractBlockItem(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,VARIABLE)
         self.scene.addItem(block)
+
         if configImgPath.split('/')[-1] == 'block8':
             blockType, connections = self.loadConfigBlock(pathBlocks + "/block1")
             table = self.dicTables['control']
@@ -453,6 +454,16 @@ class LearnBlock:
 
             table.insertRow(table.rowCount())
             button = MyButtom( ( "deactive " + self.addWhenGui.nameControl, {'ES':"Desactivar " + self.addWhenGui.nameControl, 'EN':"Deactive " + self.addWhenGui.nameControl }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            self.listButtonsWhen.append(button)
+            self.listButtons.append(button)
+            table.setCellWidget(table.rowCount() - 1, 0, button)
+
+        table = self.dicTables['control']
+        for x in ["/block2", "/block3", "/block4"]:
+            blockType, connections = self.loadConfigBlock(pathBlocks + x)
+
+            table.insertRow(table.rowCount())
+            button = MyButtom( ( "time_" + self.addWhenGui.nameControl, {'ES':"Tiempo_" + self.addWhenGui.nameControl, 'EN':"Time_" + self.addWhenGui.nameControl }, self.view, self.scene, pathBlocks + x + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -783,7 +794,7 @@ class LearnBlock:
         rango = reversed(range(0, table.rowCount()))
         for row in rango:
             item = table.cellWidget(row, 0)
-            if item.getText() in ["active "+name, "deactive "+name]:
+            if item.getText() in ["active "+name, "deactive "+name, "time_"+name]:
                 item.delete(row)
                 item.removeTmpFile()
                 self.listButtons.remove(item)
