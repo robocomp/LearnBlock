@@ -22,7 +22,7 @@ For install all project you should follow this steps.
       -D WITH_OPENGL=ON \
       -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
       -D BUILD_EXAMPLES=ON ..
-    $ make -<number of cores>
+    $ make -j<number of cores>
     $ sudo make install
 
 
@@ -45,11 +45,12 @@ You should install Learnbot project with the flollowing command:
 
     $ chmod +x setupLearnblock
     $ ./setupLearnblock install
-
+<!---
 ### Configuration for your pc
 
 Grant execution permissions:
 
-    $ chmod +x startLearnblock
+    $ chmod +x startLearnblock.sh
 
 Edit the Learnblock.desktop file so that the path command was correct.   
+-->

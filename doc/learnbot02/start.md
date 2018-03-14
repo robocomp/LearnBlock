@@ -7,7 +7,8 @@ For try run all project you should install Robocomp the branch highlyunstable
 
 For run this IDE you should execute the follow lines:
 
-    $ chmod +x startLearnblock
     $ ./startLearnblock
+    
+Or double click in the launcher.
 
 Edit the Learnblock.desktop file so that the path command was correct.    
