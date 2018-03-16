@@ -28,6 +28,7 @@ You should buy the items of the next list:
 You should print the items of the next list:
 
 | Name of piece      |  Units   |  Localization  |
+|--------------------|----------|----------------|
 | FrontCase          |    1     |  [/Learnbot2.1/STL/FrontCase.stl](/Learnbot2.1/STL/FrontCase.stl)  |
 | BackCase           |    1     |  [/Learnbot2.1/STL/BackCase.stl](/Learnbot2.1/STL/BackCase.stl)  |
 | base               |    1     |  [/Learnbot2.1/STL/base.stl](/Learnbot2.1/STL/base.stl)  |
@@ -37,7 +38,7 @@ You should print the items of the next list:
 | spaciator9.5mm     |    2     |  [/Learnbot2.1/STL/spaciator9.5mm.stl](/Learnbot2.1/STL/spaciator9.5mm.stl)  |
 | cameracase         |    1     |  [/Learnbot2.1/STL/cameracase.stl](/Learnbot2.1/STL/cameracase.stl)  |
 | covercameracase    |    1     |  [/Learnbot2.1/STL/covercameracase.stl](/Learnbot2.1/STL/covercameracase.stl)  |
-| pulley             |    1    |  [/Learnbot2.1/STL/pulley.stl](/Learnbot2.1/STL/pulley.stl)  |
+| pulley             |    1     |  [/Learnbot2.1/STL/pulley.stl](/Learnbot2.1/STL/pulley.stl)  |
 
 
 ### Assemble
