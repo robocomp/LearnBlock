@@ -30,3 +30,7 @@ In the follow links is the docs to learn to use it.
 8.  [LearnBlock Example (Follow black Line)](/doc/learnbot02/follow_black_line.md)
 9.  [LearnBlock Use with the robocomp simulator](/doc/learnbot02/robocomp_Simulator.md)
 10.  [LearnBlock Add functions to IDE](/doc/learnbot02/Add_functions_to_IDE.md)
+
+
+---
+The previous doc is here: [LearnBlock Documentation](/doc/learnbot02/learnblock02.md)

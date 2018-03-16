@@ -3,6 +3,7 @@ x=$1
 
 A="install"
 B="uninstall"
+path=`pwd`
 
 if [ "$EUID" -ne 0 ]
   then echo "Please run as root"
@@ -18,6 +19,9 @@ then
   python setup.py install --record files.txt
   cat files.txt
   echo Completed install successfully
+  echo [Desktop Entry]$'\n'Version=1.0$'\n'Type=Application$'\n'Name=Learnblock$'\n'Comment=$'\n'Exec=$path/startLearnblock.sh$'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png$'\n'Path=$path$'\n'Terminal=false$'\n'StartupNotify=false > ~/Escritorio/Learnblock.desktop
+  echo [Desktop Entry]$'\n'Version=1.0$'\n'Type=Application$'\n'Name=Learnblock$'\n'Comment=$'\n'Exec=$path/startLearnblock.sh$'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png$'\n'Path=$path$'\n'Terminal=false$'\n'StartupNotify=false > $path/Learnblock.desktop
+  chmod +x $path/startLearnblock.sh
 elif [ $1 = "uninstall" ]
 then
   cat files.txt | xargs rm -rf
