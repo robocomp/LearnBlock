@@ -38,6 +38,7 @@ Clone this repository in the path /home/robocomp/robocomp/components/
 
     $ cd /home/robocomp/robocomp/components/
     $ git clone https://github.com/robocomp/learnbot
+    
     $ git checkout emorobotic
 
 
