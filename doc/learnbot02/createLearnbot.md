@@ -46,3 +46,8 @@ You should print the items of the next list:
 You should see the next video to see the steps.
 
 __Sorry for the inconvenience, this video isn't available yet.__
+
+
+### Connections
+
+The display 3.5 pitft should be connected to I2C (SDA y SCL), SPI (SCK, MOSI, MISO, CE0) and to the pins GPIO #24 and #25, also to 5V y GND

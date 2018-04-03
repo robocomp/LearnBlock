@@ -101,6 +101,13 @@ class MyScene(QtGui.QGraphicsScene):
                 visualItem.delete()
                 return
 
+    def removeWhenByName(self, name):
+        for id in self.dicBlockItem:
+            visualItem = self.getVisualItem(id)
+            if visualItem.parentBlock.nameControl == name:
+                visualItem.delete()
+                return
+
     def removeByNameControl(self, name):
         for id in self.dicBlockItem:
             visualItem = self.getVisualItem(id)

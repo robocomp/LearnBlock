@@ -204,16 +204,24 @@ class LearnBlock:
 
     def newProject(self):
         if self.scene.shouldSave is False:
-            self.listButtonsWhen = []
+            # delete all whens
+            auxList = copy.deepcopy(self.listNameWhens)
+            for x in auxList:
+                self.delWhen(x[0])
             self.listNameWhens = []
-            self.scene.setBlockDict({})
-            self.scene.startAllblocks()
-            for name in self.listNameUserFunctions:
-                self.delUserFunction(name)
-            self.listNameUserFunctions=[]
-            for name in self.listNameVars:
+            auxList = copy.deepcopy(self.listNameVars)
+            for name in auxList:
                 self.delVar(name)
             self.listNameVars = []
+            auxList = copy.deepcopy(self.listNameUserFunctions)
+            for name in auxList:
+                self.delUserFunction(name)
+            self.listNameUserFunctions = []
+
+            self.listButtonsWhen = []
+            self.scene.setBlockDict({})
+            self.scene.startAllblocks()
+            self.listNameUserFunctions=[]
             self.listNameUserFunctions = []
         else:
             msgBox = QtGui.QMessageBox()
@@ -328,12 +336,9 @@ class LearnBlock:
          except Exception as e:
              print e
 
-
-
     def saveInstance(self):
         if self.__fileProject is None:
-            fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.',
-                                                         'Block Project file (*.blockProject)')
+            fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.', 'Block Project file (*.blockProject)')
             file = fileName[0]
             if "." in file:
                 file = file.split(".")[0]
@@ -341,18 +346,17 @@ class LearnBlock:
             if file != "":
                 self.__fileProject = file
                 self.saveInstance()
-        if self.__fileProject is not None:
+        else:
             with open(self.__fileProject, 'wb') as fichero:
-                dic=copy.deepcopy(self.scene.dicBlockItem)
+                dic = copy.deepcopy(self.scene.dicBlockItem)
                 for id in dic:
                     block = dic[id]
                     block.file = block.file.replace(pathImgBlocks,"")
-                pickle.dump((dic,self.listVars,self.listButtonsWhen, self.listNameWhens ,self.listUserFunctions,self.listNameVars,self.listNameUserFunctions), fichero,0)
+                pickle.dump((dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions), fichero, 0)
         self.scene.shouldSave = False
 
     def saveAs(self):
-        fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.',
-                                                     'Block Project file (*.blockProject);;Learbot code text file (*.LearbotCode)')
+        fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.', 'Block Project file (*.blockProject);')
         if fileName[0] != "":
             file = fileName[0]
             if "." in file:
@@ -376,25 +380,44 @@ class LearnBlock:
                 self.__fileProject = fileName[0]
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
+
                     dictBlock = d[0]
-                    self.listButtonsWhen = d[1]
-                    self.listNameWhens = d[2]
                     for id in dictBlock:
                         block = dictBlock[id]
                         block.file = pathImgBlocks + block.file
+
+                    # delete all whens
+                    auxList = copy.deepcopy(self.listNameWhens)
+                    for x in auxList:
+                        self.delWhen(x[0])
+                    self.listNameWhens = []
+
+                    for x in d[1]:
+                        self.addButtonsWhens(x[1], x[0])
+                    self.listNameWhens = d[1]
+
+                    auxList = copy.deepcopy(self.listNameVars)
+                    for name in auxList:
+                        self.delVar(name)
+                    self.listNameVars = []
+
+                    for name in d[3]:
+                        self.addVariable(name)
+                    self.listNameVars = d[3]
+
+                    auxList = copy.deepcopy(self.listNameUserFunctions)
+                    for name in auxList:
+                        self.delUserFunction(name)
+                    self.listNameUserFunctions = []
+
+                    for name in d[4]:
+                        self.addUserFunction(name)
+                    self.listNameUserFunctions = d[4]
+
+
                     self.scene.setBlockDict(d[0])
                     self.scene.startAllblocks()
-                    for name in self.listNameUserFunctions:
-                        self.delUserFunction(name)
-                    self.listNameUserFunctions=[]
-                    for name in self.listNameVars:
-                        self.delVar(name)
-                    for name in d[5]:
-                        self.addVariable(name)
-                    self.listNameVars = d[5]
-                    for name in d[6]:
-                        self.addUserFunction(name)
-                    self.listNameUserFunctions = d[6]
+
 
 
         else:
@@ -441,19 +464,21 @@ class LearnBlock:
 
         block = AbstractBlockItem(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,VARIABLE)
         self.scene.addItem(block)
+        self.addButtonsWhens (configImgPath, self.addWhenGui.nameControl)
 
+    def addButtonsWhens(self, configImgPath, name ):
         if configImgPath.split('/')[-1] == 'block8':
             blockType, connections = self.loadConfigBlock(pathBlocks + "/block1")
             table = self.dicTables['control']
 
             table.insertRow(table.rowCount())
-            button = MyButtom( ( "active " + self.addWhenGui.nameControl, {'ES':"Activar " + self.addWhenGui.nameControl, 'EN':"Active " + self.addWhenGui.nameControl }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = MyButtom( ( "active " + name, {'ES':"Activar " + name, 'EN':"Active " + name }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
             table.insertRow(table.rowCount())
-            button = MyButtom( ( "deactive " + self.addWhenGui.nameControl, {'ES':"Desactivar " + self.addWhenGui.nameControl, 'EN':"Deactive " + self.addWhenGui.nameControl }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = MyButtom( ( "deactive " + name, {'ES':"Desactivar " + name, 'EN':"Deactive " + name }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -463,12 +488,12 @@ class LearnBlock:
             blockType, connections = self.loadConfigBlock(pathBlocks + x)
 
             table.insertRow(table.rowCount())
-            button = MyButtom( ( "time_" + self.addWhenGui.nameControl, {'ES':"Tiempo_" + self.addWhenGui.nameControl, 'EN':"Time_" + self.addWhenGui.nameControl }, self.view, self.scene, pathBlocks + x + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = MyButtom( ( "time_" + name, {'ES':"Tiempo_" + name, 'EN':"Time_" + name }, self.view, self.scene, pathBlocks + x + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
-        self.listNameWhens.append(self.addWhenGui.nameControl)
+        self.listNameWhens.append((name,configImgPath))
         self.ui.deleteWhenpushButton.setEnabled(True)
 
     def printProgram(self):
@@ -483,7 +508,7 @@ class LearnBlock:
             self.physicalRobot = True
             self.generateTmpFile()
 
-    #TODO Esperar a que termine el parseador de texto
+    # TODO Esperar a que termine el parseador de texto
     def generateTmpFilefromText(self):
         # code = self.ui.textCode.toPlainText() #TODO
         # if self.physicalRobot:
@@ -775,8 +800,9 @@ class LearnBlock:
         self.delWhenDialgo.open()
         self.delWhenGui.listWhencomboBox.clear()
         self.delWhenGui.listWhencomboBox.currentText()
-        for name in self.listNameWhens:
-            self.delWhenGui.listWhencomboBox.addItem(name)
+        print self.listNameWhens
+        for x in self.listNameWhens:
+            self.delWhenGui.listWhencomboBox.addItem(x[0])
         self.delWhenGui.cancelPushButton.clicked.connect(lambda :self.retdelWhenGui(0))
         self.delWhenGui.okPushButton.clicked.connect(lambda :self.retdelWhenGui(1))
 
@@ -789,7 +815,7 @@ class LearnBlock:
         if len(self.listNameWhens) == 0:
             self.ui.deleteWhenpushButton.setEnabled(False)
 
-    def delWhen(self,name):
+    def delWhen(self, name):
         table = self.dicTables['control']
         rango = reversed(range(0, table.rowCount()))
         for row in rango:
@@ -798,7 +824,10 @@ class LearnBlock:
                 item.delete(row)
                 item.removeTmpFile()
                 self.listButtons.remove(item)
-        self.listNameWhens.remove(name)
+        for x in self.listNameWhens:
+            if x[0] == name:
+                self.listNameWhens.remove(x)
+        self.scene.removeWhenByName(name)
 
     def newUserFunctions(self):
         self.userFunctionsGui = guiCreateFunctions.Ui_Dialog()
