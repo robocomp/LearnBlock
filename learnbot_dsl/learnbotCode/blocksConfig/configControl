@@ -47,3 +47,12 @@ block{
     img block6
     languages ES: "mientras", EN: "while"
 }
+block{
+    type control
+    name elapsedTime
+    variables{
+        float threshold 0
+    }
+    img block4, block3
+    languages ES: "tiempotranscurrido", EN: "elapsedTime"
+}

@@ -30,7 +30,7 @@ class bcolors:
 
 OBRACE,CBRACE,SEMI,OPAR,CPAR = map(Literal, "{};()")
 
-reserved_words = ( Keyword('=') | Keyword('funtion.') | Keyword('>=') | Keyword('<=') | Keyword('<') | Keyword('>') | Keyword('deactive') | Keyword('active') | Keyword('not') | Keyword('True') | Keyword('False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword('elif') | Keyword('when') | Keyword('while') | Keyword('end'))
+reserved_words = ( Keyword('def') | Keyword('=') | Keyword('funtion.') | Keyword('>=') | Keyword('<=') | Keyword('<') | Keyword('>') | Keyword('deactive') | Keyword('active') | Keyword('not') | Keyword('True') | Keyword('False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword('elif') | Keyword('when') | Keyword('while') | Keyword('end'))
 iden = Word( alphanums+"_")
 identifier = Group( ~reserved_words + iden ).setResultsName( "IDENTIFIER" )
 
@@ -82,12 +82,15 @@ ORAND = Group( OR | AND ).setResultsName( 'ORAND' )
 """-----------------FUNCTION-------------------------"""
 FUNCTION = Group( Suppress( Literal( "function" ) ) + Suppress( point ) + identifier.setResultsName( 'name' ) + Suppress( lpar ) + Group( Optional( NUMS | identifier ) + ZeroOrMore( Suppress( coma ) + ( NUMS | identifier ) ) ).setResultsName( "args" ) + Suppress( rpar )).setResultsName( "FUNCTION" )
 
+"""-----------------SIMPLEFUNCTION-------------------------"""
+SIMPLEFUNCTION = Group( identifier.setResultsName( 'name' ) + Suppress( lpar ) + Group( Optional( NUMS | identifier ) + ZeroOrMore( Suppress( coma ) + ( NUMS | identifier ) ) ).setResultsName( "args" ) + Suppress( rpar )).setResultsName( "SIMPLEFUNCTION" )
+
 """-----------------PASS-------------------------"""
 PASS = Group( Literal( "pass" )).setResultsName( "PASS" )
 
 """-----------------CONDICIONES---------------------"""
 COMPOP = Group( OPERATION + COMP + OPERATION ).setResultsName( "COMPOP" )
-OPTIONCONDITION =  FUNCTION | TRUE | FALSE | COMPOP | identifier
+OPTIONCONDITION =  SIMPLEFUNCTION | FUNCTION | TRUE | FALSE | COMPOP | identifier
 SIMPLECONDITION = Group( Optional( NOT ) + OPTIONCONDITION ).setResultsName( "SIMPLECONDITION")
 CONDITION = Group( SIMPLECONDITION + ZeroOrMore( ORAND + SIMPLECONDITION ) ).setResultsName( "CONDITION" )
 
@@ -123,14 +126,14 @@ DEACTIVE = Group( Suppress( Literal( "deactive" ) ) + identifier.setResultsName(
 
 
 """-----------------LINEA---------------------------"""
-LINE << ( FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVE | DEACTIVE | STRINGVAR | PASS )
+LINE << ( SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVE | DEACTIVE | STRINGVAR | PASS )
 
 """-----------------DEF----------------------------"""
-# DEF = Group().setResultsName( "DEF" ) # TODO
+DEF = Group( Suppress( Literal ( "def " ) ) + identifier.setResultsName("name") + Suppress( lpar ) + Suppress( rpar ) + COLONS + LINES.setResultsName('content') + Suppress( Literal("end") ) ).setResultsName( "DEF" ) # TODO
 
 """-----------------MAIN----------------------------"""
 MAIN = Group( Suppress( Literal( "main" ) ) + COLONS + LINES.setResultsName( 'content' ) ).setResultsName( "MAIN" ) + Suppress( Literal("end") )
-LB = MAIN | ZeroOrMore(BLOQUEWHENCOND)
+LB =  ZeroOrMore(DEF) + ( MAIN or ZeroOrMore(BLOQUEWHENCOND) )
 LB.ignore( pythonStyleComment )
 
 ini = []
@@ -145,9 +148,9 @@ def __parserFromFile(file):
 def __parserFromString(text):
     try:
         LB.ignore(pythonStyleComment)
-        return LB.parseString(text)
+        ret = LB.parseString(text)
+        return ret
     except Exception as e:
-        print bcolors.FAIL + e
         print("line: {}".format(e.line))
         print("    "+" "*e.col+"^") + bcolors.ENDC
         raise e
@@ -155,31 +158,43 @@ def __parserFromString(text):
 
 def __generatePy(lines):
     list_var = []
-    # print "-------------------\n", lines, "\n-------------------"
-    text = "time_global = time.time()"
+    text = "time_global_start = time.time()"
+
+    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\treturn time_global < umbral\n\n"
+    thereareWhens = False
     for x in lines:
         if x.getName() is 'WHEN':
+            thereareWhens = True
+            list_var.append("time_" + str(x.name[0]))
+            list_var.append(str(x.name[0]) + "_start")
+            list_var.append( x.name[0] )
+        elif x.getName in ['NUMVAR', 'BOOLVAR', 'STRINGVAR']:
             list_var.append(x.name[0])
+
     global ini
     for x in lines:
         text = __process(x, list_var, text)
-    if len( list_var ) is not 0:
-        text += "while True:\n"
+
+    if thereareWhens is True:
+        text += "\n\nwhile True:\n"
         for line in ini:
             text += "\t" + line
-        for x in list_var:
-            text += "\twhen_" + x + "()\n"
-        text += "time_global"
+        for x in lines:
+            if x.getName() is 'WHEN':
+                text += "\twhen_" + str( x.name[0] ) + "()\n"
     return text
 
 def __process(line, list_var=[], text="", index=0):
     # print "------------Procesando ",line
     TYPE = line.getName()
-    # print "\t",TYPE, index
+    # print "\t",TYPE, line
 
     if TYPE is 'MAIN':
         for cLine in line.content:
             text += __process(cLine, [], "",0)
+
+    elif TYPE is 'DEF':
+        text = __processDEF(line, list_var, text,1)
     elif TYPE is 'WHEN':
         text = __processWHEN(line, list_var, text)
     elif TYPE is 'WHILE':
@@ -200,6 +215,8 @@ def __process(line, list_var=[], text="", index=0):
         text = __processOP(line, text, index)
     elif TYPE is 'FUNCTION':
         text = __processFUNCTION(line, text, index)
+    elif TYPE is 'SIMPLEFUNCTION':
+        text = __processSIMPLEFUNCTION(line, text, index)
     elif TYPE is 'CONDITION':
         text = __processCONDITION(line, text, index)
     elif TYPE is 'ASSIGSTRING':
@@ -212,12 +229,32 @@ def __process(line, list_var=[], text="", index=0):
         text += "\t" * index + "pass\n"
     return text
 
+
+def __processDEF(line,list_var, text="", index=0):
+    text += "def " + line.name[0] + "():\n"
+    for x in list_var:
+        text += "\t"*index + "global " + x + "\n"
+    for field in line.content:
+        text = __process(field, [], text, index) + "\n\n"
+    return text
+
 def __processFUNCTION(line, text="", index=0):
     if text is not "":
         text += "\t"*index
     text += "functions.get(\"" + line.name[0] + "\")(lbot"
     for x in line.args:
-        text += ", "+ x[0]
+        text += ", " + x[0]
+    text += ")"
+    return text
+
+def __processSIMPLEFUNCTION(line, text="", index=0):
+    if text is not "":
+        text += "\t"*index
+    text += line.name[0] + "("
+    if len(line.args) is not 0:
+        for x in line.args:
+            text += x[0] + ","
+        text = text[:-1] + ")"
     text += ")"
     return text
 
@@ -266,8 +303,8 @@ def __processWHEN(line, list_var, text="", index=0):
     global ini
     text += "\ndef when_" + str(line.name[0]) + "():\n"
     index += 1
-    list_var.append("time_" + str(line.name[0]))
-    list_var.append(str(line.name[0]) + "_start")
+    # list_var.append("time_" + str(line.name[0]))
+    # list_var.append(str(line.name[0]) + "_start")
     for x in list_var:
         text += "\t"*index + "global " + x + "\n"
     # text += "\t"*index + "global " + "time_" + str(line.name[0]) + "\n"
@@ -313,7 +350,7 @@ def __processSIMPLECONDITION(line, text="", index=0):
         TYPE = field.getName()
         if TYPE is 'NOT':
             text += "not "
-        elif TYPE in ['IDENTIFIER','FUNCTION','TRUE','FALSE']:
+        elif TYPE in ['IDENTIFIER','SIMPLEFUNCTION','FUNCTION','TRUE','FALSE']:
             text += __process(field)
         elif TYPE is "COMPOP":
             text += __processCOMPOP(field)

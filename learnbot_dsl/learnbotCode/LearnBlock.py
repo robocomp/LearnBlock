@@ -268,6 +268,7 @@ class LearnBlock:
                 funtionType = FUNTION
             elif "others" == f.type[0]:
                 funtionType = FUNTION
+
             blockType = None
             for img in f.img:
                 blockType, connections = self.loadConfigBlock(img)
@@ -462,7 +463,7 @@ class LearnBlock:
         configImgPath = imgPath.replace(".png","")
         blockType, connections = self.loadConfigBlock(configImgPath)
 
-        block = AbstractBlockItem(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,VARIABLE)
+        block = AbstractBlockItem(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,WHEN)
         self.scene.addItem(block)
         self.addButtonsWhens (configImgPath, self.addWhenGui.nameControl)
 
@@ -497,16 +498,12 @@ class LearnBlock:
         self.ui.deleteWhenpushButton.setEnabled(True)
 
     def printProgram(self):
-        blocks = self.scene.getListInstructions()
-        if blocks is not None:
-            self.physicalRobot = False
-            self.generateTmpFile()
+        self.physicalRobot = False
+        self.generateTmpFile()
 
     def printProgramPR(self):
-        blocks = self.scene.getListInstructions()
-        if blocks is not None:
-            self.physicalRobot = True
-            self.generateTmpFile()
+        self.physicalRobot = True
+        self.generateTmpFile()
 
     # TODO Esperar a que termine el parseador de texto
     def generateTmpFilefromText(self):
@@ -627,11 +624,21 @@ class LearnBlock:
         text = ""
         for b in blocks:
             print b
+        text = self.parserUserFuntions(blocks, function)
+        text += "\n\n"
         if self.ui.useEventscheckBox.isChecked():
-            text = self.parserWhenBlocks(blocks, function)
+            text += self.parserWhenBlocks(blocks, function)
         else:
-            text = self.parserOtherBlocks(blocks, function)
+            text += self.parserOtherBlocks(blocks, function)
         print text
+        return text
+
+    def parserUserFuntions(self, blocks, function):
+        text = ""
+        for b in blocks:
+            if b[1]["TYPE"] is USERFUNCTION:
+                text += "def " + function(b, 1)
+                text += "\nend\n\n"
         return text
 
     def parserWhenBlocks(self, blocks, function):
@@ -666,6 +673,15 @@ class LearnBlock:
         text = inst[0]
         if inst[1]["TYPE"] is USERFUNCTION:
             text = inst[0]+"()"
+        if inst[1]["TYPE"] is CONTROL:
+            print "----------------------entro"
+            if inst[1]["VARIABLES"] is not None:
+                print "----------------------entro"
+                text = inst[0] + "("
+                for var in inst[1]["VARIABLES"]:
+                    text += var + ", "
+                text = text[0:-2] + ""
+                text += ")"
         if inst[1]["TYPE"] is FUNTION :
             # function.set_move(30,40)
             text = "function." + inst[0] + "("

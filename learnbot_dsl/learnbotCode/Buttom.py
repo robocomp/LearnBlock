@@ -32,7 +32,8 @@ class MyButtom(QtGui.QPushButton):
         if len( self.__dicTrans ) is not 0:
             self.showtext = self.__dicTrans[ getLanguage() ]
             self.timer.start(10)
-        img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, None, self.__type)
+        var=[x.name for x in self.__vars]
+        img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, var, self.__type)
         cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
         self.setIcon(QtGui.QIcon(self.tmpFile))
         self.setIconSize(QtCore.QSize(135, im.shape[0]))

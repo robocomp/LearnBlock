@@ -17,6 +17,7 @@ CONTROL = 1
 FUNTION = 2
 VARIABLE = 3
 USERFUNCTION = 4
+WHEN = 5
 
 
 class Connection:
@@ -78,19 +79,20 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
     sizeleter = 15
     varText = ""
     if type_ in [FUNTION, USERFUNCTION]:
-        varText = "("
-        if vars_ is not None:
+        if vars_ is not None and len(vars_) is not 0:
+            varText = "("
             for var in vars_:
                 varText += var + ","
             varText = varText[:-1] + ")"
         else:
             varText = "()"
+    elif type_ is CONTROL and vars_ is not None and len(vars_) is not 0:
+        varText = "("
+        for var in vars_:
+            varText += var + ","
+        varText = varText[:-1] + ")"
     elif type_ is VARIABLE:
-        if vars_ is not None:
-            for var in vars_:
-                varText =  " set to " + var
-    elif type_ is VARIABLE:
-        if vars_ is not None:
+        if vars_ is not None and len(vars_) is not 0:
             for var in vars_:
                 varText =  " set to " + var
 
