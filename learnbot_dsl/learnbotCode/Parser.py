@@ -133,7 +133,7 @@ DEF = Group( Suppress( Literal ( "def " ) ) + identifier.setResultsName("name") 
 
 """-----------------MAIN----------------------------"""
 MAIN = Group( Suppress( Literal( "main" ) ) + COLONS + LINES.setResultsName( 'content' ) ).setResultsName( "MAIN" ) + Suppress( Literal("end") )
-LB =  ZeroOrMore(DEF) + ( MAIN or ZeroOrMore(BLOQUEWHENCOND) )
+LB =  ZeroOrMore(DEF) + ( MAIN | ZeroOrMore( BLOQUEWHENCOND ) )
 LB.ignore( pythonStyleComment )
 
 ini = []
@@ -255,7 +255,8 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
         for x in line.args:
             text += x[0] + ","
         text = text[:-1] + ")"
-    text += ")"
+    else:
+        text += ")"
     return text
 
 # ---------------------------------------
