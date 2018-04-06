@@ -42,6 +42,11 @@ class MyButtom(QtGui.QPushButton):
         self.clicked.connect(self.clickedButton)
         self.__item = self.__table.item(self.__row,0)
 
+    def getCopy(self, table):
+        return MyButtom((self.getAbstracBlockItem(),self.__view, self.__scene, table, table.rowCount() - 1))
+
+    def getCurrentText(self):
+        return self.showtext
 
     def removeTmpFile(self):
         try:
@@ -61,7 +66,7 @@ class MyButtom(QtGui.QPushButton):
 
     def clickedButton(self):
         block = AbstractBlockItem(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections,self.__blockType,self.__type)
-        self.__scene.addItem(block)
+        self.__scene.addItem(copy.deepcopy(block))
 
     def getAbstracBlockItem(self):
         return AbstractBlockItem(0,0,self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections, self.__blockType,self.__type)

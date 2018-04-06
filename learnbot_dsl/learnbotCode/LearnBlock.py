@@ -102,6 +102,8 @@ class LearnBlock:
 
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
 
+        self.ui.SearchlineEdit.textChanged.connect(lambda: self.searchUpdate(self.ui.SearchlineEdit.text()))
+
 
         self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
         self.ui.actionSave.triggered.connect(self.saveInstance)
@@ -126,7 +128,7 @@ class LearnBlock:
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30,30))
         self.ui.stopPushButton.setEnabled(False)
         self.ui.startPushButton.setEnabled(True)
-        self.ui.tabWidget_2.setFixedWidth(221)
+        self.ui.functions.setFixedWidth(221)
 
         self.view = MyView(self.ui.frame)
         self.view.setObjectName("view")
@@ -215,6 +217,16 @@ class LearnBlock:
         for b in self.listButtonsWhen:
             b.setEnabled(isChecked)
 
+    def searchUpdate(self, text):
+        currentable = self.ui.tableSearch
+        currentable.setRowCount(0)
+        currentable.setColumnCount(1)
+        for button in self.listButtons:
+            textButtom = button.getCurrentText()
+            if text in textButtom:
+                currentable.insertRow(currentable.rowCount())
+                buttonCopy = button.getCopy(currentable)
+                currentable.setCellWidget(currentable.rowCount() - 1, 0, buttonCopy)
     def newProject(self):
         if self.scene.shouldSave is False:
             # delete all whens
@@ -261,9 +273,6 @@ class LearnBlock:
         self.currentTranslator = self.translators[l[self.ui.language.currentIndex()]]
 
         self.ui.retranslateUi(self.Dialog)
-
-
-
 
     def load_blocks(self):
         functions = reload_functions()
@@ -580,10 +589,8 @@ class LearnBlock:
     def generateTmpFile(self):
         blocks = self.scene.getListInstructions()
         if self.physicalRobot:
-            # text = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
             sys.argv = [' ','configPhysical']
         else:
-            # text = HEADER.replace('<LearnBotClient>','LearnBotClient')
             sys.argv = [' ','configSimulated']
         text =""
         if len(self.listNameVars)>0:
@@ -605,8 +612,6 @@ class LearnBlock:
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 msgBox.exec_()
-                # print("line: {}".format(e.line))
-                # print("    "+" "*e.col+"^")
                 return
             if compile("main_tmp.py"):
                 self.hilo = Process(target=self.execTmp)

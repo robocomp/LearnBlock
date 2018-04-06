@@ -240,7 +240,7 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="QTabWidget" name="tabWidget_2">
+          <widget class="QTabWidget" name="functions">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -266,6 +266,32 @@
            <property name="currentIndex">
             <number>0</number>
            </property>
+           <widget class="QWidget" name="search">
+            <attribute name="title">
+             <string>Buscar</string>
+            </attribute>
+            <layout class="QVBoxLayout" name="verticalLayout_16">
+             <item>
+              <widget class="QLineEdit" name="SearchlineEdit"/>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="tableSearch">
+               <property name="showGrid">
+                <bool>false</bool>
+               </property>
+               <property name="gridStyle">
+                <enum>Qt::NoPen</enum>
+               </property>
+               <attribute name="horizontalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+              </widget>
+             </item>
+            </layout>
+           </widget>
            <widget class="QWidget" name="control">
             <attribute name="title">
              <string>Control</string>

@@ -35,6 +35,9 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
         self.__type = self.parentBlock.type
         self.id = self.parentBlock.id
         self.connections = self.parentBlock.connections
+
+        for c in self.connections:
+            c.setParent(self.parentBlock)
         self.dicTrans = parentBlock.dicTrans
         self.shouldUpdate = True
         if len( self.dicTrans ) is 0:
@@ -225,6 +228,7 @@ class BlockItem(QtGui.QGraphicsPixmapItem):
 
 
     def updateConnections(self):
+
         for c in self.connections:
             if c.getConnect() is not None:
                 if EuclideanDist(c.getPosPoint(), c.getConnect().getPosPoint()) > 7:
