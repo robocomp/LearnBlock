@@ -25,6 +25,9 @@
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
        <widget class="QPushButton" name="openpushButton">
+        <property name="toolTip">
+         <string>Open</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -32,6 +35,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="savepushButton">
+        <property name="toolTip">
+         <string>Save</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -39,6 +45,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="zoompushButton">
+        <property name="toolTip">
+         <string>Zoom</string>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -49,6 +58,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="addNumberpushButton">
+        <property name="toolTip">
+         <string>Add Number</string>
+        </property>
         <property name="text">
          <string>Add Number</string>
         </property>
@@ -56,6 +68,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="addStringpushButton">
+        <property name="toolTip">
+         <string>Add String</string>
+        </property>
         <property name="text">
          <string>Add String</string>
         </property>
@@ -548,7 +563,7 @@
      <x>0</x>
      <y>0</y>
      <width>955</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

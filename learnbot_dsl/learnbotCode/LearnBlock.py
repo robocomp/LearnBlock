@@ -61,6 +61,19 @@ class LearnBlock:
         self.physicalRobot = False
 
         self.app = QtGui.QApplication(sys.argv)
+
+        # translator.load("/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/t_en.qm")
+        self.translators = {}
+        pathLanguages = { 'EN': "t_en.qm", "ES":"t_es.qm"}
+
+        for l in ['EN', 'ES']:
+            translator = QtCore.QTranslator()
+            print('Localization loaded: ', translator.load(pathLanguages[l],path + "/languages"))
+            self.translators[l] = translator
+        self.currentTranslator = self.translators[getLanguage()]
+        self.app.installTranslator(self.translators[getLanguage()])
+
+
         self.app.setWindowIcon(QtGui.QIcon(path + '/ico.png'))
 
         self.Dialog = QtGui.QMainWindow()
@@ -146,8 +159,8 @@ class LearnBlock:
         self.timer.start(1000)
         self.scene.setlistNameVars(self.listNameVars)
 
-        r = self.app.exec_()
 
+        r = self.app.exec_()
         for b in self.listButtons:
             b.removeTmpFile()
 
@@ -242,6 +255,15 @@ class LearnBlock:
     def changeLanguage(self):
         l = ["ES","EN"]
         changeLanguageTo(l[self.ui.language.currentIndex()])
+
+        self.app.removeTranslator(self.currentTranslator)
+        self.app.installTranslator(self.translators[l[self.ui.language.currentIndex()]])
+        self.currentTranslator = self.translators[l[self.ui.language.currentIndex()]]
+
+        self.ui.retranslateUi(self.Dialog)
+
+
+
 
     def load_blocks(self):
         functions = reload_functions()
@@ -578,9 +600,13 @@ class LearnBlock:
             try:
                 parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot)
             except Exception as e:
-                print e
-                print("line: {}".format(e.line))
-                print("    "+" "*e.col+"^")
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("line: {}".format(e.line) + "\n    "+" "*e.col+"^")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox.exec_()
+                # print("line: {}".format(e.line))
+                # print("    "+" "*e.col+"^")
                 return
             if compile("main_tmp.py"):
                 self.hilo = Process(target=self.execTmp)
@@ -593,7 +619,7 @@ class LearnBlock:
                 msgBox.setText("Your code has an error. Check it out again")
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                ret = msgBox.exec_()
+                msgBox.exec_()
 
     def generateStopTmpFile(self):
         if self.physicalRobot:

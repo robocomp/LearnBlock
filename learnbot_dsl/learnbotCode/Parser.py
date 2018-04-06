@@ -142,7 +142,7 @@ def __parserFromFile(file):
     with open(file) as f:
         text = f.read()
         ret = __parserFromString(text)
-        print ret
+        # print ret
         return ret
 
 def __parserFromString(text):
@@ -152,9 +152,8 @@ def __parserFromString(text):
         return ret
     except Exception as e:
         print("line: {}".format(e.line))
-        print("    "+" "*e.col+"^") + bcolors.ENDC
+        print("    "+" "*e.col+"^")
         raise e
-        exit(-1)
 
 def __generatePy(lines):
     list_var = []
@@ -287,7 +286,7 @@ def __processDEACTIVE(line, text="", index=0):
     return text
 
 def __processWHILE(line, text="", index=0):
-    print "-----------------------------------------------------",index
+    # print "-----------------------------------------------------",index
     text += "\n" + "\t"*index + "while "
     for c in line.condition:
         text += __process(line.condition[0])
@@ -400,20 +399,21 @@ def __processIF(line, text="", index=0):
     return text
 
 def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
-    print "----------------------------------" + inputFile + "----------------------------------------------"
+    # print "----------------------------------" + inputFile + "----------------------------------------------"
     try:
-        text = __generatePy( __parserFromFile( inputFile ) )
-        print "------------------",text
-        if physicalRobot:
-            header = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
-        else:
-            header = HEADER.replace('<LearnBotClient>','LearnBotClient')
-        with open( outputFile ,'w') as f:
-            f.write( header )
-            f.write( text )
+        tree = __parserFromFile(inputFile)
     except Exception as e:
         print e
         raise e
+    text = __generatePy(tree)
+    # print "------------------\n", text "\n------------------",
+    if physicalRobot:
+        header = HEADER.replace('<LearnBotClient>', 'LearnBotClientPR')
+    else:
+        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
+    with open(outputFile, 'w') as f:
+        f.write(header)
+        f.write(text)
 
 
 if __name__ == "__main__":
