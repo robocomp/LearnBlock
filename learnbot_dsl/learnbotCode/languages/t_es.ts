@@ -11,31 +11,26 @@
     <message>
         <location filename="addWhen.py" line="85"/>
         <source>Value</source>
-        <translatorcomment>Valor</translatorcomment>
         <translation>Valor</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="210"/>
         <source>Name Block</source>
-        <translatorcomment>Nombre Bloque</translatorcomment>
         <translation>Nombre Bloque</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="211"/>
         <source>Block image:</source>
-        <translatorcomment>Imagen Bloque</translatorcomment>
         <translation>Imagen Bloque</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="230"/>
         <source>CANCEL</source>
-        <translatorcomment>Cancelar</translatorcomment>
         <translation>Cancelar</translation>
     </message>
     <message>
         <location filename="var.py" line="40"/>
         <source>OK</source>
-        <translatorcomment>Aceptar</translatorcomment>
         <translation>Aceptar</translation>
     </message>
     <message>
@@ -46,37 +41,31 @@
     <message>
         <location filename="delWhen.py" line="37"/>
         <source>Cancel</source>
-        <translatorcomment>Cancelar</translatorcomment>
         <translation>Cancelar</translation>
     </message>
     <message>
         <location filename="delWhen.py" line="38"/>
         <source>Ok</source>
-        <translatorcomment>Aceptar</translatorcomment>
         <translation>Aceptar</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="209"/>
         <source>Block name:</source>
-        <translatorcomment>Imagen Bloque</translatorcomment>
         <translation>Imagen Bloque</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="225"/>
         <source>Add</source>
-        <translatorcomment>Añadir</translatorcomment>
         <translation>Añadir</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="226"/>
         <source>Remove</source>
-        <translatorcomment>Borrar</translatorcomment>
         <translation>Borrar</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="214"/>
         <source>Block type:</source>
-        <translatorcomment>Tipo Bloque</translatorcomment>
         <translation>Tipo Bloque</translation>
     </message>
     <message>
@@ -92,7 +81,6 @@
     <message>
         <location filename="createBlock.py" line="217"/>
         <source>PERCEPTIVE</source>
-        <translatorcomment>PERCEPTIVO</translatorcomment>
         <translation>PERCEPTIVO</translation>
     </message>
     <message>
@@ -103,7 +91,6 @@
     <message>
         <location filename="createBlock.py" line="219"/>
         <source>OPERATOR</source>
-        <translatorcomment>OPERADOR</translatorcomment>
         <translation>OPERADOR</translation>
     </message>
     <message>
@@ -114,19 +101,16 @@
     <message>
         <location filename="createBlock.py" line="221"/>
         <source>File:</source>
-        <translatorcomment>Archivo:</translatorcomment>
         <translation>Archivo:</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="222"/>
         <source>None</source>
-        <translatorcomment>Nulo</translatorcomment>
         <translation>Nulo</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="223"/>
         <source>Select File</source>
-        <translatorcomment>Seleccionar Archivo</translatorcomment>
         <translation>Seleccionar Archivo</translation>
     </message>
     <message>
@@ -137,284 +121,266 @@
     <message>
         <location filename="createBlock.py" line="227"/>
         <source>Type</source>
-        <translatorcomment>Tipo</translatorcomment>
         <translation>Tipo</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="228"/>
         <source>Name</source>
-        <translatorcomment>Nombre</translatorcomment>
         <translation>Nombre</translation>
     </message>
     <message>
         <location filename="createBlock.py" line="229"/>
         <source>Defaul value</source>
-        <translatorcomment>Valor por defecto</translatorcomment>
         <translation>Valor por defecto</translation>
     </message>
     <message>
         <location filename="var.py" line="39"/>
         <source>Delete</source>
-        <translatorcomment>Eliminar</translatorcomment>
         <translation>Eliminar</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="gui.py" line="346"/>
+        <location filename="gui.py" line="363"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Learnblock2.0</translation>
     </message>
     <message>
-        <location filename="gui.py" line="347"/>
+        <location filename="gui.py" line="364"/>
         <source>Open</source>
         <translatorcomment>Abrir</translatorcomment>
-        <translation type="unfinished">Abrir</translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="gui.py" line="348"/>
+        <location filename="gui.py" line="365"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Guardar</translatorcomment>
+        <translation></translation>
     </message>
     <message>
-        <location filename="gui.py" line="349"/>
+        <location filename="gui.py" line="366"/>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Zoom</translatorcomment>
+        <translation></translation>
     </message>
     <message>
-        <location filename="gui.py" line="351"/>
+        <location filename="gui.py" line="368"/>
         <source>Add Number</source>
-        <translatorcomment>añadir numero</translatorcomment>
         <translation>añadir numero</translation>
     </message>
     <message>
-        <location filename="gui.py" line="353"/>
+        <location filename="gui.py" line="370"/>
         <source>Add String</source>
-        <translatorcomment>Añadir Texto</translatorcomment>
         <translation>Añadir Texto</translation>
     </message>
     <message>
-        <location filename="gui.py" line="354"/>
+        <location filename="gui.py" line="371"/>
         <source>Use Events</source>
-        <translatorcomment>Activa los Eventos</translatorcomment>
         <translation>Usar Eventos</translation>
     </message>
     <message>
-        <location filename="gui.py" line="355"/>
+        <location filename="gui.py" line="372"/>
         <source>ES</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="356"/>
+        <location filename="gui.py" line="373"/>
         <source>EN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="357"/>
+        <location filename="gui.py" line="374"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;H&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="358"/>
+        <location filename="gui.py" line="375"/>
         <source>Program</source>
         <translation>Programa</translation>
     </message>
     <message>
-        <location filename="gui.py" line="359"/>
+        <location filename="gui.py" line="376"/>
         <source>Start</source>
         <translation>Iniciar</translation>
     </message>
     <message>
-        <location filename="gui.py" line="380"/>
+        <location filename="gui.py" line="398"/>
         <source>Stop</source>
         <translation>Parar</translation>
     </message>
     <message>
-        <location filename="gui.py" line="361"/>
+        <location filename="gui.py" line="378"/>
         <source>Text Code</source>
         <translation>Codigo</translation>
     </message>
     <message>
-        <location filename="gui.py" line="362"/>
+        <location filename="gui.py" line="380"/>
         <source>Add When</source>
-        <translatorcomment>Añade un evento Evento</translatorcomment>
         <translation>Añadir Evento</translation>
     </message>
     <message>
-        <location filename="gui.py" line="363"/>
+        <location filename="gui.py" line="381"/>
         <source>Delete When</source>
-        <translatorcomment>Elimina un Evento</translatorcomment>
         <translation>Eliminar Evento</translation>
     </message>
     <message>
-        <location filename="gui.py" line="364"/>
+        <location filename="gui.py" line="382"/>
         <source>Control</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Control</translatorcomment>
+        <translation>Control</translation>
     </message>
     <message>
-        <location filename="gui.py" line="365"/>
+        <location filename="gui.py" line="383"/>
         <source>Expressions</source>
-        <translatorcomment>Expresiones que puede mostrar el robot</translatorcomment>
         <translation>Expresiones</translation>
     </message>
     <message>
-        <location filename="gui.py" line="366"/>
+        <location filename="gui.py" line="384"/>
         <source>Motor</source>
-        <translatorcomment>Funciones del motor</translatorcomment>
         <translation>Motor</translation>
     </message>
     <message>
-        <location filename="gui.py" line="367"/>
+        <location filename="gui.py" line="385"/>
         <source>Perceptual</source>
-        <translatorcomment>Funciones de percepción</translatorcomment>
         <translation>Percepción</translation>
     </message>
     <message>
-        <location filename="gui.py" line="368"/>
+        <location filename="gui.py" line="386"/>
         <source>Proprioceptive</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Proprioceptive</translatorcomment>
+        <translation>Proprioceptive</translation>
     </message>
     <message>
-        <location filename="gui.py" line="369"/>
+        <location filename="gui.py" line="387"/>
         <source>Operators</source>
-        <translatorcomment>Operadores</translatorcomment>
         <translation>Operadores</translation>
     </message>
     <message>
-        <location filename="gui.py" line="370"/>
+        <location filename="gui.py" line="388"/>
         <source>Add Variable</source>
-        <translatorcomment>Añadir variable</translatorcomment>
         <translation>Añadir variable</translation>
     </message>
     <message>
-        <location filename="gui.py" line="371"/>
+        <location filename="gui.py" line="389"/>
         <source>Delete Variable</source>
-        <translatorcomment>Eliminar variable</translatorcomment>
         <translation>Eliminar variable</translation>
     </message>
     <message>
-        <location filename="gui.py" line="372"/>
+        <location filename="gui.py" line="390"/>
         <source>Add List</source>
-        <translatorcomment>Añadir lista de variables</translatorcomment>
         <translation>Añadir lista de variables</translation>
     </message>
     <message>
-        <location filename="gui.py" line="373"/>
+        <location filename="gui.py" line="391"/>
         <source>Variables</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="gui.py" line="374"/>
+        <location filename="gui.py" line="392"/>
         <source>Create Functions</source>
-        <translatorcomment>Crear Funcion</translatorcomment>
         <translation>Crear Funcion</translation>
     </message>
     <message>
-        <location filename="gui.py" line="375"/>
+        <location filename="gui.py" line="393"/>
         <source>Delete Functions</source>
         <translation>Eliminar función</translation>
     </message>
     <message>
-        <location filename="gui.py" line="376"/>
+        <location filename="gui.py" line="394"/>
         <source>User functions</source>
-        <translatorcomment>Funciones definidas por el usuario</translatorcomment>
         <translation>Funciones de usuario</translation>
     </message>
     <message>
-        <location filename="gui.py" line="377"/>
+        <location filename="gui.py" line="395"/>
         <source>Others</source>
-        <translatorcomment>Otras funciones</translatorcomment>
         <translation>Otros</translation>
     </message>
     <message>
-        <location filename="gui.py" line="378"/>
+        <location filename="gui.py" line="396"/>
         <source>Start (simulated robot)</source>
-        <translatorcomment>Inicial el programa en el simulador</translatorcomment>
         <translation>Iniciar (Robot simulado)</translation>
     </message>
     <message>
-        <location filename="gui.py" line="379"/>
+        <location filename="gui.py" line="397"/>
         <source>Start (physical robot)</source>
-        <translatorcomment>Inicia el programa en el robot fisico</translatorcomment>
         <translation>Iniciar (robot fisico)</translation>
     </message>
     <message>
-        <location filename="gui.py" line="381"/>
+        <location filename="gui.py" line="399"/>
         <source>LearnBlock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="382"/>
+        <location filename="gui.py" line="400"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="gui.py" line="383"/>
+        <location filename="gui.py" line="401"/>
         <source>tools robot</source>
-        <translatorcomment>Herramientas</translatorcomment>
         <translation>Herramientas</translation>
     </message>
     <message>
-        <location filename="gui.py" line="384"/>
+        <location filename="gui.py" line="402"/>
         <source>Exit</source>
-        <translatorcomment>Salir</translatorcomment>
         <translation>Salir</translation>
     </message>
     <message utf8="true">
-        <location filename="gui.py" line="385"/>
+        <location filename="gui.py" line="403"/>
         <source>Añadir Nueva Metodo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="386"/>
+        <location filename="gui.py" line="404"/>
         <source>Create New block</source>
         <translation>Crear nuevo bloque</translation>
     </message>
     <message>
-        <location filename="gui.py" line="387"/>
+        <location filename="gui.py" line="405"/>
         <source>Save Proyect</source>
         <translation>Guardar proyecto</translation>
     </message>
     <message>
-        <location filename="gui.py" line="388"/>
+        <location filename="gui.py" line="406"/>
         <source>Open Proyect</source>
         <translation>Abrir Proyecto</translation>
     </message>
     <message>
-        <location filename="gui.py" line="389"/>
+        <location filename="gui.py" line="407"/>
         <source>Save As</source>
         <translation>Guardar como</translation>
     </message>
     <message>
-        <location filename="gui.py" line="390"/>
+        <location filename="gui.py" line="408"/>
         <source>Start components</source>
-        <translatorcomment>Iniciar Componentes en el robot</translatorcomment>
         <translation>Iniciar Componentes</translation>
     </message>
     <message>
-        <location filename="gui.py" line="391"/>
+        <location filename="gui.py" line="409"/>
         <source>Reboot</source>
-        <translatorcomment>Reinicia el robot</translatorcomment>
         <translation>Reiniciar</translation>
     </message>
     <message>
-        <location filename="gui.py" line="392"/>
+        <location filename="gui.py" line="410"/>
         <source>Shutdown</source>
-        <translatorcomment>Apaga el robot</translatorcomment>
         <translation>Apagar</translation>
     </message>
     <message>
-        <location filename="gui.py" line="393"/>
+        <location filename="gui.py" line="411"/>
         <source>Start Simulator</source>
-        <translatorcomment>Inicia el simulador</translatorcomment>
         <translation>Iniciar simulador</translation>
     </message>
     <message>
-        <location filename="gui.py" line="394"/>
+        <location filename="gui.py" line="412"/>
         <source>New project</source>
-        <translatorcomment>Crea un nuevo proyecto</translatorcomment>
         <translation>Nuevo proyecto</translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="379"/>
+        <source>Search</source>
+        <translatorcomment>Busca un bloque por su nombre</translatorcomment>
+        <translation>Buscar</translation>
     </message>
 </context>
 </TS>
