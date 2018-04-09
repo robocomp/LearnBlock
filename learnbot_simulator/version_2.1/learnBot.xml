@@ -1,0 +1,10 @@
+<innerModel>
+	<differentialrobot id="base" port="10004">
+		<mesh id="baseLearnBot" file="/home/robocomp/robocomp/components/learnbot/learnbot_desings/Learnbot2.1/Learnbot2.1.stl"  tx="-57" ty="68" tz="-20" scale="10" />
+
+		<!-- <transform id="rgbdTraslation" tx="0" ty="115" tz="75" rx="0.3">
+			<rgbd id="rgbdLearnBot" focal="480" width="320" height="240" port="10097" noise="0.00" ifconfig="40000,50000" />
+		</transform> -->
+
+	</differentialrobot>
+</innerModel>
