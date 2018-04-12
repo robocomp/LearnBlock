@@ -29,7 +29,7 @@ from parserConfig import configSSH
 print sys.version_info[0]
 
 HEADER = """
-#EXECUTION: python code_example.py configSimulated
+#EXECUTION: python code_example.py config
 
 global lbot
 lbot = <LearnBotClient>.Client(sys.argv)
@@ -195,6 +195,7 @@ class LearnBlock:
 
     def startSimulatorRobot(self):
         subprocess.Popen(configSSH["start_simulator"], shell=True, stdout=subprocess.PIPE)
+        print configSSH["start_simulator"]
         # os.system(configSSH["start_simulator"])
 
     def shutdownRobot(self):
@@ -364,6 +365,10 @@ class LearnBlock:
 
     def stopExecTmp(self):
          try:
+             if self.physicalRobot:
+                 sys.argv = [' ', '../configPhysical']
+             else:
+                 sys.argv = [' ', '../config']
              execfile("stop_main_tmp.py", globals())
          except Exception as e:
              print e
@@ -544,7 +549,7 @@ class LearnBlock:
         #     sys.argv = [' ','configPhysical']
         # else:
         #     # text = HEADER.replace('<LearnBotClient>','LearnBotClient')
-        #     sys.argv = [' ','configSimulated']
+        #     sys.argv = [' ','config']
         # text =""
         # fh = open("main_tmp.lb","wr")
         # fh.writelines(text + code)
@@ -589,9 +594,9 @@ class LearnBlock:
     def generateTmpFile(self):
         blocks = self.scene.getListInstructions()
         if self.physicalRobot:
-            sys.argv = [' ','configPhysical']
+            sys.argv = [' ','../configPhysical']
         else:
-            sys.argv = [' ','configSimulated']
+            sys.argv = [' ','../config']
         text =""
         if len(self.listNameVars)>0:
             for name in self.listNameVars:
@@ -632,7 +637,7 @@ class LearnBlock:
             sys.argv = [' ','configPhysical']
         else:
             text = HEADER.replace('<LearnBotClient>','LearnBotClient')
-            sys.argv = [' ','configSimulated']
+            sys.argv = [' ','config']
         text += '\nfunctions.get("stop_bot")(lbot)'
         fh = open("stop_main_tmp.py","wr")
         fh.writelines(text)

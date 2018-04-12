@@ -1,10 +1,14 @@
 # Proxies for required interfaces
 DifferentialRobotProxy = differentialrobot:tcp -h localhost -p 10004
-Laser1Proxy = laser:tcp -h localhost -p 10104
-Laser2Proxy = laser:tcp -h localhost -p 10105
-Laser3Proxy = laser:tcp -h localhost -p 10106
-Laser4Proxy = laser:tcp -h localhost -p 10107
+Laser1Proxy = laser:tcp -h localhost -p 10101
+Laser2Proxy = laser:tcp -h localhost -p 10102
+Laser3Proxy = laser:tcp -h localhost -p 10103
+Laser4Proxy = laser:tcp -h localhost -p 10104
+Laser5Proxy = laser:tcp -h localhost -p 10105
+Laser6Proxy = laser:tcp -h localhost -p 10106
+Laser7Proxy = laser:tcp -h localhost -p 10107
 RGBDProxy = rgbd:tcp -h localhost -p 10097
+DisplayProxy = display:tcp -h localhost -p 30000
 
 
 # This property is used by the clients to connect to IceStorm.
