@@ -9,7 +9,7 @@ Laser6Proxy = laser:tcp -h localhost -p 10106
 Laser7Proxy = laser:tcp -h localhost -p 10107
 RGBDProxy = rgbd:tcp -h localhost -p 10097
 DisplayProxy = display:tcp -h localhost -p 30000
-
+JointMotorProxy = jointmotor:tcp -h localhost -p 20000
 
 # This property is used by the clients to connect to IceStorm.
 #TopicManager.Proxy=IceStorm/TopicManager:default -p 9999

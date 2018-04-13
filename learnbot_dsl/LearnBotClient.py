@@ -89,7 +89,7 @@ class Client(Ice.Application, threading.Thread):
                         self.lasers_proxys.append(RoboCompLaser.LaserPrx.checkedCast(basePrx))
                         print "Connection Successful: ", proxyString
                     except Ice.Exception:
-                        print 'Cannot connect to the remote object (Laser)', proxyString
+                        print 'Cannot connect to the remote object (Laser)', i, proxyString
                         sys.exit(1)
                 except Ice.Exception, e:
                     print e
@@ -104,11 +104,11 @@ class Client(Ice.Application, threading.Thread):
                     self.display_proxy = RoboCompDisplay.DisplayPrx.checkedCast(basePrx)
                     print "Connection Successful: ", proxyString
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (Laser)', proxyString
+                    print 'Cannot connect to the remote object (Display)', proxyString
                     sys.exit(1)
             except Ice.Exception, e:
                 print e
-                print 'Cannot get Laser', i, 'Proxy property.'
+                print 'Cannot get DisplayProxy Proxy property.'
                 sys.exit(1)
 
             # Remote object connection for RGBD
@@ -124,6 +124,20 @@ class Client(Ice.Application, threading.Thread):
             except Ice.Exception, e:
                 print e
                 print 'Cannot get RGBDProxy property.'
+                sys.exit(1)
+            # Remote object connection for JointMotor
+            try:
+                proxyString = ic.getProperties().getProperty('JointMotorProxy')
+                try:
+                    basePrx = ic.stringToProxy(proxyString)
+                    self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
+                    print "Connection Successful: ",proxyString
+                except Ice.Exception:
+                    print 'Cannot connect to the remote object (JointMotor)', proxyString
+                    sys.exit(1)
+            except Ice.Exception, e:
+                print e
+                print 'Cannot get JointMotorPrx property.'
                 sys.exit(1)
         except:
                 print "Error"
@@ -169,7 +183,7 @@ class Client(Ice.Application, threading.Thread):
         if vAdvance!=0 or vRotation!=0:
             self.adv = vAdvance
             self.rot = vRotation
-        self.differentialrobot_proxy.setSpeedBase(self.adv,self.rot)
+        self.differentialrobot_proxy.setSpeedBase(self.adv, self.rot)
 
     def expressFear(self):
         self.display_proxy.setImageFromFile(
@@ -196,6 +210,11 @@ class Client(Ice.Application, threading.Thread):
         self.display_proxy.setImageFromFile(
             "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/alegria.png")
 
+    def setJointAngle(self, angle):
+        goal = RoboCompJointMotor.MotorGoalPosition()
+        goal.name = 'servo'
+        goal.position = angle
+        self.jointmotor_proxy.setPosition(goal)
 
     def __del__(self):
             self.active = False

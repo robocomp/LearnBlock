@@ -76,6 +76,28 @@ block{
     languages ES: "mas_despacio", EN: "slow_down"
 }
 
+
+block{
+    type motor
+    name look_floor
+    img block1
+    languages ES: "mirar_suelo", EN: "look_floor"
+}
+
+block{
+    type motor
+    name look_up
+    img block1
+    languages ES: "mirar_arriba", EN: "look_up"
+}
+
+block{
+    type motor
+    name look_front
+    img block1
+    languages ES: "mirar_frente", EN: "look_front"
+}
+
 block{
     type motor
     name setAngleCamera

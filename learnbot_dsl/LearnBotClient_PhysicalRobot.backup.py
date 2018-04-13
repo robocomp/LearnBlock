@@ -171,7 +171,6 @@ class Client(Ice.Application, threading.Thread):
 	def readSonars(self):
 		try:
 			ultrasound = ast.literal_eval(self.ultrasound_proxy.getAllSensorData())
-
 			for nombre, sensor in ultrasound.items():
 				if (nombre == "sensor0"):
 					self.usList["front"] = sensor["dist"]*10

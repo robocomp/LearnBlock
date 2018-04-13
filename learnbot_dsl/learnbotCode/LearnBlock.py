@@ -366,9 +366,9 @@ class LearnBlock:
     def stopExecTmp(self):
          try:
              if self.physicalRobot:
-                 sys.argv = [' ', '../configPhysical']
+                 sys.argv = [' ', path + '/etc/configPhysical']
              else:
-                 sys.argv = [' ', '../config']
+                 sys.argv = [' ', path +'/etc/configSimulate']
              execfile("stop_main_tmp.py", globals())
          except Exception as e:
              print e
@@ -594,9 +594,9 @@ class LearnBlock:
     def generateTmpFile(self):
         blocks = self.scene.getListInstructions()
         if self.physicalRobot:
-            sys.argv = [' ','../configPhysical']
+            sys.argv = [' ', path + '/etc/configPhysical']
         else:
-            sys.argv = [' ','../config']
+            sys.argv = [' ', path + '/etc/configSimulate']
         text =""
         if len(self.listNameVars)>0:
             for name in self.listNameVars:

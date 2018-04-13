@@ -129,8 +129,6 @@ class Client(Ice.Application, threading.Thread):
             self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
             self.bytes=''
 
-
-
         except:
                 traceback.print_exc()
                 sys.exit(1)
@@ -267,6 +265,12 @@ class Client(Ice.Application, threading.Thread):
             self.emotionalmotor_proxy.expressDisgust()
         except Exception as e:
             print "Error expressDisgust"
+
+    def setJointAngle(self, angle):
+        goal = RoboCompJointMotor.MotorGoalPosition()
+        goal.name = 'servo'
+        goal.position = angle
+        self.jointmotor_proxy.setPosition(goal)
 
     def __del__(self):
             self.active = False

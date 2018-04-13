@@ -1,4 +1,4 @@
 
 
 def setAngleCamera(lbot,angle):
-    lbot.setAngleJointMotor(angle)
+    lbot.setJointAngle(angle)
