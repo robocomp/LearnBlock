@@ -40,15 +40,15 @@ block{
     languages ES: "linea_negra_derecha", EN: "right_black_line"
 }
 
-block{
-    type perceptual
-    name back_obstacle
-    variables{
-        float threshold 200
-    }
-    img block4, block3
-    languages ES: "obtaculo_atras", EN: "back_obstacle"
-}
+# block{
+#     type perceptual
+#     name back_obstacle
+#     variables{
+#         float threshold 200
+#     }
+#     img block4, block3
+#     languages ES: "obtaculo_atras", EN: "back_obstacle"
+# }
 
 block{
     type perceptual

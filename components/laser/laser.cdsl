@@ -6,6 +6,6 @@ Component laser
 	{
 		implements Laser;
 	};
-	language Cpp;
+	language Python;
 };
 

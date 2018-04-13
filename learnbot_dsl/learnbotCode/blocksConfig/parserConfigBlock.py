@@ -44,7 +44,7 @@ variables = Suppress( Word( "variables" ) )+op+ Group( var )+ZeroOrMore( Group( 
 block = Group( Suppress( Literal( "block" ) ) + op +  TYPE + name + Optional( variables ).setResultsName("variables") + img + Optional( translations ) + cl )
 
 parser = block + ZeroOrMore( block )
-
+parser.ignore(pythonStyleComment)
 config = """
 
 block{

@@ -1,7 +1,7 @@
 # Proxies for required interfaces
 DifferentialRobotProxy = differentialrobot:tcp -h 192.168.16.1 -p 10004
-UltrasoundProxy = ultrasound:tcp -h 192.168.16.1 -p 10104
-
+LaserProxy = laser:tcp -h 192.168.16.1 -p 10104
+EmotionalMotorProxy = emotionalmotor -h 192.168.16.1 -p 30001
 
 # This property is used by the clients to connect to IceStorm.
 #TopicManager.Proxy=IceStorm/TopicManager:default -p 9999

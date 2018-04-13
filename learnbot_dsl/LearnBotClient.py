@@ -97,20 +97,19 @@ class Client(Ice.Application, threading.Thread):
                     sys.exit(1)
 
             # Remote object connection for Display
-            for i in range(1, 8):
+            try:
+                proxyString = ic.getProperties().getProperty('DisplayProxy')
                 try:
-                    proxyString = ic.getProperties().getProperty('DisplayProxy')
-                    try:
-                        basePrx = ic.stringToProxy(proxyString)
-                        self.display_proxy = RoboCompDisplay.DisplayPrx.checkedCast(basePrx)
-                        print "Connection Successful: ", proxyString
-                    except Ice.Exception:
-                        print 'Cannot connect to the remote object (Laser)', proxyString
-                        sys.exit(1)
-                except Ice.Exception, e:
-                    print e
-                    print 'Cannot get Laser', i, 'Proxy property.'
+                    basePrx = ic.stringToProxy(proxyString)
+                    self.display_proxy = RoboCompDisplay.DisplayPrx.checkedCast(basePrx)
+                    print "Connection Successful: ", proxyString
+                except Ice.Exception:
+                    print 'Cannot connect to the remote object (Laser)', proxyString
                     sys.exit(1)
+            except Ice.Exception, e:
+                print e
+                print 'Cannot get Laser', i, 'Proxy property.'
+                sys.exit(1)
 
             # Remote object connection for RGBD
             try:
@@ -153,7 +152,6 @@ class Client(Ice.Application, threading.Thread):
             lp = self.lasers_proxys[i]
             ldata = lp.getLaserData()
             self.usList[i] = min([x.dist for x in ldata])
-        print self.usList
 
 
 
