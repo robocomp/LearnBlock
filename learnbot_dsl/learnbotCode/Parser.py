@@ -159,7 +159,7 @@ def __generatePy(lines):
     list_var = []
     text = "time_global_start = time.time()"
 
-    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\treturn time_global < umbral\n\n"
+    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\tprint time_global\n\treturn time_global > umbral\n\n"
     thereareWhens = False
     for x in lines:
         if x.getName() is 'WHEN':
