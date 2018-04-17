@@ -46,7 +46,7 @@ This project has a IDE, which is being created as a facilitator environment, sim
 You should install Learnbot project with the flollowing command:
 
     $ chmod +x setupLearnblock
-    $ ./setupLearnblock install
+    $ sudo ./setupLearnblock install
 <!---
 ### Configuration for your pc
 
