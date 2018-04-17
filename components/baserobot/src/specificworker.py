@@ -25,75 +25,77 @@ from pololu_drv8835_rpi import motors, MAX_SPEED
 
 
 def map(x, in_min, in_max, out_min, out_max):
-	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min	
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min    
 
 class SpecificWorker(GenericWorker):
-	def __init__(self, proxy_map):
-		super(SpecificWorker, self).__init__(proxy_map)
-		self.timer.timeout.connect(self.compute)
-		self.Period = 2000
-		# self.timer.start(self.Period)
+    def __init__(self, proxy_map):
+        super(SpecificWorker, self).__init__(proxy_map)
+        self.timer.timeout.connect(self.compute)
+        self.Period = 2000
+        motors.setSpeeds(0, 0)
+        # self.timer.start(self.Period)
 
-	def setParams(self, params):
-		return True
+    def setParams(self, params):
+        return True
 
-	@QtCore.Slot()
-	def compute(self):
-		print 'SpecificWorker.compute...'
-		return True
+    @QtCore.Slot()
+    def compute(self):
+        print 'SpecificWorker.compute...'
+        self.setSpeedBase(0, 0)
+        return True
 
-	def computeRobotSpeed(self, vAdv, vRot):
-		radius = 65 # milimetros
- 		K = 11 # constante
+    def computeRobotSpeed(self, vAdv, vRot):
+        radius = 75 # milimetros
+        K = 11 # constante
 
-		if (vRot == 0):
-			vRot = 0.000000001
-		Rrot = vAdv / (vRot * 0.7)
-		Rl = Rrot - radius
-		velLeft = vRot * Rl
-		Rr = Rrot + radius
-		velRight = vRot * Rr
-		velRight = map(velRight, -MAX_SPEED, MAX_SPEED,-300, 300)
-		velLeft = map(velLeft, -MAX_SPEED, MAX_SPEED,-300, 300)
-		if velRight > MAX_SPEED:
-			velRight = MAX_SPEED
-		if velLeft > MAX_SPEED:
-			velLeft = MAX_SPEED
-		return int(velLeft), int(velRight)
-
-
-	def correctOdometer(self, x, z, alpha):
-		pass
+        if (vRot == 0):
+            vRot = 0.000000001
+        Rrot = vAdv / (vRot * 0.7)
+        Rl = Rrot - radius
+        velLeft = vRot * Rl
+        Rr = Rrot + radius
+        velRight = vRot * Rr
+        velRight = map(velRight, -MAX_SPEED, MAX_SPEED,-300, 300)
+        velLeft = map(velLeft, -MAX_SPEED, MAX_SPEED,-300, 300)
+        if velRight > MAX_SPEED:
+            velRight = MAX_SPEED
+        if velLeft > MAX_SPEED:
+            velLeft = MAX_SPEED
+        return int(velLeft), int(velRight)
 
 
-	def getBasePose(self):
-		x = int()
-		z = int()
-		alpha = float()
-		return [x, z, alpha]
-
-	def resetOdometer(self):
-		pass
+    def correctOdometer(self, x, z, alpha):
+        pass
 
 
-	def setOdometer(self, state):
-		pass
+    def getBasePose(self):
+        x = int()
+        z = int()
+        alpha = float()
+        return [x, z, alpha]
+
+    def resetOdometer(self):
+        pass
 
 
-	def getBaseState(self):
-		state = RoboCompGenericBase.TBaseState()
-		return state
+    def setOdometer(self, state):
+        pass
 
 
-	def setOdometerPose(self, x, z, alpha):
-		pass
+    def getBaseState(self):
+        state = RoboCompGenericBase.TBaseState()
+        return state
 
 
-	def stopBase(self):
-		pass
+    def setOdometerPose(self, x, z, alpha):
+        pass
 
 
-	def setSpeedBase(self, adv, rot):
-		velLeft, velRight = self.computeRobotSpeed(adv,rot)
-		print velLeft, velRight
-		motors.setSpeeds(velLeft, velRight)
+    def stopBase(self):
+        pass
+
+
+    def setSpeedBase(self, adv, rot):
+        velRight, velLeft = self.computeRobotSpeed(adv, rot)
+        print "Velocidad motores = ", velLeft, velRight
+        motors.setSpeeds(velLeft, velRight)
