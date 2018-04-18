@@ -180,6 +180,16 @@ class Client(Ice.Application, threading.Thread):
         return x, y, alpha
 
     def setRobotSpeed(self, vAdvance=0, vRotation=0):
+        try:
+            print vAdvance, vRotation
+            # if vAdvance!=0 or vRotation!=0:ll
+            self.adv = vAdvance
+            self.rot = vRotation
+            self.differentialrobot_proxy.setSpeedBase(-self.adv*8, self.rot*15)
+        except Exception as e:
+            print "Error setRobotSpeed"
+
+    def setRobotSpeed(self, vAdvance=0, vRotation=0):
         if vAdvance!=0 or vRotation!=0:
             self.adv = vAdvance
             self.rot = vRotation
