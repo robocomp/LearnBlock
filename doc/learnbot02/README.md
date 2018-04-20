@@ -23,14 +23,17 @@ In the follow links is the docs to learn to use it.
 1.  [LearnBlock Start](/doc/learnbot02/start.md)
 2.  [LearnBlock Simple Program](/doc/learnbot02/simpleProgram.md)
 3.  [LearnBlock Event Program](/doc/learnbot02/EventProgram.md)
-4.  [LearnBlock Use of Variables](/doc/learnbot02/use_of_Variables.md)
 5.  [LearnBlock Save and Open a project](/doc/learnbot02/save_and_open_proyect.md)
 6.  [LearnBlock Add Number or String](/doc/learnbot02/add_number_or_string.md)
+<!---
+4.  [LearnBlock Use of Variables](/doc/learnbot02/use_of_Variables.md)
 7.  [LearnBlock Example (Follow red Line)](/doc/learnbot02/follow_red_line.md)
 8.  [LearnBlock Example (Follow black Line)](/doc/learnbot02/follow_black_line.md)
 9.  [LearnBlock Use with the robocomp simulator](/doc/learnbot02/robocomp_Simulator.md)
 10.  [LearnBlock Add functions to IDE](/doc/learnbot02/Add_functions_to_IDE.md)
-
+-->
 
 ---
+<!--
 The previous doc is here: [LearnBlock Documentation](/doc/learnbot02/learnblock02.md)
+-->

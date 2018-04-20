@@ -2,4 +2,4 @@
 
 The user can create Number or String with this buttons:
 
-![Bottons for add Number or String](img/addNumberOrString.png)
+![Bottons for add Number or String](/doc/img/addNumberOrString.png)
