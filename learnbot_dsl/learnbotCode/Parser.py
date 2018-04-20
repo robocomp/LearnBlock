@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------------
-#   TODO Añadir definition de funciones.
 #
 #
 # ------------------------------------------------------------------
@@ -129,7 +128,7 @@ DEACTIVATE = Group( Suppress( Literal( "deactivate" ) ) + identifier.setResultsN
 LINE << ( SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVATE | DEACTIVATE | STRINGVAR | PASS )
 
 """-----------------DEF----------------------------"""
-DEF = Group( Suppress( Literal ( "def " ) ) + identifier.setResultsName("name") + Suppress( lpar ) + Suppress( rpar ) + COLONS + LINES.setResultsName('content') + Suppress( Literal("end") ) ).setResultsName( "DEF" ) # TODO
+DEF = Group( Suppress( Literal ( "def " ) ) + identifier.setResultsName("name") + Suppress( lpar ) + Suppress( rpar ) + COLONS + LINES.setResultsName('content') + Suppress( Literal("end") ) ).setResultsName( "DEF" )
 
 """-----------------MAIN----------------------------"""
 MAIN = Group( Suppress( Literal( "main" ) ) + COLONS + LINES.setResultsName( 'content' ) ).setResultsName( "MAIN" ) + Suppress( Literal("end") )
