@@ -29,16 +29,16 @@ You should print the items of the next list:
 
 | Name of piece      |  Units   |  Localization  |
 |--------------------|----------|----------------|
-| FrontCase          |    1     |  [FrontCase.stl](/tree/desings/desingsForEdit/tree/desings/desingsForEdit/Learnbot2.1/STL/FrontCase.stl)  |
-| BackCase           |    1     |  [BackCase.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/BackCase.stl)  |
-| base               |    1     |  [base.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/base.stl)  |
-| baseRaspbery       |    1     |  [baseRaspbery.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/baseRaspbery.stl)  |
-| suport16PWM        |    1     |  [suport16PWM.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/suport16PWM.stl)  |
-| spaciator3mm       |    8     |  [spaciator3mm.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/spaciator3mm.stl)  |
-| spaciator9.5mm     |    2     |  [spaciator9.5mm.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/spaciator9.5mm.stl)  |
-| cameracase         |    1     |  [cameracase.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/cameracase.stl)  |
-| covercameracase    |    1     |  [covercameracase.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/covercameracase.stl)  |
-| pulley             |    1     |  [pulley.stl](/tree/desings/desingsForEdit/Learnbot2.1/STL/pulley.stl)  |
+| FrontCase          |    1     |  [FrontCase.stl](tree/desings/desingsForEdit/tree/desings/desingsForEdit/Learnbot2.1/STL/FrontCase.stl)  |
+| BackCase           |    1     |  [BackCase.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/BackCase.stl)  |
+| base               |    1     |  [base.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/base.stl)  |
+| baseRaspbery       |    1     |  [baseRaspbery.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/baseRaspbery.stl)  |
+| suport16PWM        |    1     |  [suport16PWM.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/suport16PWM.stl)  |
+| spaciator3mm       |    8     |  [spaciator3mm.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/spaciator3mm.stl)  |
+| spaciator9.5mm     |    2     |  [spaciator9.5mm.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/spaciator9.5mm.stl)  |
+| cameracase         |    1     |  [cameracase.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/cameracase.stl)  |
+| covercameracase    |    1     |  [covercameracase.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/covercameracase.stl)  |
+| pulley             |    1     |  [pulley.stl](tree/desings/desingsForEdit/Learnbot2.1/STL/pulley.stl)  |
 
 
 ### Assemble
