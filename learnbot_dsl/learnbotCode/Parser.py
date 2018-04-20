@@ -30,7 +30,7 @@ class bcolors:
 
 OBRACE,CBRACE,SEMI,OPAR,CPAR = map(Literal, "{};()")
 
-reserved_words = ( Keyword('def') | Keyword('=') | Keyword('funtion.') | Keyword('>=') | Keyword('<=') | Keyword('<') | Keyword('>') | Keyword('deactive') | Keyword('active') | Keyword('not') | Keyword('True') | Keyword('False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword('elif') | Keyword('when') | Keyword('while') | Keyword('end'))
+reserved_words = ( Keyword('def') | Keyword('=') | Keyword('funtion.') | Keyword('>=') | Keyword('<=') | Keyword('<') | Keyword('>') | Keyword('deactivate') | Keyword('activate') | Keyword('not') | Keyword('True') | Keyword('False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword('elif') | Keyword('when') | Keyword('while') | Keyword('end'))
 iden = Word( alphanums+"_")
 identifier = Group( ~reserved_words + iden ).setResultsName( "IDENTIFIER" )
 
@@ -120,13 +120,13 @@ BLOQUEWHILE    = Group( SECTAB + Suppress( Literal( "while" ) ) + Group( CONDITI
 """-----------------WHEN+CONDICION------------------"""
 BLOQUEWHENCOND = Group( SECTAB + Suppress( Literal( "when" ) ) + identifier.setResultsName("name") + Optional( Suppress( eq )+ Group( CONDITION ).setResultsName( 'condition' ) ) + COLONS + LINES.setResultsName('content') + Literal("end") ).setResultsName( "WHEN" )
 
-"""-----------------ACTIVE-CONDITION----------------"""
-ACTIVE   = Group( Suppress( Literal( "active" ) )   + identifier.setResultsName( "name" ) ).setResultsName( "ACTIVE" )
-DEACTIVE = Group( Suppress( Literal( "deactive" ) ) + identifier.setResultsName( "name" ) ).setResultsName( "DEACTIVE" )
+"""-----------------ACTIVATE-CONDITION----------------"""
+ACTIVATE   = Group( Suppress( Literal( "activate" ) )   + identifier.setResultsName( "name" ) ).setResultsName( "ACTIVATE" )
+DEACTIVATE = Group( Suppress( Literal( "deactivate" ) ) + identifier.setResultsName( "name" ) ).setResultsName( "DEACTIVATE" )
 
 
 """-----------------LINEA---------------------------"""
-LINE << ( SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVE | DEACTIVE | STRINGVAR | PASS )
+LINE << ( SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | BOOLVAR | NUMVAR | ACTIVATE | DEACTIVATE | STRINGVAR | PASS )
 
 """-----------------DEF----------------------------"""
 DEF = Group( Suppress( Literal ( "def " ) ) + identifier.setResultsName("name") + Suppress( lpar ) + Suppress( rpar ) + COLONS + LINES.setResultsName('content') + Suppress( Literal("end") ) ).setResultsName( "DEF" ) # TODO
@@ -204,10 +204,10 @@ def __process(line, list_var=[], text="", index=0):
         text = __processELIF(line,text,index)
     elif TYPE is 'ELSE':
         text = __processELSE(line,text,index)
-    elif TYPE is 'ACTIVE':
-        text = __processACTIVE(line, text, index)
-    elif TYPE is 'DEACTIVE':
-        text = __processDEACTIVE(line, text, index)
+    elif TYPE is 'ACTIVATE':
+        text = __processACTIVATE(line, text, index)
+    elif TYPE is 'DEACTIVATE':
+        text = __processDEACTIVATE(line, text, index)
     elif TYPE in ['NUMVAR', 'BOOLVAR', 'STRINGVAR']:
         text = __processASSIG(line, text, index)
     elif TYPE is 'OPERATION':
@@ -277,11 +277,11 @@ def __processASSIGSTRING(line, text="", index=0):
             text += field[0] + " "
     return text
 
-def __processACTIVE(line, text="", index=0):
+def __processACTIVATE(line, text="", index=0):
     text += "\t"*index + line.name[0] + " = True\n"
     return text
 
-def __processDEACTIVE(line, text="", index=0):
+def __processDEACTIVATE(line, text="", index=0):
     text += "\t"*index + line.name[0] + " = False\n"
     return text
 

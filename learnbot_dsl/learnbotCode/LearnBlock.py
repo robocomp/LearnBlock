@@ -509,13 +509,13 @@ class LearnBlock:
             table = self.dicTables['control']
 
             table.insertRow(table.rowCount())
-            button = MyButtom( ( "active " + name, {'ES':"Activar " + name, 'EN':"Active " + name }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = MyButtom( ( "activate " + name, {'ES':"Activar " + name, 'EN':"Activate " + name }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
             table.insertRow(table.rowCount())
-            button = MyButtom( ( "deactive " + name, {'ES':"Desactivar " + name, 'EN':"Deactive " + name }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = MyButtom( ( "deactivate " + name, {'ES':"Desactivar " + name, 'EN':"Deactivate " + name }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -597,7 +597,7 @@ class LearnBlock:
             sys.argv = [' ', path + '/etc/configPhysical']
         else:
             sys.argv = [' ', path + '/etc/configSimulate']
-        text = ""
+        text =""
         if len(self.listNameVars)>0:
             for name in self.listNameVars:
                 text += name + " = None\n"
@@ -872,7 +872,7 @@ class LearnBlock:
         rango = reversed(range(0, table.rowCount()))
         for row in rango:
             item = table.cellWidget(row, 0)
-            if item.getText() in ["active "+name, "deactive "+name, "time_"+name]:
+            if item.getText() in ["activate "+name, "deactivate "+name, "time_"+name]:
                 item.delete(row)
                 item.removeTmpFile()
                 self.listButtons.remove(item)
