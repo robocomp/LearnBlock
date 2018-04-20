@@ -4,9 +4,22 @@ LearnBot is a social low cost robot that has been designed in to  the  area  of 
 
 But Learnbot is part of a more ambitious ecosystem, Learnblock, which is being  created  as  a  facilitator  environment  to  encourage  current  teacher swith out programming knowledge to learn the basics of programming, it is a IDE similar to Scrach, at least into a level where they can introduce their students into the digital world.
 
-# Use the robot!
-1. [Get hardware](https://github.com/robocomp/learnbot/tree/master/learnbot-desings)
-2. [Install Robocomp framework in your computer.](https://github.com/robocomp/robocomp)
+# Project aims
+
+The mains aims of the project are the follows:
+
+* To teach to kids:
+    * Programing.
+    * Math.
+    * Logic.
+    * Emotions.
+    * Robotics.
+    * Languages.
+    * Physics.
+    
+
+# Manuals Learnbot!
+1. [Documentation](/doc/learnbot02/README.md)
 2. Enjoy!
 
 # Citting
