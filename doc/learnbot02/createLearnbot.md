@@ -1,9 +1,9 @@
-## Create a LearnBot yourself
+Username/Repository#Username/Repository# Create a LearnBot yourself
 
 If you want build your LearnBot you should follow the next steps:ç
 
 
-### Buy 
+Username/Repository#Username/Repository#Username/Repository# Buy 
 
 You should buy the items of the next list:
 
@@ -23,31 +23,31 @@ You should buy the items of the next list:
 | Expansion Extension Board      |  1       | amazon      | https://www.amazon.com/Makerfocus-Raspberry-Model-Expansion-Extension/dp/B06WWRZ7PS       |
 | RIBBON CABLE                   |  1       | modmypi     | https://www.modmypi.com/raspberry-pi/gpio-and-breadboarding/40-pin-ribbon-cables/40-pin-gpio-male-to-female-ribbon-cable-150mm-(gertboard)
 
-### Print
+Username/Repository#Username/Repository#Username/Repository# Print
 
 You should print the items of the next list:
 
 | Name of piece      |  Units   |  Localization  |
 |--------------------|----------|----------------|
-| FrontCase          |    1     |  [FrontCase.stl](#tree/desings/desingsForEdit/tree/desings/desingsForEdit/Learnbot2.1/STL/FrontCase.stl)  |
-| BackCase           |    1     |  [BackCase.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/BackCase.stl)  |
-| base               |    1     |  [base.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/base.stl)  |
-| baseRaspbery       |    1     |  [baseRaspbery.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/baseRaspbery.stl)  |
-| suport16PWM        |    1     |  [suport16PWM.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/suport16PWM.stl)  |
-| spaciator3mm       |    8     |  [spaciator3mm.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/spaciator3mm.stl)  |
-| spaciator9.5mm     |    2     |  [spaciator9.5mm.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/spaciator9.5mm.stl)  |
-| cameracase         |    1     |  [cameracase.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/cameracase.stl)  |
-| covercameracase    |    1     |  [covercameracase.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/covercameracase.stl)  |
-| pulley             |    1     |  [pulley.stl](#tree/desings/desingsForEdit/Learnbot2.1/STL/pulley.stl)  |
+| FrontCase          |    1     |  [FrontCase.stl](Username/Repository#tree/desings/desingsForEdit/tree/desings/desingsForEdit/Learnbot2.1/STL/FrontCase.stl)  |
+| BackCase           |    1     |  [BackCase.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/BackCase.stl)  |
+| base               |    1     |  [base.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/base.stl)  |
+| baseRaspbery       |    1     |  [baseRaspbery.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/baseRaspbery.stl)  |
+| suport16PWM        |    1     |  [suport16PWM.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/suport16PWM.stl)  |
+| spaciator3mm       |    8     |  [spaciator3mm.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/spaciator3mm.stl)  |
+| spaciator9.5mm     |    2     |  [spaciator9.5mm.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/spaciator9.5mm.stl)  |
+| cameracase         |    1     |  [cameracase.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/cameracase.stl)  |
+| covercameracase    |    1     |  [covercameracase.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/covercameracase.stl)  |
+| pulley             |    1     |  [pulley.stl](Username/Repository#tree/desings/desingsForEdit/Learnbot2.1/STL/pulley.stl)  |
 
 
-### Assemble
+Username/Repository#Username/Repository#Username/Repository# Assemble
 
 You should see the next video to see the steps.
 
 __Sorry for the inconvenience, this video isn't available yet.__
 
 
-### Connections
+Username/Repository#Username/Repository#Username/Repository# Connections
 
-The display 3.5 pitft should be connected to I2C (SDA y SCL), SPI (SCK, MOSI, MISO, CE0) and to the pins GPIO #24 and #25, also to 5V y GND
+The display 3.5 pitft should be connected to I2C (SDA y SCL), SPI (SCK, MOSI, MISO, CE0) and to the pins GPIO Username/Repository#24 and Username/Repository#25, also to 5V y GND
