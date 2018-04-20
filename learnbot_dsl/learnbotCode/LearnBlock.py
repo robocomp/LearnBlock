@@ -597,7 +597,7 @@ class LearnBlock:
             sys.argv = [' ', path + '/etc/configPhysical']
         else:
             sys.argv = [' ', path + '/etc/configSimulate']
-        text =""
+        text = ""
         if len(self.listNameVars)>0:
             for name in self.listNameVars:
                 text += name + " = None\n"
