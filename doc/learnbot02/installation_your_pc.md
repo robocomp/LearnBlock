@@ -38,12 +38,12 @@ Clone this repository in the path /home/robocomp/robocomp/components/
 
     $ cd /home/robocomp/robocomp/components/
     $ git clone https://github.com/robocomp/learnbot
-    $ git checkout emorobotic
+    $ git checkout version-2
 
 
 This project has a IDE, which is being created as a facilitator environment, similar to Scrach.
 
-You should install Learnbot project with the flollowing command:
+You should install Learnbot project with the following command:
 
     $ chmod +x setupLearnblock
     $ sudo ./setupLearnblock install
