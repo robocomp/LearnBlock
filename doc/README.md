@@ -1,7 +1,7 @@
 
 
-1.  [LearnBlock Documentation](/doc/learnbot01/learnblock01.md)
-2.  [LearnBlock Documentation](/doc/learnbot02/README.md)
+1.  [LearnBlock v2.0 Documentation](/doc/learnbot01/learnblock01.md)
+2.  [LearnBlock v2.0 Documentation](/doc/learnbot02/README.md)
 
 
 

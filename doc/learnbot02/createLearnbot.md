@@ -27,7 +27,7 @@ You should buy the items of the next list:
 
 You should print the items of the next list:
 
-All files are on this repository in branch __desings__.
+All files are on this repository in branch __desings__ in folder __desingsForEdit/Learnbot2.1/STL/__.
 
 | Name of piece      |  Units   |  Localization        |
 |--------------------|----------|----------------------|
