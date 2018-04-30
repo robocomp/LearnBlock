@@ -1,7 +1,7 @@
 from PySide import QtCore
 from Block import *
 
-class AbstractBlockItem():
+class AbstractBlock():
     def __init__(self, x, y, nameFuntion, dicTrans, file, vars, nameControl = "", connections=None, typeBlock=SIMPLEBLOCK, type=None, dict = None):
         self.pos = QtCore.QPointF(x, y)
         self.name = nameFuntion

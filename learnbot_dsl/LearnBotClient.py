@@ -72,11 +72,11 @@ class Client(Ice.Application, threading.Thread):
                     print "Connection Successful: ",proxyString
                 except Ice.Exception:
                     print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
-                    sys.exit(1)
+                    raise
             except Ice.Exception, e:
                 print e
                 print 'Cannot get DifferentialRobotProxy property.'
-                sys.exit(1)
+                raise
 
 
             # Remote object connection for Lasers
@@ -90,11 +90,11 @@ class Client(Ice.Application, threading.Thread):
                         print "Connection Successful: ", proxyString
                     except Ice.Exception:
                         print 'Cannot connect to the remote object (Laser)', i, proxyString
-                        sys.exit(1)
+                        raise
                 except Ice.Exception, e:
                     print e
                     print 'Cannot get Laser', i, 'Proxy property.'
-                    sys.exit(1)
+                    raise
 
             # Remote object connection for Display
             try:
@@ -105,11 +105,11 @@ class Client(Ice.Application, threading.Thread):
                     print "Connection Successful: ", proxyString
                 except Ice.Exception:
                     print 'Cannot connect to the remote object (Display)', proxyString
-                    sys.exit(1)
+                    raise
             except Ice.Exception, e:
                 print e
                 print 'Cannot get DisplayProxy Proxy property.'
-                sys.exit(1)
+                raise
 
             # Remote object connection for RGBD
             try:
@@ -120,11 +120,11 @@ class Client(Ice.Application, threading.Thread):
                     print "Connection Successful: ",proxyString
                 except Ice.Exception:
                     print 'Cannot connect to the remote object (RGBD)', proxyString
-                    sys.exit(1)
+                    raise
             except Ice.Exception, e:
                 print e
                 print 'Cannot get RGBDProxy property.'
-                sys.exit(1)
+                raise
             # Remote object connection for JointMotor
             try:
                 proxyString = ic.getProperties().getProperty('JointMotorProxy')
@@ -134,15 +134,15 @@ class Client(Ice.Application, threading.Thread):
                     print "Connection Successful: ",proxyString
                 except Ice.Exception:
                     print 'Cannot connect to the remote object (JointMotor)', proxyString
-                    sys.exit(1)
+                    raise
             except Ice.Exception, e:
                 print e
                 print 'Cannot get JointMotorPrx property.'
-                sys.exit(1)
-        except:
+                raise
+        except Ice.Exception, e:
                 print "Error"
                 traceback.print_exc()
-                sys.exit(1)
+                raise
 
         self.active = True
         self.start()

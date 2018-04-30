@@ -16,11 +16,10 @@ from guiAddNumberOrString import *
 from guiaddWhen import *
 from Language import *
 from learnbot_dsl.functions import *
-from Buttom import *
+from Button import *
 from blocksConfig.blocks import pathBlocks
 from Parser import parserLearntBotCode
 from parserConfig import configSSH
-
 
 
 
@@ -62,7 +61,6 @@ class LearnBlock:
 
         self.app = QtGui.QApplication(sys.argv)
 
-        # translator.load("/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/t_en.qm")
         self.translators = {}
         pathLanguages = { 'EN': "t_en.qm", "ES":"t_es.qm"}
 
@@ -81,8 +79,8 @@ class LearnBlock:
         self.ui.setupUi(self.Dialog)
         self.Dialog.showMaximized()
 
-        self.ui.startPushButton.clicked.connect(self.printProgram)
-        self.ui.startPRPushButton.clicked.connect(self.printProgramPR)
+        self.ui.startPushButton.clicked.connect(self.StartProgramSR)
+        self.ui.startPRPushButton.clicked.connect(self.StartProgramPR)
         self.ui.startTextPushButton.clicked.connect(self.generateTmpFilefromText)
         self.ui.stopPushButton.clicked.connect(self.stopthread)
         self.ui.stoptextPushButton.clicked.connect(self.stopthread)
@@ -115,7 +113,8 @@ class LearnBlock:
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionExit.triggered.connect(self.exit)
-        # self.app.lastWindowClosed.connect(self.exit)
+        # self.Dialog.destroyed.connect(self.exit)
+        self.app.aboutToQuit.connect(self.exit)
 
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
         self.ui.openpushButton.setIcon(QtGui.QIcon("guis/open.png"))
@@ -158,7 +157,7 @@ class LearnBlock:
         self.avtiveEvents(False)
 
         self.timer = QtCore.QTimer()
-        self.timer.start(1000)
+        # self.timer.start(1000)
         self.scene.setlistNameVars(self.listNameVars)
 
 
@@ -185,6 +184,10 @@ class LearnBlock:
             elif ret == 8388608:
                 self.scene.shouldSave=False
                 self.exit()
+
+    def checkConnectionToBot(self):
+        r = os.system("ping -c 1 " + configSSH["ip"])
+        return r is 0
 
     def startRobot(self):
         client = paramiko.SSHClient()
@@ -222,12 +225,14 @@ class LearnBlock:
         currentable = self.ui.tableSearch
         currentable.setRowCount(0)
         currentable.setColumnCount(1)
-        for button in self.listButtons:
-            textButtom = button.getCurrentText()
-            if text in textButtom:
-                currentable.insertRow(currentable.rowCount())
-                buttonCopy = button.getCopy(currentable)
-                currentable.setCellWidget(currentable.rowCount() - 1, 0, buttonCopy)
+        if text is "":
+            for button in self.listButtons:
+                textButtom = button.getCurrentText()
+                if text in textButtom:
+                    currentable.insertRow(currentable.rowCount())
+                    buttonCopy = button.getCopy(currentable)
+                    currentable.setCellWidget(currentable.rowCount() - 1, 0, buttonCopy)
+
     def newProject(self):
         if self.scene.shouldSave is False:
             # delete all whens
@@ -249,6 +254,7 @@ class LearnBlock:
             self.scene.startAllblocks()
             self.listNameUserFunctions=[]
             self.listNameUserFunctions = []
+            self.__fileProject = None
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setText("The document has been modified.")
@@ -258,6 +264,7 @@ class LearnBlock:
             ret = msgBox.exec_()
             if ret == 2048:
                 self.saveInstance()
+                self.newProject()
             elif ret == 8388608:
                 self.scene.shouldSave=False
                 self.newProject()
@@ -303,75 +310,77 @@ class LearnBlock:
 
             blockType = None
             for img in f.img:
-                blockType, connections = self.loadConfigBlock(img)
+                blockType, connections = loadConfigBlock(img)
                 table = self.dicTables[f.type[0]]
                 table.insertRow(table.rowCount())
                 dicTrans = {}
                 for l in f.translations:
                     dicTrans[l.language] = l.translation
-                button = MyButtom((f.name[0], dicTrans, self.view, self.scene, img + ".png", connections, variables, blockType, table, table.rowCount()-1, funtionType))
+                button = Block_Button((f.name[0], dicTrans, self.view, self.scene, img + ".png", connections, variables, blockType, table, table.rowCount() - 1, funtionType))
                 if f.name[0] == "main":
                     self.mainButton = button
                 self.listButtons.append(button)
                 table.setCellWidget(table.rowCount() - 1, 0, button)
 
-    def loadConfigBlock(self, img):
-        fh = open(img, "r")
-        text = fh.readlines()
-        fh.close()
-        connections = []
-        blockType = None
-        for line in text:
-            if "type" in line:
-                line = line.replace("\n", "")
-                line = line.split(" ")
-                blockType = line[1]
-                if "simple" in blockType:
-                    blockType = SIMPLEBLOCK
-                elif "complex" in blockType:
-                    blockType = COMPLEXBLOCK
-            else:
-                line = line.replace("\n", "")
-                line = line.replace(" ", "")
-                c = line.split(",")
-                type = None
-                if "TOP" in c[2]:
-                    type = TOP
-                elif "BOTTOMIN" in c[2]:
-                    type = BOTTOMIN
-                elif "BOTTOM" in c[2]:
-                    type = BOTTOM
-                elif "RIGHT" in c[2]:
-                    type = RIGHT
-                elif "LEFT" in c[2]:
-                    type = LEFT
-                connections.append((QtCore.QPointF(int(c[0]), int(c[1])), type))
-        return blockType, connections
+    # def loadConfigBlock(self, img):
+    #     fh = open(img, "r")
+    #     text = fh.readlines()
+    #     fh.close()
+    #     connections = []
+    #     blockType = None
+    #     for line in text:
+    #         if "type" in line:
+    #             line = line.replace("\n", "")
+    #             line = line.split(" ")
+    #             blockType = line[1]
+    #             if "simple" in blockType:
+    #                 blockType = SIMPLEBLOCK
+    #             elif "complex" in blockType:
+    #                 blockType = COMPLEXBLOCK
+    #         else:
+    #             line = line.replace("\n", "")
+    #             line = line.replace(" ", "")
+    #             c = line.split(",")
+    #             type = None
+    #             if "TOP" in c[2]:
+    #                 type = TOP
+    #             elif "BOTTOMIN" in c[2]:
+    #                 type = BOTTOMIN
+    #             elif "BOTTOM" in c[2]:
+    #                 type = BOTTOM
+    #             elif "RIGHT" in c[2]:
+    #                 type = RIGHT
+    #             elif "LEFT" in c[2]:
+    #                 type = LEFT
+    #             connections.append((QtCore.QPointF(int(c[0]), int(c[1])), type))
+    #     return blockType, connections
 
     def execTmp(self):
-        while True:
-            try:
-                execfile("main_tmp.py", globals())
-                break
-            except Exception as e:
-                print e
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText("Error to the execute program.")
-                msgBox.setStandardButtons(QtGui.QMessageBox.Retry | QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                ret = msgBox.exec_()
-                if ret is not QtGui.QMessageBox.Retry:
-                    break
+        try:
+            execfile("main_tmp.py", globals())
+        except:
+            self.ui.stopPushButton.setEnabled(False)
+            self.ui.startPushButton.setEnabled(True)
+            self.ui.startPRPushButton.setEnabled(True)
 
     def stopExecTmp(self):
-         try:
-             if self.physicalRobot:
-                 sys.argv = [' ', path + '/etc/configPhysical']
-             else:
-                 sys.argv = [' ', path +'/etc/configSimulate']
-             execfile("stop_main_tmp.py", globals())
-         except Exception as e:
-             print e
+        robot = ""
+        try:
+            if self.physicalRobot:
+                sys.argv = [' ', path + '/etc/configPhysical']
+                robot = "physical"
+            else:
+                sys.argv = [' ', path +'/etc/configSimulate']
+                robot = "simulate"
+
+            execfile("stop_main_tmp.py", globals())
+        except Exception as e:
+            print e
+            msgBox = QtGui.QMessageBox()
+            msgBox.setText("You should check connection the" + robot + " robot")
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.exec_()
 
     def saveInstance(self):
         if self.__fileProject is None:
@@ -384,6 +393,7 @@ class LearnBlock:
                 self.__fileProject = file
                 self.saveInstance()
         else:
+            self.Dialog.setWindowTitle("Learnblock2.0 " + self.__fileProject)
             with open(self.__fileProject, 'wb') as fichero:
                 dic = copy.deepcopy(self.scene.dicBlockItem)
                 for id in dic:
@@ -393,7 +403,8 @@ class LearnBlock:
         self.scene.shouldSave = False
 
     def saveAs(self):
-        fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.', 'Block Project file (*.blockProject);')
+        fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.', 'Block Project file (*.blockProject)')
+        print fileName
         if fileName[0] != "":
             file = fileName[0]
             if "." in file:
@@ -415,6 +426,7 @@ class LearnBlock:
             fileName = QtGui.QFileDialog.getOpenFileName(self.Dialog, 'Open Project', '.','Block Project file (*.blockProject)')
             if fileName[0] != "":
                 self.__fileProject = fileName[0]
+                self.Dialog.setWindowTitle("Learnblock2.0 " + self.__fileProject)
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
 
@@ -454,9 +466,6 @@ class LearnBlock:
 
                     self.scene.setBlockDict(d[0])
                     self.scene.startAllblocks()
-
-
-
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setText("The document has been modified.")
@@ -484,8 +493,8 @@ class LearnBlock:
         text = self.addNumberOrStringGui.value
         imgPath = self.addNumberOrStringGui.imgName
         configImgPath = imgPath.replace(".png","")
-        blockType, connections = self.loadConfigBlock(configImgPath)
-        block = AbstractBlockItem(0,0,text, {}, imgPath,[], "" , connections, blockType,VARIABLE)
+        blockType, connections = loadConfigBlock(configImgPath)
+        block = AbstractBlock(0,0,text, {}, imgPath,[], "" , connections, blockType,VARIABLE)
         self.scene.addItem(block)
 
     def showGuiAddWhen(self):
@@ -497,35 +506,35 @@ class LearnBlock:
         text = self.addWhenGui.value
         imgPath = self.addWhenGui.imgName
         configImgPath = imgPath.replace(".png","")
-        blockType, connections = self.loadConfigBlock(configImgPath)
+        blockType, connections = loadConfigBlock(configImgPath)
 
-        block = AbstractBlockItem(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,WHEN)
+        block = AbstractBlock(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,WHEN)
         self.scene.addItem(block)
         self.addButtonsWhens (configImgPath, self.addWhenGui.nameControl)
 
     def addButtonsWhens(self, configImgPath, name ):
         if configImgPath.split('/')[-1] == 'block8':
-            blockType, connections = self.loadConfigBlock(pathBlocks + "/block1")
+            blockType, connections = loadConfigBlock(pathBlocks + "/block1")
             table = self.dicTables['control']
 
             table.insertRow(table.rowCount())
-            button = MyButtom( ( "activate " + name, {'ES':"Activar " + name, 'EN':"Activate " + name }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = Block_Button(("activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
             table.insertRow(table.rowCount())
-            button = MyButtom( ( "deactivate " + name, {'ES':"Desactivar " + name, 'EN':"Deactivate " + name }, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = Block_Button(("deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
         table = self.dicTables['control']
         for x in ["/block2", "/block3", "/block4"]:
-            blockType, connections = self.loadConfigBlock(pathBlocks + x)
+            blockType, connections = loadConfigBlock(pathBlocks + x)
 
             table.insertRow(table.rowCount())
-            button = MyButtom( ( "time_" + name, {'ES':"Tiempo_" + name, 'EN':"Time_" + name }, self.view, self.scene, pathBlocks + x + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = Block_Button(("time_" + name, {'ES': "Tiempo_" + name, 'EN': "Time_" + name}, self.view, self.scene, pathBlocks + x + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -533,13 +542,20 @@ class LearnBlock:
         self.listNameWhens.append((name,configImgPath))
         self.ui.deleteWhenpushButton.setEnabled(True)
 
-    def printProgram(self):
+    def StartProgramSR(self):
         self.physicalRobot = False
         self.generateTmpFile()
 
-    def printProgramPR(self):
-        self.physicalRobot = True
-        self.generateTmpFile()
+    def StartProgramPR(self):
+        if self.checkConnectionToBot():
+            self.physicalRobot = True
+            self.generateTmpFile()
+        else:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setText("You should check connection the physical robot")
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.exec_()
 
     # TODO Esperar a que termine el parseador de texto
     def generateTmpFilefromText(self):
@@ -593,10 +609,13 @@ class LearnBlock:
 
     def generateTmpFile(self):
         blocks = self.scene.getListInstructions()
+        robot = ""
         if self.physicalRobot:
             sys.argv = [' ', path + '/etc/configPhysical']
+            robot = "physical"
         else:
             sys.argv = [' ', path + '/etc/configSimulate']
+            robot = "simulate"
         text =""
         if len(self.listNameVars)>0:
             for name in self.listNameVars:
@@ -610,7 +629,12 @@ class LearnBlock:
             self.ui.textCode.clear()
             self.ui.textCode.appendPlainText(text + code)
             try:
-                parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot)
+                if not parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot):
+                    msgBox = QtGui.QMessageBox()
+                    msgBox.setText("Your code is empty or is not correct")
+                    msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                    msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                    msgBox.exec_()
             except Exception as e:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("line: {}".format(e.line) + "\n    "+" "*e.col+"^")
@@ -619,11 +643,21 @@ class LearnBlock:
                 msgBox.exec_()
                 return
             if compile("main_tmp.py"):
-                self.hilo = Process(target=self.execTmp)
-                self.hilo.start()
-                self.ui.stopPushButton.setEnabled(True)
-                self.ui.startPushButton.setEnabled(False)
-                self.ui.startPRPushButton.setEnabled(False)
+                try:
+                    if not self.physicalRobot:
+                        LearnBotClient.Client(sys.argv)
+                    self.hilo = Process(target=self.execTmp)
+                    self.ui.stopPushButton.setEnabled(True)
+                    self.ui.startPushButton.setEnabled(False)
+                    self.ui.startPRPushButton.setEnabled(False)
+                    self.hilo.start()
+                except:
+                    msgBox = QtGui.QMessageBox()
+                    msgBox.setText("You should check connection the " + robot + " robot")
+                    msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                    msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                    msgBox.exec_()
+
             else:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("Your code has an error. Check it out again")
@@ -646,10 +680,11 @@ class LearnBlock:
     def stopthread(self):
         try:
             self.hilo.terminate()
-	    self.generateStopTmpFile()
-            self.hilo = Process(target=self.stopExecTmp)
-            self.hilo.start()
-            self.hilo.join()
+            self.generateStopTmpFile()
+            # self.hilo = Process(target=self.stopExecTmp)
+            # self.hilo.start()
+            # self.hilo.join()
+            self.stopExecTmp()
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
             self.ui.startPRPushButton.setEnabled(True)
@@ -796,20 +831,20 @@ class LearnBlock:
         imgs = ['block2', 'block3', 'block4']
 
         self.listNameVars.append(name)
-        blockType, connections = self.loadConfigBlock(pathBlocks + "/block1")
+        blockType, connections = loadConfigBlock(pathBlocks + "/block1")
         table = self.dicTables['variables']
         table.insertRow(table.rowCount())
         variables = []
         variables.append(Variable("float", "set to ", "0"))
-        button = MyButtom( ( name, {}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, variables, blockType, table, table.rowCount() - 1, VARIABLE))
+        button = Block_Button((name, {}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, variables, blockType, table, table.rowCount() - 1, VARIABLE))
         self.listButtons.append(button)
         table.setCellWidget(table.rowCount() - 1, 0, button)
         self.listVars.append(button.getAbstracBlockItem())
         for img in imgs:
-            blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
+            blockType, connections = loadConfigBlock(pathBlocks + "/" + img)
             table = self.dicTables['variables']
             table.insertRow(table.rowCount())
-            button = MyButtom((name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = Block_Button((name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listVars.append(button.getAbstracBlockItem())
@@ -933,9 +968,9 @@ class LearnBlock:
         table = self.dicTables['funtions']
         i = 0
         for img in imgs:
-            blockType, connections = self.loadConfigBlock(pathBlocks + "/" + img)
+            blockType, connections = loadConfigBlock(pathBlocks + "/" + img)
             table.insertRow(table.rowCount())
-            button = MyButtom((name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, USERFUNCTION))
+            button = Block_Button((name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, USERFUNCTION))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listUserFunctions.append(button.getAbstracBlockItem())

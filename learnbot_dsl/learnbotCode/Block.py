@@ -1,7 +1,7 @@
 import numpy as np
 import copy
 import cv2
-import PySide.QtCore
+from PySide import QtCore
 
 TOP = 0
 BOTTOM = 1
@@ -147,3 +147,36 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
                 if c.getType() is RIGHT:
                     c.getPoint().setX(im.shape[1] - 5)
     return im
+
+def loadConfigBlock(img):
+    fh = open(img, "r")
+    text = fh.readlines()
+    fh.close()
+    connections = []
+    blockType = None
+    for line in text:
+        if "type" in line:
+            line = line.replace("\n", "")
+            line = line.split(" ")
+            blockType = line[1]
+            if "simple" in blockType:
+                blockType = SIMPLEBLOCK
+            elif "complex" in blockType:
+                blockType = COMPLEXBLOCK
+        else:
+            line = line.replace("\n", "")
+            line = line.replace(" ", "")
+            c = line.split(",")
+            type = None
+            if "TOP" in c[2]:
+                type = TOP
+            elif "BOTTOMIN" in c[2]:
+                type = BOTTOMIN
+            elif "BOTTOM" in c[2]:
+                type = BOTTOM
+            elif "RIGHT" in c[2]:
+                type = RIGHT
+            elif "LEFT" in c[2]:
+                type = LEFT
+            connections.append((QtCore.QPointF(int(c[0]), int(c[1])), type))
+    return blockType, connections

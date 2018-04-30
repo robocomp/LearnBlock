@@ -5,7 +5,7 @@ from math import *
 import cv2
 
 import guis.var as var
-from AbstracBlockItem import *
+from AbstractBlock import *
 from toQImage import *
 from Block import *
 

@@ -77,11 +77,11 @@ class Client(Ice.Application, threading.Thread):
                     print "Connection Successful: ", proxyString
                 except Ice.Exception:
                     print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
-                    sys.exit(1)
+                    raise
             except Ice.Exception, e:
                 print e
                 print 'Cannot get DifferentialRobotProxy property.'
-                sys.exit(1)
+                raise
 
             # try:
             #     proxyString = ic.getProperties().getProperty('LaserProxy')
@@ -91,11 +91,11 @@ class Client(Ice.Application, threading.Thread):
             #         print "Connection Successful: ", proxyString
             #     except Ice.Exception:
             #         print 'Cannot connect to the remote object (Laser)', proxyString
-            #         sys.exit(1)
+            #         raise
             # except Ice.Exception, e:
             #     print e
             #     print 'Cannot get Laser', i, 'Proxy property.'
-            #     sys.exit(1)
+            #     raise
 
 
 
@@ -108,11 +108,11 @@ class Client(Ice.Application, threading.Thread):
                     print "Connection Successful: ", proxyString
                 except Ice.Exception:
                     print 'Cannot connect to the remote object (EmotionalMotor)', proxyString
-                    sys.exit(1)
+                    raise
             except Ice.Exception, e:
                 print e
                 print 'Cannot get UltrasoundProxy property.'
-                sys.exit(1)
+                raise
 
             # # Remote object connection for JointMotor
             # try:
@@ -122,18 +122,18 @@ class Client(Ice.Application, threading.Thread):
             #         self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
             #     except Ice.Exception:
             #         print 'Cannot connect to the remote object (JointMotor)', proxyString
-            #         sys.exit(1)
+            #         raise
             # except Ice.Exception, e:
             #     print e
             #     print 'Cannot get UltrasoundProxy property.'
-            #     sys.exit(1)
+            #     raise
 
             self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
             self.bytes=''
 
         except:
                 traceback.print_exc()
-                sys.exit(1)
+                raise
 
         self.active = True
         self.start()

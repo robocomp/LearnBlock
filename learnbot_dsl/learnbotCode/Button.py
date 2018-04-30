@@ -2,10 +2,10 @@ from PySide import QtGui, QtCore
 import cv2, os
 from Language import *
 from Block import *
-from AbstracBlockItem import *
+from AbstractBlock import *
 
 
-class MyButtom(QtGui.QPushButton):
+class Block_Button(QtGui.QPushButton):
 
     def __init__(self,args):
         if len(args) is 11:
@@ -13,14 +13,14 @@ class MyButtom(QtGui.QPushButton):
             self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
 
         elif len(args) is 5:
-            abstracBlockItem, self.__view, self.__scene, self.__table, self.__row = args
-            self.__text = abstracBlockItem.name
-            self.__dicTrans = abstracBlockItem.dicTrans
-            self.__file = abstracBlockItem.file
-            self.__connections = abstracBlockItem.connections
-            self.__vars = abstracBlockItem.vars
-            self.__blockType = abstracBlockItem.typeBlock
-            self.__type = abstracBlockItem.type
+            abstracBlock, self.__view, self.__scene, self.__table, self.__row = args
+            self.__text = abstracBlock.name
+            self.__dicTrans = abstracBlock.dicTrans
+            self.__file = abstracBlock.file
+            self.__connections = abstracBlock.connections
+            self.__vars = abstracBlock.vars
+            self.__blockType = abstracBlock.typeBlock
+            self.__type = abstracBlock.type
             self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
 
         QtGui.QPushButton.__init__(self)
@@ -39,11 +39,11 @@ class MyButtom(QtGui.QPushButton):
         self.setIconSize(QtCore.QSize(135, im.shape[0]))
         self.setFixedSize(QtCore.QSize(150, im.shape[0]))
         self.__table.setRowHeight(self.__row, im.shape[0])
-        self.clicked.connect(self.clickedButton)
+        self.clicked.connect(self.on_clickedButton)
         self.__item = self.__table.item(self.__row,0)
 
     def getCopy(self, table):
-        return MyButtom((self.getAbstracBlockItem(),self.__view, self.__scene, table, table.rowCount() - 1))
+        return Block_Button((self.getAbstracBlockItem(), self.__view, self.__scene, table, table.rowCount() - 1))
 
     def getCurrentText(self):
         return self.showtext
@@ -64,12 +64,12 @@ class MyButtom(QtGui.QPushButton):
             self.setIconSize(QtCore.QSize(135, im.shape[0]))
             self.setFixedSize(QtCore.QSize(150, im.shape[0]))
 
-    def clickedButton(self):
-        block = AbstractBlockItem(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections,self.__blockType,self.__type)
+    def on_clickedButton(self):
+        block = AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections,self.__blockType,self.__type)
         self.__scene.addItem(copy.deepcopy(block))
 
     def getAbstracBlockItem(self):
-        return AbstractBlockItem(0,0,self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections, self.__blockType,self.__type)
+        return AbstractBlock(0,0,self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections, self.__blockType,self.__type)
 
     def delete(self,row):
         self.__table.removeCellWidget(row,0)

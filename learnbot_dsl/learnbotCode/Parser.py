@@ -63,7 +63,7 @@ LE     = Literal( "<=" )
 NLE    = Literal( ">=" )
 E      = Literal( "==" )
 NE     = Literal( "!=" )
-END    = Literal( "end" )
+END    = END
 SECTAB = ZeroOrMore("\t")
 
 """-----------------COMPARACIONES-------------------"""
@@ -111,7 +111,7 @@ INIF   = LINES  &    ( ZeroOrMore( ELSEIF ) + Optional( ELSE ) )
 
 ELSEIF << Group( SECTAB + Suppress( Literal( "elif" ) ) + Group( CONDITION ).setResultsName('condition') + COLONS + LINES.setResultsName('content') ).setResultsName( "ELIF" )
 ELSE   << Group( SECTAB + Suppress( Literal( "else" ) ) +                                                  COLONS + LINES.setResultsName('content') ).setResultsName( "ELSE" )
-IF     =  Group( SECTAB + Suppress( Literal( "if"   ) ) + Group( CONDITION ).setResultsName('condition') + COLONS + LINES.setResultsName('content') + Group( ZeroOrMore( ELSEIF ) + Optional( ELSE ) ).setResultsName( "OPTIONAL" ) + Suppress( Literal( "end" ) ) ).setResultsName( "IF" )
+IF     =  Group( SECTAB + Suppress( Literal( "if"   ) ) + Group( CONDITION ).setResultsName('condition') + COLONS + LINES.setResultsName('content') + Group( ZeroOrMore( ELSEIF ) + Optional( ELSE ) ).setResultsName( "OPTIONAL" ) + Suppress( END ) ).setResultsName( "IF" )
 
 """-----------------LOOP----------------------------"""
 BLOQUEWHILE    = Group( SECTAB + Suppress( Literal( "while" ) ) + Group( CONDITION ).setResultsName('condition') + COLONS + LINES.setResultsName('content') + Suppress( Literal("end") ) ).setResultsName("WHILE")
@@ -410,9 +410,13 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
         header = HEADER.replace('<LearnBotClient>', 'LearnBotClientPR')
     else:
         header = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
-    with open(outputFile, 'w') as f:
-        f.write(header)
-        f.write(text)
+    if text is not "":
+        with open(outputFile, 'w') as f:
+            f.write(header)
+            f.write(text)
+        return True
+    else:
+        return False
 
 
 if __name__ == "__main__":
