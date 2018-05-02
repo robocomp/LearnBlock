@@ -63,7 +63,7 @@ LE     = Literal( "<=" )
 NLE    = Literal( ">=" )
 E      = Literal( "==" )
 NE     = Literal( "!=" )
-END    = END
+END    = Literal( "end" )
 SECTAB = ZeroOrMore("\t")
 
 """-----------------COMPARACIONES-------------------"""

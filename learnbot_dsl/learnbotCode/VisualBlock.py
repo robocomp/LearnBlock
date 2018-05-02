@@ -94,9 +94,15 @@ class VisualBlock(QtGui.QGraphicsPixmapItem):
             self.tabVar.setCellWidget(i, 2, combobox)
             i+=1
         self.sizeIn = 0
+        self.shouldUpdateConnections = False
+
 
     def start(self):
+        # self.update()
         self.timer.start(5)
+
+    def activeUpdateConections(self):
+        self.shouldUpdateConnections = True
 
     def getNameFuntion(self):
         return self.parentBlock.name
@@ -254,7 +260,8 @@ class VisualBlock(QtGui.QGraphicsPixmapItem):
 
         self.updateVarValues()
         self.updateImg()
-        self.updateConnections()
+        if self.shouldUpdateConnections:
+            self.updateConnections()
 
     def moveToPos(self, pos, connect=False):
 

@@ -3,7 +3,7 @@ import cv2, os
 from Language import *
 from Block import *
 from AbstractBlock import *
-
+import copy
 
 class Block_Button(QtGui.QPushButton):
 
@@ -26,12 +26,10 @@ class Block_Button(QtGui.QPushButton):
         QtGui.QPushButton.__init__(self)
         im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
         self.showtext = self.__text
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.updateImg)
 
         if len( self.__dicTrans ) is not 0:
             self.showtext = self.__dicTrans[ getLanguage() ]
-            self.timer.start(10)
+            self.updateImg()
         var=[x.name for x in self.__vars]
         img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, var, self.__type)
         cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))

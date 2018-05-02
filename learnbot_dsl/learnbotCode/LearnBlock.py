@@ -3,7 +3,7 @@
 
 import os, threading, shutil, sys, cv2, time, cPickle as pickle, learnbot_dsl.LearnBotClient as LearnBotClient, learnbot_dsl.LearnBotClient_PhysicalRobot as LearnBotClientPR,  subprocess, paramiko
 
-
+from threading import Timer
 from multiprocessing import Process
 from checkFile import compile
 from blocksConfig import reload_functions
@@ -272,6 +272,10 @@ class LearnBlock:
     def setZoom(self):
         self.view.setZoom(self.ui.zoompushButton.isChecked())
 
+    def updateLanguageAllButtons(self):
+        for b in self.listButtons:
+            b.updateImg()
+
     def changeLanguage(self):
         l = ["ES","EN"]
         changeLanguageTo(l[self.ui.language.currentIndex()])
@@ -279,8 +283,8 @@ class LearnBlock:
         self.app.removeTranslator(self.currentTranslator)
         self.app.installTranslator(self.translators[l[self.ui.language.currentIndex()]])
         self.currentTranslator = self.translators[l[self.ui.language.currentIndex()]]
-
         self.ui.retranslateUi(self.Dialog)
+        Timer(0, self.updateLanguageAllButtons).start()
 
     def load_blocks(self):
         functions = reload_functions()

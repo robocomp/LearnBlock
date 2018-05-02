@@ -54,6 +54,7 @@ class MyScene(QtGui.QGraphicsScene):
         blockItem.setId(id)
         visualItem = VisualBlock(blockItem, self.view, self)
         visualItem.start()
+        visualItem.activeUpdateConections()
         super(MyScene, self).addItem(visualItem)
         self.dicBlockItem[id] = blockItem
         self.dictVisualItem[id] = visualItem
@@ -75,6 +76,9 @@ class MyScene(QtGui.QGraphicsScene):
             for id in self.dictVisualItem:
                 block = self.dictVisualItem[id]
                 block.update()
+        for id in self.dictVisualItem:
+            block = self.dictVisualItem[id]
+            block.activeUpdateConections()
 
     def clean(self):
         while len(self.dictVisualItem)>0:
@@ -87,6 +91,8 @@ class MyScene(QtGui.QGraphicsScene):
         for id in self.dictVisualItem:
             block = self.dictVisualItem[id]
             block.start()
+
+
 
     def removeItem(self, id):
         visualItem = self.getVisualItem(id)
