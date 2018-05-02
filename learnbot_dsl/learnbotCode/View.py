@@ -1,5 +1,5 @@
 from PySide import QtCore, QtGui
-from VisualFuntion import *
+from VisualBlock import *
 
 class MyView(QtGui.QGraphicsView):
 

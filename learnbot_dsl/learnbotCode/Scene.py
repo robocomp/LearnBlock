@@ -1,5 +1,5 @@
 from PySide import QtCore, QtGui
-from VisualFuntion import *
+from VisualBlock import *
 from math import *
 import sys
 from blocksConfig import pathImgBlocks
@@ -52,7 +52,7 @@ class MyScene(QtGui.QGraphicsScene):
         id = str(self.nextIdItem)
         #poner ide del bloque
         blockItem.setId(id)
-        visualItem = BlockItem(blockItem,self.view,self)
+        visualItem = VisualBlock(blockItem, self.view, self)
         visualItem.start()
         super(MyScene, self).addItem(visualItem)
         self.dicBlockItem[id] = blockItem
@@ -63,7 +63,7 @@ class MyScene(QtGui.QGraphicsScene):
         self.clean()
         for id in dict:
             blockItem = dict[id]
-            visualItem = BlockItem(blockItem, self.view, self)
+            visualItem = VisualBlock(blockItem, self.view, self)
             super(MyScene, self).addItem(visualItem)
             self.dicBlockItem[blockItem.id] = blockItem
             self.dictVisualItem[blockItem.id] = visualItem
@@ -193,7 +193,7 @@ class MyScene(QtGui.QGraphicsScene):
 
     def mouseMoveEvent(self, event):
         itemS = self.getItemSelected()
-        if isinstance(itemS, BlockItem):
+        if isinstance(itemS, VisualBlock):
             itemS.moveToPos(event.scenePos())
 
     def mousePressEvent(self, event):
@@ -201,7 +201,7 @@ class MyScene(QtGui.QGraphicsScene):
         if self.table is not None and item is not self.table:
             self.table.close()
             self.table = None
-        if isinstance(item, BlockItem):
+        if isinstance(item, VisualBlock):
             item.mousePressEvent(event)
 
     def mouseDoubleClickEvent(self,event):
@@ -209,7 +209,7 @@ class MyScene(QtGui.QGraphicsScene):
         if self.table is not None and item is not self.table:
             self.table.close()
             self.table = None
-        if isinstance(item, BlockItem):
+        if isinstance(item, VisualBlock):
             item.mouseDoubleClickEvent(event)
 
     def mouseReleaseEvent(self, event):
@@ -217,7 +217,7 @@ class MyScene(QtGui.QGraphicsScene):
         self.idItemS = None
         pos = event.scenePos()
         item = self.itemAt(pos)
-        if isinstance(item, BlockItem):
+        if isinstance(item, VisualBlock):
             item.mouseReleaseEvent(event)
 
         if self.posibleConnect[0] is not None:

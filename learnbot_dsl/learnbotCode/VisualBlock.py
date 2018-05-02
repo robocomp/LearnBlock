@@ -1,9 +1,7 @@
 import copy
 from PySide import QtGui
 from math import *
-
 import cv2
-
 import guis.var as var
 from AbstractBlock import *
 from toQImage import *
@@ -27,7 +25,7 @@ class VarGui(QtGui.QDialog, var.Ui_Dialog):
         self.deleteButton.clicked.connect(fun)
         self.okButton.clicked.connect(self.close)
 
-class BlockItem(QtGui.QGraphicsPixmapItem):
+class VisualBlock(QtGui.QGraphicsPixmapItem):
 
     def __init__(self, parentBlock, parent=None, scene=None):
         self.parentBlock = parentBlock

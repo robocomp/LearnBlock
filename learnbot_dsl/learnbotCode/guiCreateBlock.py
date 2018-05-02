@@ -1,5 +1,5 @@
 import guis.createBlock as createBlock
-from VisualFuntion import *
+from VisualBlock import *
 import os
 from blocksConfig import pathBlocks, pathConfig
 listBlock = []

@@ -67,8 +67,8 @@ class Variable():
         self.defaul = defaul
 
 class Block():
-    def __init__(self,name,funtionType,listVar = None,file = None):
-        self.listImg=[]
+    def __init__(self, name, funtionType, listVar = None, file = None):
+        self.listImg = []
         self.name = name
         self.funtionType = funtionType
         self.listVar = listVar
