@@ -42,7 +42,7 @@ def loadfile(file):
     fh.close()
     return code
 
-class LearnBlock:
+class LearnBlock(QtGui.QMainWindow):
 
     def __init__(self):
         self.listNameUserFunctions = []
@@ -75,9 +75,10 @@ class LearnBlock:
         self.app.setWindowIcon(QtGui.QIcon(path + '/ico.png'))
 
         self.Dialog = QtGui.QMainWindow()
+        QtGui.QMainWindow.__init__(self)
         self.ui = gui.Ui_MainWindow()
-        self.ui.setupUi(self.Dialog)
-        self.Dialog.showMaximized()
+        self.ui.setupUi(self)
+        self.showMaximized()
 
         self.ui.startPushButton.clicked.connect(self.StartProgramSR)
         self.ui.startPRPushButton.clicked.connect(self.StartProgramPR)
@@ -113,7 +114,7 @@ class LearnBlock:
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionExit.triggered.connect(self.exit)
-        # self.Dialog.destroyed.connect(self.exit)
+        # self.destroyed.connect(self.exit)
         self.app.aboutToQuit.connect(self.exit)
 
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
@@ -129,10 +130,10 @@ class LearnBlock:
         self.ui.startPushButton.setEnabled(True)
         self.ui.functions.setFixedWidth(221)
 
-        self.view = MyView(self.ui.frame)
+        self.view = MyView(self, self.ui.frame)
         self.view.setObjectName("view")
         self.ui.verticalLayout_3.addWidget(self.view)
-        self.scene = MyScene(self.view)
+        self.scene = MyScene(self,self.view)
         self.view.setScene(self.scene)
         self.view.show()
         self.view.setZoom(False)
@@ -223,9 +224,10 @@ class LearnBlock:
 
     def searchUpdate(self, text):
         currentable = self.ui.tableSearch
+        currentable.clear()
         currentable.setRowCount(0)
         currentable.setColumnCount(1)
-        if text is "":
+        if len(text) is not 0:
             for button in self.listButtons:
                 textButtom = button.getCurrentText()
                 if text in textButtom:
@@ -283,7 +285,7 @@ class LearnBlock:
         self.app.removeTranslator(self.currentTranslator)
         self.app.installTranslator(self.translators[l[self.ui.language.currentIndex()]])
         self.currentTranslator = self.translators[l[self.ui.language.currentIndex()]]
-        self.ui.retranslateUi(self.Dialog)
+        self.ui.retranslateUi(self)
         Timer(0, self.updateLanguageAllButtons).start()
 
     def load_blocks(self):
@@ -320,7 +322,10 @@ class LearnBlock:
                 dicTrans = {}
                 for l in f.translations:
                     dicTrans[l.language] = l.translation
-                button = Block_Button((f.name[0], dicTrans, self.view, self.scene, img + ".png", connections, variables, blockType, table, table.rowCount() - 1, funtionType))
+                dicToolTip = {}
+                for l in f.tooltip:
+                    dicToolTip[l.language] = l.translation
+                button = Block_Button((self, f.name[0], dicTrans, self.view, self.scene, img + ".png", connections, variables, blockType, table, table.rowCount() - 1, funtionType, dicToolTip))
                 if f.name[0] == "main":
                     self.mainButton = button
                 self.listButtons.append(button)
@@ -388,7 +393,7 @@ class LearnBlock:
 
     def saveInstance(self):
         if self.__fileProject is None:
-            fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.', 'Block Project file (*.blockProject)')
+            fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', '.', 'Block Project file (*.blockProject)')
             file = fileName[0]
             if "." in file:
                 file = file.split(".")[0]
@@ -397,7 +402,7 @@ class LearnBlock:
                 self.__fileProject = file
                 self.saveInstance()
         else:
-            self.Dialog.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+            self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
             with open(self.__fileProject, 'wb') as fichero:
                 dic = copy.deepcopy(self.scene.dicBlockItem)
                 for id in dic:
@@ -407,7 +412,7 @@ class LearnBlock:
         self.scene.shouldSave = False
 
     def saveAs(self):
-        fileName = QtGui.QFileDialog.getSaveFileName(self.Dialog, 'Save Project', '.', 'Block Project file (*.blockProject)')
+        fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', '.', 'Block Project file (*.blockProject)')
         print fileName
         if fileName[0] != "":
             file = fileName[0]
@@ -427,10 +432,10 @@ class LearnBlock:
 
     def openProyect(self):
         if self.scene.shouldSave is False:
-            fileName = QtGui.QFileDialog.getOpenFileName(self.Dialog, 'Open Project', '.','Block Project file (*.blockProject)')
+            fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', '.','Block Project file (*.blockProject)')
             if fileName[0] != "":
                 self.__fileProject = fileName[0]
-                self.Dialog.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+                self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
 
@@ -512,9 +517,9 @@ class LearnBlock:
         configImgPath = imgPath.replace(".png","")
         blockType, connections = loadConfigBlock(configImgPath)
 
-        block = AbstractBlock(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl, connections, blockType,WHEN)
+        block = AbstractBlock(0,0,text, {'ES':"Cuando ", 'EN':"When " }, imgPath, [], self.addWhenGui.nameControl.replace(" ","_"), connections, blockType,WHEN)
         self.scene.addItem(block)
-        self.addButtonsWhens (configImgPath, self.addWhenGui.nameControl)
+        self.addButtonsWhens (configImgPath, self.addWhenGui.nameControl.replace(" ","_"))
 
     def addButtonsWhens(self, configImgPath, name ):
         if configImgPath.split('/')[-1] == 'block8':
@@ -522,13 +527,13 @@ class LearnBlock:
             table = self.dicTables['control']
 
             table.insertRow(table.rowCount())
-            button = Block_Button(("activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = Block_Button((self,"activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE, {'ES': "Activa el evento " + name, 'EN': "Activate the event " + name}))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
             table.insertRow(table.rowCount())
-            button = Block_Button(("deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = Block_Button((self,"deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE, {'ES': "Desactiva el evento " + name, 'EN': "Deactivate the event " + name}))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -538,7 +543,7 @@ class LearnBlock:
             blockType, connections = loadConfigBlock(pathBlocks + x)
 
             table.insertRow(table.rowCount())
-            button = Block_Button(("time_" + name, {'ES': "Tiempo_" + name, 'EN': "Time_" + name}, self.view, self.scene, pathBlocks + x + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = Block_Button((self,"time_" + name, {'ES': "Tiempo_" + name, 'EN': "Time_" + name}, self.view, self.scene, pathBlocks + x + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE, {'ES': "Es el numero de segundos que lleva en ejecucion el evento " + name, 'EN': " " + name}))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -796,6 +801,7 @@ class LearnBlock:
     def retaddVarGui(self,ret):
         if ret is 1:
             name = self.addVarGui.nameLineEdit.text()
+            name = name.replace(" ", "_")
             if name in self.listNameVars:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("This name alredy exist")
@@ -803,22 +809,6 @@ class LearnBlock:
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            if " " in name:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText("The name can't contain ' '")
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                ret = msgBox.exec_()
-                return
-            """
-            if name.find("ñ") is -1:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText("The name can't contain 'ñ'")
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                ret = msgBox.exec_()
-                return
-            """
             if name[0].isdigit():
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("The name can't start by number")
@@ -840,7 +830,7 @@ class LearnBlock:
         table.insertRow(table.rowCount())
         variables = []
         variables.append(Variable("float", "set to ", "0"))
-        button = Block_Button((name, {}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, variables, blockType, table, table.rowCount() - 1, VARIABLE))
+        button = Block_Button((self,name, {}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections, variables, blockType, table, table.rowCount() - 1, VARIABLE,{}))
         self.listButtons.append(button)
         table.setCellWidget(table.rowCount() - 1, 0, button)
         self.listVars.append(button.getAbstracBlockItem())
@@ -848,7 +838,7 @@ class LearnBlock:
             blockType, connections = loadConfigBlock(pathBlocks + "/" + img)
             table = self.dicTables['variables']
             table.insertRow(table.rowCount())
-            button = Block_Button((name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE))
+            button = Block_Button((self,name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, VARIABLE,{}))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listVars.append(button.getAbstracBlockItem())
@@ -931,6 +921,7 @@ class LearnBlock:
     def retUserFunctions(self,ret):
         if ret is 1:
             name = self.userFunctionsGui.nameLineEdit.text()
+            name = name.replace(" ","_")
             if name in self.listNameUserFunctions:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("This name alredy exist")
@@ -938,22 +929,6 @@ class LearnBlock:
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            if " " in name:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText("The name can't contain ' '")
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                ret = msgBox.exec_()
-                return
-            """
-            if name.find("ñ") is -1:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setText("The name can't contain 'ñ'")
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                ret = msgBox.exec_()
-                return
-            """
             if name[0].isdigit():
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("The name can't start by number")
@@ -974,7 +949,7 @@ class LearnBlock:
         for img in imgs:
             blockType, connections = loadConfigBlock(pathBlocks + "/" + img)
             table.insertRow(table.rowCount())
-            button = Block_Button((name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, USERFUNCTION))
+            button = Block_Button((self,name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections, [], blockType, table, table.rowCount() - 1, USERFUNCTION,{}))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listUserFunctions.append(button.getAbstracBlockItem())

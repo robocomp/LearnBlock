@@ -4,4 +4,5 @@ block{
     name get_move
     img block4, block3
     languages ES: "obtener_movimiento", EN: "get_move"
+    tooltip ES: "Devuelve la velocidad y la rotacion que tiene el robot en ese momento", EN: "get_move"
 }

@@ -25,7 +25,7 @@ class VarGui(QtGui.QDialog, var.Ui_Dialog):
         self.deleteButton.clicked.connect(fun)
         self.okButton.clicked.connect(self.close)
 
-class VisualBlock(QtGui.QGraphicsPixmapItem):
+class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
     def __init__(self, parentBlock, parent=None, scene=None):
         self.parentBlock = parentBlock
@@ -43,6 +43,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem):
         else:
             self.showtext = self.dicTrans[ getLanguage() ]
         QtGui.QGraphicsPixmapItem.__init__(self)
+        QtGui.QWidget.__init__(self)
 
         #Load Image of block
         self.cvImg = cv2.imread(self.parentBlock.file,cv2.IMREAD_UNCHANGED)
@@ -95,7 +96,29 @@ class VisualBlock(QtGui.QGraphicsPixmapItem):
             i+=1
         self.sizeIn = 0
         self.shouldUpdateConnections = False
+        self.popMenu = QtGui.QMenu(self)
+        # action0 = QtGui.QAction('Duplicate', self)
+        # action0.triggered.connect(self.on_clicked_menu_duplicate)
+        # self.popMenu.addAction(action0)
+        action1 = QtGui.QAction('Edit', self)
+        action1.triggered.connect(self.on_clicked_menu_edit)
+        self.popMenu.addAction(action1)
+        self.popMenu.addSeparator()
+        action2 = QtGui.QAction('Delete', self)
+        action2.triggered.connect(self.on_clicked_menu_delete)
+        self.popMenu.addAction(action2)
 
+    def on_clicked_menu_duplicate(self):
+        print "test0"
+
+    def on_clicked_menu_edit(self):
+        self.scene.setIdItemSelected(None)
+        if self.DialogVar is not None:
+            self.DialogVar.open()
+            self.scene.setTable(self.DialogVar)
+
+    def on_clicked_menu_delete(self):
+        self.delete()
 
     def start(self):
         # self.update()
@@ -216,7 +239,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem):
                     if c.getIdItem() is not None:
                         self.scene.getVisualItem(c.getIdItem()).moveToPos(
                             self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
-
         self.shouldUpdate = False
 
     def updateVarValues(self):
@@ -228,8 +250,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem):
                     self.shouldUpdate = True
                     self.parentBlock.updateVars(vars)
                     break
-
-
 
     def updateConnections(self):
 
@@ -324,10 +344,11 @@ class VisualBlock(QtGui.QGraphicsPixmapItem):
             if self.DialogVar is not None:
                 self.DialogVar.close()
         if event.button() is QtCore.Qt.MouseButton.RightButton:
-            self.scene.setIdItemSelected(None)
-            if self.DialogVar is not None:
-                self.DialogVar.open()
-                self.scene.setTable(self.DialogVar)
+            self.popMenu.exec_(event.screenPos())
+            # self.scene.setIdItemSelected(None)
+            # if self.DialogVar is not None:
+            #     self.DialogVar.open()
+            #     self.scene.setTable(self.DialogVar)
 
     def mouseDoubleClickEvent(self,event):
         if event.button() is QtCore.Qt.MouseButton.LeftButton:

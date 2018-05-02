@@ -4,6 +4,7 @@ block{
     name expressJoy
     img block1
     languages ES: "expresar_alegria", EN: "express_Joy"
+    tooltip ES: "Muestra la cara de alegria en el robot", EN: "Show the face of joy in the robot"
 }
 
 block{
@@ -11,32 +12,37 @@ block{
     name expressFear
     img block1
     languages ES: "expresar_miedo", EN: "express_Fear"
+    tooltip ES: "Muestra la cara de miedo en el robot", EN: "Show the face of fear in the robot"
 }
 
 block{
     type express
     name expressSadness
     img block1
-    languages ES: "expresar_tristeza", EN: "expressSadness"
+    languages ES: "expresar_tristeza", EN: "express_Sadness"
+    tooltip ES: "Muestra la cara de tristeza en el robot", EN: "Show the face of sadness in the robot"
 }
 
 block{
     type express
     name expressAnger
     img block1
-    languages ES: "expresar_ira", EN: "expressAnger"
+    languages ES: "expresar_ira", EN: "express_Anger"
+    tooltip ES: "Muestra la cara de ira en el robot", EN: "Show the face of anger in the robot"
 }
 
 block{
     type express
     name expressDisgust
     img block1
-    languages ES: "expresar_asco", EN: "expressDisgust"
+    languages ES: "expresar_asco", EN: "express_Disgust"
+    tooltip ES: "Muestra la cara de asco en el robot", EN: "Show the face of disgust in the robot"
 }
 
 block{
     type express
     name expressSurprise
     img block1
-    languages ES: "expresar_sorpresa", EN: "expressSurprise"
+    languages ES: "expresar_sorpresa", EN: "express_Surprise"
+    tooltip ES: "Muestra la cara de sorpresa en el robot", EN: "Show the face of fear in the robot"
 }

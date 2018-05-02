@@ -1,4 +1,5 @@
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 from pyparsing import *
@@ -24,6 +25,7 @@ TYPE = Group( Suppress( Word( "type" ) ) + identifier ).setResultsName( "type" )
 languages = Literal( "ES" ).setResultsName( 'ES' ) | Literal( "FR" ).setResultsName( 'FR' ) | Literal( "EN" ).setResultsName( 'EN' ) | Literal( "P" ).setResultsName( 'P' )
 translation  = Group( languages.setResultsName( "language" ) + Suppress( Literal( ":" ) ) + QuotedString( '"' ).setResultsName( "translation" ) )
 translations = Group( Suppress( Literal( "languages" ) ) + translation + ZeroOrMore( Suppress( "," ) + translation ) ).setResultsName( 'translations' )
+tooltip = Group( Suppress( Literal( "tooltip" ) ) + translation + ZeroOrMore( Suppress( "," ) + translation ) ).setResultsName( 'tooltip' )
 
 
 # -------------------------IMG--------------------
@@ -41,7 +43,7 @@ var = identifier.setResultsName( "type" )+identifier.setResultsName( "varName" )
 
 variables = Suppress( Word( "variables" ) )+op+ Group( var )+ZeroOrMore( Group( var ) )+cl
 
-block = Group( Suppress( Literal( "block" ) ) + op +  TYPE + name + Optional( variables ).setResultsName("variables") + img + Optional( translations ) + cl )
+block = Group( Suppress( Literal( "block" ) ) + op +  TYPE + name + Optional( variables ).setResultsName("variables") + img + Optional( translations ) + Optional( tooltip ) + cl )
 
 parser = block + ZeroOrMore( block )
 parser.ignore(pythonStyleComment)

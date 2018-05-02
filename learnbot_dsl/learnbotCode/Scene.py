@@ -7,10 +7,11 @@ from blocksConfig import pathImgBlocks
 
 class MyScene(QtGui.QGraphicsScene):
 
-    def __init__(self,view):
+    def __init__(self, parent, view):
+        self.parent = parent
         self.shouldSave = False
         self.view = view
-        QtGui.QGraphicsScene.__init__(self)
+        QtGui.QGraphicsScene.__init__(self,self.parent)
         self.setBackgroundBrush(QtCore.Qt.gray)
         self.idItemS = None
         self.timer = QtCore.QTimer()
