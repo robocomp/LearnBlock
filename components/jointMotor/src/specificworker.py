@@ -22,9 +22,11 @@ import sys, os, traceback, time
 from PySide import QtGui, QtCore
 from genericworker import *
 import wiringpi
-from math  import pi
+from math import pi
+import Adafruit_PCA9685
 
-
+servo_min = 150  # Min pulse length out of 4096
+servo_max = 600  # Max pulse length out of 4096
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
@@ -36,6 +38,8 @@ class SpecificWorker(GenericWorker):
 		wiringpi.pinMode(18,1)
 		wiringpi.softPwmCreate(18,0,100)
 		wiringpi.softPwmWrite(18, 8)
+		self.pwm = Adafruit_PCA9685.PCA9685()
+		self.pwm.set_pwm_freq(60)
 
 	def setParams(self, params):
 		return True
@@ -50,7 +54,7 @@ class SpecificWorker(GenericWorker):
 			angle = -pi/2
 		elif angle > pi/2:
 			angle = pi/2
-		return (angle + pi/2) * (20 - 4) / (pi/2 + pi*2) + 4;
+		return (angle + pi/2) * (servo_max - servo_min) / (pi/2 + pi*2) + servo_min;
 
 	def getAllMotorParams(self):
 		ret = MotorParamsList()
@@ -91,8 +95,64 @@ class SpecificWorker(GenericWorker):
 	def setPosition(self, goal):
 		angle = int(self.Rad2OutPint(goal.position))
 		print angle
-		wiringpi.softPwmWrite(18, angle)
-		time.sleep(0.5)
+		self.pwm.set_pwm(15, 0, angle)
+		# wiringpi.softPwmWrite(18, angle)
+		# time.sleep(0.5)
 
 	def setVelocity(self, goal):
 		pass
+
+
+
+
+
+
+
+
+
+# # Simple demo of of the PCA9685 PWM servo/LED controller library.
+# # This will move channel 0 from min to max position repeatedly.
+# # Author: Tony DiCola
+# # License: Public Domain
+# from __future__ import division
+# import time
+#
+# # Import the PCA9685 module.
+# import Adafruit_PCA9685
+#
+#
+# # Uncomment to enable debug output.
+# #import logging
+# #logging.basicConfig(level=logging.DEBUG)
+#
+# # Initialise the PCA9685 using the default address (0x40).
+# pwm = Adafruit_PCA9685.PCA9685()
+#
+# # Alternatively specify a different address and/or bus:
+# #pwm = Adafruit_PCA9685.PCA9685(address=0x41, busnum=2)
+#
+# # Configure min and max servo pulse lengths
+# servo_min = 150  # Min pulse length out of 4096
+# servo_max = 600  # Max pulse length out of 4096
+#
+# # Helper function to make setting a servo pulse width simpler.
+# def set_servo_pulse(channel, pulse):
+#     pulse_length = 1000000    # 1,000,000 us per second
+#     pulse_length //= 60       # 60 Hz
+#     print('{0}us per period'.format(pulse_length))
+#     pulse_length //= 4096     # 12 bits of resolution
+#     print('{0}us per bit'.format(pulse_length))
+#     pulse *= 1000
+#     pulse //= pulse_length
+#     pwm.set_pwm(channel, 0, pulse)
+#
+# # Set frequency to 60hz, good for servos.
+# pwm.set_pwm_freq(60)
+#
+# print('Moving servo on channel 0, press Ctrl-C to quit...')
+# while True:
+#     # Move servo on channel O between extremes.
+#     pwm.set_pwm(15, 0, servo_min)
+#     time.sleep(1)
+#     pwm.set_pwm(15, 0, servo_max)
+#     time.sleep(1)
