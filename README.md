@@ -1,3 +1,4 @@
+# _We suggest using the version-2 branch_
 [Learnbot v 2.0](http://robocomp.org)
 ===============================
 LearnBot is a social low cost robot that has been designed in to  the  area  of  educational  robotics  for  promoting  the  development of  computational  thinking  in  diferent  educational  stages,  specically through the learning of the Python language. It has being entirely built using a robotics framework developed by our Robotic Laboratory.
