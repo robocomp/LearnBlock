@@ -1,21 +1,24 @@
-from pyparsing import *
-import sys, os
 import inspect
+import os
+from pyparsing import *
 
 path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
-reserved_words = ( Keyword('=')  | Keyword('command.') | Keyword('learnbot.') | Keyword('ip') | Keyword('user') | Keyword('pass') | Keyword('start') | Keyword('stop'))
-iden = Word( alphanums+"_")
-identifier = Group( ~reserved_words + iden )
+reserved_words = (Keyword('=') | Keyword('command.') | Keyword('learnbot.') | Keyword('ip') | Keyword('user') | Keyword(
+    'pass') | Keyword('start') | Keyword('stop'))
+iden = Word(alphanums + "_")
+identifier = Group(~reserved_words + iden)
 
-IP = Suppress("learnbot.ip") + Suppress("=") + QuotedString( '"' ).setResultsName("ip")
-USER = Suppress("learnbot.user") + Suppress("=") + QuotedString( '"' ).setResultsName("user")
-PASS = Suppress("learnbot.pass") + Suppress("=") + QuotedString( '"' ).setResultsName("pass")
-START = Suppress("learnbot.command.start") + Suppress("=") + QuotedString( '"' ).setResultsName("start")
-START_SIMULATOR = Suppress("learnbot.command.start_simulator") + Suppress("=") + QuotedString( '"' ).setResultsName("start_simulator")
-STOP = Suppress("learnbot.command.stop") + Suppress("=") + QuotedString( '"' ).setResultsName("stop")
+IP = Suppress("learnbot.ip") + Suppress("=") + QuotedString('"').setResultsName("ip")
+USER = Suppress("learnbot.user") + Suppress("=") + QuotedString('"').setResultsName("user")
+PASS = Suppress("learnbot.pass") + Suppress("=") + QuotedString('"').setResultsName("pass")
+START = Suppress("learnbot.command.start") + Suppress("=") + QuotedString('"').setResultsName("start")
+START_SIMULATOR = Suppress("learnbot.command.start_simulator") + Suppress("=") + QuotedString('"').setResultsName(
+    "start_simulator")
+STOP = Suppress("learnbot.command.stop") + Suppress("=") + QuotedString('"').setResultsName("stop")
 
-PARSERCONFIG = OneOrMore(IP | USER | PASS | START | STOP | START_SIMULATOR )
+PARSERCONFIG = OneOrMore(IP | USER | PASS | START | STOP | START_SIMULATOR)
+
 
 def __parserFromFile(file):
     with open(file) as f:
@@ -24,6 +27,7 @@ def __parserFromFile(file):
         print ret
         return ret
 
+
 def __parserFromString(text):
     try:
         PARSERCONFIG.ignore(pythonStyleComment)
@@ -31,15 +35,17 @@ def __parserFromString(text):
     except Exception as e:
         print e
         print("line: {}".format(e.line))
-        print("    "+" "*e.col+"^")
+        print("    " + " " * e.col + "^")
         raise e
         exit(-1)
 
 
 configSSH = __parserFromFile(path + "/etc/config")
 
+
 def reloadConfig():
     global configSSH
     configSSH = __parserFromFile(path + "/etc/config")
-    
+
+
 __all__ = ['configSSH']

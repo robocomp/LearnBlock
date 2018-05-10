@@ -1,20 +1,21 @@
+import os
+
 import guis.addNumberOrString as addNumberOrString
 from VisualBlock import *
-import os
-from blocksConfig import pathBlocks, pathConfig
+from blocksConfig import pathBlocks
+
 listBlock = []
 listNameBlocks = []
 import cv2
 
 for base, dirs, files in os.walk(pathBlocks):
     for f in files:
-        archivo, extension = os.path.splitext(base+"/"+f)
+        archivo, extension = os.path.splitext(base + "/" + f)
         if extension == ".png" and "block" in f and "azul" not in f:
             if "block3" in f or "block4" in f:
-                listBlock.append(base+"/"+f)
+                listBlock.append(base + "/" + f)
                 archivo, extension = os.path.splitext(f)
                 listNameBlocks.append(archivo)
-
 
 listTypeBlock = ["control",
                  "motor",
@@ -28,9 +29,10 @@ listconfig = ["configControl",
               "configPerceptual"
               "configPropriopercetive"]
 
+
 class guiAddNumberOrString(QtGui.QDialog):
 
-    def __init__(self,type):
+    def __init__(self, type):
         self.type = type
         QtGui.QDialog.__init__(self)
         self.blockType = None
@@ -38,7 +40,7 @@ class guiAddNumberOrString(QtGui.QDialog):
         self.img = None
         self.imgName = []
         self.ui = addNumberOrString.Ui_Dialog()
-        self.value=None
+        self.value = None
         self.ui.setupUi(self)
         self.__updateBlockType(0)
         self.__updateImage(0)
@@ -46,23 +48,23 @@ class guiAddNumberOrString(QtGui.QDialog):
             self.ui.comboBoxBlockImage.addItem(name)
         self.ui.comboBoxBlockImage.currentIndexChanged.connect(self.__updateImage)
 
-        self.ui.pushButtonOK.clicked.connect(lambda :self.__buttons(1))
-        self.ui.pushButtonCancel.clicked.connect(lambda :self.__buttons(0))
-        self.ui.lineEditName.textChanged.connect(lambda :self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
+        self.ui.pushButtonOK.clicked.connect(lambda: self.__buttons(1))
+        self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
+        self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
         if type is 1:
             self.ui.lineEditName.setValidator(QtGui.QDoubleValidator())
 
-    def __updateImage(self,index):
+    def __updateImage(self, index):
         self.value = self.ui.lineEditName.text()
         if self.type is 2:
-            self.value = '"'+ self.value +'"'
-        self.img=listNameBlocks[index]
-        self.imgName=listBlock[index]
-        img = cv2.imread(listBlock[index],cv2.IMREAD_UNCHANGED)
+            self.value = '"' + self.value + '"'
+        self.img = listNameBlocks[index]
+        self.imgName = listBlock[index]
+        img = cv2.imread(listBlock[index], cv2.IMREAD_UNCHANGED)
         archivo, extension = os.path.splitext(listBlock[index])
         blockType, connections = self.__loadConfigBlock(archivo)
         img = generateBlock(img, 34, self.ui.lineEditName.text(), blockType, None,
-                             None)
+                            None)
         qImage = toQImage(img)
         self.ui.BlockImage.setPixmap(QtGui.QPixmap(qImage))
 
@@ -111,7 +113,7 @@ class guiAddNumberOrString(QtGui.QDialog):
 
     def __buttons(self, ret):
         if ret is 1:
-            ret =None
+            ret = None
             if self.ui.lineEditName.text() == "":
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("Error Name is empty.")
@@ -123,11 +125,12 @@ class guiAddNumberOrString(QtGui.QDialog):
         self.close()
 
     def __repitNameVar(self):
-        varlist=[]
+        varlist = []
         if self.ui.tableWidgetVars.rowCount() is not 0:
             for row in range(0, self.ui.tableWidgetVars.rowCount()):
-                if self.ui.tableWidgetVars.cellWidget(row,1).text() in varlist or self.ui.tableWidgetVars.cellWidget(row,1).text() == ""\
-                        or self.ui.tableWidgetVars.cellWidget(row,2).text() == "":
+                if self.ui.tableWidgetVars.cellWidget(row, 1).text() in varlist or self.ui.tableWidgetVars.cellWidget(
+                        row, 1).text() == "" \
+                        or self.ui.tableWidgetVars.cellWidget(row, 2).text() == "":
                     return True
                 varlist.append(self.ui.tableWidgetVars.cellWidget(row, 1).text())
         return False

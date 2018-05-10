@@ -1,7 +1,8 @@
 from threading import Lock
 
-LANGUAGE="ES"
+LANGUAGE = "ES"
 mutex = Lock()
+
 
 def changeLanguageTo(l):
     global LANGUAGE

@@ -1,17 +1,16 @@
-import copy
 from PySide import QtGui
 from math import *
-import cv2
+
 import guis.var as var
-from AbstractBlock import *
-from toQImage import *
 from Block import *
-
 from Language import *
+from toQImage import *
 
-def EuclideanDist(p1,p2):
+
+def EuclideanDist(p1, p2):
     p = p1 - p2
     return sqrt(pow(p.x(), 2) + pow(p.y(), 2))
+
 
 class VarGui(QtGui.QDialog, var.Ui_Dialog):
 
@@ -21,9 +20,10 @@ class VarGui(QtGui.QDialog, var.Ui_Dialog):
     def getTable(self):
         return self.table
 
-    def setSlotToDeleteButton(self,fun):
+    def setSlotToDeleteButton(self, fun):
         self.deleteButton.clicked.connect(fun)
         self.okButton.clicked.connect(self.close)
+
 
 class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
@@ -38,21 +38,22 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             c.setParent(self.parentBlock)
         self.dicTrans = parentBlock.dicTrans
         self.shouldUpdate = True
-        if len( self.dicTrans ) is 0:
+        if len(self.dicTrans) is 0:
             self.showtext = self.parentBlock.name
         else:
-            self.showtext = self.dicTrans[ getLanguage() ]
+            self.showtext = self.dicTrans[getLanguage()]
         QtGui.QGraphicsPixmapItem.__init__(self)
         QtGui.QWidget.__init__(self)
 
-        #Load Image of block
-        self.cvImg = cv2.imread(self.parentBlock.file,cv2.IMREAD_UNCHANGED)
+        # Load Image of block
+        self.cvImg = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
-        img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type, self.parentBlock.nameControl)
+        img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
+                            self.parentBlock.nameControl)
         qImage = toQImage(img)
         try:
-            self.header = copy.copy(self.cvImg[0:39,0:149])
-            self.foot = copy.copy(self.cvImg[69:104,0:149])
+            self.header = copy.copy(self.cvImg[0:39, 0:149])
+            self.foot = copy.copy(self.cvImg[69:104, 0:149])
         except:
             pass
 
@@ -65,8 +66,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.setPos(self.parentBlock.pos)
         self.scene.activeShouldSave()
         self.setPixmap(self.img)
-
-
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
@@ -85,7 +84,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
         i = 0
         for var in vars:
-            self.tabVar.setCellWidget(i,0,QtGui.QLabel(var.name))
+            self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
             edit = QtGui.QLineEdit()
             edit.setValidator(QtGui.QDoubleValidator())
             edit.setText(var.defaul)
@@ -93,7 +92,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             combobox = QtGui.QComboBox()
             combobox.addItem("None")
             self.tabVar.setCellWidget(i, 2, combobox)
-            i+=1
+            i += 1
         self.sizeIn = 0
         self.shouldUpdateConnections = False
         self.popMenu = QtGui.QMenu(self)
@@ -186,10 +185,10 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
     def getVars(self):
         vars = []
         for cell in range(0, self.tabVar.rowCount()):
-            if self.tabVar.cellWidget(cell,2).currentText() == "None":
+            if self.tabVar.cellWidget(cell, 2).currentText() == "None":
                 vars.append(self.tabVar.cellWidget(cell, 1).text())
             else:
-                vars.append(self.tabVar.cellWidget(cell,2).currentText())
+                vars.append(self.tabVar.cellWidget(cell, 2).currentText())
         if len(vars) is 0:
             vars = None
         return vars
@@ -224,7 +223,8 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
         if self.sizeIn != size or self.shouldUpdate:
             self.sizeIn = size
-            im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(),self.__type,self.parentBlock.nameControl)
+            im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
+                               self.parentBlock.nameControl)
             qImage = toQImage(im)
             self.img = QtGui.QPixmap(qImage)
             self.setPixmap(self.img)
@@ -235,7 +235,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                         self.scene.getVisualItem(c.getIdItem()).moveToPos(
                             self.pos() + QtCore.QPointF(0, self.img.height() - 5))
                 if c.getType() is RIGHT:
-                    c.setPoint(QtCore.QPointF(im.shape[1] - 5,c.getPoint().y() ))
+                    c.setPoint(QtCore.QPointF(im.shape[1] - 5, c.getPoint().y()))
                     if c.getIdItem() is not None:
                         self.scene.getVisualItem(c.getIdItem()).moveToPos(
                             self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
@@ -245,7 +245,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         vars = self.getVars()
         prev_vars = self.parentBlock.getVars()
         if vars is not None:
-            for i in range(0,len(vars)):
+            for i in range(0, len(vars)):
                 if vars[i] != prev_vars:
                     self.shouldUpdate = True
                     self.parentBlock.updateVars(vars)
@@ -262,9 +262,9 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                     c.setConnect(None)
 
     def update(self):
-        if len( self.dicTrans ) is not 0 and self.showtext is not self.dicTrans[ getLanguage() ]:
-            self.shouldUpdate=True
-            self.showtext = self.dicTrans[ getLanguage() ]
+        if len(self.dicTrans) is not 0 and self.showtext is not self.dicTrans[getLanguage()]:
+            self.shouldUpdate = True
+            self.showtext = self.dicTrans[getLanguage()]
 
         for row in range(0, self.tabVar.rowCount()):
             combobox = self.tabVar.cellWidget(row, 2)
@@ -291,7 +291,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.parentBlock.setPos(copy.deepcopy(self.pos()))
         self.scene.activeShouldSave()
         for c in self.connections:
-            if c.getType() in (TOP,LEFT) and self is self.scene.getItemSelected() and connect is not True:
+            if c.getType() in (TOP, LEFT) and self is self.scene.getItemSelected() and connect is not True:
                 if c.getIdItem() is not None:
                     c.getConnect().setItem(None)
                     c.getConnect().setConnect(None)
@@ -299,13 +299,15 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                     c.setConnect(None)
             elif c.getType() is BOTTOM:
                 if c.getIdItem() is not None:
-                    self.scene.getVisualItem(c.getIdItem()).moveToPos(self.pos() + QtCore.QPointF(0, self.img.height()-5), connect)
+                    self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                        self.pos() + QtCore.QPointF(0, self.img.height() - 5), connect)
             elif c.getType() is BOTTOMIN:
                 if c.getIdItem() is not None:
                     self.scene.getVisualItem(c.getIdItem()).moveToPos(self.pos() + QtCore.QPointF(17, 33), connect)
             elif c.getType() is RIGHT:
                 if c.getIdItem() is not None:
-                    self.scene.getVisualItem(c.getIdItem()).moveToPos(self.pos() + QtCore.QPointF(self.img.width() - 5, 0), connect)
+                    self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                        self.pos() + QtCore.QPointF(self.img.width() - 5, 0), connect)
 
     def getLastItem(self):
         for c in self.connections:
@@ -332,14 +334,14 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 self.scene.getVisualItem(c.getIdItem()).moveToFront()
                 break
 
-    def mouseMoveEvent(self,event):
-        self.setPos(event.scenePos()-self.posmouseinItem)
+    def mouseMoveEvent(self, event):
+        self.setPos(event.scenePos() - self.posmouseinItem)
         self.parentBlock.setPos(self.pos())
         self.scene.activeShouldSave()
 
     def mousePressEvent(self, event):
         if event.button() is QtCore.Qt.MouseButton.LeftButton:
-            self.posmouseinItem = event.scenePos()-self.pos()
+            self.posmouseinItem = event.scenePos() - self.pos()
             self.scene.setIdItemSelected(self.id)
             if self.DialogVar is not None:
                 self.DialogVar.close()
@@ -350,7 +352,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             #     self.DialogVar.open()
             #     self.scene.setTable(self.DialogVar)
 
-    def mouseDoubleClickEvent(self,event):
+    def mouseDoubleClickEvent(self, event):
         if event.button() is QtCore.Qt.MouseButton.LeftButton:
             self.scene.setIdItemSelected(None)
             if self.DialogVar is not None:
@@ -359,7 +361,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         if event.button() is QtCore.Qt.MouseButton.RightButton:
             pass
 
-    def mouseReleaseEvent(self,event):
+    def mouseReleaseEvent(self, event):
         if event.button() is QtCore.Qt.MouseButton.LeftButton:
             self.posmouseinItem = None
             self.scene.setIdItemSelected(None)
@@ -391,7 +393,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         if self.parentBlock.name == "when":
             return True
         for c in self.connections:
-            if c.getType() in [TOP, BOTTOM,RIGHT,LEFT]:
+            if c.getType() in [TOP, BOTTOM, RIGHT, LEFT]:
                 return False
 
         return True

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from PySide import QtGui, QtCore
-import cv2, os
-from Language import *
-from Block import *
+import os
+from PySide import QtGui
+
 from AbstractBlock import *
-import copy
+from Language import *
+
 
 class Block_Button(QtGui.QPushButton):
 
-    def __init__(self,args):
+    def __init__(self, args):
         if len(args) is 13:
             self.__parent, self.__text, self.__dicTrans, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType, self.__table, self.__row, self.__type, self.__dicToolTip = args
             self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
@@ -31,10 +31,10 @@ class Block_Button(QtGui.QPushButton):
         im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
         self.showtext = self.__text
 
-        if len( self.__dicTrans ) is not 0:
-            self.showtext = self.__dicTrans[ getLanguage() ]
+        if len(self.__dicTrans) is not 0:
+            self.showtext = self.__dicTrans[getLanguage()]
             self.updateImg()
-        var=[x.name for x in self.__vars]
+        var = [x.name for x in self.__vars]
         img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, var, self.__type)
         cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
         self.setIcon(QtGui.QIcon(self.tmpFile))
@@ -42,9 +42,8 @@ class Block_Button(QtGui.QPushButton):
         self.setFixedSize(QtCore.QSize(150, im.shape[0]))
         self.__table.setRowHeight(self.__row, im.shape[0])
         self.clicked.connect(self.on_clickedButton)
-        self.__item = self.__table.item(self.__row,0)
+        self.__item = self.__table.item(self.__row, 0)
         self.updateToolTip()
-
 
     def updateToolTip(self):
         try:
@@ -61,8 +60,10 @@ class Block_Button(QtGui.QPushButton):
             self.setToolTip(textout)
         except:
             pass
+
     def getCopy(self, table):
-        return Block_Button((self.__parent,self.getAbstracBlockItem(), self.__view, self.__scene, table, table.rowCount() - 1))
+        return Block_Button(
+            (self.__parent, self.getAbstracBlockItem(), self.__view, self.__scene, table, table.rowCount() - 1))
 
     def getCurrentText(self):
         return self.showtext
@@ -74,8 +75,8 @@ class Block_Button(QtGui.QPushButton):
             print e
 
     def updateImg(self):
-        if len( self.__dicTrans ) is not 0 and self.showtext is not self.__dicTrans[ getLanguage() ]:
-            self.showtext = self.__dicTrans[ getLanguage() ]
+        if len(self.__dicTrans) is not 0 and self.showtext is not self.__dicTrans[getLanguage()]:
+            self.showtext = self.__dicTrans[getLanguage()]
             im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
             img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, None, self.__type)
             cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
@@ -85,14 +86,16 @@ class Block_Button(QtGui.QPushButton):
             self.updateToolTip()
 
     def on_clickedButton(self):
-        block = AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections,self.__blockType,self.__type)
+        block = AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "",
+                              self.__connections, self.__blockType, self.__type)
         self.__scene.addItem(copy.deepcopy(block))
 
     def getAbstracBlockItem(self):
-        return AbstractBlock(0,0,self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections, self.__blockType,self.__type)
+        return AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "",
+                             self.__connections, self.__blockType, self.__type)
 
-    def delete(self,row):
-        self.__table.removeCellWidget(row,0)
+    def delete(self, row):
+        self.__table.removeCellWidget(row, 0)
         self.__table.removeRow(row)
         self.__scene.removeByName(self.__text)
         del self
