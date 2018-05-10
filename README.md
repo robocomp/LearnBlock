@@ -1,4 +1,4 @@
-# _We recommend using the version-2 branch_
+# _We suggest using the version-2 branch_
 
 [Learnbot v 1.0](http://robocomp.org)
 ===============================
