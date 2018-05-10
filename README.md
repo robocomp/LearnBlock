@@ -20,7 +20,7 @@ The mains aims of the project are the follows:
     
 
 # Manuals Learnbot!
-1. [Documentation](https://github.com/ibarbech/learnbot/wiki)
+1. [Documentation](../../wiki)
 2. Enjoy!
 
 # Citting
