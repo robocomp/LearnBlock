@@ -57,7 +57,6 @@ class Client(Ice.Application, threading.Thread):
                 params[1] = '--Ice.Config=' + params[1]
         elif len(params) == 1:
             params.append('--Ice.Config=config')
-        print params
         ic = Ice.initialize(params)
 
 
@@ -181,8 +180,6 @@ class Client(Ice.Application, threading.Thread):
 
     def setRobotSpeed(self, vAdvance=0, vRotation=0):
         try:
-            print vAdvance, vRotation
-            # if vAdvance!=0 or vRotation!=0:ll
             self.adv = vAdvance
             self.rot = vRotation
             self.differentialrobot_proxy.setSpeedBase(-self.adv*8, self.rot*15)
@@ -216,7 +213,6 @@ class Client(Ice.Application, threading.Thread):
             "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/asco.png")
 
     def expressJoy(self):
-        print "expressJoy"
         self.display_proxy.setImageFromFile(
             "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/alegria.png")
 

@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------------
-#
-#
-# ------------------------------------------------------------------
 
 import sys
 from pyparsing import *
 
 HEADER = """
-
-# EXECUTION: python code_example.py config
-
+#EXECUTION: python code_example.py config
+from learnbot_dsl.functions import *
+import learnbot_dsl.LearnBotClient as LearnBotClient
+import sys
+import time
 global lbot
-lbot = <LearnBotClient>.Client(sys.argv)
 
-
+try:
+    lbot = <LearnBotClient>.Client(sys.argv)
+except Exception as e:
+    print "hay un Error"
+    print e
+    
 """
 
 

@@ -25,11 +25,18 @@ print sys.version_info[0]
 
 HEADER = """
 #EXECUTION: python code_example.py config
-
+from learnbot_dsl.functions import *
+import learnbot_dsl.LearnBotClient as LearnBotClient
+import sys
+import time
 global lbot
-lbot = <LearnBotClient>.Client(sys.argv)
-
+try:
+    lbot = <LearnBotClient>.Client(sys.argv)
+except Exception as e:
+    print "hay un Error"
+    print e
 """
+
 path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 
@@ -110,7 +117,6 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionExit.triggered.connect(self.exit)
-        # self.destroyed.connect(self.exit)
         self.app.aboutToQuit.connect(self.exit)
 
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
@@ -157,7 +163,6 @@ class LearnBlock(QtGui.QMainWindow):
         self.avtiveEvents(False)
 
         self.timer = QtCore.QTimer()
-        # self.timer.start(1000)
         self.scene.setlistNameVars(self.listNameVars)
 
         r = self.app.exec_()
@@ -197,8 +202,6 @@ class LearnBlock(QtGui.QMainWindow):
 
     def startSimulatorRobot(self):
         subprocess.Popen(configSSH["start_simulator"], shell=True, stdout=subprocess.PIPE)
-        print configSSH["start_simulator"]
-        # os.system(configSSH["start_simulator"])
 
     def shutdownRobot(self):
         client = paramiko.SSHClient()
@@ -330,42 +333,9 @@ class LearnBlock(QtGui.QMainWindow):
                 self.listButtons.append(button)
                 table.setCellWidget(table.rowCount() - 1, 0, button)
 
-    # def loadConfigBlock(self, img):
-    #     fh = open(img, "r")
-    #     text = fh.readlines()
-    #     fh.close()
-    #     connections = []
-    #     blockType = None
-    #     for line in text:
-    #         if "type" in line:
-    #             line = line.replace("\n", "")
-    #             line = line.split(" ")
-    #             blockType = line[1]
-    #             if "simple" in blockType:
-    #                 blockType = SIMPLEBLOCK
-    #             elif "complex" in blockType:
-    #                 blockType = COMPLEXBLOCK
-    #         else:
-    #             line = line.replace("\n", "")
-    #             line = line.replace(" ", "")
-    #             c = line.split(",")
-    #             type = None
-    #             if "TOP" in c[2]:
-    #                 type = TOP
-    #             elif "BOTTOMIN" in c[2]:
-    #                 type = BOTTOMIN
-    #             elif "BOTTOM" in c[2]:
-    #                 type = BOTTOM
-    #             elif "RIGHT" in c[2]:
-    #                 type = RIGHT
-    #             elif "LEFT" in c[2]:
-    #                 type = LEFT
-    #             connections.append((QtCore.QPointF(int(c[0]), int(c[1])), type))
-    #     return blockType, connections
-
     def execTmp(self):
         try:
-            execfile("main_tmp.py", globals())
+            execfile("main_tmp.py")
         except:
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
@@ -415,7 +385,6 @@ class LearnBlock(QtGui.QMainWindow):
 
     def saveAs(self):
         fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', '.', 'Block Project file (*.blockProject)')
-        print fileName
         if fileName[0] != "":
             file = fileName[0]
             if "." in file:
@@ -666,13 +635,13 @@ class LearnBlock(QtGui.QMainWindow):
                 return
             if compile("main_tmp.py"):
                 try:
-                    if not self.physicalRobot:
-                        LearnBotClient.Client(sys.argv)
+                    # if not self.physicalRobot:
+                        # LearnBotClient.Client(sys.argv)
                     self.hilo = Process(target=self.execTmp)
+                    self.hilo.start()
                     self.ui.stopPushButton.setEnabled(True)
                     self.ui.startPushButton.setEnabled(False)
                     self.ui.startPRPushButton.setEnabled(False)
-                    self.hilo.start()
                 except:
                     msgBox = QtGui.QMessageBox()
                     msgBox.setText("You should check connection the " + robot + " robot")
@@ -703,27 +672,21 @@ class LearnBlock(QtGui.QMainWindow):
         try:
             self.hilo.terminate()
             self.generateStopTmpFile()
-            # self.hilo = Process(target=self.stopExecTmp)
-            # self.hilo.start()
-            # self.hilo.join()
             self.stopExecTmp()
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
             self.ui.startPRPushButton.setEnabled(True)
         except Exception as e:
+
             pass
 
     def parserBlocks(self, blocks, function):  # TODO add parser for blocks when
-        text = ""
-        for b in blocks:
-            print b
         text = self.parserUserFuntions(blocks, function)
         text += "\n\n"
         if self.ui.useEventscheckBox.isChecked():
             text += self.parserWhenBlocks(blocks, function)
         else:
             text += self.parserOtherBlocks(blocks, function)
-        print text
         return text
 
     def parserUserFuntions(self, blocks, function):
@@ -767,16 +730,13 @@ class LearnBlock(QtGui.QMainWindow):
         if inst[1]["TYPE"] is USERFUNCTION:
             text = inst[0] + "()"
         if inst[1]["TYPE"] is CONTROL:
-            print "----------------------entro"
             if inst[1]["VARIABLES"] is not None:
-                print "----------------------entro"
                 text = inst[0] + "("
                 for var in inst[1]["VARIABLES"]:
                     text += var + ", "
                 text = text[0:-2] + ""
                 text += ")"
         if inst[1]["TYPE"] is FUNTION:
-            # function.set_move(30,40)
             text = "function." + inst[0] + "("
             if inst[1]["VARIABLES"] is not None:
                 for var in inst[1]["VARIABLES"]:
@@ -896,7 +856,6 @@ class LearnBlock(QtGui.QMainWindow):
         self.delWhenDialgo.open()
         self.delWhenGui.listWhencomboBox.clear()
         self.delWhenGui.listWhencomboBox.currentText()
-        print self.listNameWhens
         for x in self.listNameWhens:
             self.delWhenGui.listWhencomboBox.addItem(x[0])
         self.delWhenGui.cancelPushButton.clicked.connect(lambda: self.retdelWhenGui(0))

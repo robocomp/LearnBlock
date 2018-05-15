@@ -47,13 +47,13 @@ block{
 #     tooltip ES: "", EN: ""
 # }
 
-# block{
-#     type control
-#     name while
-#     img block6
-#     languages ES: "mientras", EN: "while"
-#     tooltip ES: "", EN: ""
-# }
+block{
+    type control
+    name while
+    img block6
+    languages ES: "mientras", EN: "while"
+    tooltip ES: "", EN: ""
+}
 
 block{
     type control
