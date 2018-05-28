@@ -1,0 +1,21 @@
+DISPLAY=:0.0 ; export DISPLAY
+python3 /home/pi/learnbot/components/display/src/display.py /home/pi/learnbot/components/display/etc/config &
+sleep2 
+
+
+python3 /home/pi/learnbot/components/emotionalMotor/src/emotionalMotor.py /home/pi/learnbot/components/emotionalMotor/etc/config &
+sleep 2
+
+
+sudo -E python3 /home/pi/learnbot/components/baserobot/src/baserobot.py /home/pi/learnbot/components/baserobot/etc/config &
+sleep 2
+
+
+# sudo -E python3 /home/pi/learnbot/components/jointMotor/src/jointMotor.py /home/pi/learnbot/components/jointMotor/etc/config &
+# sleep 2
+
+
+cd ~/software/mjpg-streamer/
+sudo modprobe bcm2835-v4l2
+./mjpg_streamer -i "./input_uvc.so -y -r 320x240 -f 30 -d /dev/video0" -o "./output_http.so -p 8080 -w ./www" &
+
