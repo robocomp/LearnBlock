@@ -18,4 +18,3 @@ sleep 2
 cd ~/software/mjpg-streamer/
 sudo modprobe bcm2835-v4l2
 ./mjpg_streamer -i "./input_uvc.so -y -r 320x240 -f 30 -d /dev/video0" -o "./output_http.so -p 8080 -w ./www" &
-
