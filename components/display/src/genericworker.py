@@ -23,7 +23,7 @@ ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except KeyError:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
@@ -31,7 +31,7 @@ Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 
 additionalPathStr = ''
-icePaths = [ '/opt/robocomp/interfaces' ]
+icePaths = [ '/opt/robocomp/interfaces' , '../../../interfaces ']
 try:
 	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
 	for p in SLICE_PATH:
@@ -39,7 +39,7 @@ try:
 		additionalPathStr += ' -I' + p + ' '
 	icePaths.append('/opt/robocomp/interfaces')
 except:
-	print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+	print ('SLICE_PATH environment variable was not exported. Using only the default paths')
 	pass
 
 ice_Display = False
@@ -51,7 +51,7 @@ for p in icePaths:
 		ice_Display = True
 		break
 if not ice_Display:
-	print 'Couln\'t load Display'
+	print ('Couln\'t load Display')
 	sys.exit(-1)
 from RoboCompDisplay import *
 
@@ -61,7 +61,7 @@ from displayI import *
 try:
 	from ui_mainUI import *
 except:
-	print "Can't import UI file. Did you run 'make'?"
+	print ("Can't import UI file. Did you run 'make'?")
 	sys.exit(-1)
 
 
@@ -92,6 +92,6 @@ class GenericWorker(QtGui.QWidget):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print "Period changed", p
+		print ("Period changed", p)
 		Period = p
 		timer.start(Period)

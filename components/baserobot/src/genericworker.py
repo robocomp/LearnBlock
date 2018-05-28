@@ -31,7 +31,7 @@ Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 
 additionalPathStr = ''
-icePaths = [ '/opt/robocomp/interfaces' ]
+icePaths = [ '/opt/robocomp/interfaces' , '../../../interfaces ']
 try:
 	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
 	for p in SLICE_PATH:
@@ -39,7 +39,7 @@ try:
 		additionalPathStr += ' -I' + p + ' '
 	icePaths.append('/opt/robocomp/interfaces')
 except:
-	print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+	print ('SLICE_PATH environment variable was not exported. Using only the default paths')
 	pass
 
 ice_DifferentialRobot = False
@@ -51,7 +51,7 @@ for p in icePaths:
 		ice_DifferentialRobot = True
 		break
 if not ice_DifferentialRobot:
-	print 'Couln\'t load DifferentialRobot'
+	print ('Couln\'t load DifferentialRobot')
 	sys.exit(-1)
 from RoboCompDifferentialRobot import *
 ice_GenericBase = False
@@ -63,7 +63,7 @@ for p in icePaths:
 		ice_GenericBase = True
 		break
 if not ice_GenericBase:
-	print 'Couln\'t load GenericBase'
+	print ('Couln\'t load GenericBase')
 	sys.exit(-1)
 from RoboCompGenericBase import *
 
@@ -95,6 +95,6 @@ class GenericWorker(QtCore.QObject):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print "Period changed", p
+		print ("Period changed", p)
 		Period = p
 		timer.start(Period)

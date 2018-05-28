@@ -55,7 +55,7 @@
 #
 #
 
-import sys, traceback, IceStorm, subprocess, threading, time, Queue, os, copy
+import sys, traceback, IceStorm, subprocess, threading, time, queue, os, copy
 
 # Ctrl+c handling
 import signal
@@ -66,77 +66,80 @@ from specificworker import *
 
 
 class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
-	def __init__(self, _handler, _communicator):
-		self.handler = _handler
-		self.communicator = _communicator
-	def getFreq(self, current = None):
-		self.handler.getFreq()
-	def setFreq(self, freq, current = None):
-		self.handler.setFreq()
-	def timeAwake(self, current = None):
-		try:
-			return self.handler.timeAwake()
-		except:
-			print 'Problem getting timeAwake'
-	def killYourSelf(self, current = None):
-		self.handler.killYourSelf()
-	def getAttrList(self, current = None):
-		try:
-			return self.handler.getAttrList(self.communicator)
-		except:
-			print 'Problem getting getAttrList'
-			traceback.print_exc()
-			status = 1
-			return
+    def __init__(self, _handler, _communicator):
+        self.handler = _handler
+        self.communicator = _communicator
 
+    def getFreq(self, current=None):
+        self.handler.getFreq()
+
+    def setFreq(self, freq, current=None):
+        self.handler.setFreq()
+
+    def timeAwake(self, current=None):
+        try:
+            return self.handler.timeAwake()
+        except:
+            print ('Problem getting timeAwake')
+
+    def killYourSelf(self, current=None):
+        self.handler.killYourSelf()
+
+    def getAttrList(self, current=None):
+        try:
+            return self.handler.getAttrList(self.communicator)
+        except:
+            print ('Problem getting getAttrList')
+            traceback.print_exc()
+            status = 1
+            return
 
 
 if __name__ == '__main__':
-	app = QtCore.QCoreApplication(sys.argv)
-	params = copy.deepcopy(sys.argv)
-	if len(params) > 1:
-		if not params[1].startswith('--Ice.Config='):
-			params[1] = '--Ice.Config=' + params[1]
-	elif len(params) == 1:
-		params.append('--Ice.Config=config')
-	ic = Ice.initialize(params)
-	status = 0
-	mprx = {}
-	parameters = {}
-	for i in ic.getProperties():
-		parameters[str(i)] = str(ic.getProperties().getProperty(i))
+    app = QtCore.QCoreApplication(sys.argv)
+    params = copy.deepcopy(sys.argv)
+    if len(params) > 1:
+        if not params[1].startswith('--Ice.Config='):
+            params[1] = '--Ice.Config=' + params[1]
+    elif len(params) == 1:
+        params.append('--Ice.Config=config')
+    ic = Ice.initialize(params)
+    status = 0
+    mprx = {}
+    parameters = {}
+    for i in ic.getProperties():
+        parameters[str(i)] = str(ic.getProperties().getProperty(i))
 
-	# Remote object connection for Display
-	try:
-		proxyString = ic.getProperties().getProperty('DisplayProxy')
-		try:
-			basePrx = ic.stringToProxy(proxyString)
-			display_proxy = DisplayPrx.checkedCast(basePrx)
-			mprx["DisplayProxy"] = display_proxy
-		except Ice.Exception:
-			print 'Cannot connect to the remote object (Display)', proxyString
-			#traceback.print_exc()
-			status = 1
-	except Ice.Exception, e:
-		print e
-		print 'Cannot get DisplayProxy property.'
-		status = 1
+    # Remote object connection for Display
+    try:
+        proxyString = ic.getProperties().getProperty('DisplayProxy')
+        try:
+            basePrx = ic.stringToProxy(proxyString)
+            display_proxy = DisplayPrx.checkedCast(basePrx)
+            mprx["DisplayProxy"] = display_proxy
+        except Ice.Exception:
+            print ('Cannot connect to the remote object (Display)', proxyString)
+            # traceback.print_exc()
+            status = 1
+    except Ice.Exception, e:
+        print e
+        print ('Cannot get DisplayProxy property.')
+        status = 1
 
-	if status == 0:
-		worker = SpecificWorker(mprx)
-		worker.setParams(parameters)
+    if status == 0:
+        worker = SpecificWorker(mprx)
+        worker.setParams(parameters)
 
-	adapter = ic.createObjectAdapter('EmotionalMotor')
-	adapter.add(EmotionalMotorI(worker), ic.stringToIdentity('emotionalmotor'))
-	adapter.activate()
+    adapter = ic.createObjectAdapter('EmotionalMotor')
+    adapter.add(EmotionalMotorI(worker), ic.stringToIdentity('emotionalmotor'))
+    adapter.activate()
 
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    app.exec_()
 
-	signal.signal(signal.SIGINT, signal.SIG_DFL)
-	app.exec_()
-
-	if ic:
-		try:
-			ic.destroy()
-		except:
-			traceback.print_exc()
-			status = 1
+    if ic:
+        try:
+            ic.destroy()
+        except:
+            traceback.print_exc()
+            status = 1

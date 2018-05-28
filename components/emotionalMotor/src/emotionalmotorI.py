@@ -21,64 +21,71 @@ import sys, os, Ice
 
 ROBOCOMP = ''
 try:
-	ROBOCOMP = os.environ['ROBOCOMP']
+    ROBOCOMP = os.environ['ROBOCOMP']
 except:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
-	ROBOCOMP = '/opt/robocomp'
-if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
-	sys.exit()
+    print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
+    ROBOCOMP = '/opt/robocomp'
+if len(ROBOCOMP) < 1:
+    print ('ROBOCOMP environment variable not set! Exiting.')
+    sys.exit()
 
 additionalPathStr = ''
 icePaths = []
 try:
-	icePaths.append('/opt/robocomp/interfaces')
-	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-	for p in SLICE_PATH:
-		icePaths.append(p)
-		additionalPathStr += ' -I' + p + ' '
+    icePaths.append('/opt/robocomp/interfaces')
+    SLICE_PATH = os.environ['SLICE_PATH'].split(':')
+    for p in SLICE_PATH:
+        icePaths.append(p)
+        additionalPathStr += ' -I' + p + ' '
 except:
-	print 'SLICE_PATH environment variable was not exported. Using only the default paths'
-	pass
+    print ('SLICE_PATH environment variable was not exported. Using only the default paths')
+    pass
 
 ice_EmotionalMotor = False
 for p in icePaths:
-	if os.path.isfile(p+'/EmotionalMotor.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
-		wholeStr = preStr+"EmotionalMotor.ice"
-		Ice.loadSlice(wholeStr)
-		ice_EmotionalMotor = True
-		break
+    if os.path.isfile(p + '/EmotionalMotor.ice'):
+        preStr = "-I/opt/robocomp/interfaces/ -I" + ROBOCOMP + "/interfaces/ " + additionalPathStr + " --all " + p + '/'
+        wholeStr = preStr + "EmotionalMotor.ice"
+        Ice.loadSlice(wholeStr)
+        ice_EmotionalMotor = True
+        break
 if not ice_EmotionalMotor:
-	print 'Couldn\'t load EmotionalMotor'
-	sys.exit(-1)
+    print ('Couldn\'t load EmotionalMotor')
+    sys.exit(-1)
 from RoboCompEmotionalMotor import *
+
 ice_Display = False
 for p in icePaths:
-	if os.path.isfile(p+'/Display.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
-		wholeStr = preStr+"Display.ice"
-		Ice.loadSlice(wholeStr)
-		ice_Display = True
-		break
+    if os.path.isfile(p + '/Display.ice'):
+        preStr = "-I/opt/robocomp/interfaces/ -I" + ROBOCOMP + "/interfaces/ " + additionalPathStr + " --all " + p + '/'
+        wholeStr = preStr + "Display.ice"
+        Ice.loadSlice(wholeStr)
+        ice_Display = True
+        break
 if not ice_Display:
-	print 'Couldn\'t load Display'
-	sys.exit(-1)
+    print ('Couldn\'t load Display')
+    sys.exit(-1)
 from RoboCompDisplay import *
 
-class EmotionalMotorI(EmotionalMotor):
-	def __init__(self, worker):
-		self.worker = worker
 
-	def expressFear(self, c):
-		return self.worker.expressFear()
-	def expressSurprise(self, c):
-		return self.worker.expressSurprise()
-	def expressAnger(self, c):
-		return self.worker.expressAnger()
-	def expressSadness(self, c):
-		return self.worker.expressSadness()
-	def expressDisgust(self, c):
-		return self.worker.expressDisgust()
-	def expressJoy(self, c):
-		return self.worker.expressJoy()
+class EmotionalMotorI(EmotionalMotor):
+    def __init__(self, worker):
+        self.worker = worker
+
+    def expressFear(self, c):
+        return self.worker.expressFear()
+
+    def expressSurprise(self, c):
+        return self.worker.expressSurprise()
+
+    def expressAnger(self, c):
+        return self.worker.expressAnger()
+
+    def expressSadness(self, c):
+        return self.worker.expressSadness()
+
+    def expressDisgust(self, c):
+        return self.worker.expressDisgust()
+
+    def expressJoy(self, c):
+        return self.worker.expressJoy()

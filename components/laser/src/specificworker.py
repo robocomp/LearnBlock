@@ -22,6 +22,7 @@ import sys, os, traceback, time
 from PySide import QtGui, QtCore
 from genericworker import *
 
+
 # If RoboComp was compiled with Python bindings you can use InnerModel in Python
 # sys.path.append('/opt/robocomp/lib')
 # import librobocomp_qmat
@@ -29,69 +30,66 @@ from genericworker import *
 # import librobocomp_innermodel
 
 class SpecificWorker(GenericWorker):
-	def __init__(self, proxy_map):
-		super(SpecificWorker, self).__init__(proxy_map)
-		self.timer.timeout.connect(self.compute)
-		self.Period = 2000
-		self.timer.start(self.Period)
+    def __init__(self, proxy_map):
+        super(SpecificWorker, self).__init__(proxy_map)
+        self.timer.timeout.connect(self.compute)
+        self.Period = 2000
+        self.timer.start(self.Period)
 
-	def setParams(self, params):
-		#try:
-		#	self.innermodel = InnerModel(params["InnerModelPath"])
-		#except:
-		#	traceback.print_exc()
-		#	print "Error reading config params"
-		return True
+    def setParams(self, params):
+        # try:
+        #	self.innermodel = InnerModel(params["InnerModelPath"])
+        # except:
+        #	traceback.print_exc()
+        #	print "Error reading config params"
+        return True
 
-	@QtCore.Slot()
-	def compute(self):
-		print 'SpecificWorker.compute...'
-		#computeCODE
-		#try:
-		#	self.differentialrobot_proxy.setSpeedBase(100, 0)
-		#except Ice.Exception, e:
-		#	traceback.print_exc()
-		#	print e
+    @QtCore.Slot()
+    def compute(self):
+        print ('SpecificWorker.compute...')
+        # computeCODE
+        # try:
+        #	self.differentialrobot_proxy.setSpeedBase(100, 0)
+        # except Ice.Exception, e:
+        #	traceback.print_exc()
+        #	print e
 
-		# The API of python-innermodel is not exactly the same as the C++ version
-		# self.innermodel.updateTransformValues("head_rot_tilt_pose", 0, 0, 0, 1.3, 0, 0)
-		# z = librobocomp_qmat.QVec(3,0)
-		# r = self.innermodel.transform("rgbd", z, "laser")
-		# r.printvector("d")
-		# print r[0], r[1], r[2]
+        # The API of python-innermodel is not exactly the same as the C++ version
+        # self.innermodel.updateTransformValues("head_rot_tilt_pose", 0, 0, 0, 1.3, 0, 0)
+        # z = librobocomp_qmat.QVec(3,0)
+        # r = self.innermodel.transform("rgbd", z, "laser")
+        # r.printvector("d")
+        # print r[0], r[1], r[2]
 
-		return True
+        return True
 
+    #
+    # getLaserData
+    #
+    def getLaserData(self):
+        ret = TLaserData()
+        #
+        # implementCODE
+        #
+        return ret
 
-	#
-	# getLaserData
-	#
-	def getLaserData(self):
-		ret = TLaserData()
-		#
-		#implementCODE
-		#
-		return ret
+    #
+    # getLaserConfData
+    #
+    def getLaserConfData(self):
+        ret = LaserConfData()
+        #
+        # implementCODE
+        #
+        return ret
 
-
-	#
-	# getLaserConfData
-	#
-	def getLaserConfData(self):
-		ret = LaserConfData()
-		#
-		#implementCODE
-		#
-		return ret
-
-
-	#
-	# getLaserAndBStateData
-	#
-	def getLaserAndBStateData(self):
-		ret = TLaserData()
-		#
-		#implementCODE
-		#
-		bState = RoboCompGenericBase.TBaseState()
-		return [ret, bState]
+    #
+    # getLaserAndBStateData
+    #
+    def getLaserAndBStateData(self):
+        ret = TLaserData()
+        #
+        # implementCODE
+        #
+        bState = RoboCompGenericBase.TBaseState()
+        return [ret, bState]

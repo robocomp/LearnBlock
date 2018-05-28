@@ -40,7 +40,7 @@ class SpecificWorker(GenericWorker):
 
     @QtCore.Slot()
     def compute(self):
-        print 'SpecificWorker.compute...'
+        print ('SpecificWorker.compute...')
         self.setSpeedBase(0, 0)
         return True
 
@@ -97,5 +97,5 @@ class SpecificWorker(GenericWorker):
 
     def setSpeedBase(self, adv, rot):
         velRight, velLeft = self.computeRobotSpeed(adv, rot)
-        print "Velocidad motores = ", velLeft, velRight
+        print ("Velocidad motores = ", velLeft, velRight)
         motors.setSpeeds(velLeft, velRight)

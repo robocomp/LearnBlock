@@ -1,4 +1,3 @@
-#
 # Copyright (C) 2018 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
@@ -21,46 +20,49 @@ import sys, os, Ice
 
 ROBOCOMP = ''
 try:
-	ROBOCOMP = os.environ['ROBOCOMP']
+    ROBOCOMP = os.environ['ROBOCOMP']
 except:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
-	ROBOCOMP = '/opt/robocomp'
-if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
-	sys.exit()
+    print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
+    ROBOCOMP = '/opt/robocomp'
+if len(ROBOCOMP) < 1:
+    print ('ROBOCOMP environment variable not set! Exiting.')
+    sys.exit()
 
 additionalPathStr = ''
 icePaths = []
 try:
-	icePaths.append('/opt/robocomp/interfaces')
-	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-	for p in SLICE_PATH:
-		icePaths.append(p)
-		additionalPathStr += ' -I' + p + ' '
+    icePaths.append('/opt/robocomp/interfaces')
+    SLICE_PATH = os.environ['SLICE_PATH'].split(':')
+    for p in SLICE_PATH:
+        icePaths.append(p)
+        additionalPathStr += ' -I' + p + ' '
 except:
-	print 'SLICE_PATH environment variable was not exported. Using only the default paths'
-	pass
+    print ('SLICE_PATH environment variable was not exported. Using only the default paths')
+    pass
 
 ice_Laser = False
 for p in icePaths:
-	if os.path.isfile(p+'/Laser.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
-		wholeStr = preStr+"Laser.ice"
-		Ice.loadSlice(wholeStr)
-		ice_Laser = True
-		break
+    if os.path.isfile(p + '/Laser.ice'):
+        preStr = "-I/opt/robocomp/interfaces/ -I" + ROBOCOMP + "/interfaces/ " + additionalPathStr + " --all " + p + '/'
+        wholeStr = preStr + "Laser.ice"
+        Ice.loadSlice(wholeStr)
+        ice_Laser = True
+        break
 if not ice_Laser:
-	print 'Couldn\'t load Laser'
-	sys.exit(-1)
+    print ('Couldn\'t load Laser')
+    sys.exit(-1)
 from RoboCompLaser import *
 
-class LaserI(Laser):
-	def __init__(self, worker):
-		self.worker = worker
 
-	def getLaserData(self, c):
-		return self.worker.getLaserData()
-	def getLaserConfData(self, c):
-		return self.worker.getLaserConfData()
-	def getLaserAndBStateData(self, c):
-		return self.worker.getLaserAndBStateData()
+class LaserI(Laser):
+    def __init__(self, worker):
+        self.worker = worker
+
+    def getLaserData(self, c):
+        return self.worker.getLaserData()
+
+    def getLaserConfData(self, c):
+        return self.worker.getLaserConfData()
+
+    def getLaserAndBStateData(self, c):
+        return self.worker.getLaserAndBStateData()

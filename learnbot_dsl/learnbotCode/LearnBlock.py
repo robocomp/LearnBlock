@@ -635,8 +635,8 @@ class LearnBlock(QtGui.QMainWindow):
                 return
             if compile("main_tmp.py"):
                 try:
-                    # if not self.physicalRobot:
-                        # LearnBotClient.Client(sys.argv)
+                    if not self.physicalRobot:
+                        LearnBotClient.Client(sys.argv)
                     self.hilo = Process(target=self.execTmp)
                     self.hilo.start()
                     self.ui.stopPushButton.setEnabled(True)

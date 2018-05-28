@@ -46,7 +46,7 @@ class SpecificWorker(GenericWorker):
 
 	@QtCore.Slot()
 	def compute(self):
-		print 'SpecificWorker.compute...'
+		print ('SpecificWorker.compute...')
 		return True
 
 	def Rad2OutPint(self, angle):
@@ -94,7 +94,7 @@ class SpecificWorker(GenericWorker):
 
 	def setPosition(self, goal):
 		angle = int(self.Rad2OutPint(goal.position))
-		print angle
+		print (angle)
 		self.pwm.set_pwm(15, 0, angle)
 		# wiringpi.softPwmWrite(18, angle)
 		# time.sleep(0.5)

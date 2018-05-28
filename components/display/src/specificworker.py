@@ -52,7 +52,7 @@ class SpecificWorker(GenericWorker):
 		self.mutex.acquire()
 		try:
 			if self.changeImage:
-				print "cargando imagen", self.imagePath
+				print ("cargando imagen", self.imagePath)
 				# self.pixmap = QtGui.QPixmap.fromImage(self.image)
 				self.pixmap = QtGui.QPixmap(self.imagePath)
 				if self.item_pixmap is None:
@@ -70,7 +70,7 @@ class SpecificWorker(GenericWorker):
 	# setImageFromFile
 	#
 	def setImageFromFile(self, pathImg):
-		print "setImageFromFile"
+		print ("setImageFromFile")
 		self.mutex.acquire()
 		try:
 			self.changeImage = True
