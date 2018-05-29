@@ -32,7 +32,7 @@ class SpecificWorker(GenericWorker):
 		super(SpecificWorker, self).__init__(proxy_map)
 		self.timer.timeout.connect(self.compute)
 		self.Period = 2000
-		self.timer.start(self.Period)
+		# self.timer.start(self.Period)
 		
 		wiringpi.wiringPiSetupGpio()
 		wiringpi.pinMode(18,1)
