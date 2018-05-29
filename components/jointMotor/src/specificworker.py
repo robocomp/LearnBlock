@@ -95,7 +95,7 @@ class SpecificWorker(GenericWorker):
 	def setPosition(self, goal):
 		angle = int(self.Rad2OutPint(goal.position))
 		print (angle)
-		self.pwm.set_pwm(15, 0, angle)
+		self.pwm.set_pwm(7, 0, angle)
 		# wiringpi.softPwmWrite(18, angle)
 		# time.sleep(0.5)
 

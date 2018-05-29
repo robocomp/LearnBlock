@@ -7,7 +7,7 @@ from pyparsing import *
 HEADER = """
 #EXECUTION: python code_example.py config
 from learnbot_dsl.functions import *
-import learnbot_dsl.LearnBotClient as LearnBotClient
+import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
 import time
 global lbot
@@ -453,7 +453,7 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     text = __generatePy(tree)
     # print "------------------\n", text "\n------------------",
     if physicalRobot:
-        header = HEADER.replace('<LearnBotClient>', 'LearnBotClientPR')
+        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
     else:
         header = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
     if text is not "":

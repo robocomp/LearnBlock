@@ -111,24 +111,24 @@ class Client(Ice.Application, threading.Thread):
                     raise
             except Ice.Exception, e:
                 print e
+                print 'Cannot get EmotionalMotor property.'
+                raise
+
+            # Remote object connection for JointMotor
+            try:
+                proxyString = ic.getProperties().getProperty('JointMotorProxy')
+                try:
+                    basePrx = ic.stringToProxy(proxyString)
+                    self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
+                except Ice.Exception:
+                    print 'Cannot connect to the remote object (JointMotor)', proxyString
+                    raise
+            except Ice.Exception, e:
+                print e
                 print 'Cannot get UltrasoundProxy property.'
                 raise
 
-            # # Remote object connection for JointMotor
-            # try:
-            #     proxyString = ic.getProperties().getProperty('JointMotorProxy')
-            #     try:
-            #         basePrx = ic.stringToProxy(proxyString)
-            #         self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
-            #     except Ice.Exception:
-            #         print 'Cannot connect to the remote object (JointMotor)', proxyString
-            #         raise
-            # except Ice.Exception, e:
-            #     print e
-            #     print 'Cannot get UltrasoundProxy property.'
-            #     raise
-
-            self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
+            self.stream = urllib.urlopen('http://10.42.0.254:8080/?action=stream')
             self.bytes=''
 
         except:
@@ -269,6 +269,7 @@ class Client(Ice.Application, threading.Thread):
             print "Error expressDisgust"
 
     def setJointAngle(self, angle):
+        print "Enviando anglulo", angle
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
         goal.position = angle

@@ -40,6 +40,7 @@ ic = None
 
 
 class Client(Ice.Application, threading.Thread):
+
     def __init__(self, argv):
         threading.Thread.__init__(self)
 
@@ -165,8 +166,6 @@ class Client(Ice.Application, threading.Thread):
             lp = self.lasers_proxys[i]
             ldata = lp.getLaserData()
             self.usList[i] = min([x.dist for x in ldata])
-
-
 
     def getSonars(self):
         return self.usList

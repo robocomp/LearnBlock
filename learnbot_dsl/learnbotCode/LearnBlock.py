@@ -26,7 +26,7 @@ print sys.version_info[0]
 HEADER = """
 #EXECUTION: python code_example.py config
 from learnbot_dsl.functions import *
-import learnbot_dsl.LearnBotClient as LearnBotClient
+import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
 import time
 global lbot
@@ -658,7 +658,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def generateStopTmpFile(self):
         if self.physicalRobot:
-            text = HEADER.replace('<LearnBotClient>', 'LearnBotClientPR')
+            text = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
             sys.argv = [' ', 'configPhysical']
         else:
             text = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
