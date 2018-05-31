@@ -128,7 +128,7 @@ class Client(Ice.Application, threading.Thread):
                 print 'Cannot get UltrasoundProxy property.'
                 raise
 
-            self.stream = urllib.urlopen('http://10.42.0.254:8080/?action=stream')
+            self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
             self.bytes=''
 
         except:
