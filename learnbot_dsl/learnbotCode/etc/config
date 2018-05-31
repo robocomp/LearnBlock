@@ -1,4 +1,4 @@
-learnbot.ip = "10.42.0.254"
+learnbot.ip = "192.168.0.1"
 learnbot.user = "pi"
 learnbot.pass = "opticalflow"
 learnbot.command.start = "./learnbot/startComponents"
