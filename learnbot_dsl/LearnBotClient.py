@@ -50,6 +50,7 @@ class Client(Ice.Application, threading.Thread):
         self.image = np.zeros((240,320,3), np.uint8)
         self.usList = [1000]*7
         self.lasers_proxys=[]
+        self.angleCamera = 0
         global ic
 
         params = copy.deepcopy(sys.argv)
@@ -216,6 +217,7 @@ class Client(Ice.Application, threading.Thread):
             "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/alegria.png")
 
     def setJointAngle(self, angle):
+        self.angleCamera = angle
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
         goal.position = angle
