@@ -33,7 +33,6 @@ class SpecificWorker(GenericWorker):
 		self.timer.timeout.connect(self.compute)
 		self.Period = 2000
 		# self.timer.start(self.Period)
-		
 		wiringpi.wiringPiSetupGpio()
 		wiringpi.pinMode(18,1)
 		wiringpi.softPwmCreate(18,0,100)
@@ -50,11 +49,12 @@ class SpecificWorker(GenericWorker):
 		return True
 
 	def Rad2OutPint(self, angle):
-		if angle < -pi/2:
-			angle = -pi/2
-		elif angle > pi/2:
-			angle = pi/2
-		return (angle + pi/2) * (servo_max - servo_min) / (pi/2 + pi*2) + servo_min;
+		angle = (angle + 0.6000000238) * (1.3 + 1.5) / (0.6000000238 + 0.6000000238) - 1.5
+		if angle < -pi:
+			angle = -pi
+		elif angle > pi:
+			angle = pi
+		return (angle + pi) * (servo_max - servo_min) / (pi + pi) + servo_min;
 
 	def getAllMotorParams(self):
 		ret = MotorParamsList()
@@ -94,8 +94,9 @@ class SpecificWorker(GenericWorker):
 
 	def setPosition(self, goal):
 		angle = int(self.Rad2OutPint(goal.position))
-		print (angle)
+		print ("Enviando angulo", angle)
 		self.pwm.set_pwm(7, 0, angle)
+
 		# wiringpi.softPwmWrite(18, angle)
 		# time.sleep(0.5)
 
