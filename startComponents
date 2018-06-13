@@ -1,18 +1,18 @@
 DISPLAY=:0.0 ; export DISPLAY
 python3 /home/pi/learnbot/components/display/src/display.py /home/pi/learnbot/components/display/etc/config &
-sleep 2 
+sleep 3 
 
 
 python3 /home/pi/learnbot/components/emotionalMotor/src/emotionalMotor.py /home/pi/learnbot/components/emotionalMotor/etc/config &
-sleep 2
+sleep 3
 
 
 sudo -E python3 /home/pi/learnbot/components/baserobot/src/baserobot.py /home/pi/learnbot/components/baserobot/etc/config &
-sleep 2
+sleep 3
 
 
 sudo -E python3 /home/pi/learnbot/components/jointMotor/src/jointMotor.py /home/pi/learnbot/components/jointMotor/etc/config &
-sleep 2
+sleep 3
 
 
 cd /home/pi/sofware/mjpg-streamer
