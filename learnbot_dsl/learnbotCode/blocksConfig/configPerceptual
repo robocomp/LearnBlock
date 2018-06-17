@@ -58,7 +58,7 @@ block{
     type perceptual
     name up_face
     img block4, block3
-    languages ES: "cara_ariba", EN: "up_face"
+    languages ES: "cara_arriba", EN: "up_face"
 }
 
 block{
