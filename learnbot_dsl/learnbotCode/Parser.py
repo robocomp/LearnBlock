@@ -217,7 +217,7 @@ def __process(line, list_var=[], text="", index=0):
 
     if TYPE is 'MAIN':
         for cLine in line.content:
-            text += __process(cLine, [], "", 0)
+            text += __process(cLine, [], "", 0) + "\n"
 
     elif TYPE is 'DEF':
         text = __processDEF(line, list_var, text, 1)
@@ -328,7 +328,7 @@ def __processWHILE(line, text="", index=0):
 
     index += 1
     for field in line.content:
-        text = __process(field, [], text, index) + "\n"
+        text = __process(field, [], text, index)
 
     index -= 1
     return text
