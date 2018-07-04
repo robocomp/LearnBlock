@@ -1,0 +1,14 @@
+
+block{
+    type collab
+    name subscribe
+    variables{
+        float subscribeId  1
+        float waitTime 5
+    }
+    img block3, block2
+    languages ES: "subscribe", EN: "subscribe"
+    tooltip ES: "subscribe to the topic", EN: "subscribe to the topic"
+}
+
+

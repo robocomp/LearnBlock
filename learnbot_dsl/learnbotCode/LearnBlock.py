@@ -2,42 +2,46 @@
 # -*- coding: utf-8 -*-
 
 import cPickle as pickle
-import os
-from blocksConfig import reload_functions
-import threading
-from guis import addVar, gui, delVar, delWhen, createFunctions as guiCreateFunctions, addWhen as guiAddBlockWhen
+import learnbot_dsl.LearnBotClient as LearnBotClient
+import paramiko, shutil, subprocess, sys
+from multiprocessing import Process
+from threading import Timer
 
-from Block import *
+from Button import *
+from Parser import parserLearntBotCode
 from Scene import *
 from View import *
-from guiCreateBlock import *
-from guiAddNumberOrString import *
-from guiaddWhen import *
-
-from Language import *
-
-from multiprocessing import Process
-
-import shutil
-import sys
-import cv2
-import time
-import learnbot_dsl.LearnBotClient as LearnBotClient
-import learnbot_dsl.LearnBotClient_PhysicalRobot as LearnBotClientPR
-
-from learnbot_dsl.functions import *
+from blocksConfig import reload_functions
 from blocksConfig.blocks import pathBlocks
 from checkFile import compile
+from guiAddNumberOrString import *
+from guiCreateBlock import *
+from guiaddWhen import *
+from guis import addVar, gui, delVar, delWhen, createFunctions as guiCreateFunctions
+from learnbot_dsl.functions import *
+from parserConfig import configSSH
+from guiTab import *
 
-from Parser import parserLearntBotCode
+print sys.version_info[0]
 
 HEADER = """
-#EXECUTION: python code_example.py configSimulated
-
+#EXECUTION: python code_example.py config
+from learnbot_dsl.functions import *
+import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
+import sys
+import time
 global lbot
-lbot = <LearnBotClient>.Client(sys.argv)
-
+global Robot_id
+Robot_id = "Id"
+try:
+    lbot = <LearnBotClient>.Client(sys.argv, "Id")
+except Exception as e:
+    print "hay un Error"
+    print e
 """
+
+path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+
 
 def loadfile(file):
     fh = open(file, "r")
@@ -45,76 +49,9 @@ def loadfile(file):
     fh.close()
     return code
 
-class MyButtom(QtGui.QPushButton):
+currentTabNo = 0
 
-    def __init__(self,args):
-        if len(args) is 11:
-            self.__text, self.__dicTrans, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType, self.__table, self.__row, self.__type = args
-            self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
-
-        elif len(args) is 5:
-            abstracBlockItem, self.__view, self.__scene, self.__table, self.__row = args
-            self.__text = abstracBlockItem.name
-            self.__dicTrans = abstracBlockItem.dicTrans
-            self.__file = abstracBlockItem.file
-            self.__connections = abstracBlockItem.connections
-            self.__vars = abstracBlockItem.vars
-            self.__blockType = abstracBlockItem.typeBlock
-            self.__type = abstracBlockItem.type
-            self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
-
-        QtGui.QPushButton.__init__(self)
-        im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
-        self.showtext = self.__text
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.updateImg)
-
-        if len( self.__dicTrans ) is not 0:
-            self.showtext = self.__dicTrans[ getLanguage() ]
-            self.timer.start(10)
-        img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, None, self.__type)
-        cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
-        self.setIcon(QtGui.QIcon(self.tmpFile))
-        self.setIconSize(QtCore.QSize(135, im.shape[0]))
-        self.setFixedSize(QtCore.QSize(150, im.shape[0]))
-        self.__table.setRowHeight(self.__row, im.shape[0])
-        self.clicked.connect(self.clickedButton)
-        self.__item = self.__table.item(self.__row,0)
-
-
-    def removeTmpFile(self):
-        try:
-            os.remove(self.tmpFile)
-        except Exception as e:
-            print e
-
-    def updateImg(self):
-        if len( self.__dicTrans ) is not 0 and self.showtext is not self.__dicTrans[ getLanguage() ]:
-            self.showtext = self.__dicTrans[ getLanguage() ]
-            im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
-            img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, None, self.__type)
-            cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
-            self.setIcon(QtGui.QIcon(self.tmpFile))
-            self.setIconSize(QtCore.QSize(135, im.shape[0]))
-            self.setFixedSize(QtCore.QSize(150, im.shape[0]))
-
-    def clickedButton(self):
-        block = AbstractBlockItem(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections,self.__blockType,self.__type)
-        self.__scene.addItem(block)
-
-    def getAbstracBlockItem(self):
-        return AbstractBlockItem(0,0,self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "", self.__connections, self.__blockType,self.__type)
-
-    def delete(self,row):
-        self.__table.removeCellWidget(row,0)
-        self.__table.removeRow(row)
-        self.__scene.removeByName(self.__text)
-        del self
-
-    def getText(self):
-        return self.__text
-
-class LearnBlock:
+class LearnBlock(QtGui.QMainWindow):
 
     def __init__(self):
         self.listNameUserFunctions = []
@@ -122,96 +59,63 @@ class LearnBlock:
         self.listNameBlock = []
         self.listNameWhens = []
         self.listButtonsWhen = []
-        self.__fileProject = None
-        app = QtGui.QApplication(sys.argv)
-        self.Dialog = QtGui.QMainWindow()
-        self.ui = gui.Ui_MainWindow()
-        self.ui.setupUi(self.Dialog)
-        self.Dialog.showMaximized()
-        self.ui.startPushButton.clicked.connect(self.printProgram)
-        self.ui.startPRPushButton.clicked.connect(self.printProgramPR)
-        self.ui.startTextPushButton.clicked.connect(self.generateTmpFilefromText)
-        self.ui.stopPushButton.clicked.connect(self.stopthread)
-        self.ui.stoptextPushButton.clicked.connect(self.stopthread)
-        self.ui.addVarPushButton.clicked.connect(self.newVariable)
-        self.ui.addNumberpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(1))
-        self.ui.addStringpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(2))
-        self.ui.addWhenpushButton.clicked.connect(self.showGuiAddWhen)
-        self.ui.useEventscheckBox.stateChanged.connect(lambda: self.avtiveEvents(self.ui.useEventscheckBox.isChecked()))
-        self.ui.stopPushButton.setEnabled(False)
-        self.ui.startPushButton.setEnabled(True)
-        self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
-        self.ui.openpushButton.setIcon(QtGui.QIcon("guis/open.png"))
-        self.ui.openpushButton.setFixedSize(QtCore.QSize(24,22))
-        self.ui.savepushButton.setFixedSize(QtCore.QSize(24,22))
-        self.ui.openpushButton.setIconSize(QtCore.QSize(24,22))
-        self.ui.savepushButton.setIconSize(QtCore.QSize(24,22))
-        self.ui.zoompushButton.setIcon(QtGui.QIcon("guis/zoom.png"))
-        self.ui.zoompushButton.setIconSize(QtCore.QSize(30,30))
-        self.ui.zoompushButton.setFixedSize(QtCore.QSize(30,30))
-        self.ui.zoompushButton.clicked.connect(self.setZoom)
-        self.ui.language.currentIndexChanged.connect(self.changeLanguage)
-
         self.listVars = []
         self.listUserFunctions = []
-        self.view = MyView(self.ui.frame)
-        self.view.setObjectName("view")
-        self.ui.verticalLayout_3.addWidget(self.view)
-        self.scene = MyScene(self.view)
-        self.view.setScene(self.scene)
-        self.view.show()
-        self.view.setZoom(False)
+        self.listButtons = []
+        self.listBlock = []
+
+        self.__fileProject = None
+        self.hilo = None
+        self.physicalRobot = False
+
+        self.app = QtGui.QApplication(sys.argv)
+        self.app.setWindowIcon(QtGui.QIcon(path + '/ico.png'))
+
+        self.Dialog = QtGui.QMainWindow()
+        QtGui.QMainWindow.__init__(self)
+        self.ui = gui.Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.showMaximized()
+	self.ui.AddRobot.clicked.connect(self.addRobo)
+        self.ui.actionExit.triggered.connect(self.exitProgram)
         #READ FUNTIONS
         #process
-        self.hilo = None
 
         #thread
         #self.hilo = threading.Thread(target=self.execTmp, args=[])
 
-        self.physicalRobot = False
-
-        self.dicTables = {'control':self.ui.tableControl,'motor':self.ui.tableMotor, 'perceptual':self.ui.tablePerceptual,
-                     'proprioceptive':self.ui.tablePropioperceptive,'operador':self.ui.tableOperadores,'variables':self.ui.tableVariables,
-                          'funtions':self.ui.tableUserfunctions}
-        for t in self.dicTables:
-            table = self.dicTables[t]
-            table.verticalHeader().setVisible(False)
-            table.horizontalHeader().setVisible(False)
-            table.setColumnCount(1)
-            table.setRowCount(0)
-
-        self.listButtons = []
-        self.listBlock = []
-        try:
-            os.mkdir("tmp")
-        except:
-            pass
-
-        self.load_blocks()
-        self.avtiveEvents(False)
-
         self.timer = QtCore.QTimer()
         self.timer.start(1000)
-        self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
-        self.ui.actionSave.triggered.connect(self.saveInstance)
-        self.ui.actionSave_As.triggered.connect(self.saveAs)
-        self.ui.savepushButton.clicked.connect(self.saveInstance)
-        self.ui.actionOpen_Proyect.triggered.connect(self.openProyect)
-        self.ui.openpushButton.clicked.connect(self.openProyect)
-        self.ui.deleteVarPushButton.clicked.connect(self.deleteVar)
-        self.ui.deleteWhenpushButton.clicked.connect(self.deleteWhen)
-        self.ui.createFunctionsPushButton.clicked.connect(self.newUserFunctions)
-        self.ui.deleteFuntionsPushButton.clicked.connect(self.deleteUserFunctions)
-        self.ui.tabWidget_2.setFixedWidth(221)
-        self.scene.setlistNameVars(self.listNameVars)
-        r = app.exec_()
+        r = self.app.exec_()
 
-        for b in self.listButtons:
+        '''for b in self.listButtons:
             b.removeTmpFile()
 
         shutil.rmtree("tmp")
-        #os.rmdir("tmp")
+        #os.rmdir("tmp")'''
         sys.exit(r)
+        
+    def exitProgram(self):
+    	sys.exit()
+        
+    def addRobo(self):
+    	global currentTabNo
+    	currentTabNo = currentTabNo + 1;
+    	NewTab = QtGui.QWidget()
+    	vBoxlayout = QtGui.QVBoxLayout()
+    	NewTab.setLayout(vBoxlayout)
+    	s = "Robot "
+    	u = str(currentTabNo)
+    	Robot = s+u
+    	Robo = Tabs(Robot,self.app)
+    	vBoxlayout.addWidget(Robo)
+    	self.ui.collaborativeTabs.addTab(NewTab,Robot)
+    	self.ui.actionCreate_New_block.triggered.connect(Robo.showCreateBlock)
+        self.ui.actionSave.triggered.connect(Robo.saveInstance)
+        self.ui.actionSave_As.triggered.connect(Robo.saveAs)
+        self.ui.actionOpen_Proyect.triggered.connect(Robo.openProyect)
+    	#self.load_blocks()
+    	self.ui.collaborativeTabs.show()
 
     def avtiveEvents(self,isChecked):
         self.ui.addWhenpushButton.setEnabled(isChecked)

@@ -1,4 +1,5 @@
-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 
 from pyparsing import *
@@ -10,6 +11,11 @@ cl        = Suppress( Word( "}" ) )
 opp       = Suppress( Word( "(" ) )
 clp       = Suppress( Word( ")" ) )
 
+e = CaselessLiteral('E')
+point = Literal('.')
+plusorminus = Literal('+') | Literal('-')
+number = Word(nums)
+integer = Combine( Optional(plusorminus) + number )
 # identifier = Word( alphas+"_-+*/=><()", alphanums+"/-_.+*/=><()" )
 
 reserved_words = ( Keyword( "block" ) | Keyword( "type" ) | Keyword( "name" ) | Keyword( "file" ) | Keyword( "img" ) | Keyword( "blocktype" ) | Keyword( "languages" ) )
@@ -24,6 +30,7 @@ TYPE = Group( Suppress( Word( "type" ) ) + identifier ).setResultsName( "type" )
 languages = Literal( "ES" ).setResultsName( 'ES' ) | Literal( "FR" ).setResultsName( 'FR' ) | Literal( "EN" ).setResultsName( 'EN' ) | Literal( "P" ).setResultsName( 'P' )
 translation  = Group( languages.setResultsName( "language" ) + Suppress( Literal( ":" ) ) + QuotedString( '"' ).setResultsName( "translation" ) )
 translations = Group( Suppress( Literal( "languages" ) ) + translation + ZeroOrMore( Suppress( "," ) + translation ) ).setResultsName( 'translations' )
+tooltip = Group( Suppress( Literal( "tooltip" ) ) + translation + ZeroOrMore( Suppress( "," ) + translation ) ).setResultsName( 'tooltip' )
 
 
 # -------------------------IMG--------------------
@@ -35,16 +42,22 @@ name = Group( Suppress( Word( "name" ) ) + identifier ).setResultsName( "name" )
 # -------------------------blocktype--------------------
 # typeblock = Group( Suppress( Word( "blocktype" ) ) + identifier )
 
+floatnumber = Combine( integer +
+                       Optional( point + Optional(number) )
+                       # +
+                       # Optional( e + integer )
+                     )
+
 # -------------------------variables--------------------
-var = identifier.setResultsName( "type" )+identifier.setResultsName( "varName" ) + Word( nums ).setResultsName( "defaultValue" )
+var = identifier.setResultsName( "type" )+identifier.setResultsName( "varName" ) + floatnumber.setResultsName( "defaultValue" )
 
 
 variables = Suppress( Word( "variables" ) )+op+ Group( var )+ZeroOrMore( Group( var ) )+cl
 
-block = Group( Suppress( Literal( "block" ) ) + op +  TYPE + name + Optional( variables ).setResultsName("variables") + img + Optional( translations ) + cl )
+block = Group( Suppress( Literal( "block" ) ) + op +  TYPE + name + Optional( variables ).setResultsName("variables") + img + Optional( translations ) + Optional( tooltip ) + cl )
 
 parser = block + ZeroOrMore( block )
-
+parser.ignore(pythonStyleComment)
 config = """
 
 block{

@@ -1,0 +1,8 @@
+
+
+main:
+	while True:
+		function.set_move(10, 0)
+	end
+end
+

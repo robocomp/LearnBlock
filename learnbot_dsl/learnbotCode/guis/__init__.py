@@ -35,8 +35,15 @@ if call(["pyside-uic","-o",path+"/addWhen.py",path+"/addWhen.ui"]) is 1:
 if call(["pyside-uic","-o",path+"/delWhen.py",path+"/delWhen.ui"]) is 1:
     print "Error al generar addWhen.py"
     exit(-1)
+if call(["pyside-uic","-o",path+"/tab.py",path+"/tab.ui"]) is 1:
+    print "Error al generar tab.py"
+    exit(-1)
+    
+if call(["pyside-uic","-o",path+"/setConfiguration.py",path+"/setConfiguration.ui"]) is 1:
+    print "Error al generar setConfiguration.py"
+    exit(-1)
 
-__all__ = ['guiAddVar', 'guiGui', 'guiGuiCreateBlock', 'guiDelVar', 'guiCreateFunctions', 'guiAddNumberOrString', 'guiAddWhen', 'guiDelWhen']
+__all__ = ['guiAddVar', 'guiGui', 'guiGuiCreateBlock', 'guiDelVar', 'guiCreateFunctions', 'guiAddNumberOrString', 'guiAddWhen', 'guiDelWhen', 'guiTab', 'setConfiguration']
 
 
 import addVar as guiAddVar
@@ -47,6 +54,8 @@ import createFunctions as guiCreateFunctions
 import addNumberOrString as guiAddNumberOrString
 import addWhen as guiAddWhen
 import delWhen as guiDelWhen
+import tab as guitab
+import setConfiguration as guisetConfiguration
 #
 # guiAddVar = addVar
 # guiGui = gui

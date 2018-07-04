@@ -1,0 +1,15 @@
+<innerModel>
+	<transform id="world">
+
+
+			<plane id="ddG" ny="1"  px="200" py="0" pz="0" size="5000,5000,10" texture="/home/robocomp/robocomp/components/learnbot/learnbot_simulator/textures/lines.jpg" />
+
+	</transform>
+	<transform id="robot">
+		<include path="/home/robocomp/robocomp/components/learnbot/learnbot_simulator/version_2.1/learnBotDSL.xml"/>
+	</transform>
+	<transform id="caja1" tx="200" tz="400" ty="0" >
+			<plane id="cajaMesh1" nx="1" size="100,200,100"  texture="/home/robocomp/robocomp/files/osgModels/textures/Metal.jpg" />
+	</transform>
+
+</innerModel>

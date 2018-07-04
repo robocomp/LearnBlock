@@ -1,16 +1,18 @@
-import guis.createBlock as createBlock
-from VisualFuntion import *
 import os
+
+import guis.createBlock as createBlock
+from VisualBlock import *
 from blocksConfig import pathBlocks, pathConfig
+
 listBlock = []
 listNameBlocks = []
 import cv2
 
 for base, dirs, files in os.walk(pathBlocks):
     for f in files:
-        archivo, extension = os.path.splitext(base+"/"+f)
+        archivo, extension = os.path.splitext(base + "/" + f)
         if extension == ".png" and "block" in f and "azul" not in f:
-            listBlock.append(base+"/"+f)
+            listBlock.append(base + "/" + f)
             archivo, extension = os.path.splitext(f)
             listNameBlocks.append(archivo)
 
@@ -18,17 +20,20 @@ listTypeBlock = ["control",
                  "motor",
                  "perceptive",
                  "propioperceptive",
-                 "operator"]
+                 "operator"
+                 "collab"]
 
 listconfig = ["configControl",
               "configMotor",
               "configOperators",
               "configPerceptual"
-              "configPropriopercetive"]
+              "configPropriopercetive"
+              "configCollab"]
+
 
 class guiCreateBlock(QtGui.QDialog):
 
-    def __init__(self,load_block):
+    def __init__(self, load_block):
         QtGui.QDialog.__init__(self)
         self.load_blocks = load_block
         self.blockType = None
@@ -51,22 +56,22 @@ class guiCreateBlock(QtGui.QDialog):
         self.ui.pushButtonRemoveBlockImage.clicked.connect(self.__removeImage)
         self.ui.pushButtonRemoveVar.setEnabled(False)
         self.ui.pushButtonRemoveBlockImage.setEnabled(False)
-        self.ui.pushButtonOK.clicked.connect(lambda :self.__buttons(1))
-        self.ui.pushButtonCancel.clicked.connect(lambda :self.__buttons(0))
-        self.ui.lineEditName.textChanged.connect(lambda :self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
+        self.ui.pushButtonOK.clicked.connect(lambda: self.__buttons(1))
+        self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
+        self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
 
     def __clickedSelectFile(self):
         file = QtGui.QFileDialog.getOpenFileName(self, "Open File",
-                                                ".","Python Files (*.py)")
+                                                 ".", "Python Files (*.py)")
         self.ui.lineEditFile.setText(file[0])
 
-    def __updateImage(self,index):
-        self.img=listNameBlocks[index]
-        img = cv2.imread(listBlock[index],cv2.IMREAD_UNCHANGED)
+    def __updateImage(self, index):
+        self.img = listNameBlocks[index]
+        img = cv2.imread(listBlock[index], cv2.IMREAD_UNCHANGED)
         archivo, extension = os.path.splitext(listBlock[index])
         blockType, connections = self.__loadConfigBlock(archivo)
         img = generateBlock(img, 34, self.ui.lineEditName.text(), blockType, None,
-                             None)
+                            None)
         qImage = toQImage(img)
         self.ui.BlockImage.setPixmap(QtGui.QPixmap(qImage))
 
@@ -110,7 +115,7 @@ class guiCreateBlock(QtGui.QDialog):
     def __addVar(self):
         row = self.ui.tableWidgetVars.rowCount()
         self.ui.tableWidgetVars.insertRow(row)
-        self.ui.tableWidgetVars.setCellWidget(row,0,QtGui.QLabel("Float"))
+        self.ui.tableWidgetVars.setCellWidget(row, 0, QtGui.QLabel("Float"))
         self.ui.tableWidgetVars.setCellWidget(row, 1, QtGui.QLineEdit())
         edit = QtGui.QLineEdit()
         edit.setValidator(QtGui.QDoubleValidator())
@@ -140,12 +145,12 @@ class guiCreateBlock(QtGui.QDialog):
         index = self.ui.listWidgetBlockImage.currentRow()
         self.listImg.pop(index)
         self.ui.listWidgetBlockImage.takeItem(index)
-        if len(self.listImg)==0:
+        if len(self.listImg) == 0:
             self.ui.pushButtonRemoveBlockImage.setEnabled(False)
 
     def __buttons(self, ret):
         if ret is 1:
-            ret =None
+            ret = None
             if self.ui.lineEditName.text() == "":
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("Error Name is empty.")
@@ -177,9 +182,11 @@ block{\n"""
             text += "\tfile " + file + "\n"
             if self.ui.tableWidgetVars.rowCount() is not 0:
                 text += "\tvariables{\n"
-                for row in range(0,self.ui.tableWidgetVars.rowCount()):
-                    text += "\t\t"+self.ui.tableWidgetVars.cellWidget(row,0).text() + " " + \
-                            self.ui.tableWidgetVars.cellWidget(row,1).text() + " " + self.ui.tableWidgetVars.cellWidget(row,2).text() + "\n"
+                for row in range(0, self.ui.tableWidgetVars.rowCount()):
+                    text += "\t\t" + self.ui.tableWidgetVars.cellWidget(row, 0).text() + " " + \
+                            self.ui.tableWidgetVars.cellWidget(row,
+                                                               1).text() + " " + self.ui.tableWidgetVars.cellWidget(row,
+                                                                                                                    2).text() + "\n"
                 text += "\t}\n"
             text += "\timg "
             for img in self.listImg:
@@ -192,7 +199,7 @@ block{\n"""
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             ret = msgBox.exec_()
             if ret == QtGui.QMessageBox.Ok:
-                with open(pathConfig+"/"+self.config, 'a') as file:
+                with open(pathConfig + "/" + self.config, 'a') as file:
                     file.write(text)
                     file.close()
             else:
@@ -201,11 +208,12 @@ block{\n"""
         self.close()
 
     def __repitNameVar(self):
-        varlist=[]
+        varlist = []
         if self.ui.tableWidgetVars.rowCount() is not 0:
             for row in range(0, self.ui.tableWidgetVars.rowCount()):
-                if self.ui.tableWidgetVars.cellWidget(row,1).text() in varlist or self.ui.tableWidgetVars.cellWidget(row,1).text() == ""\
-                        or self.ui.tableWidgetVars.cellWidget(row,2).text() == "":
+                if self.ui.tableWidgetVars.cellWidget(row, 1).text() in varlist or self.ui.tableWidgetVars.cellWidget(
+                        row, 1).text() == "" \
+                        or self.ui.tableWidgetVars.cellWidget(row, 2).text() == "":
                     return True
                 varlist.append(self.ui.tableWidgetVars.cellWidget(row, 1).text())
         return False

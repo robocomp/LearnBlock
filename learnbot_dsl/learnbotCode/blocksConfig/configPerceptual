@@ -42,13 +42,48 @@ block{
 
 block{
     type perceptual
-    name back_obstacle
-    variables{
-        float threshold 200
-    }
+    name left_face
     img block4, block3
-    languages ES: "obtaculo_atras", EN: "back_obstacle"
+    languages ES: "cara_a_la_izquierda", EN: "left_face"
 }
+
+block{
+    type perceptual
+    name right_face
+    img block4, block3
+    languages ES: "cara_a_la_derecha", EN: "right_face"
+}
+
+block{
+    type perceptual
+    name up_face
+    img block4, block3
+    languages ES: "cara_ariba", EN: "up_face"
+}
+
+block{
+    type perceptual
+    name down_face
+    img block4, block3
+    languages ES: "cara_abajo", EN: "down_face"
+}
+
+block{
+    type perceptual
+    name center_face
+    img block4, block3
+    languages ES: "cara_en_el_centro", EN: "center_face"
+}
+
+# block{
+#     type perceptual
+#     name back_obstacle
+#     variables{
+#         float threshold 200
+#     }
+#     img block4, block3
+#     languages ES: "obtaculo_atras", EN: "back_obstacle"
+# }
 
 block{
     type perceptual
@@ -60,19 +95,19 @@ block{
     languages ES: "hay_obtaculo_delante", EN: "front_obstacle"
 }
 
-block{
-    type perceptual
-    name get_distance
-    img block4, block3
-    languages ES: "obtener_distancia", EN: "get_distance"
-}
+# block{
+#     type perceptual
+#     name get_distance
+#     img block4, block3
+#     languages ES: "obtener_distancia", EN: "get_distance"
+# }
 
-block{
-    type perceptual
-    name get_image
-    img block4, block3
-    languages ES: "obtener_image", EN: "get_image"
-}
+# block{
+#     type perceptual
+#     name get_image
+#     img block4, block3
+#     languages ES: "obtener_image", EN: "get_image"
+# }
 
 
 block{

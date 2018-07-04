@@ -1,0 +1,11 @@
+import "Laser.idsl";
+
+Component laser
+{
+	Communications
+	{
+		implements Laser;
+	};
+	language Python;
+};
+

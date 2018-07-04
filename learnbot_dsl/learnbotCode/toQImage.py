@@ -1,10 +1,13 @@
-from PySide.QtGui import QImage, qRgb
 import numpy as np
+from PySide.QtGui import QImage, qRgb
+
 
 class NotImplementedException:
     pass
 
+
 gray_color_table = [qRgb(i, i, i) for i in range(256)]
+
 
 def toQImage(im, copy=False):
     if im is None:

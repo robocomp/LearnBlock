@@ -1,0 +1,90 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file '/home/prinshu/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/addNumberOrString.ui'
+#
+# Created: Wed Jul  4 10:40:40 2018
+#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+#
+# WARNING! All changes made in this file will be lost!
+
+from PySide import QtCore, QtGui
+
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(465, 201)
+        self.verticalLayout_4 = QtGui.QVBoxLayout(Dialog)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.horizontalLayout_10 = QtGui.QHBoxLayout()
+        self.horizontalLayout_10.setObjectName("horizontalLayout_10")
+        self.label_4 = QtGui.QLabel(Dialog)
+        self.label_4.setMinimumSize(QtCore.QSize(102, 27))
+        self.label_4.setMaximumSize(QtCore.QSize(102, 27))
+        self.label_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_4.setObjectName("label_4")
+        self.horizontalLayout_10.addWidget(self.label_4)
+        self.lineEditName = QtGui.QLineEdit(Dialog)
+        self.lineEditName.setMinimumSize(QtCore.QSize(331, 27))
+        self.lineEditName.setMaximumSize(QtCore.QSize(331, 27))
+        self.lineEditName.setToolTip("")
+        self.lineEditName.setObjectName("lineEditName")
+        self.horizontalLayout_10.addWidget(self.lineEditName)
+        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_10.addItem(spacerItem)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_10)
+        self.horizontalLayout_5 = QtGui.QHBoxLayout()
+        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.horizontalLayout_3 = QtGui.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.label_2 = QtGui.QLabel(Dialog)
+        self.label_2.setMinimumSize(QtCore.QSize(102, 27))
+        self.label_2.setMaximumSize(QtCore.QSize(102, 27))
+        self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_2.setObjectName("label_2")
+        self.horizontalLayout_3.addWidget(self.label_2)
+        self.comboBoxBlockImage = QtGui.QComboBox(Dialog)
+        self.comboBoxBlockImage.setMaximumSize(QtCore.QSize(110, 27))
+        self.comboBoxBlockImage.setToolTip("")
+        self.comboBoxBlockImage.setObjectName("comboBoxBlockImage")
+        self.horizontalLayout_3.addWidget(self.comboBoxBlockImage)
+        self.verticalLayout.addLayout(self.horizontalLayout_3)
+        self.horizontalLayout_5.addLayout(self.verticalLayout)
+        spacerItem1 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_5.addItem(spacerItem1)
+        self.BlockImage = QtGui.QLabel(Dialog)
+        self.BlockImage.setMinimumSize(QtCore.QSize(161, 111))
+        self.BlockImage.setText("")
+        self.BlockImage.setObjectName("BlockImage")
+        self.horizontalLayout_5.addWidget(self.BlockImage)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_5)
+        self.horizontalLayout_9 = QtGui.QHBoxLayout()
+        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
+        spacerItem2 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        self.horizontalLayout_9.addItem(spacerItem2)
+        self.pushButtonCancel = QtGui.QPushButton(Dialog)
+        self.pushButtonCancel.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.pushButtonCancel.setAutoDefault(False)
+        self.pushButtonCancel.setObjectName("pushButtonCancel")
+        self.horizontalLayout_9.addWidget(self.pushButtonCancel)
+        self.pushButtonOK = QtGui.QPushButton(Dialog)
+        self.pushButtonOK.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.pushButtonOK.setObjectName("pushButtonOK")
+        self.horizontalLayout_9.addWidget(self.pushButtonOK)
+        self.verticalLayout_4.addLayout(self.horizontalLayout_9)
+
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        Dialog.setTabOrder(self.pushButtonOK, self.lineEditName)
+        Dialog.setTabOrder(self.lineEditName, self.comboBoxBlockImage)
+        Dialog.setTabOrder(self.comboBoxBlockImage, self.pushButtonCancel)
+
+    def retranslateUi(self, Dialog):
+        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_4.setText(QtGui.QApplication.translate("Dialog", "Value", None, QtGui.QApplication.UnicodeUTF8))
+        self.lineEditName.setPlaceholderText(QtGui.QApplication.translate("Dialog", "Name Block", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("Dialog", "Block image:", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButtonCancel.setText(QtGui.QApplication.translate("Dialog", "CANCEL", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButtonOK.setText(QtGui.QApplication.translate("Dialog", "OK", None, QtGui.QApplication.UnicodeUTF8))
+

@@ -1,14 +1,15 @@
-from PySide import QtCore, QtGui
-from VisualFuntion import *
+from VisualBlock import *
+
 
 class MyView(QtGui.QGraphicsView):
 
-    def __init__(self,parent,arg=None):
+    def __init__(self, scene, parent, arg=None):
         self.zoom = None
-        QtGui.QGraphicsView.__init__(self,parent)
+        QtGui.QGraphicsView.__init__(self, scene, parent)
 
-    def setZoom(self,zoom):
-        self.zoom=zoom
+    def setZoom(self, zoom):
+        self.zoom = zoom
+
     def wheelEvent(self, event):
         if self.zoom:
             # Zoom Factor
