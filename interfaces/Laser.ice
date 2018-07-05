@@ -32,8 +32,8 @@ module RoboCompLaser{
 	["cpp:comparable"]
 	struct TData{
 		float angle;
-					float dist;
-				};
+		float dist;
+		};
 	sequence <TData> TLaserData;
 
 	interface Laser{

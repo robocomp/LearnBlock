@@ -75,6 +75,13 @@ block{
     languages ES: "cara_en_el_centro", EN: "center_face"
 }
 
+block{
+    type perceptual
+    name is_there_face
+    img block4, block3
+    languages ES: "hay_cara", EN: "is_there_face"
+}
+
 # block{
 #     type perceptual
 #     name back_obstacle
@@ -147,3 +154,5 @@ block{
     img block4, block3
     languages ES: "hay_obtaculo_derecha", EN: "right_obstacle"
 }
+
+

@@ -183,7 +183,7 @@ def __parserFromString(text):
 
 def __generatePy(lines):
     list_var = []
-    text = "time_global_start = time.time()"
+    text = "\ntime_global_start = time.time()"
 
     text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\tprint time_global\n\treturn time_global > umbral\n\n"
     thereareWhens = False

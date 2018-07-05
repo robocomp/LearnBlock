@@ -84,19 +84,19 @@ class Client(Ice.Application, threading.Thread):
                 print 'Cannot get DifferentialRobotProxy property.'
                 raise
 
-            # try:
-            #     proxyString = ic.getProperties().getProperty('LaserProxy')
-            #     try:
-            #         basePrx = ic.stringToProxy(proxyString)
-            #         self.laser_proxy = RoboCompLaser.LaserPrx.checkedCast(basePrx)
-            #         print "Connection Successful: ", proxyString
-            #     except Ice.Exception:
-            #         print 'Cannot connect to the remote object (Laser)', proxyString
-            #         raise
-            # except Ice.Exception, e:
-            #     print e
-            #     print 'Cannot get Laser', i, 'Proxy property.'
-            #     raise
+            try:
+                proxyString = ic.getProperties().getProperty('LaserProxy')
+                try:
+                    basePrx = ic.stringToProxy(proxyString)
+                    self.laser_proxy = RoboCompLaser.LaserPrx.checkedCast(basePrx)
+                    print "Connection Successful: ", proxyString
+                except Ice.Exception:
+                    print 'Cannot connect to the remote object (Laser)', proxyString
+                    raise
+            except Ice.Exception, e:
+                print e
+                print 'Cannot get Laser', i, 'Proxy property.'
+                raise
 
 
 
@@ -144,7 +144,7 @@ class Client(Ice.Application, threading.Thread):
             self.reading = True
             self.mutex.acquire()
             self.getImageStream()
-            # self.readSonars()
+            self.readSonars()
             self.mutex.release()
             self.reading = False
             time.sleep(0.002)
@@ -171,24 +171,14 @@ class Client(Ice.Application, threading.Thread):
 
     def readSonars(self):
         try:
-            laserdata = ast.literal_eval(self.laser_proxy.getLaserData())
+            laserdata = self.laser_proxy.getLaserData()
             self.usList = [d.dist for d in laserdata]
-            # for nombre, sensor in ultrasound.items():
-            #     if (nombre == "sensor0"):
-            #         self.usList["front"] = sensor["dist"]*10
-            #     elif (nombre == "sensor1"):
-            #         self.usList["back"] = sensor["dist"]*10
-            #     elif (nombre == "sensor2"):
-            #         self.usList["right"] = sensor["dist"]*10
-            #     elif (nombre == "sensor3"):
-            #         self.usList["left"] = sensor["dist"]*10
+            print "...........", self.usList
         except Exception as e:
             print "Error readSonars"
 
     def getSonars(self):
         # self.readSonars()
-        while self.reading:
-            time.sleep(0.005)
         self.mutex.acquire()
         localUSList = self.usList
         print self.usList
