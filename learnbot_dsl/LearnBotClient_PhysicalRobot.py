@@ -17,7 +17,6 @@ except KeyError:
 
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
 
-Ice.loadSlice(preStr+"Ultrasound.ice")
 Ice.loadSlice(preStr+"Laser.ice")
 Ice.loadSlice(preStr+"DifferentialRobot.ice")
 Ice.loadSlice(preStr+"JointMotor.ice")
@@ -25,7 +24,6 @@ Ice.loadSlice(preStr+"GenericBase.ice")
 Ice.loadSlice(preStr+"EmotionalMotor.ice")
 
 
-import RoboCompUltrasound
 import RoboCompLaser
 import RoboCompDifferentialRobot
 import RoboCompJointMotor
@@ -95,7 +93,7 @@ class Client(Ice.Application, threading.Thread):
                     raise
             except Ice.Exception, e:
                 print e
-                print 'Cannot get Laser', i, 'Proxy property.'
+                print 'Cannot get Laser Proxy property.'
                 raise
 
 
@@ -130,7 +128,7 @@ class Client(Ice.Application, threading.Thread):
                 raise
 
             self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
-            self.bytes=''
+            self.bytes = ''
 
         except:
                 traceback.print_exc()
