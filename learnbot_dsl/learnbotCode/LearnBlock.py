@@ -29,7 +29,6 @@ from learnbot_dsl.functions import *
 import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
 import time
-global lbot
 try:
     lbot = <LearnBotClient>.Client(sys.argv)
 except Exception as e:
@@ -258,6 +257,9 @@ class LearnBlock(QtGui.QMainWindow):
             self.listNameUserFunctions = []
             self.listNameUserFunctions = []
             self.__fileProject = None
+            self.ui.deleteWhenpushButton.setEnabled(False)
+            self.ui.deleteVarPushButton.setEnabled(False)
+            self.ui.deleteFuntionsPushButton.setEnabled(False)
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setText("The document has been modified.")

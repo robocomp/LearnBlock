@@ -55,6 +55,7 @@ class Client(Ice.Application, threading.Thread):
         self.image = np.zeros((240,320,3), np.uint8)
         self.simage = self.image
         self.usList = [1000]*7
+        self.angleCamera = 0
         global ic
         params = copy.deepcopy(sys.argv)
         if len(params) > 1:
@@ -217,8 +218,8 @@ class Client(Ice.Application, threading.Thread):
     def setAngleJointMotor(self, angle):
         try:
             goal = RoboCompJointMotor.MotorGoalPosition()
-            goal.position = angle
-            # self.jointmotor_proxy.setPosition(goal)
+            goal.position = -angle
+            self.jointmotor_proxy.setPosition(goal)
         except Exception as e:
             print "Error setAngleJointMotor\n",e, type(angle)
 
@@ -269,11 +270,12 @@ class Client(Ice.Application, threading.Thread):
             print "Error expressDisgust"
 
     def setJointAngle(self, angle):
+        self.angleCamera = angle
         print "Enviando anglulo", angle
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
         goal.position = angle
-        # self.jointmotor_proxy.setPosition(goal)
+        self.jointmotor_proxy.setPosition(goal)
 
     def __del__(self):
             self.active = False

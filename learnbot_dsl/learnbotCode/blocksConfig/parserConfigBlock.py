@@ -11,6 +11,11 @@ cl        = Suppress( Word( "}" ) )
 opp       = Suppress( Word( "(" ) )
 clp       = Suppress( Word( ")" ) )
 
+e = CaselessLiteral('E')
+point = Literal('.')
+plusorminus = Literal('+') | Literal('-')
+number = Word(nums)
+integer = Combine( Optional(plusorminus) + number )
 # identifier = Word( alphas+"_-+*/=><()", alphanums+"/-_.+*/=><()" )
 
 reserved_words = ( Keyword( "block" ) | Keyword( "type" ) | Keyword( "name" ) | Keyword( "file" ) | Keyword( "img" ) | Keyword( "blocktype" ) | Keyword( "languages" ) )
@@ -37,8 +42,14 @@ name = Group( Suppress( Word( "name" ) ) + identifier ).setResultsName( "name" )
 # -------------------------blocktype--------------------
 # typeblock = Group( Suppress( Word( "blocktype" ) ) + identifier )
 
+floatnumber = Combine( integer +
+                       Optional( point + Optional(number) )
+                       # +
+                       # Optional( e + integer )
+                     )
+
 # -------------------------variables--------------------
-var = identifier.setResultsName( "type" )+identifier.setResultsName( "varName" ) + Word( nums ).setResultsName( "defaultValue" )
+var = identifier.setResultsName( "type" )+identifier.setResultsName( "varName" ) + floatnumber.setResultsName( "defaultValue" )
 
 
 variables = Suppress( Word( "variables" ) )+op+ Group( var )+ZeroOrMore( Group( var ) )+cl
