@@ -171,7 +171,6 @@ class Client(Ice.Application, threading.Thread):
         try:
             laserdata = self.laser_proxy.getLaserData()
             self.usList = [d.dist for d in laserdata]
-            print "...........", self.usList
         except Exception as e:
             print "Error readSonars"
 
@@ -179,7 +178,6 @@ class Client(Ice.Application, threading.Thread):
         # self.readSonars()
         self.mutex.acquire()
         localUSList = self.usList
-        print self.usList
         self.mutex.release()
         # time.sleep(0.1)
         return localUSList
