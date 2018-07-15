@@ -320,6 +320,7 @@ class Client(Ice.Application, threading.Thread):
     def subscribe_topic(self,name, timeWait):
     	startTime = time.time()
 	waitTime = timeWait
+	name = name + " "
 	while True:
         	self.client.loop()
         	elapsedTime = time.time() - startTime
