@@ -1,0 +1,11 @@
+import "EmotionRecognition.idsl";
+
+Component facial_recognition
+{
+	Communications
+	{
+		implements EmotionRecognition;
+	};
+	language python;
+};
+
