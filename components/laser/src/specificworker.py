@@ -34,7 +34,7 @@ class SpecificWorker(GenericWorker):
         super(SpecificWorker, self).__init__(proxy_map)
         self.timer.timeout.connect(self.compute)
         self.Period = 2000
-        tof = VL53L0X.VL53L0X()
+        self.tof = VL53L0X.VL53L0X()
         self.tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
         self.timing = self.tof.get_timing()
         if (self.timing < 20000):
@@ -53,13 +53,6 @@ class SpecificWorker(GenericWorker):
 
     @QtCore.Slot()
     def compute(self):
-        print ('SpecificWorker.compute...')
-        # computeCODE
-        # try:
-        #       self.differentialrobot_proxy.setSpeedBase(100, 0)
-        # except Ice.Exception, e:
-        #       traceback.print_exc()
-        #       print e
         distance = self.tof.get_distance()
         data = TData()
         data.dist = distance

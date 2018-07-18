@@ -53,6 +53,7 @@ def detect_blue_line(frame):
 
 
 face_cascade = cv2.CascadeClassifier('/home/software/opencv/data/haarcascades/haarcascade_frontalface_alt.xml')
+face_cascade2 = cv2.CascadeClassifier('/home/software/opencv/data/haarcascades/haarcascade_profileface.xml')
 
 
 # cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
@@ -65,10 +66,12 @@ def detect_face(frame):
     height, width, channels = frame.shape
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
-
+    faces2 = face_cascade2.detectMultiScale(gray, 1.3, 5)
     # Dibujamos un rectangulo en las coordenadas de cada rostro
     mat = [[0, 0, 0] for x in range(3)]
     for (x, y, w, h) in faces:
+        mat[(y + h / 2) / (height / 3)][(x + w / 2) / (width / 3)] += 1
+    for (x, y, w, h) in faces2:
         mat[(y + h / 2) / (height / 3)][(x + w / 2) / (width / 3)] += 1
     # frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
     # cv2.imshow('img', frame)
