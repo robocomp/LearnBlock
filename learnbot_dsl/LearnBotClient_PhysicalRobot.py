@@ -180,6 +180,7 @@ class Client(Ice.Application, threading.Thread):
         localUSList = self.usList
         self.mutex.release()
         # time.sleep(0.1)
+        print localUSList
         return localUSList
 
     def getImage(self):
