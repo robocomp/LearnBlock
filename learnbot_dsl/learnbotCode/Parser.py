@@ -41,24 +41,24 @@ reserved_words = (Keyword('def') | Keyword('=') | Keyword('funtion.') | Keyword(
 iden = Word(alphanums + "_")
 identifier = Group(~reserved_words + iden).setResultsName("IDENTIFIER")
 
-QUOTE = Word("\"")
-OR = Word("or")
-AND = Word("and")
-NOT = Group(Word("not")).setResultsName('NOT')
-plus = Word("+")
-minus = Word("-")
-mult = Word("*")
-div = Word("/")
-lpar = Word("(")
-rpar = Word(")")
-TRUE = Group(Word("True")).setResultsName('TRUE')
-FALSE = Group(Word("False")).setResultsName('FALSE')
-NONE = Group(Word("None")).setResultsName('NONE')
-eq = Word("=")
+QUOTE = Literal("\"")
+OR = Literal("or")
+AND = Literal("and")
+NOT = Group(Literal("not")).setResultsName('NOT')
+plus = Literal("+")
+minus = Literal("-")
+mult = Literal("*")
+div = Literal("/")
+lpar = Literal("(")
+rpar = Literal(")")
+TRUE = Group(Literal("True")).setResultsName('TRUE')
+FALSE = Group(Literal("False")).setResultsName('FALSE')
+NONE = Group(Literal("None")).setResultsName('NONE')
+eq = Literal("=")
 point = Literal('.')
-coma = Word(",")
-COLONS = Suppress(Word(":"))
-SEMICOL = Word(";")
+coma = Literal(",")
+COLONS = Suppress(Literal(":"))
+SEMICOL = Literal(";")
 plusorminus = Literal('+') | Literal('-')
 e = CaselessLiteral('E')
 number = Word(nums)
@@ -166,7 +166,6 @@ def __parserFromFile(file):
     with open(file) as f:
         text = f.read()
         ret = __parserFromString(text)
-        print ret
         return ret
 
 
@@ -182,6 +181,7 @@ def __parserFromString(text):
 
 
 def __generatePy(lines):
+
     list_var = []
     text = "\ntime_global_start = time.time()"
 
@@ -297,7 +297,7 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 # ---------------------------------------
 
 def __processASSIG(line, text="", index=0):
-    print line
+    # print line
     # print "------------------------__processASSIG-----", line[1]
     text += "\t" * index + line.name[0] + " = " + __process(line[1]) + "\n"
     return text
@@ -367,7 +367,7 @@ def __processWHEN(line, list_var, text="", index=0):
     text = "time_" + str(line.name[0]) + " = 0\n" + str(line.name[0]) + "_start = time.time()\n" + text
 
     if line.condition is "":
-        text = line.name[0] + " =  None\n" + text
+        text = '\n' + line.name[0] + " =  None\n" + text
     return text
 
 
