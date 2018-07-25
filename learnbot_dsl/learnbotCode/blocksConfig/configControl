@@ -57,6 +57,14 @@ block{
 
 block{
     type control
+    name start
+    img block4
+    languages ES: "inicio", EN: "start"
+    tooltip ES: "", EN: ""
+}
+
+block{
+    type control
     name elapsedTime
     variables{
         float threshold 0

@@ -485,15 +485,18 @@ class LearnBlock(QtGui.QMainWindow):
         self.addWhenGui.open()
 
     def addBlockWhen(self):
-        text = self.addWhenGui.value
-        imgPath = self.addWhenGui.imgName
-        configImgPath = imgPath.replace(".png", "")
-        blockType, connections = loadConfigBlock(configImgPath)
+        if self.addWhenGui.isOk:
+            text = self.addWhenGui.value
+            imgPath = self.addWhenGui.imgName
+            configImgPath = imgPath.replace(".png", "")
+            blockType, connections = loadConfigBlock(configImgPath)
 
-        block = AbstractBlock(0, 0, text, {'ES': "Cuando ", 'EN': "When "}, imgPath, [],
-                              self.addWhenGui.nameControl.replace(" ", "_"), connections, blockType, WHEN)
-        self.scene.addItem(block)
-        self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
+            block = AbstractBlock(0, 0, text, {'ES': "Cuando ", 'EN': "When "}, imgPath, [],
+                                  self.addWhenGui.nameControl.replace(" ", "_"), connections, blockType, WHEN)
+            self.scene.addItem(block)
+            print "-------------", self.addWhenGui.nameControl
+            if self.addWhenGui.nameControl != "start":
+                self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
 
     def addButtonsWhens(self, configImgPath, name):
         if configImgPath.split('/')[-1] == 'block8':

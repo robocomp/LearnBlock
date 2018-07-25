@@ -31,6 +31,12 @@ block{
 }
 block{
     type operador
+    name ==
+    img block3
+
+}
+block{
+    type operador
     name +=
     img block3
 }

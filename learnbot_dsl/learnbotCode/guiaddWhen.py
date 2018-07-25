@@ -44,6 +44,7 @@ class guiAddWhen(QtGui.QDialog):
         self.ui.setupUi(self)
         self.__updateBlockType(0)
         self.__updateImage(0)
+        self.isOk = False
         for name in listNameBlocks:
             self.ui.comboBoxBlockImage.addItem(name)
         self.ui.comboBoxBlockImage.currentIndexChanged.connect(self.__updateImage)
@@ -51,8 +52,22 @@ class guiAddWhen(QtGui.QDialog):
         self.ui.pushButtonOK.clicked.connect(lambda: self.__buttons(1))
         self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
         self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
+        self.ui.Run_start.stateChanged.connect(self.__changeRunStart)
 
+    def __changeRunStart(self):
+        if self.ui.Run_start.isChecked():
+            self.ui.lineEditName.setEnabled(False)
+            self.ui.comboBoxBlockImage.setCurrentIndex(1)
+            self.ui.comboBoxBlockImage.setEnabled(False)
+            self.ui.lineEditName.setText("start")
+            self.__updateImage(self.ui.comboBoxBlockImage.currentIndex())
+        else:
+            self.ui.lineEditName.setText("")
+            self.ui.lineEditName.setEnabled(True)
+            self.ui.comboBoxBlockImage.setEnabled(True)
+            self.__updateImage(self.ui.comboBoxBlockImage.currentIndex())
     def __updateImage(self, index):
+
         self.value = "when"
         self.nameControl = self.ui.lineEditName.text()
         self.img = listNameBlocks[index]
@@ -110,6 +125,12 @@ class guiAddWhen(QtGui.QDialog):
     def __buttons(self, ret):
         if ret is 1:
             ret = None
+            if self.ui.Run_start.isChecked() is False and self.ui.lineEditName.text() == "start":
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText("Error the name can not be 'start'")
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
             if self.ui.lineEditName.text() == "":
                 msgBox = QtGui.QMessageBox()
                 msgBox.setText("Error Name is empty.")
@@ -118,6 +139,7 @@ class guiAddWhen(QtGui.QDialog):
                 ret = msgBox.exec_()
             if ret is not None:
                 return
+        self.isOk = True
         self.close()
 
     def __repitNameVar(self):

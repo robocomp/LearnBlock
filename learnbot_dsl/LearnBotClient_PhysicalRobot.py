@@ -126,8 +126,12 @@ class Client(Ice.Application, threading.Thread):
                 print e
                 print 'Cannot get UltrasoundProxy property.'
                 raise
-
-            self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
+            try:
+                self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
+                self.streamOK = True
+            except Exception as e:
+                print "Error connect Streamer\n", e
+                self.streamOK = False
             self.bytes = ''
 
         except:
@@ -141,7 +145,8 @@ class Client(Ice.Application, threading.Thread):
         while self.active:
             self.reading = True
             self.mutex.acquire()
-            self.getImageStream()
+            if self.streamOK:
+                self.getImageStream()
             self.readSonars()
             self.mutex.release()
             self.reading = False

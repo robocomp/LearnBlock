@@ -220,7 +220,7 @@ class Client(Ice.Application, threading.Thread):
         self.angleCamera = angle
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
-        goal.position = angle
+        goal.position = -angle
         self.jointmotor_proxy.setPosition(goal)
 
     def __del__(self):
