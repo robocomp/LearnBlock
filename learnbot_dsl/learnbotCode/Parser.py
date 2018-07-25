@@ -21,7 +21,6 @@ except Exception as e:
     
 """
 
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -35,7 +34,7 @@ class bcolors:
 
 OBRACE, CBRACE, SEMI, OPAR, CPAR = map(Literal, "{};()")
 
-reserved_words = (Keyword('def') | Keyword('=') | Keyword('funtion.') | Keyword('>=') | Keyword('<=') | Keyword(
+reserved_words = (Keyword('def') | Keyword('=') | Keyword('function') | Keyword('>=') | Keyword('<=') | Keyword(
     '<') | Keyword('>') | Keyword('deactivate') | Keyword('activate') | Keyword('not') | Keyword('True') | Keyword(
     'False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword(
     'elif') | Keyword('when') | Keyword('while') | Keyword('end'))
@@ -82,17 +81,20 @@ COMP = Group(L | NL | LE | NLE | E | NE).setResultsName("COMP")
 """-----------------OPERADORES----------------------"""
 SRMD = Group(plus | minus | mult | div).setResultsName("SRMD")
 
-"""-----------------OPERACIONES---------------------"""
-OPERATION = Group((identifier|CHAINBETTENQUOTE) + ZeroOrMore(SRMD + (identifier | CHAINBETTENQUOTE))).setResultsName("OPERATION")
-
-"""-----------------OPERACIONES---------------------"""
-ORAND = Group(OR | AND).setResultsName('ORAND')
-
 """-----------------FUNCTION-------------------------"""
 FUNCTION = Group(
     Suppress(Literal("function")) + Suppress(point) + identifier.setResultsName('name') + Suppress(lpar) + Group(
         Optional(NUMS | identifier) + ZeroOrMore(Suppress(coma) + (NUMS | identifier))).setResultsName(
         "args") + Suppress(rpar)).setResultsName("FUNCTION")
+
+"""-----------------FIELDS---------------------------"""
+FIELDS = Optional(NOT) + NUMS | FUNCTION | TRUE | FALSE | identifier | CHAINBETTENQUOTE
+
+"""-----------------OPERACIONES---------------------"""
+ORAND = Group(OR | AND).setResultsName('ORAND')
+
+"""-----------------OPERACIONES---------------------"""
+OPERATION = Group(FIELDS + ZeroOrMore( (SRMD | ORAND) + FIELDS)).setResultsName("OPERATION")
 
 """-----------------SIMPLEFUNCTION-------------------------"""
 SIMPLEFUNCTION = Group(identifier.setResultsName('name') + Suppress(lpar) + Group(
@@ -104,9 +106,9 @@ PASS = Group(Literal("pass")).setResultsName("PASS")
 
 """-----------------CONDICIONES---------------------"""
 COMPOP = Group(OPERATION + COMP + OPERATION).setResultsName("COMPOP")
-OPTIONCONDITION = SIMPLEFUNCTION | FUNCTION | TRUE | FALSE | COMPOP | identifier
+OPTIONCONDITION = FUNCTION | SIMPLEFUNCTION | TRUE | FALSE | COMPOP | identifier
 SIMPLECONDITION = Group(Optional(NOT) + OPTIONCONDITION).setResultsName("SIMPLECONDITION")
-CONDITION = Group(SIMPLECONDITION + ZeroOrMore(ORAND + SIMPLECONDITION)).setResultsName("CONDITION")
+CONDITION = Group(SIMPLECONDITION + ZeroOrMore(( ORAND | SRMD ) + SIMPLECONDITION)).setResultsName("CONDITION")
 
 """-----------------asignacion-VARIABLES------------"""
 
@@ -114,7 +116,8 @@ ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQU
     'ASSIGSTRING')
 
 NONEVAR = NONE.setResultsName("NONEVAR")
-VAR = Group(SECTAB + identifier.setResultsName("name") + Suppress(eq) + ( NONEVAR | OPERATION | CONDITION | ASSIGSTRING )).setResultsName("VAR")
+VAR = Group(SECTAB + identifier.setResultsName("name") + Suppress(eq) + ( NONEVAR | OPERATION )).setResultsName("VAR")
+# TODO +=
 # Solved error var =  0
 
 """-----------------LINEA---------------------------"""
@@ -176,14 +179,14 @@ def __parserFromString(text):
         LB.ignore(pythonStyleComment)
         ret = LB.parseString(text)
         return ret
-    except Exception as e:
-        print("line: {}".format(e.line))
-        print("    " + " " * e.col + "^")
-        raise e
+    except ParseException as pe:
+        print(pe.line)
+        print(' ' * (pe.col - 1) + '^')
+        print(pe)
 
 
 def __generatePy(lines):
-
+    print lines
     list_var = []
     text = "\ntime_global_start = time.time()"
 
@@ -258,14 +261,18 @@ def __process(line, list_var=[], text="", index=0):
         text = __processCONDITION(line, text, index)
     elif TYPE is 'ASSIGSTRING':
         text = __processASSIGSTRING(line, text, index)
-    elif TYPE in ['FALSE', 'TRUE', 'IDENTIFIER', 'SRMD']:
-        text = line[0]
     elif TYPE is 'SIMPLECONDITION':
         text = __processSIMPLECONDITION(line, text, index)
     elif TYPE is 'PASS':
         text += "\t" * index + "pass\n"
     elif TYPE is 'NONEVAR':
         text += "None"
+    elif TYPE is 'STRING':
+        text += '"' + line[0] + '"'
+    elif TYPE in ['FALSE', 'TRUE', 'IDENTIFIER', 'SRMD', 'ORAND', "NUMBER"]:
+        text = line[0]
+    else:
+        print "The type is ", TYPE , line
     return text
 
 def __processDEF(line, list_var, text="", index=0):
@@ -382,13 +389,8 @@ def __processWHEN(line, list_var, text="", index=0):
 
 
 def __processOP(line, text="", index=0):
-    # print "------------------------__processOP------------"
     for field in line:
-        if field.getName() is "STRING":
-            text += '"'+ field[0] + '" '
-        else:
-            text += field[0] + " "
-    # print "-----------------------end-__processOP------------"
+        text += __process(field) + " "
     return text
 
 
@@ -422,6 +424,8 @@ def __processCONDITION(line, text="", index=0):
         if field.getName() is 'SIMPLECONDITION':
             text += __process(field) + " "
         elif field.getName() is 'ORAND':
+            text += field[0] + " "
+        elif field.getName() is 'SRMD':
             text += field[0] + " "
     return text
 
@@ -506,8 +510,8 @@ if __name__ == "__main__":
     if len(argv) is not 3:
         print bcolors.FAIL + "You must give 2 arguments"
         print "\timputfile\tFile to parser"
-        print "\toutputfile\tFile to parser" + bcolors.ENDC
-        print "\tphysicalRobot\t 1/0 to true or false"
+        print "\toutputfile\tFile to parser"
+        print "\tphysicalRobot\t 1/0 to true or false" + bcolors.ENDC
         exit(-1)
     if argv[0] == argv[1]:
         print bcolors.FAIL + "Imputfile must be different to outputfile" + bcolors.ENDC
