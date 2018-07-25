@@ -74,6 +74,7 @@ E = Literal("==")
 NE = Literal("!=")
 END = Literal("end")
 SECTAB = ZeroOrMore("\t")
+CHAINBETTENQUOTE = Group(QuotedString('"')).setResultsName("STRING")
 
 """-----------------COMPARACIONES-------------------"""
 COMP = Group(L | NL | LE | NLE | E | NE).setResultsName("COMP")
@@ -82,7 +83,7 @@ COMP = Group(L | NL | LE | NLE | E | NE).setResultsName("COMP")
 SRMD = Group(plus | minus | mult | div).setResultsName("SRMD")
 
 """-----------------OPERACIONES---------------------"""
-OPERATION = Group(identifier + ZeroOrMore(SRMD + identifier)).setResultsName("OPERATION")
+OPERATION = Group((identifier|CHAINBETTENQUOTE) + ZeroOrMore(SRMD + (identifier | CHAINBETTENQUOTE))).setResultsName("OPERATION")
 
 """-----------------OPERACIONES---------------------"""
 ORAND = Group(OR | AND).setResultsName('ORAND')
@@ -108,7 +109,7 @@ SIMPLECONDITION = Group(Optional(NOT) + OPTIONCONDITION).setResultsName("SIMPLEC
 CONDITION = Group(SIMPLECONDITION + ZeroOrMore(ORAND + SIMPLECONDITION)).setResultsName("CONDITION")
 
 """-----------------asignacion-VARIABLES------------"""
-CHAINBETTENQUOTE = Group(QuotedString('"')).setResultsName("STRING")
+
 ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQUOTE | NUMS))).setResultsName(
     'ASSIGSTRING')
 
@@ -206,12 +207,18 @@ def __generatePy(lines):
             text = __process(x, list_var, text)
 
     if thereareWhens is True:
+        for x in lines:
+            if x.getName() is 'WHEN':
+                if x.name[0] == "start":
+                    text += "when_" + str(x.name[0]) + "()\n"
         text += "\n\nwhile True:\n"
         for line in ini:
             text += "\t" + line
         for x in lines:
             if x.getName() is 'WHEN':
-                text += "\twhen_" + str(x.name[0]) + "()\n"
+                if x.name[0] != "start":
+                    text += "\twhen_" + str(x.name[0]) + "()\n"
+        text += "\tpass"
     return text
 
 
@@ -350,22 +357,24 @@ def __processWHEN(line, list_var, text="", index=0):
         text += "\t" * index + "global " + x + "\n"
     # text += "\t"*index + "global " + "time_" + str(line.name[0]) + "\n"
     # text += "\t"*index + "global " + str(line.name[0]) + "_start\n"
-
-    text += "\t" * index + "if time_" + str(line.name[0]) + " is 0:\n\t\t" + str(
+    if str(line.name[0]) != "start":
+        text += "\t" * index + "if time_" + str(line.name[0]) + " is 0:\n\t\t" + str(
         line.name[0]) + "_start = time.time()\n"
 
-    text += "\t" * index + "if " + str(line.name[0]) + ":\n"
-    index += 1
+        text += "\t" * index + "if " + str(line.name[0]) + ":\n"
+        index += 1
     for cline in line.content:
         text = __process(cline, [], text, index) + "\n"
-    index -= 1
-    text += "\t\ttime_" + str(line.name[0]) + " = time.time() -" + str(
-        line.name[0]) + "_start\n\telse:\n\t\ttime_" + str(line.name[0]) + " = 0\n"
 
+    text += "\t" * index + "time_" + str(line.name[0]) + " = time.time() -" + str(
+        line.name[0]) + "_start\n"
+    if str(line.name[0]) != "start":
+        text += "\telse:\n\t\ttime_" + str(line.name[0]) + " = 0\n"
+    index -= 1
     if line.condition is not "":
         ini.append(line.name[0] + " = " + __process(line.condition[0]) + "\n")
 
-    text = "time_" + str(line.name[0]) + " = 0\n" + str(line.name[0]) + "_start = time.time()\n" + text
+    text = "\ntime_" + str(line.name[0]) + " = 0\n" + str(line.name[0]) + "_start = time.time()\n" + text
 
     if line.condition is "":
         text = '\n' + line.name[0] + " =  None\n" + text
@@ -375,7 +384,10 @@ def __processWHEN(line, list_var, text="", index=0):
 def __processOP(line, text="", index=0):
     # print "------------------------__processOP------------"
     for field in line:
-        text += field[0] + " "
+        if field.getName() is "STRING":
+            text += '"'+ field[0] + '" '
+        else:
+            text += field[0] + " "
     # print "-----------------------end-__processOP------------"
     return text
 
@@ -456,6 +468,7 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False, RobotId="Non
     except Exception as e:
         print e
         raise e
+    text = __generatePy(tree)
     HEADER = """
 #EXECUTION: python code_example.py config
 from learnbot_dsl.functions import *
@@ -472,14 +485,12 @@ except Exception as e:
     print e
     
 """
-
-    text = __generatePy(tree)
     # print "------------------\n", text "\n------------------",
     if physicalRobot:
-        HEADER = HEADER.replace("Id",RobotId)
+	HEADER = HEADER.replace("Id",RobotId)
 	header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
     else:
-        HEADER = HEADER.replace("Id",RobotId)
+	HEADER = HEADER.replace("Id",RobotId)
 	header = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
     if text is not "":
         with open(outputFile, 'w') as f:
