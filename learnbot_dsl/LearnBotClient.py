@@ -157,9 +157,9 @@ class Client(Ice.Application, threading.Thread):
 				
 	else:
 			self.client = paho.Client(self.name)
-			self.client.on_connect = self.on_connect
+			#self.client.on_connect = self.on_connect
 			self.client.on_message = self.on_message
-			self.client.connect("iot.eclipse.org", 1883, 60)
+			self.client.connect("iot.eclipse.org", 1883)
 	
 		
 		#	print "Error"
@@ -269,6 +269,7 @@ class Client(Ice.Application, threading.Thread):
     	startTime = time.time()
 	waitTime = timeWait
 	name = name + " "
+	self.client.subscribe("Robot")
 	while True:
         	self.client.loop()
         	elapsedTime = time.time() - startTime
