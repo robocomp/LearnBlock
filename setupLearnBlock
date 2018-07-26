@@ -16,6 +16,7 @@ then
 elif [ $1 = "install" ]
 then
   pip install paramiko
+  pip install paho-mqtt
   python setup.py install --record files.txt
   cat files.txt
   echo Completed install successfully
