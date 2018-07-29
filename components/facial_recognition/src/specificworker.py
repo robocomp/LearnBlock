@@ -64,7 +64,7 @@ class SpecificWorker(GenericWorker):
 		self.emotion_classifier = load_model(self.emotion_model_path, compile=False)
 		self.emotion_target_size = self.emotion_classifier.input_shape[1:3]
 		self.emotion_window = []
-		cv2.namedWindow('window_frame')
+		# cv2.namedWindow('window_frame')
 		self.video_capture = cv2.VideoCapture(0)
 		self.list_emotions = []
 
@@ -123,12 +123,12 @@ class SpecificWorker(GenericWorker):
 			else:
 				color = emotion_probability * np.asarray((0, 255, 0))
 
-			color = color.astype(int)
-			color = color.tolist()
+			# color = color.astype(int)
+			# color = color.tolist()
 
-			draw_bounding_box(face_coordinates, rgb_image, color)
-			draw_text(face_coordinates, rgb_image, emotion_mode,
-					  color, 0, -45, 1, 1)
+			# draw_bounding_box(face_coordinates, rgb_image, color)
+			# draw_text(face_coordinates, rgb_image, emotion_mode,
+			# 		  color, 0, -45, 1, 1)
 			data = SEmotion()
 			data.x, data.y, data.w, data.h = face_coordinates
 			data.emotion = emotion_mode
@@ -136,10 +136,8 @@ class SpecificWorker(GenericWorker):
 			self.list_emotions.append(data)
 
 		self.mutex.unlock()
-		bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
-		cv2.imshow('window_frame', bgr_image)
-
-
+		# bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
+		# cv2.imshow('window_frame', bgr_image)
 		return True
 
 
