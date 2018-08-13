@@ -1,6 +1,6 @@
 
 block{
-    type collab
+    type collaborative
     name subscribe
     variables{
         float subscribeId  1
