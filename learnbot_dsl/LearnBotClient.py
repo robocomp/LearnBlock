@@ -158,7 +158,7 @@ class Client(Ice.Application, threading.Thread):
 	else:
 			self.client = paho.Client(self.name)
 			#self.client.on_connect = self.on_connect
-			self.client.on_message = self.on_message
+			#self.client.on_message = self.on_message
 			self.client.connect("iot.eclipse.org", 1883)
 	
 		
