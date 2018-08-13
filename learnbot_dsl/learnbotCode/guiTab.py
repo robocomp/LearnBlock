@@ -142,7 +142,7 @@ class Tabs(QtGui.QWidget):
                           'proprioceptive': self.ui.tablePropioperceptive, 'operador': self.ui.tableOperadores,
                           'variables': self.ui.tableVariables,
                           'funtions': self.ui.tableUserfunctions, 'express': self.ui.tableExpress,
-                          'others': self.ui.tableOthers, 'collab': self.ui.tableCollab}
+                          'others': self.ui.tableOthers, 'collaborative': self.ui.tableCollab}
 
         for t in self.dicTables:
             table = self.dicTables[t]
@@ -411,7 +411,7 @@ class Tabs(QtGui.QWidget):
                 funtionType = FUNTION
             elif "others" == f.type[0]:
                 funtionType = FUNTION
-            elif "collab" == f.type[0]:
+            elif "collaborative" == f.type[0]:
             	funtionType = FUNTION
 
             blockType = None
