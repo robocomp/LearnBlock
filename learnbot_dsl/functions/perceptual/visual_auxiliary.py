@@ -76,7 +76,7 @@ def detect_face(frame):
     # frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
     # cv2.imshow('img', frame)
     # print("")
-    # for x in mat:
-    # 	print(x)
+    for x in mat:
+        print(x)
     # print("")
     return mat

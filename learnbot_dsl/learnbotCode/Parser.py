@@ -450,7 +450,7 @@ def __processELSE(line, text="", index=0):
 
 
 def __processIF(line, text="", index=0):
-    text += "\t" * index + "if "
+    text += "\n"+"\t" * index + "if "
     for c in line.condition:
         text += __process(line.condition[0])
     text += ":\n"
