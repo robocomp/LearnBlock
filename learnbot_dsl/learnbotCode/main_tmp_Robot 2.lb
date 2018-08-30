@@ -1,9 +1,0 @@
-x = None
-
-
-main:
-	while True:
-		x = function.subscribe(1, 5)
-	end
-end
-
