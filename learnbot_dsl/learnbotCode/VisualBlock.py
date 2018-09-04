@@ -46,7 +46,17 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         QtGui.QWidget.__init__(self)
 
         # Load Image of block
-        self.cvImg = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
+        im = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
+        r, g, b, a = cv2.split(im)
+        rgb = cv2.merge((r, g, b))
+        hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+        h, s, v = cv2.split(hsv)
+        h = h + self.parentBlock.hue
+        s = s + 130
+        hsv = cv2.merge((h, s, v))
+        im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        r, g, b = cv2.split(im)
+        self.cvImg = cv2.merge((r, g, b, a))
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
         img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
                             self.parentBlock.nameControl)

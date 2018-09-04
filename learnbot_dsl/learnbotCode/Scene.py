@@ -52,6 +52,7 @@ class MyScene(QtGui.QGraphicsScene):
         id = str(self.nextIdItem)
         # poner ide del bloque
         blockItem.setId(id)
+        print "-------------------------", blockItem.hue
         visualItem = VisualBlock(blockItem, self.view, self)
         visualItem.start()
         visualItem.activeUpdateConections()

@@ -20,7 +20,7 @@ from guiaddWhen import *
 from guis import addVar, gui, delVar, delWhen, createFunctions as guiCreateFunctions
 from learnbot_dsl.functions import *
 from parserConfig import configSSH
-
+from blocksConfig.blocks import *
 print sys.version_info[0]
 
 HEADER = """
@@ -302,20 +302,28 @@ class LearnBlock(QtGui.QMainWindow):
                 for v in f.variables:
                     variables.append(Variable(v[0], v[1], v[2]))
             funtionType = None
+            HUE = None
             if "control" == f.type[0]:
                 funtionType = CONTROL
+                HUE = HUE_CONTROL
             elif "motor" == f.type[0]:
                 funtionType = FUNTION
+                HUE = HUE_MOTOR
             elif "perceptual" == f.type[0]:
                 funtionType = FUNTION
+                HUE = HUE_PERCEPTUAL
             elif "proprioceptive" == f.type[0]:
                 funtionType = FUNTION
+                HUE = HUE_PROPIOPERCEPTIVE
             elif "operador" == f.type[0]:
                 funtionType = OPERATOR
+                HUE = HUE_OPERATOR
             elif "express" == f.type[0]:
                 funtionType = FUNTION
+                HUE = HUE_EXPRESS
             elif "others" == f.type[0]:
                 funtionType = FUNTION
+                HUE = HUE_OTHERS
 
             blockType = None
             for img in f.img:
@@ -328,7 +336,7 @@ class LearnBlock(QtGui.QMainWindow):
                 dicToolTip = {}
                 for l in f.tooltip:
                     dicToolTip[l.language] = l.translation
-                button = Block_Button((self, f.name[0], dicTrans, self.view, self.scene, img + ".png", connections,
+                button = Block_Button((self, f.name[0], dicTrans, HUE, self.view, self.scene, img + ".png", connections,
                                        variables, blockType, table, table.rowCount() - 1, funtionType, dicToolTip))
                 if f.name[0] == "main":
                     self.mainButton = button
@@ -476,7 +484,7 @@ class LearnBlock(QtGui.QMainWindow):
         imgPath = self.addNumberOrStringGui.imgName
         configImgPath = imgPath.replace(".png", "")
         blockType, connections = loadConfigBlock(configImgPath)
-        block = AbstractBlock(0, 0, text, {}, imgPath, [], "", connections, blockType, VARIABLE)
+        block = AbstractBlock(0, 0, text, {}, imgPath, [], HUE_NUMBER, "", connections, blockType, VARIABLE)
         self.scene.addItem(block)
 
     def showGuiAddWhen(self):
@@ -491,7 +499,7 @@ class LearnBlock(QtGui.QMainWindow):
             configImgPath = imgPath.replace(".png", "")
             blockType, connections = loadConfigBlock(configImgPath)
 
-            block = AbstractBlock(0, 0, text, {'ES': "Cuando ", 'EN': "When "}, imgPath, [],
+            block = AbstractBlock(0, 0, text, {'ES': "Cuando ", 'EN': "When "}, imgPath, [], HUE_WHEN,
                                   self.addWhenGui.nameControl.replace(" ", "_"), connections, blockType, WHEN)
             self.scene.addItem(block)
             print "-------------", self.addWhenGui.nameControl
@@ -504,7 +512,7 @@ class LearnBlock(QtGui.QMainWindow):
             table = self.dicTables['control']
 
             table.insertRow(table.rowCount())
-            button = Block_Button((self, "activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name},
+            button = Block_Button((self, "activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name}, HUE_WHEN,
                                    self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType,
                                    table, table.rowCount() - 1, VARIABLE,
                                    {'ES': "Activa el evento " + name, 'EN': "Activate the event " + name}))
@@ -513,7 +521,7 @@ class LearnBlock(QtGui.QMainWindow):
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
             table.insertRow(table.rowCount())
-            button = Block_Button((self, "deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name},
+            button = Block_Button((self, "deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name}, HUE_WHEN,
                                    self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType,
                                    table, table.rowCount() - 1, VARIABLE,
                                    {'ES': "Desactiva el evento " + name, 'EN': "Deactivate the event " + name}))
@@ -526,7 +534,7 @@ class LearnBlock(QtGui.QMainWindow):
             blockType, connections = loadConfigBlock(pathBlocks + x)
 
             table.insertRow(table.rowCount())
-            button = Block_Button((self, "time_" + name, {'ES': "Tiempo_" + name, 'EN': "Time_" + name}, self.view,
+            button = Block_Button((self, "time_" + name, {'ES': "Tiempo_" + name, 'EN': "Time_" + name}, HUE_WHEN, self.view,
                                    self.scene, pathBlocks + x + ".png", connections, [], blockType, table,
                                    table.rowCount() - 1, VARIABLE,
                                    {'ES': "Es el numero de segundos que lleva en ejecucion el evento " + name,
@@ -808,7 +816,7 @@ class LearnBlock(QtGui.QMainWindow):
         table.insertRow(table.rowCount())
         variables = []
         variables.append(Variable("float", "set to ", "0"))
-        button = Block_Button((self, name, {}, self.view, self.scene, pathBlocks + "/block1" + ".png", connections,
+        button = Block_Button((self, name, {}, HUE_WHEN, self.view, self.scene, pathBlocks + "/block1" + ".png", connections,
                                variables, blockType, table, table.rowCount() - 1, VARIABLE, {}))
         self.listButtons.append(button)
         table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -817,7 +825,7 @@ class LearnBlock(QtGui.QMainWindow):
             blockType, connections = loadConfigBlock(pathBlocks + "/" + img)
             table = self.dicTables['variables']
             table.insertRow(table.rowCount())
-            button = Block_Button((self, name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections,
+            button = Block_Button((self, name, {}, HUE_VARIABLE, self.view, self.scene, pathBlocks + "/" + img + ".png", connections,
                                    [], blockType, table, table.rowCount() - 1, VARIABLE, {}))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -928,7 +936,7 @@ class LearnBlock(QtGui.QMainWindow):
         for img in imgs:
             blockType, connections = loadConfigBlock(pathBlocks + "/" + img)
             table.insertRow(table.rowCount())
-            button = Block_Button((self, name, {}, self.view, self.scene, pathBlocks + "/" + img + ".png", connections,
+            button = Block_Button((self, name, {}, HUE_USERFUNCTION, self.view, self.scene, pathBlocks + "/" + img + ".png", connections,
                                    [], blockType, table, table.rowCount() - 1, USERFUNCTION, {}))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)

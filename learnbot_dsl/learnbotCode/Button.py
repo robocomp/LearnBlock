@@ -10,8 +10,8 @@ from Language import *
 class Block_Button(QtGui.QPushButton):
 
     def __init__(self, args):
-        if len(args) is 13:
-            self.__parent, self.__text, self.__dicTrans, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType, self.__table, self.__row, self.__type, self.__dicToolTip = args
+        if len(args) is 14:
+            self.__parent, self.__text, self.__dicTrans, self.hue, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType, self.__table, self.__row, self.__type, self.__dicToolTip = args
             self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
 
         elif len(args) is 6:
@@ -24,11 +24,23 @@ class Block_Button(QtGui.QPushButton):
             self.__vars = abstracBlock.vars
             self.__blockType = abstracBlock.typeBlock
             self.__type = abstracBlock.type
+            self.hue = abstracBlock.hue
             self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
 
         QtGui.QPushButton.__init__(self)
-
+        #change color block
         im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
+        r, g, b, a = cv2.split(im)
+        rgb = cv2.merge((r, g, b))
+        hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+        h, s, v = cv2.split(hsv)
+        h = h + self.hue
+        s = s + 130
+        hsv = cv2.merge((h, s, v))
+        im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        r, g, b = cv2.split(im)
+        im = cv2.merge((r, g, b, a))
+
         self.showtext = self.__text
 
         if len(self.__dicTrans) is not 0:
@@ -78,6 +90,17 @@ class Block_Button(QtGui.QPushButton):
         if len(self.__dicTrans) is not 0 and self.showtext is not self.__dicTrans[getLanguage()]:
             self.showtext = self.__dicTrans[getLanguage()]
             im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
+            # change color block
+            r, g, b, a = cv2.split(im)
+            rgb = cv2.merge((r, g, b))
+            hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+            h, s, v = cv2.split(hsv)
+            h = h + self.hue
+            s = s + 130
+            hsv = cv2.merge((h, s, v))
+            im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+            r, g, b = cv2.split(im)
+            im = cv2.merge((r, g, b, a))
             img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, None, self.__type)
             cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
             self.setIcon(QtGui.QIcon(self.tmpFile))
@@ -86,12 +109,12 @@ class Block_Button(QtGui.QPushButton):
             self.updateToolTip()
 
     def on_clickedButton(self):
-        block = AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "",
+        block = AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.hue, "",
                               self.__connections, self.__blockType, self.__type)
         self.__scene.addItem(copy.deepcopy(block))
 
     def getAbstracBlockItem(self):
-        return AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), "",
+        return AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.hue, "",
                              self.__connections, self.__blockType, self.__type)
 
     def delete(self, row):
