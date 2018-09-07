@@ -15,21 +15,23 @@ except KeyError:
     print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
     ROBOCOMP = '/opt/robocomp'
 
-preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
+preStr = "-I/home/robocomp/robocomp/components/learnbot/interfaces/   --all /home/robocomp/robocomp/components/learnbot/interfaces/"
 
 Ice.loadSlice(preStr+"Laser.ice")
 Ice.loadSlice(preStr+"DifferentialRobot.ice")
 Ice.loadSlice(preStr+"JointMotor.ice")
 Ice.loadSlice(preStr+"GenericBase.ice")
 Ice.loadSlice(preStr+"EmotionalMotor.ice")
-
+Ice.loadSlice(preStr+"EmotionRecognition.ice")
 
 import RoboCompLaser
 import RoboCompDifferentialRobot
 import RoboCompJointMotor
 import RoboCompGenericBase
 import RoboCompEmotionalMotor
+import RoboCompEmotionRecognition
 
+import subprocess
 
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -54,6 +56,8 @@ class Client(Ice.Application, threading.Thread):
         self.simage = self.image
         self.usList = [1000]*7
         self.angleCamera = 0
+        self.emotion_current_exist = False
+        self.currents_emotions = []
         global ic
         params = copy.deepcopy(sys.argv)
         if len(params) > 1:
@@ -62,6 +66,9 @@ class Client(Ice.Application, threading.Thread):
         elif len(params) == 1:
             params.append('--Ice.Config=config')
         ic = Ice.initialize(params)
+
+        print "iniciando componente emotionrecognition"
+        # subprocess.Popen("python /home/robocomp/robocomp/components/learnbot/components/emotionrecognition2/src/emotionrecognition2.py /home/robocomp/robocomp/components/learnbot/components/emotionrecognition2/etc/config", shell=True, stdout=subprocess.PIPE)
 
 
         status = 0
@@ -124,7 +131,32 @@ class Client(Ice.Application, threading.Thread):
                     raise
             except Ice.Exception, e:
                 print e
-                print 'Cannot get UltrasoundProxy property.'
+                print 'Cannot get JointMotor property.'
+                raise
+
+            # Remote object connection for EmotionRecognition
+            try:
+                proxyString = ic.getProperties().getProperty('EmotionRecognition')
+                i = 0
+                try:
+                    while(True):
+                        try:
+                            i += 1
+                            basePrx = ic.stringToProxy(proxyString)
+                            self.emotionrecognition_proxy = RoboCompEmotionRecognition.EmotionRecognitionPrx.checkedCast(basePrx)
+                            break
+                        except Ice.Exception:
+                            if i is 4:
+                                raise
+                            else:
+                                print "try ", i
+                                time.sleep(1.5)
+                except Ice.Exception:
+                    print 'Cannot connect to the remote object (EmotionRecognition)', proxyString
+                    raise
+            except Ice.Exception, e:
+                print e
+                print 'Cannot get EmotionRecognition property.'
                 raise
             try:
                 self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
@@ -170,6 +202,7 @@ class Client(Ice.Application, threading.Thread):
             self.image = image
             self.newImg = True
             # self.mutex.release()
+            self.emotion_current_exist = False
         return True
 
     def readSonars(self):
@@ -268,6 +301,17 @@ class Client(Ice.Application, threading.Thread):
         goal.name = 'servo'
         goal.position = angle
         self.jointmotor_proxy.setPosition(goal)
+
+    def getEmotions(self):
+        frame = RoboCompEmotionRecognition.TImage()
+        frame.width = self.image.shape[0]
+        frame.height = self.image.shape[1]
+        frame.depth = self.image.shape[2]
+        frame.image = np.fromstring(self.image, np.uint8)
+        if not self.emotion_current_exist:
+            self.currents_emotions = self.emotionrecognition_proxy.processimage(frame)
+            self.emotion_current_exist = True
+        return self.currents_emotions
 
     def __del__(self):
             self.active = False

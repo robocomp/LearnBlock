@@ -155,4 +155,37 @@ block{
     languages ES: "hay_obtaculo_derecha", EN: "right_obstacle"
 }
 
+block{
+    type perceptual
+    name is_there_somebody_happy
+    img block4, block3
+    languages ES: "hay_alguien_alegre", EN: "is_there_somebody_happy"
+}
 
+block{
+    type perceptual
+    name is_there_somebody_angry
+    img block4, block3
+    languages ES: "hay_alguien_enfadado", EN: "is_there_somebody_angry"
+}
+
+block{
+    type perceptual
+    name is_there_somebody_neutral
+    img block4, block3
+    languages ES: "hay_alguien_neutral", EN: "is_there_somebody_neutral"
+}
+
+block{
+    type perceptual
+    name is_there_somebody_sad
+    img block4, block3
+    languages ES: "hay_alguien_triste", EN: "is_there_somebody_sad"
+}
+
+block{
+    type perceptual
+    name is_there_somebody_surprised
+    img block4, block3
+    languages ES: "hay_alguien_sorprendido", EN: "is_there_somebody_surprised"
+}

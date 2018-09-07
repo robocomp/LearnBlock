@@ -112,16 +112,16 @@ class SpecificWorker(GenericWorker):
 			except:
 				continue
 
-			if emotion_text == 'angry':
-				color = emotion_probability * np.asarray((255, 0, 0))
-			elif emotion_text == 'sad':
-				color = emotion_probability * np.asarray((0, 0, 255))
-			elif emotion_text == 'happy':
-				color = emotion_probability * np.asarray((255, 255, 0))
-			elif emotion_text == 'surprise':
-				color = emotion_probability * np.asarray((0, 255, 255))
-			else:
-				color = emotion_probability * np.asarray((0, 255, 0))
+			# if emotion_text == 'angry':
+			# 	color = emotion_probability * np.asarray((255, 0, 0))
+			# elif emotion_text == 'sad':
+			# 	color = emotion_probability * np.asarray((0, 0, 255))
+			# elif emotion_text == 'happy':
+			# 	color = emotion_probability * np.asarray((255, 255, 0))
+			# elif emotion_text == 'surprise':
+			# 	color = emotion_probability * np.asarray((0, 255, 255))
+			# else:
+			# 	color = emotion_probability * np.asarray((0, 255, 0))
 
 			# color = color.astype(int)
 			# color = color.tolist()
