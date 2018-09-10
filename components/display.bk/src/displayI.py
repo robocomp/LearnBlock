@@ -15,31 +15,30 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
+#
 
-import sys, Ice, os
-from PySide import QtGui, QtCore
+import sys, os, Ice
 
 ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
-except KeyError:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+except:
+	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
-
-preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
-Ice.loadSlice(preStr+"CommonBehavior.ice")
-import RoboCompCommonBehavior
+if len(ROBOCOMP)<1:
+	print ('ROBOCOMP environment variable not set! Exiting.')
+	sys.exit()
 
 additionalPathStr = ''
-icePaths = [ '/opt/robocomp/interfaces' ]
+icePaths = []
 try:
+	icePaths.append('/opt/robocomp/interfaces')
 	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
 	for p in SLICE_PATH:
 		icePaths.append(p)
 		additionalPathStr += ' -I' + p + ' '
-	icePaths.append('/opt/robocomp/interfaces')
 except:
-	print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+	print ('SLICE_PATH environment variable was not exported. Using only the default paths')
 	pass
 
 ice_Display = False
@@ -51,38 +50,15 @@ for p in icePaths:
 		ice_Display = True
 		break
 if not ice_Display:
-	print 'Couln\'t load Display'
+	print ('Couldn\'t load Display')
 	sys.exit(-1)
 from RoboCompDisplay import *
 
+class DisplayI(Display):
+	def __init__(self, worker):
+		self.worker = worker
 
-from displayI import *
-
-
-class GenericWorker(QtCore.QObject):
-	kill = QtCore.Signal()
-
-
-	def __init__(self, mprx):
-		super(GenericWorker, self).__init__()
-
-
-
-
-		self.mutex = QtCore.QMutex(QtCore.QMutex.Recursive)
-		self.Period = 30
-		self.timer = QtCore.QTimer(self)
-
-
-	@QtCore.Slot()
-	def killYourSelf(self):
-		rDebug("Killing myself")
-		self.kill.emit()
-
-	# \brief Change compute period
-	# @param per Period in ms
-	@QtCore.Slot(int)
-	def setPeriod(self, p):
-		print "Period changed", p
-		Period = p
-		timer.start(Period)
+	def setImageFromFile(self, pathImg, c):
+		return self.worker.setImageFromFile(pathImg)
+	def setImage(self, img, c):
+		return self.worker.setImage(img)

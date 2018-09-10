@@ -7,4 +7,5 @@ Component display
 		implements Display;
 	};
 	language Python;
+	gui Qt(QWidget);
 };
