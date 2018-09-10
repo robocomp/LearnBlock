@@ -18,6 +18,7 @@
 #
 
 import sys, os, traceback, time
+import Adafruit_PCA9685, threading
 
 from PySide import QtGui, QtCore
 from genericworker import *
@@ -34,59 +35,57 @@ class SpecificWorker(GenericWorker):
         super(SpecificWorker, self).__init__(proxy_map)
         self.timer.timeout.connect(self.compute)
         self.Period = 2000
-        self.tof = VL53L0X.VL53L0X()
-        self.tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
-        self.timing = self.tof.get_timing()
-        if (self.timing < 20000):
-            self.timing = 20000
-        print ("Timing %d ms" % (self.timing/1000))
+        self.mutex = threading.Lock()
+        pinSensors = [(11, 0x20), (13, 0x21), (12, 0x22), (14, 0x23), (15, 0x24)]
+        pwm = Adafruit_PCA9685.PCA9685()
+        self.tofs = []
+        for pin, address in pinSensors:
+                pwm.set_pwm(pin, 0, 4096)
 
+        for pin, address in pinSensors:
+                tof = VL53L0X.VL53L0X(address=address)
+                pwm.set_pwm(pin, 4096, 0)
+                time.sleep(0.50)
+                tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+                self.tofs.append(tof)
+                self.timing = tof.get_timing()
+
+        self.laserData = []
+        self.mutex.acquire()
+        for tof in self.tofs:
+                data = TData()
+                data.dist = tof.get_distance()
+                data.angle = tof.my_object_number
+                self.laserData.append(data)
+        self.mutex.release()
         self.timer.start(self.timing/1000)
 
     def setParams(self, params):
-        # try:
-        #       self.innermodel = InnerModel(params["InnerModelPath"])
-        # except:
-        #       traceback.print_exc()
-        #       print "Error reading config params"
         return True
 
     @QtCore.Slot()
     def compute(self):
-        distance = self.tof.get_distance()
-        data = TData()
-        data.dist = distance
-        data.angle = 0
-        self.laserData=[data, data, data, data, data]
+        self.mutex.acquire()
+        self.laserData = []
+        for tof in self.tofs:
+                data = TData()
+                data.dist = tof.get_distance()
+                data.angle = tof.my_object_number
+                self.laserData.append(data)
+        self.mutex.release()
         return True
 
-    #
-    # getLaserData
-    #
     def getLaserData(self):
+        self.mutex.acquire()
         ret = self.laserData
-        #
-        # implementCODE
-        #
+        self.mutex.release()
         return ret
 
-    #
-    # getLaserConfData
-    #
     def getLaserConfData(self):
         ret = LaserConfData()
-        #
-        # implementCODE
-        #
         return ret
 
-    #
-    # getLaserAndBStateData
-    #
     def getLaserAndBStateData(self):
         ret = TLaserData()
-        #
-        # implementCODE
-        #
         bState = RoboCompGenericBase.TBaseState()
         return [ret, bState]
