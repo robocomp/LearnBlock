@@ -17,6 +17,6 @@ sleep 3
 sudo -E python3 /home/pi/learnbot/components/laser/src/laser.py /home/pi/learnbot/components/laser/etc/config &
 sleep 3
 
-cd /home/pi/sofware/mjpg-streamer
+cd /home/pi/software/mjpg-streamer/mjpg-streamer/
 sudo modprobe bcm2835-v4l2
 ./mjpg_streamer -i "./input_uvc.so -y -r 320x240 -f 30 -d /dev/video0" -o "./output_http.so -p 8080 -w ./www" &

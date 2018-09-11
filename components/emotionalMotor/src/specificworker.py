@@ -64,35 +64,34 @@ class SpecificWorker(GenericWorker):
 	# expressFear
 	#
 	def expressFear(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/miedo.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/miedo.fb")
 
 	#
 	# expressSurprise
 	#
 	def expressSurprise(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/sorpresa.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/sorpresa.fb")
 
 	#
 	# expressAnger
 	#
 	def expressAnger(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/ira.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/ira.fb")
 
 	#
 	# expressSadness
 	#
 	def expressSadness(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/tristeza.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/tristeza.fb")
 
 	#
 	# expressDisgust
 	#
 	def expressDisgust(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/asco.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/asco.fb")
 
 	#
 	# expressJoy
 	#
 	def expressJoy(self):
-		print ("expressJoy")
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/alegria.png")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/alegria.fb")

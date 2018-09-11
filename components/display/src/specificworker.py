@@ -33,6 +33,7 @@ class SpecificWorker(GenericWorker):
 		super(SpecificWorker, self).__init__(proxy_map)
 		self.timer.timeout.connect(self.compute)
 		self.Period = 2000
+		os.system("cat /home/pi/learnbot/components/emotionalMotor/imgs/frameBuffer/Learnbot.fb > /dev/fb0")
 		# self.timer.start(self.Period)
 
 	def setParams(self, params):
