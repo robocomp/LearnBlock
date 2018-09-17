@@ -23,14 +23,14 @@ ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
+	print ('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
 additionalPathStr = ''
-icePaths = []
+icePaths = ['/home/pi/learnbot/interfaces/']
 try:
 	icePaths.append('/opt/robocomp/interfaces')
 	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
@@ -38,7 +38,7 @@ try:
 		icePaths.append(p)
 		additionalPathStr += ' -I' + p + ' '
 except:
-	print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+	print ('SLICE_PATH environment variable was not exported. Using only the default paths')
 	pass
 
 ice_EmotionalMotor = False
@@ -50,7 +50,7 @@ for p in icePaths:
 		ice_EmotionalMotor = True
 		break
 if not ice_EmotionalMotor:
-	print 'Couldn\'t load EmotionalMotor'
+	print ('Couldn\'t load EmotionalMotor')
 	sys.exit(-1)
 from RoboCompEmotionalMotor import *
 ice_Display = False
@@ -62,7 +62,7 @@ for p in icePaths:
 		ice_Display = True
 		break
 if not ice_Display:
-	print 'Couldn\'t load Display'
+	print ('Couldn\'t load Display')
 	sys.exit(-1)
 from RoboCompDisplay import *
 
