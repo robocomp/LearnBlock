@@ -1,4 +1,10 @@
-
+block{
+    type express
+    name expressNeutral
+    img block1
+    languages ES: "no_expresar_nada", EN: "express_Neutral"
+    tooltip ES: "Muestra la cara de neutralidad en el robot", EN: "Show the face of neutral in the robot"
+}
 block{
     type express
     name expressJoy
@@ -44,5 +50,5 @@ block{
     name expressSurprise
     img block1
     languages ES: "expresar_sorpresa", EN: "express_Surprise"
-    tooltip ES: "Muestra la cara de sorpresa en el robot", EN: "Show the face of fear in the robot"
+    tooltip ES: "Muestra la cara de sorpresa en el robot", EN: "Show the face of surprise in the robot"
 }
