@@ -216,6 +216,10 @@ class Client(Ice.Application, threading.Thread):
         self.display_proxy.setImageFromFile(
             "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/alegria.png")
 
+    def expressNeutral(self):
+        self.display_proxy.setImageFromFile(
+            "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/SinEmocion2.png")
+
     def setJointAngle(self, angle):
         self.angleCamera = angle
         goal = RoboCompJointMotor.MotorGoalPosition()

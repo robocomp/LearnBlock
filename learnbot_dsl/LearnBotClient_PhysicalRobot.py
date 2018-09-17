@@ -294,6 +294,12 @@ class Client(Ice.Application, threading.Thread):
         except Exception as e:
             print "Error expressDisgust"
 
+    def expressNeutral(self):
+        try:
+            self.emotionalmotor_proxy.expressNeutral()
+        except Exception as e:
+            print "Error expressNeutral"
+
     def setJointAngle(self, angle):
         self.angleCamera = angle
         print "Enviando anglulo", angle

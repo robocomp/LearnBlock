@@ -18,6 +18,7 @@ module RoboCompEmotionalMotor
 		void expressFear ();
 		void expressAnger ();
 		void expressDisgust ();
+		void expressNeutral ();
 	};
 };
 

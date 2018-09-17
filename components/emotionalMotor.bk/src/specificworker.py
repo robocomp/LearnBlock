@@ -64,40 +64,42 @@ class SpecificWorker(GenericWorker):
 	# expressFear
 	#
 	def expressFear(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/miedo.fb")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/miedo.png")
 
 	#
 	# expressSurprise
 	#
 	def expressSurprise(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/sorpresa.fb")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/sorpresa.png")
 
 	#
 	# expressAnger
 	#
 	def expressAnger(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/ira.fb")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/ira.png")
 
 	#
 	# expressSadness
 	#
 	def expressSadness(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/tristeza.fb")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/tristeza.png")
 
 	#
 	# expressDisgust
 	#
 	def expressDisgust(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/asco.fb")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/asco.png")
 
 	#
 	# expressJoy
 	#
 	def expressJoy(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/alegria.fb")
+		print ("expressJoy")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/alegria.png")
 
-	#
+#
 	# expressNeutral
 	#
 	def expressNeutral(self):
-		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/frameBuffer/SinEmocion2.fb")
+		self.display_proxy.setImageFromFile("/home/robocomp/learnbot/components/emotionalMotor/imgs/neutral.png")
+		pass
