@@ -175,6 +175,8 @@ def __parserFromFile(file):
 
 
 def __parserFromString(text):
+    global ini
+    ini = []
     try:
         LB.ignore(pythonStyleComment)
         ret = LB.parseString(text)
