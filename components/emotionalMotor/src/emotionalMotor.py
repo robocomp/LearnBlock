@@ -55,7 +55,7 @@
 #
 #
 
-import sys, traceback, IceStorm, subprocess, threading, time, Queue, os, copy
+import sys, traceback, IceStorm, subprocess, threading, time, queue, os, copy
 
 # Ctrl+c handling
 import signal
@@ -117,8 +117,8 @@ if __name__ == '__main__':
 			print ('Cannot connect to the remote object (Display)', proxyString)
 			#traceback.print_exc()
 			status = 1
-	except Ice.Exception, e:
-		print e
+	except Ice.Exception as e:
+		print (e)
 		print ('Cannot get DisplayProxy property.')
 		status = 1
 
