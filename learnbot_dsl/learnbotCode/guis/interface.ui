@@ -120,6 +120,9 @@
     </item>
     <item>
      <widget class="QTabWidget" name="Tabwi">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="font">
        <font>
         <pointsize>10</pointsize>
@@ -139,7 +142,7 @@
       </property>
       <widget class="QWidget" name="program_text">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <attribute name="title">
         <string>Text Code</string>
@@ -197,24 +200,31 @@
            </spacer>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <layout class="QVBoxLayout" name="verticalLayout_17">
             <item>
-             <widget class="QPushButton" name="startTextPushButton">
+             <widget class="QPushButton" name="stoptextPushButton">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
-               <string>Start</string>
+               <string>Stop</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="stoptextPushButton">
+             <widget class="QPushButton" name="startPRTextPushButton">
+              <property name="text">
+               <string>Start (physical robot)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="startSRTextPushButton">
               <property name="enabled">
-               <bool>false</bool>
+               <bool>true</bool>
               </property>
               <property name="text">
-               <string>Stop</string>
+               <string>Start (simulated robot)</string>
               </property>
              </widget>
             </item>
@@ -538,6 +548,13 @@
             </item>
             <item>
              <layout class="QHBoxLayout" name="horizontalLayout_4">
+              <item>
+               <widget class="QPushButton" name="block2textpushButton">
+                <property name="text">
+                 <string>Blocks to text</string>
+                </property>
+               </widget>
+              </item>
               <item>
                <widget class="QPushButton" name="startPushButton">
                 <property name="maximumSize">

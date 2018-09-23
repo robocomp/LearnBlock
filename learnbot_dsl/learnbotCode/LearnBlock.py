@@ -85,7 +85,8 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.ui.startPushButton.clicked.connect(self.StartProgramSR)
         self.ui.startPRPushButton.clicked.connect(self.StartProgramPR)
-        self.ui.startTextPushButton.clicked.connect(self.generateTmpFilefromText)
+        self.ui.startPRTextPushButton.clicked.connect(lambda: self.generateTmpFilefromText(False))
+        self.ui.startSRTextPushButton.clicked.connect(lambda: self.generateTmpFilefromText(True))
         self.ui.stopPushButton.clicked.connect(self.stopthread)
         self.ui.stoptextPushButton.clicked.connect(self.stopthread)
         self.ui.addVarPushButton.clicked.connect(self.newVariable)
@@ -138,7 +139,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.view.setScene(self.scene)
         self.view.show()
         self.view.setZoom(False)
-
+        self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.dicTables = {'control': self.ui.tableControl, 'motor': self.ui.tableMotor,
                           'perceptual': self.ui.tablePerceptual,
                           'proprioceptive': self.ui.tablePropioperceptive, 'operador': self.ui.tableOperadores,
@@ -162,6 +163,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.avtiveEvents(False)
 
         self.timer = QtCore.QTimer()
+        # self.timer.timeout.connect(self.readCamera)
         self.scene.setlistNameVars(self.listNameVars)
 
         r = self.app.exec_()
@@ -171,6 +173,15 @@ class LearnBlock(QtGui.QMainWindow):
         shutil.rmtree("tmp")
         sys.exit(r)
 
+    def blocksToText(self):
+        text=""
+        if len(self.listNameVars) > 0:
+            for name in self.listNameVars:
+                text += name + " = None\n"
+        blocks = self.scene.getListInstructions()
+        code = self.parserBlocks(blocks, self.toLBotPy)
+        self.ui.textCode.clear()
+        self.ui.textCode.appendPlainText(text + code)
     def exit(self):
         if self.scene.shouldSave is False:
             self.stopthread()
@@ -325,7 +336,7 @@ class LearnBlock(QtGui.QMainWindow):
                 funtionType = FUNTION
                 HUE = HUE_OTHERS
 
-            blockType = None
+            # blockType = None
             for img in f.img:
                 blockType, connections = loadConfigBlock(img)
                 table = self.dicTables[f.type[0]]
@@ -502,7 +513,6 @@ class LearnBlock(QtGui.QMainWindow):
             block = AbstractBlock(0, 0, text, {'ES': "Cuando ", 'EN': "When "}, imgPath, [], HUE_WHEN,
                                   self.addWhenGui.nameControl.replace(" ", "_"), connections, blockType, WHEN)
             self.scene.addItem(block)
-            print "-------------", self.addWhenGui.nameControl
             if self.addWhenGui.nameControl != "start":
                 self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
 
@@ -562,37 +572,9 @@ class LearnBlock(QtGui.QMainWindow):
             msgBox.exec_()
 
     # TODO Esperar a que termine el parseador de texto
-    def generateTmpFilefromText(self):
-        # code = self.ui.textCode.toPlainText() #TODO
-        # if self.physicalRobot:
-        #     # text = HEADER.replace('<LearnBotClient>','LearnBotClientPR')
-        #     sys.argv = [' ','configPhysical']
-        # else:
-        #     # text = HEADER.replace('<LearnBotClient>','LearnBotClient')
-        #     sys.argv = [' ','config']
-        # text =""
-        # fh = open("main_tmp.lb","wr")
-        # fh.writelines(text + code)
-        # fh.close()
-        # try:
-        #     parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot)
-        # except Exception as e:
-        #     print e
-        #     print("line: {}".format(e.line))
-        #     print("    "+" "*e.col+"^")
-        #     return
-        # if compile("main_tmp.py"):
-        #     self.hilo = Process(target=self.execTmp)
-        #     self.hilo.start()
-        #     self.ui.stopPushButton.setEnabled(True)
-        #     self.ui.startPushButton.setEnabled(False)
-        #     self.ui.startPRPushButton.setEnabled(False)
-        # else:
-        #     msgBox = QtGui.QMessageBox()
-        #     msgBox.setText("Your code has an error. Check it out again")
-        #     msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-        #     msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-        #     ret = msgBox.exec_()
+    def generateTmpFilefromText(self, simulated):
+        self.physicalRobot = not simulated
+        self.generateTmpFile(False)
         pass
 
     def printInst(self, inst, ntab=1):
@@ -611,8 +593,13 @@ class LearnBlock(QtGui.QMainWindow):
             text += "\n" + "\t" * (ntab - 1) + self.printInst(inst[1]["BOTTOM"], ntab)
         return text
 
-    def generateTmpFile(self):
-        blocks = self.scene.getListInstructions()
+    def generateTmpFile(self, fromBlocks = True):
+        text = ""
+        if fromBlocks:
+            blocks = self.scene.getListInstructions()
+            if len(self.listNameVars) > 0:
+                for name in self.listNameVars:
+                    text += name + " = None\n"
         robot = ""
         if self.physicalRobot:
             sys.argv = [' ', path + '/etc/configPhysical']
@@ -620,18 +607,20 @@ class LearnBlock(QtGui.QMainWindow):
         else:
             sys.argv = [' ', path + '/etc/configSimulate']
             robot = "simulate"
-        text = ""
-        if len(self.listNameVars) > 0:
-            for name in self.listNameVars:
-                text += name + " = None\n"
 
-        if blocks is not None:
-            code = self.parserBlocks(blocks, self.toLBotPy)
+
+        if not fromBlocks or blocks is not None:
+            if fromBlocks:
+                code = self.parserBlocks(blocks, self.toLBotPy)
+                self.ui.textCode.clear()
+                self.ui.textCode.appendPlainText(text + code)
+            else:
+                code = self.ui.textCode.toPlainText()
+
             fh = open("main_tmp.lb", "wr")
             fh.writelines(text + code)
             fh.close()
-            self.ui.textCode.clear()
-            self.ui.textCode.appendPlainText(text + code)
+
             try:
                 if not parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot):
                     msgBox = QtGui.QMessageBox()
@@ -655,6 +644,9 @@ class LearnBlock(QtGui.QMainWindow):
                     self.ui.stopPushButton.setEnabled(True)
                     self.ui.startPushButton.setEnabled(False)
                     self.ui.startPRPushButton.setEnabled(False)
+                    self.ui.stoptextPushButton.setEnabled(True)
+                    self.ui.startSRTextPushButton.setEnabled(False)
+                    self.ui.startPRTextPushButton.setEnabled(False)
                 except:
                     msgBox = QtGui.QMessageBox()
                     msgBox.setText("You should check connection the " + robot + " robot")
@@ -689,6 +681,9 @@ class LearnBlock(QtGui.QMainWindow):
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
             self.ui.startPRPushButton.setEnabled(True)
+            self.ui.stoptextPushButton.setEnabled(False)
+            self.ui.startPRTextPushButton.setEnabled(True)
+            self.ui.startSRTextPushButton.setEnabled(True)
         except Exception as e:
 
             pass
@@ -896,6 +891,8 @@ class LearnBlock(QtGui.QMainWindow):
             if x[0] == name:
                 self.listNameWhens.remove(x)
         self.scene.removeWhenByName(name)
+        if len(self.listNameWhens) is 0:
+            self.ui.deleteWhenpushButton.setEnabled(False)
 
     def newUserFunctions(self):
         self.userFunctionsGui = guiCreateFunctions.Ui_Dialog()
@@ -973,3 +970,5 @@ class LearnBlock(QtGui.QMainWindow):
                 item.removeTmpFile()
                 self.listButtons.remove(item)
         self.listNameUserFunctions.remove(name)
+
+    # def readCamera(self):

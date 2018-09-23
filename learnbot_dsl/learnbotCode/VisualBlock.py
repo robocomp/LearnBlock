@@ -1,11 +1,10 @@
-from PySide import QtGui
+from PySide import QtGui,QtCore
 from math import *
 
 import guis.var as var
 from Block import *
 from Language import *
 from toQImage import *
-
 
 def EuclideanDist(p1, p2):
     p = p1 - p2
@@ -106,9 +105,10 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.sizeIn = 0
         self.shouldUpdateConnections = False
         self.popMenu = QtGui.QMenu(self)
-        # action0 = QtGui.QAction('Duplicate', self)
-        # action0.triggered.connect(self.on_clicked_menu_duplicate)
-        # self.popMenu.addAction(action0)
+        if self.parentBlock.name not in ["main", "when"]:
+            action0 = QtGui.QAction('Duplicate', self)
+            action0.triggered.connect(self.on_clicked_menu_duplicate)
+            self.popMenu.addAction(action0)
         action1 = QtGui.QAction('Edit', self)
         action1.triggered.connect(self.on_clicked_menu_edit)
         self.popMenu.addAction(action1)
@@ -118,7 +118,28 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.popMenu.addAction(action2)
 
     def on_clicked_menu_duplicate(self):
-        print "test0"
+        self.duplicate()
+        self.scene.startAllblocks()
+
+    def duplicate(self, old_id=None, id=None, connection=None):
+        blockDuplicate = self.parentBlock.copy()
+        blockDuplicate.setPos(self.parentBlock.pos + QtCore.QPointF(50, 50))
+        self.scene.addItem(blockDuplicate, False)
+        id_new = blockDuplicate.id
+        new_connection = None
+        for c in blockDuplicate.connections:
+            if id is None and c.getType() in [TOP, LEFT]:
+                c.setItem(None)
+                c.setConnect(None)
+            elif old_id is not None and c.getIdItem() == old_id:
+                new_connection = c
+                c.setItem(id)
+                c.setConnect(connection)
+            elif c.getIdItem() is not None and c.getType() not in [TOP, LEFT]:
+                c_new, id_new2 = self.scene.getVisualItem(c.getIdItem()).duplicate(self.id, id_new, c)
+                c.setConnect(c_new)
+                c.setItem(id_new2)
+        return new_connection, id_new
 
     def on_clicked_menu_edit(self):
         self.scene.setIdItemSelected(None)
@@ -396,7 +417,13 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 else:
                     c.getConnect().setConnect(None)
                     c.getConnect().setItem(None)
+        if self.parentBlock.name == "when":
+            # self.scene.removeByNameControl(self.parentBlock.nameControl)
+            self.scene.parent.delWhen(self.parentBlock.nameControl)
+        if self.parentBlock.name == "main":
+            self.scene.parent.mainButton.setEnabled(True)
         del self.parentBlock
+
         del self
 
     def isBlockDef(self):

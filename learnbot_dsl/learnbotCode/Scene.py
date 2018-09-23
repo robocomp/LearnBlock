@@ -48,13 +48,13 @@ class MyScene(QtGui.QGraphicsScene):
     def setTable(self, table):
         self.table = table
 
-    def addItem(self, blockItem):
+    def addItem(self, blockItem, shouldstart = True):
         id = str(self.nextIdItem)
         # poner ide del bloque
         blockItem.setId(id)
-        print "-------------------------", blockItem.hue
         visualItem = VisualBlock(blockItem, self.view, self)
-        visualItem.start()
+        if shouldstart:
+            visualItem.start()
         visualItem.activeUpdateConections()
         super(MyScene, self).addItem(visualItem)
         self.dicBlockItem[id] = blockItem

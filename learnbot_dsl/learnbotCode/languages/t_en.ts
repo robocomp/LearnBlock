@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="en_US" sourcelanguage="en_US">
+<!DOCTYPE TS><TS version="2.0" language="en_US" sourcelanguage="en_US">
 <context>
     <name>Dialog</name>
     <message>
@@ -9,7 +8,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="addWhen.py" line="85"/>
+        <location filename="addWhen.py" line="89"/>
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
@@ -138,242 +137,247 @@
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="addWhen.py" line="88"/>
+        <source>Run only at the start</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="gui.py" line="363"/>
+        <location filename="gui.py" line="370"/>
         <source>MainWindow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="364"/>
+        <location filename="gui.py" line="371"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="365"/>
+        <location filename="gui.py" line="372"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="366"/>
+        <location filename="gui.py" line="373"/>
         <source>Zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="368"/>
+        <location filename="gui.py" line="375"/>
         <source>Add Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="370"/>
+        <location filename="gui.py" line="377"/>
         <source>Add String</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="371"/>
+        <location filename="gui.py" line="378"/>
         <source>Use Events</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="372"/>
+        <location filename="gui.py" line="379"/>
         <source>ES</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="373"/>
+        <location filename="gui.py" line="380"/>
         <source>EN</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="374"/>
+        <location filename="gui.py" line="381"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;H&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="378"/>
+        <location filename="gui.py" line="386"/>
         <source>Text Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="375"/>
+        <location filename="gui.py" line="382"/>
         <source>Program</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="376"/>
-        <source>Start</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="gui.py" line="398"/>
+        <location filename="gui.py" line="407"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="399"/>
+        <location filename="gui.py" line="408"/>
         <source>LearnBlock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="382"/>
+        <location filename="gui.py" line="390"/>
         <source>Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="380"/>
+        <location filename="gui.py" line="388"/>
         <source>Add When</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="381"/>
+        <location filename="gui.py" line="389"/>
         <source>Delete When</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="383"/>
+        <location filename="gui.py" line="391"/>
         <source>Expressions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="384"/>
+        <location filename="gui.py" line="392"/>
         <source>Motor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="385"/>
+        <location filename="gui.py" line="393"/>
         <source>Perceptual</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="386"/>
+        <location filename="gui.py" line="394"/>
         <source>Proprioceptive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="387"/>
+        <location filename="gui.py" line="395"/>
         <source>Operators</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="391"/>
+        <location filename="gui.py" line="399"/>
         <source>Variables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="388"/>
+        <location filename="gui.py" line="396"/>
         <source>Add Variable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="389"/>
+        <location filename="gui.py" line="397"/>
         <source>Delete Variable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="390"/>
+        <location filename="gui.py" line="398"/>
         <source>Add List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="394"/>
+        <location filename="gui.py" line="402"/>
         <source>User functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="392"/>
+        <location filename="gui.py" line="400"/>
         <source>Create Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="393"/>
+        <location filename="gui.py" line="401"/>
         <source>Delete Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="395"/>
+        <location filename="gui.py" line="403"/>
         <source>Others</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="396"/>
+        <location filename="gui.py" line="405"/>
         <source>Start (simulated robot)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="397"/>
+        <location filename="gui.py" line="406"/>
         <source>Start (physical robot)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="400"/>
+        <location filename="gui.py" line="409"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="401"/>
+        <location filename="gui.py" line="410"/>
         <source>tools robot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="402"/>
+        <location filename="gui.py" line="411"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
-    <message utf8="true">
-        <location filename="gui.py" line="403"/>
+    <message encoding="UTF-8">
+        <location filename="gui.py" line="412"/>
         <source>Añadir Nueva Metodo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="404"/>
+        <location filename="gui.py" line="413"/>
         <source>Create New block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="405"/>
+        <location filename="gui.py" line="414"/>
         <source>Save Proyect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="406"/>
+        <location filename="gui.py" line="415"/>
         <source>Open Proyect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="407"/>
+        <location filename="gui.py" line="416"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="408"/>
+        <location filename="gui.py" line="417"/>
         <source>Start components</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="409"/>
+        <location filename="gui.py" line="418"/>
         <source>Reboot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="410"/>
+        <location filename="gui.py" line="419"/>
         <source>Shutdown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="411"/>
+        <location filename="gui.py" line="420"/>
         <source>Start Simulator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="412"/>
+        <location filename="gui.py" line="421"/>
         <source>New project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="379"/>
+        <location filename="gui.py" line="387"/>
         <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="gui.py" line="404"/>
+        <source>Blocks to text</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

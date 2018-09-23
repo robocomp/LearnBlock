@@ -112,6 +112,8 @@ class Block_Button(QtGui.QPushButton):
         block = AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.hue, "",
                               self.__connections, self.__blockType, self.__type)
         self.__scene.addItem(copy.deepcopy(block))
+        if self.__text == "main":
+            self.setEnabled(False)
 
     def getAbstracBlockItem(self):
         return AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.hue, "",

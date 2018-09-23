@@ -30,6 +30,9 @@ class Connection:
         self.__idItem = None
         self.__type = type
 
+    def __str__(self):
+        return "Connection: id : " + str(self.__idItem) + ", type : " + ["top", "bottom", "", "right", "left", "bottomin"][self.__type]
+
     def setType(self, type):
         self.__type = type
 
@@ -72,6 +75,7 @@ class Connection:
 
 
 class Variable():
+
     def __init__(self, type, name, defaul):
         self.type = type
         self.name = name
