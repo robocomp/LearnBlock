@@ -256,6 +256,12 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             self.sizeIn = size
             im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
                                self.parentBlock.nameControl)
+            if not self.isEnabled():
+                r, g, b, a = cv2.split(im)
+                im = cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY)
+                im = cv2.cvtColor(im, cv2.COLOR_GRAY2RGB)
+                r, g, b= cv2.split(im)
+                im = cv2.merge((r, g, b, a))
             qImage = toQImage(im)
             self.img = QtGui.QPixmap(qImage)
             self.setPixmap(self.img)
@@ -283,7 +289,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                     break
 
     def updateConnections(self):
-
         for c in self.connections:
             if c.getConnect() is not None:
                 if EuclideanDist(c.getPosPoint(), c.getConnect().getPosPoint()) > 7:
@@ -366,40 +371,44 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 break
 
     def mouseMoveEvent(self, event):
-        self.setPos(event.scenePos() - self.posmouseinItem)
-        self.parentBlock.setPos(self.pos())
-        self.scene.activeShouldSave()
+        if self.isEnabled():
+            self.setPos(event.scenePos() - self.posmouseinItem)
+            self.parentBlock.setPos(self.pos())
+            self.scene.activeShouldSave()
 
     def mousePressEvent(self, event):
-        if event.button() is QtCore.Qt.MouseButton.LeftButton:
-            self.posmouseinItem = event.scenePos() - self.pos()
-            self.scene.setIdItemSelected(self.id)
-            if self.DialogVar is not None:
-                self.DialogVar.close()
-        if event.button() is QtCore.Qt.MouseButton.RightButton:
-            self.popMenu.exec_(event.screenPos())
-            # self.scene.setIdItemSelected(None)
-            # if self.DialogVar is not None:
-            #     self.DialogVar.open()
-            #     self.scene.setTable(self.DialogVar)
+        if self.isEnabled():
+            if event.button() is QtCore.Qt.MouseButton.LeftButton:
+                self.posmouseinItem = event.scenePos() - self.pos()
+                self.scene.setIdItemSelected(self.id)
+                if self.DialogVar is not None:
+                    self.DialogVar.close()
+            if event.button() is QtCore.Qt.MouseButton.RightButton:
+                self.popMenu.exec_(event.screenPos())
+                # self.scene.setIdItemSelected(None)
+                # if self.DialogVar is not None:
+                #     self.DialogVar.open()
+                #     self.scene.setTable(self.DialogVar)
 
     def mouseDoubleClickEvent(self, event):
-        if event.button() is QtCore.Qt.MouseButton.LeftButton:
-            self.scene.setIdItemSelected(None)
-            if self.DialogVar is not None:
-                self.DialogVar.open()
-                self.scene.setTable(self.DialogVar)
-        if event.button() is QtCore.Qt.MouseButton.RightButton:
-            pass
+        if self.isEnabled():
+            if event.button() is QtCore.Qt.MouseButton.LeftButton:
+                self.scene.setIdItemSelected(None)
+                if self.DialogVar is not None:
+                    self.DialogVar.open()
+                    self.scene.setTable(self.DialogVar)
+            if event.button() is QtCore.Qt.MouseButton.RightButton:
+                pass
 
     def mouseReleaseEvent(self, event):
-        if event.button() is QtCore.Qt.MouseButton.LeftButton:
-            self.posmouseinItem = None
-            self.scene.setIdItemSelected(None)
-        if event.button() is QtCore.Qt.MouseButton.RightButton:
-            self.posmouseinItem = None
-            self.scene.setIdItemSelected(None)
-            pass
+        if self.isEnabled():
+            if event.button() is QtCore.Qt.MouseButton.LeftButton:
+                self.posmouseinItem = None
+                self.scene.setIdItemSelected(None)
+            if event.button() is QtCore.Qt.MouseButton.RightButton:
+                self.posmouseinItem = None
+                self.scene.setIdItemSelected(None)
+                pass
 
     def delete(self):
         self.DialogVar.close()
@@ -434,3 +443,10 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 return False
 
         return True
+
+    def setEnabledDependentBlocks(self,enable):
+        self.shouldUpdate = True
+        self.setEnabled(enable)
+        for c in self.connections:
+            if c.getIdItem() is not None and c.getType() not in [TOP, LEFT]:
+                self.scene.getVisualItem(c.getIdItem()).setEnabledDependentBlocks(enable)

@@ -18,4 +18,5 @@ block{
     }
     img block1
     languages ES: "esperar", EN: "wait"
+    tooltip ES: "Espera un tiempo determinado", EN: ""
 }

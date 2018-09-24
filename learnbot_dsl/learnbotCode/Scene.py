@@ -129,20 +129,21 @@ class MyScene(QtGui.QGraphicsScene):
             for id in self.dictVisualItem:
                 if id is not self.idItemS:
                     item = self.dictVisualItem[id]
-                    item.setZValue(-1)
-                    for cItS in itemS.connections:
-                        if cItS.getType() in (BOTTOM, BOTTOMIN, RIGHT) and cItS.getIdItem() is not None:
-                            continue
-                        for c in item.connections:
-                            if c.getType() in (TOP, LEFT) and c.getIdItem() is not None:
+                    if item.isEnabled():
+                        item.setZValue(-1)
+                        for cItS in itemS.connections:
+                            if cItS.getType() in (BOTTOM, BOTTOMIN, RIGHT) and cItS.getIdItem() is not None:
                                 continue
-                            if abs(c.getType() - cItS.getType()) == 1 and (
-                                    cItS.getConnect() is not c or cItS.getConnect() is None):
-                                dist = EuclideanDist(cItS.getPosPoint(), c.getPosPoint())
-                                if dist < min_dist or min_dist is None:
-                                    min_c = c
-                                    min_cItS = cItS
-                                    min_dist = dist
+                            for c in item.connections:
+                                if c.getType() in (TOP, LEFT) and c.getIdItem() is not None:
+                                    continue
+                                if abs(c.getType() - cItS.getType()) == 1 and (
+                                        cItS.getConnect() is not c or cItS.getConnect() is None):
+                                    dist = EuclideanDist(cItS.getPosPoint(), c.getPosPoint())
+                                    if dist < min_dist or min_dist is None:
+                                        min_c = c
+                                        min_cItS = cItS
+                                        min_dist = dist
             itemS.moveToFront()
         if min_dist is not None and min_dist < 30:
             return min_c, min_cItS
@@ -267,3 +268,17 @@ class MyScene(QtGui.QGraphicsScene):
                                 True)
             elif c.getType() is BOTTOMIN:
                 itemS.moveToPos(c.getParent().pos + QtCore.QPointF(17, 33), True)
+
+    def useEvents(self, used):
+        for VBlock in self.dictVisualItem.values():
+            # print VBlock.parentBlock.name
+            if VBlock.parentBlock.name == "when":
+                VBlock.setEnabledDependentBlocks(used)
+            elif VBlock.parentBlock.name == "main":
+                VBlock.setEnabledDependentBlocks(not used)
+
+    def thereisMain(self):
+        if "main" in [v.parentBlock.name for v in self.dictVisualItem.values()]:
+            return True
+        else:
+            return False

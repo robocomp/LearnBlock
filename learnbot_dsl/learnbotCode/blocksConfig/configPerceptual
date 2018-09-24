@@ -89,7 +89,7 @@ block{
 #         float threshold 200
 #     }
 #     img block4, block3
-#     languages ES: "obtaculo_atras", EN: "back_obstacle"
+#     languages ES: "obstaculo_atras", EN: "back_obstacle"
 # }
 
 block{
@@ -99,7 +99,7 @@ block{
         float threshold 200
     }
     img block4, block3
-    languages ES: "hay_obtaculo_delante", EN: "front_obstacle"
+    languages ES: "hay_obstaculo_delante", EN: "front_obstacle"
 }
 
 # block{
@@ -124,7 +124,7 @@ block{
         float threshold 200
     }
     img block4, block3
-    languages ES: "hay_obtaculo_izquierda", EN: "left_obstacle"
+    languages ES: "hay_obstaculo_izquierda", EN: "left_obstacle"
 }
 
 block{
@@ -141,7 +141,7 @@ block{
         float threshold 200
     }
     img block4, block3
-    languages ES: "hay_obtaculos", EN: "obstacle_free"
+    languages ES: "hay_obstaculos", EN: "obstacle_free"
 }
 
 
@@ -152,7 +152,7 @@ block{
         float threshold 200
     }
     img block4, block3
-    languages ES: "hay_obtaculo_derecha", EN: "right_obstacle"
+    languages ES: "hay_obstaculo_derecha", EN: "right_obstacle"
 }
 
 block{

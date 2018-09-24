@@ -3,24 +3,29 @@ block{
     type operador
     name +
     img block3
+    tooltip ES: "Realiza la operación suma de los bloques conectados", EN: ""
 }
 
 block{
     type operador
     name -
     img block3
+
+    tooltip ES: "Realiza la operación resta de los bloques conectados", EN: ""
 }
 
 block{
     type operador
     name *
     img block3
+    tooltip ES: "Realiza la operación multiplicacion de los bloques conectados", EN: ""
 }
 
 block{
     type operador
     name /
     img block3
+    tooltip ES: "Realiza la operación division de los bloques conectados", EN: ""
 }
 
 block{
@@ -28,23 +33,27 @@ block{
     name =
     img block3
 
+    tooltip ES: "Iguala el bloque de la izquierda al bloque de la derecha", EN: ""
 }
 block{
     type operador
     name ==
     img block3
 
+    tooltip ES: "Compara los bloques conectados retornando verdadero en caso de que sean iguales y falso en caso contrario", EN: ""
 }
 block{
     type operador
     name +=
     img block3
+    tooltip ES: "Operador de adiccion a una variable, previamente inicializada", EN: ""
 }
 block{
     type operador
     name True
     img block4
     languages ES: "Verdad", EN: "True"
+    tooltip ES: "Verdad", EN: "True"
 }
 
 block{
@@ -52,18 +61,21 @@ block{
     name False
     img block4
     languages ES: "Falso", EN: "False"
+    tooltip ES: "Falso", EN: "False"
 }
 
 block{
     type operador
     name <
     img block3
+    tooltip ES: "Compara los bloques conectados retornando verdadero en caso de que menor el de la derecha y falso en caso contrario.", EN: ""
 }
 
 block{
     type operador
     name >
     img block3
+    tooltip ES: "Compara los bloques conectados retornando verdadero en caso de que sea menor el de la derecha y falso en caso contrario.", EN: ""
 }
 
 block{
@@ -71,6 +83,7 @@ block{
     name and
     img block3
     languages ES: "Y", EN: "and"
+    tooltip ES: "Concatena operaciones con la operacion logica Y", EN: ""
 }
 
 block{
@@ -78,6 +91,7 @@ block{
     name or
     img block3
     languages ES: "O", EN: "or"
+    tooltip ES: "Concatena operaciones con la operacion logica O", EN: ""
 }
 
 block{
@@ -85,23 +99,29 @@ block{
     name not
     img block3
     languages ES: "No", EN: "not"
+    tooltip ES: "Niega una comparacion", EN: ""
 }
 
 block{
     type operador
     name )
     img block3
+    languages ES: ")", EN: ")"
+    tooltip ES: ")", EN: ""
 }
 
 block{
     type operador
     name (
     img block3
+    languages ES: "(", EN: "("
+    tooltip ES: "(", EN: ""
 }
 
-block{
-	type operador
-	name print
-	img block2
-  languages ES: "Verdad", EN: "True"
-}
+# block{
+#     type operador
+#     name print
+#     img block2
+#     languages ES: "imprimir", EN: "print"
+#     tooltip ES: "", EN: ""
+# }

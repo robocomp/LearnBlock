@@ -52,16 +52,16 @@ block{
     name while
     img block6
     languages ES: "mientras", EN: "while"
-    tooltip ES: "", EN: ""
+    tooltip ES: "Se repetira la secuencia de codigo contenida en el bloque hasta que la condicion no se cumpla.", EN: ""
 }
 
-block{
-    type control
-    name start
-    img block4
-    languages ES: "inicio", EN: "start"
-    tooltip ES: "", EN: ""
-}
+# block{
+#     type control
+#     name start
+#     img block4
+#     languages ES: "inicio", EN: "start"
+#     tooltip ES: "", EN: ""
+# }
 
 block{
     type control

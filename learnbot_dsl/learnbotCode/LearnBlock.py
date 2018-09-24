@@ -228,8 +228,10 @@ class LearnBlock(QtGui.QMainWindow):
         stdin, stdout, stderr = client.exec_command("sudo reboot 0")
 
     def avtiveEvents(self, isChecked):
+        self.scene.useEvents(isChecked)
         self.ui.addWhenpushButton.setEnabled(isChecked)
-        self.mainButton.setEnabled(not isChecked)
+        if not self.scene.thereisMain():
+            self.mainButton.setEnabled(not isChecked)
         for b in self.listButtonsWhen:
             b.setEnabled(isChecked)
 
@@ -467,6 +469,7 @@ class LearnBlock(QtGui.QMainWindow):
 
                     self.scene.setBlockDict(d[0])
                     self.scene.startAllblocks()
+                    self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setText("The document has been modified.")
