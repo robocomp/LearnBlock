@@ -177,7 +177,7 @@ class LearnBlock(QtGui.QMainWindow):
         remote_commit = info.commit
         if local_commit.committed_date < remote_commit.committed_date:
             self.ui.updatepushButton.setVisible(True)
-            self.ui.updatepushButton.clicked.connect()
+            self.ui.updatepushButton.clicked.connect(self.updateLearnblock)
         # elif local_commit.committed_date > remote_commit.committed_date:
         #     self.ui.updatepushButton.
         else:
