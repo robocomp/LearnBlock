@@ -194,10 +194,13 @@ class LearnBlock(QtGui.QMainWindow):
     def updateLearnblock(self):
         remote = self.repo.remote()
         remote.pull()
-        gui = guiupdatedSuccessfully.Ui_Updated()
-        self.updatedSuccessfullydialog = QtGui.QDialog()
-        gui.setupUi(self.updatedSuccessfullydialog)
-        self.updatedSuccessfullydialog.open()
+        while os.system("pkexec " + path + "/setupLearnBlock install") != 0:
+            gui = guiupdatedSuccessfully.Ui_Updated()
+            self.updatedSuccessfullydialog = QtGui.QDialog()
+            gui.setupUi(self.updatedSuccessfullydialog)
+            self.updatedSuccessfullydialog.open()
+        # else:
+        #     print "incorrecto"
 
     def blocksToText(self):
         text=""
