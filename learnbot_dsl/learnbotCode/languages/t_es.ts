@@ -359,12 +359,12 @@
     <message>
         <location filename="gui.py" line="382"/>
         <source>ES</source>
-        <translation type="unfinished"></translation>
+        <translation>Español</translation>
     </message>
     <message>
         <location filename="gui.py" line="383"/>
         <source>EN</source>
-        <translation type="unfinished"></translation>
+        <translation>Inglés</translation>
     </message>
     <message>
         <location filename="gui.py" line="385"/>
@@ -389,7 +389,7 @@
     <message>
         <location filename="gui.py" line="384"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualización disponible</translation>
     </message>
 </context>
 <context>

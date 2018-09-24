@@ -302,6 +302,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.ui.deleteWhenpushButton.setEnabled(False)
             self.ui.deleteVarPushButton.setEnabled(False)
             self.ui.deleteFuntionsPushButton.setEnabled(False)
+            self.setWindowTitle("Learnblock2.0")
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setText("The document has been modified.")
@@ -455,6 +456,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def openProyect(self):
         if self.scene.shouldSave is False:
+            self.newProject()
             fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', '.',
                                                          'Block Project file (*.blockProject)')
             if fileName[0] != "":

@@ -184,12 +184,12 @@
     <message>
         <location filename="gui.py" line="382"/>
         <source>ES</source>
-        <translation type="unfinished"></translation>
+        <translation>Spanish</translation>
     </message>
     <message>
         <location filename="gui.py" line="383"/>
         <source>EN</source>
-        <translation type="unfinished"></translation>
+        <translation>English</translation>
     </message>
     <message>
         <location filename="gui.py" line="385"/>
@@ -384,7 +384,7 @@
     <message>
         <location filename="gui.py" line="384"/>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Update avaible</translation>
     </message>
 </context>
 <context>
