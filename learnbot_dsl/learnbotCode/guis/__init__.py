@@ -8,6 +8,9 @@ path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 if call(["pyside-uic","-o",path+"/gui.py",path+"/interface.ui"]) is 1:
     print "Error al generar gui.py"
     exit(-1)
+if call(["pyside-uic","-o",path+"/updatedSuccessfully.py",path+"/updatedSuccessfully.ui"]) is 1:
+    print "Error al generar gui.py"
+    exit(-1)
 if call(["pyside-uic","-o",path+"/var.py",path+"/var.ui"]) is 1:
     print "Error al generar var.py"
     exit(-1)
@@ -36,7 +39,7 @@ if call(["pyside-uic","-o",path+"/delWhen.py",path+"/delWhen.ui"]) is 1:
     print "Error al generar addWhen.py"
     exit(-1)
 
-__all__ = ['guiAddVar', 'guiGui', 'guiGuiCreateBlock', 'guiDelVar', 'guiCreateFunctions', 'guiAddNumberOrString', 'guiAddWhen', 'guiDelWhen']
+__all__ = ['guiAddVar', 'guiupdatedSuccessfully', 'guiGui', 'guiGuiCreateBlock', 'guiDelVar', 'guiCreateFunctions', 'guiAddNumberOrString', 'guiAddWhen', 'guiDelWhen']
 
 
 import addVar as guiAddVar
@@ -47,6 +50,7 @@ import createFunctions as guiCreateFunctions
 import addNumberOrString as guiAddNumberOrString
 import addWhen as guiAddWhen
 import delWhen as guiDelWhen
+import updatedSuccessfully as guiupdatedSuccessfully
 #
 # guiAddVar = addVar
 # guiGui = gui

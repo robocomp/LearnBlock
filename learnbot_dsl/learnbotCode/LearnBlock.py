@@ -17,7 +17,7 @@ from checkFile import compile
 from guiAddNumberOrString import *
 from guiCreateBlock import *
 from guiaddWhen import *
-from guis import addVar, gui, delVar, delWhen, createFunctions as guiCreateFunctions
+from guis import addVar, guiupdatedSuccessfully, gui, delVar, delWhen, createFunctions as guiCreateFunctions
 from learnbot_dsl.functions import *
 from parserConfig import configSSH
 from blocksConfig.blocks import *
@@ -194,6 +194,10 @@ class LearnBlock(QtGui.QMainWindow):
     def updateLearnblock(self):
         remote = self.repo.remote()
         remote.pull()
+        gui = guiupdatedSuccessfully.Ui_Dialog()
+        dialog = QtGui.QDialog()
+        gui.setupUi(dialog)
+        dialog.open()
 
     def blocksToText(self):
         text=""
@@ -798,9 +802,9 @@ class LearnBlock(QtGui.QMainWindow):
 
     def newVariable(self):
         self.addVarGui = addVar.Ui_Dialog()
-        self.addVarDialgo = QtGui.QDialog()
-        self.addVarGui.setupUi(self.addVarDialgo)
-        self.addVarDialgo.open()
+        self.addVarDialog = QtGui.QDialog()
+        self.addVarGui.setupUi(self.addVarDialog)
+        self.addVarDialog.open()
         self.addVarGui.cancelPushButton.clicked.connect(lambda: self.retaddVarGui(0))
         self.addVarGui.okPushButton.clicked.connect(lambda: self.retaddVarGui(1))
 
@@ -824,7 +828,7 @@ class LearnBlock(QtGui.QMainWindow):
                 return
             self.addVariable(name)
 
-        self.addVarDialgo.close()
+        self.addVarDialog.close()
 
     def addVariable(self, name):
         self.ui.deleteVarPushButton.setEnabled(True)
