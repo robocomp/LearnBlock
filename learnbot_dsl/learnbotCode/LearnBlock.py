@@ -22,7 +22,7 @@ from learnbot_dsl.functions import *
 from parserConfig import configSSH
 from blocksConfig.blocks import *
 print sys.version_info[0]
-
+import git
 HEADER = """
 #EXECUTION: python code_example.py config
 from learnbot_dsl.functions import *
@@ -166,12 +166,34 @@ class LearnBlock(QtGui.QMainWindow):
         # self.timer.timeout.connect(self.readCamera)
         self.scene.setlistNameVars(self.listNameVars)
 
+        # Check change on git repository
+
+        pathrepo = path[0:path.rfind("/")]
+        self.pathrepo = pathrepo[0:pathrepo.rfind("/")]
+        self.repo = git.Repo(self.pathrepo)
+        local_commit = self.repo.commit()
+        remote = self.repo.remote()
+        info = remote.fetch()[0]
+        remote_commit = info.commit
+        if local_commit.committed_date < remote_commit.committed_date:
+            self.ui.updatepushButton.setVisible(True)
+            self.ui.updatepushButton.clicked.connect()
+        # elif local_commit.committed_date > remote_commit.committed_date:
+        #     self.ui.updatepushButton.
+        else:
+            self.ui.updatepushButton.setVisible(False)
+
+
         r = self.app.exec_()
         for b in self.listButtons:
             b.removeTmpFile()
 
         shutil.rmtree("tmp")
         sys.exit(r)
+
+    def updateLearnblock(self):
+        remote = self.repo.remote()
+        remote.pull()
 
     def blocksToText(self):
         text=""
