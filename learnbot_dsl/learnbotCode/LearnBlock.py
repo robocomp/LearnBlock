@@ -194,10 +194,10 @@ class LearnBlock(QtGui.QMainWindow):
     def updateLearnblock(self):
         remote = self.repo.remote()
         remote.pull()
-        gui = guiupdatedSuccessfully.Ui_Dialog()
-        dialog = QtGui.QDialog()
-        gui.setupUi(dialog)
-        dialog.open()
+        gui = guiupdatedSuccessfully.Ui_Updated()
+        self.updatedSuccessfullydialog = QtGui.QDialog()
+        gui.setupUi(self.updatedSuccessfullydialog)
+        self.updatedSuccessfullydialog.open()
 
     def blocksToText(self):
         text=""
