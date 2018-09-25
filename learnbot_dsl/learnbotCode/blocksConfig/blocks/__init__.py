@@ -8,37 +8,17 @@ __all__ = ["pathBlocks", "HUE_CONTROL", "HUE_MOTOR", "HUE_PERCEPTUAL", "HUE_PROP
 pathBlocks = path
 
 
-
-
-
 # HUE values
 HUE_CONTROL = 0
+
 HUE_MOTOR = 0
-HUE_PERCEPTUAL = 40
+HUE_PERCEPTUAL = 60
 HUE_PROPIOPERCEPTIVE = 80
 HUE_OPERATOR = 120
 HUE_EXPRESS = 160
 HUE_OTHERS = 200
 HUE_USERFUNCTION = 240
-HUE_VARIABLE = 10
-HUE_STRING = 20
-HUE_NUMBER = 30
+HUE_VARIABLE = 20
+HUE_STRING = 75
+HUE_NUMBER = 40
 HUE_WHEN = 50
-
-# for x in range(256):
-#     print x
-#     im = cv2.imread("block1azul.png", cv2.IMREAD_UNCHANGED)
-#     r,g,b,a = cv2.split(im)
-#     rgb = cv2.merge((r,g,b))
-#     hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
-#     h,s,v = cv2.split(hsv)
-#     h=h+x
-#     s=s+130
-#     hsv = cv2.merge((h,s,v))
-#     im = cv2.cvtColor(hsv,cv2.COLOR_HSV2RGB)
-#     r, g, b = cv2.split(im)
-#     im = cv2.merge((r, g, b, a))
-#     cv2.imshow("a", im)
-#     while True:
-#         if cv2.waitKey(33) == ord('a'):
-#             break

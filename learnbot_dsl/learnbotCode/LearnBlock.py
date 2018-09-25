@@ -17,7 +17,7 @@ from checkFile import compile
 from guiAddNumberOrString import *
 from guiCreateBlock import *
 from guiaddWhen import *
-from guis import addVar, guiupdatedSuccessfully, gui, delVar, delWhen, createFunctions as guiCreateFunctions
+from guis import addVar, guiupdatedSuccessfully, guiGui, delVar, delWhen, createFunctions as guiCreateFunctions
 from learnbot_dsl.functions import *
 from parserConfig import configSSH
 from blocksConfig.blocks import *
@@ -63,23 +63,27 @@ class LearnBlock(QtGui.QMainWindow):
         self.hilo = None
         self.physicalRobot = False
 
+        # Create the application
         self.app = QtGui.QApplication(sys.argv)
+        # self.app.aboutToQuit.connect(self.exit)
 
+        # Load tranlators
         self.translators = {}
         pathLanguages = {'EN': "t_en.qm", "ES": "t_es.qm"}
-
         for l in ['EN', 'ES']:
             translator = QtCore.QTranslator()
             print('Localization loaded: ', translator.load(pathLanguages[l], path + "/languages"))
             self.translators[l] = translator
         self.currentTranslator = self.translators[getLanguage()]
+
+        # install translators
         self.app.installTranslator(self.translators[getLanguage()])
 
         self.app.setWindowIcon(QtGui.QIcon(path + '/ico.png'))
 
         self.Dialog = QtGui.QMainWindow()
         QtGui.QMainWindow.__init__(self)
-        self.ui = gui.Ui_MainWindow()
+        self.ui = guiGui.Ui_MainWindow()
         self.ui.setupUi(self)
         self.showMaximized()
 
@@ -100,13 +104,9 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.createFunctionsPushButton.clicked.connect(self.newUserFunctions)
         self.ui.deleteFuntionsPushButton.clicked.connect(self.deleteUserFunctions)
         self.ui.savepushButton.clicked.connect(self.saveInstance)
-
         self.ui.useEventscheckBox.stateChanged.connect(lambda: self.avtiveEvents(self.ui.useEventscheckBox.isChecked()))
-
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
-
         self.ui.SearchlineEdit.textChanged.connect(lambda: self.searchUpdate(self.ui.SearchlineEdit.text()))
-
         self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
         self.ui.actionSave.triggered.connect(self.saveInstance)
         self.ui.actionSave_As.triggered.connect(self.saveAs)
@@ -116,8 +116,8 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionReboot.triggered.connect(self.rebootRobot)
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
-        self.ui.actionExit.triggered.connect(self.exit)
-        self.app.aboutToQuit.connect(self.exit)
+        self.ui.actionExit.triggered.connect(self.close)
+
 
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
         self.ui.openpushButton.setIcon(QtGui.QIcon("guis/open.png"))
@@ -156,18 +156,14 @@ class LearnBlock(QtGui.QMainWindow):
 
         try:
             os.mkdir("tmp")
-        except:
+        except Exception as e:
+            print e
             pass
 
         self.load_blocks()
         self.avtiveEvents(False)
 
-        self.timer = QtCore.QTimer()
-        # self.timer.timeout.connect(self.readCamera)
-        self.scene.setlistNameVars(self.listNameVars)
-
         # Check change on git repository
-
         pathrepo = path[0:path.rfind("/")]
         self.pathrepo = pathrepo[0:pathrepo.rfind("/")]
         self.repo = git.Repo(self.pathrepo)
@@ -178,18 +174,36 @@ class LearnBlock(QtGui.QMainWindow):
         if local_commit.committed_date < remote_commit.committed_date:
             self.ui.updatepushButton.setVisible(True)
             self.ui.updatepushButton.clicked.connect(self.updateLearnblock)
-        # elif local_commit.committed_date > remote_commit.committed_date:
-        #     self.ui.updatepushButton.
         else:
             self.ui.updatepushButton.setVisible(False)
-
-
+        # Execute the application
         r = self.app.exec_()
+
         for b in self.listButtons:
             b.removeTmpFile()
 
         shutil.rmtree("tmp")
         sys.exit(r)
+
+    def closeEvent(self, event):
+        if self.scene.shouldSave is False:
+            self.stopthread()
+            event.accept()
+        else:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setText("The document has been modified.")
+            msgBox.setInformativeText("Do you want to save your changes?")
+            msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Save)
+            ret = msgBox.exec_()
+            if ret == 2048:
+                self.saveInstance()
+                event.accept()
+            elif ret == 8388608:
+                self.scene.shouldSave = False
+                event.accept()
+            else:
+                event.ignore()
 
     def updateLearnblock(self):
         remote = self.repo.remote()
@@ -199,8 +213,6 @@ class LearnBlock(QtGui.QMainWindow):
             self.updatedSuccessfullydialog = QtGui.QDialog()
             gui.setupUi(self.updatedSuccessfullydialog)
             self.updatedSuccessfullydialog.open()
-        # else:
-        #     print "incorrecto"
 
     def blocksToText(self):
         text=""
@@ -211,25 +223,9 @@ class LearnBlock(QtGui.QMainWindow):
         code = self.parserBlocks(blocks, self.toLBotPy)
         self.ui.textCode.clear()
         self.ui.textCode.appendPlainText(text + code)
-    def exit(self):
-        if self.scene.shouldSave is False:
-            self.stopthread()
-            self.app.quit()
-        else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setText("The document has been modified.")
-            msgBox.setInformativeText("Do you want to save your changes?")
-            msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Save)
-            ret = msgBox.exec_()
-            if ret == 2048:
-                self.saveInstance()
-            elif ret == 8388608:
-                self.scene.shouldSave = False
-                self.exit()
 
     def checkConnectionToBot(self):
-        r = os.system("ping -c 1 " + configSSH["ip"])
+        r = os.system("ping -c 1 -W 1" + configSSH["ip"])
         return r is 0
 
     def startRobot(self):
@@ -442,13 +438,6 @@ class LearnBlock(QtGui.QMainWindow):
             file = fileName[0]
             if "." in file:
                 file = file.split(".")[0]
-            if fileName[1] == "Learbot code text file (*.LearbotCode)":
-                file = file + ".LearbotCode"
-                inst = self.scene.getListInstructions()
-                if inst is not None:
-                    fh = open(file, "wr")
-                    fh.writelines(self.printInst(inst))
-                    fh.close()
             elif fileName[1] == "Block Project file (*.blockProject)":
                 file = file + ".blockProject"
                 self.__fileProject = file
@@ -605,27 +594,10 @@ class LearnBlock(QtGui.QMainWindow):
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             msgBox.exec_()
 
-    # TODO Esperar a que termine el parseador de texto
     def generateTmpFilefromText(self, simulated):
         self.physicalRobot = not simulated
         self.generateTmpFile(False)
         pass
-
-    def printInst(self, inst, ntab=1):
-        text = inst[0]
-        if inst[1]["VARIABLES"] is not None:
-            text += "("
-            for var in inst[1]["VARIABLES"]:
-                text += var + ", "
-            text = text[0:-2] + ")"
-
-        if inst[1]["RIGHT"] is not None:
-            text += " " + self.printInst(inst[1]["RIGHT"])
-        if inst[1]["BOTTOMIN"] is not None:
-            text += ":\n" + "\t" * ntab + self.printInst(inst[1]["BOTTOMIN"], ntab + 1)
-        if inst[1]["BOTTOM"] is not None:
-            text += "\n" + "\t" * (ntab - 1) + self.printInst(inst[1]["BOTTOM"], ntab)
-        return text
 
     def generateTmpFile(self, fromBlocks = True):
         text = ""
@@ -1004,5 +976,3 @@ class LearnBlock(QtGui.QMainWindow):
                 item.removeTmpFile()
                 self.listButtons.remove(item)
         self.listNameUserFunctions.remove(name)
-
-    # def readCamera(self):

@@ -3,7 +3,7 @@ import os
 import guis.addNumberOrString as addNumberOrString
 from VisualBlock import *
 from blocksConfig import pathBlocks
-
+from blocksConfig.blocks import *
 listBlock = []
 listNameBlocks = []
 import cv2
@@ -41,13 +41,15 @@ class guiAddNumberOrString(QtGui.QDialog):
         self.imgName = []
         self.ui = addNumberOrString.Ui_Dialog()
         self.value = None
+        self.hue = HUE_STRING
+        if type is 1:
+            self.hue = HUE_NUMBER
         self.ui.setupUi(self)
         self.__updateBlockType(0)
         self.__updateImage(0)
         for name in listNameBlocks:
             self.ui.comboBoxBlockImage.addItem(name)
         self.ui.comboBoxBlockImage.currentIndexChanged.connect(self.__updateImage)
-
         self.ui.pushButtonOK.clicked.connect(lambda: self.__buttons(1))
         self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
         self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
@@ -65,6 +67,17 @@ class guiAddNumberOrString(QtGui.QDialog):
         blockType, connections = self.__loadConfigBlock(archivo)
         img = generateBlock(img, 34, self.ui.lineEditName.text(), blockType, None,
                             None)
+        r, g, b, a = cv2.split(img)
+        rgb = cv2.merge((r, g, b))
+        hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+        h, s, v = cv2.split(hsv)
+        h = h + self.hue
+        s = s + 130
+        hsv = cv2.merge((h, s, v))
+        im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        r, g, b = cv2.split(im)
+        img = cv2.merge((r, g, b, a))
+
         qImage = toQImage(img)
         self.ui.BlockImage.setPixmap(QtGui.QPixmap(qImage))
 

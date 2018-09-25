@@ -27,7 +27,7 @@ class MyScene(QtGui.QGraphicsScene):
         self.dicBlockItem = {}
         self.dictVisualItem = {}
         self.nextIdItem = 0
-        self.listNameVars = None
+        self.listNameVars = []
 
     def setlistNameVars(self, listNameVars):
         self.listNameVars = listNameVars

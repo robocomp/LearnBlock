@@ -3,7 +3,7 @@ import os
 import guis.addWhen as addWhen
 from VisualBlock import *
 from blocksConfig import pathBlocks
-
+from blocksConfig.blocks import *
 listBlock = []
 listNameBlocks = []
 import cv2
@@ -42,6 +42,7 @@ class guiAddWhen(QtGui.QDialog):
         self.ui = addWhen.Ui_Dialog()
         self.value = None
         self.ui.setupUi(self)
+        self.hue = HUE_WHEN
         self.__updateBlockType(0)
         self.__updateImage(0)
         self.isOk = False
@@ -76,6 +77,16 @@ class guiAddWhen(QtGui.QDialog):
         archivo, extension = os.path.splitext(listBlock[index])
         blockType, connections = self.__loadConfigBlock(archivo)
         img = generateBlock(img, 34, self.value, blockType, None, None, None, self.nameControl)
+        r, g, b, a = cv2.split(img)
+        rgb = cv2.merge((r, g, b))
+        hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+        h, s, v = cv2.split(hsv)
+        h = h + self.hue
+        s = s + 130
+        hsv = cv2.merge((h, s, v))
+        im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        r, g, b = cv2.split(im)
+        img = cv2.merge((r, g, b, a))
         qImage = toQImage(img)
         self.ui.BlockImage.setPixmap(QtGui.QPixmap(qImage))
 

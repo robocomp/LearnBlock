@@ -1,3 +1,5 @@
 import LearnBotClient
 import functions
-__all__ = ['LearnBotClient', 'functions']
+import LearnBotClient_PhysicalRobot
+
+__all__ = ['LearnBotClient','LearnBotClient_PhysicalRobot', 'functions']
