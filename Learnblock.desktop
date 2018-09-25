@@ -1,10 +1,9 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Learnblock
-Comment=
-Exec=/home/ivan/robocomp/components/learnbot/startLearnblock.sh
-Icon=/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/ico.png
-Path=/home/ivan/robocomp/components/learnbot
-Terminal=false
+Name=Learnblock Install
+Exec=gksu ./setupLearnBlock install
+Icon=learnbot_dsl/learnbotCode/ico.png
+Path=./
+Terminal=true
 StartupNotify=false
