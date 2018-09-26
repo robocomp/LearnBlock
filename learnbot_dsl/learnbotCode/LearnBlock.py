@@ -74,11 +74,15 @@ class LearnBlock(QtGui.QMainWindow):
         for l in ['EN', 'ES']:
             translator = QtCore.QTranslator()
             print('Localization loaded: ', translator.load(pathLanguages[l], path + "/languages"))
-            self.translators[l] = translator
+            qttranslator = QtCore.QTranslator()
+            qttranslator.load("q"+pathLanguages[l],QtCore.QLibraryInfo.location( QtCore.QLibraryInfo.TranslationsPath))
+            self.translators[l] = (translator, qttranslator)
         self.currentTranslator = self.translators[getLanguage()]
 
         # install translators
-        self.app.installTranslator(self.translators[getLanguage()])
+        translator, qttranslator = self.translators[getLanguage()]
+        self.app.installTranslator(translator)
+        self.app.installTranslator(qttranslator)
 
         self.app.setWindowIcon(QtGui.QIcon(path + '/ico.png'))
 
@@ -167,15 +171,18 @@ class LearnBlock(QtGui.QMainWindow):
         # Check change on git repository
         pathrepo = path[0:path.rfind("/")]
         self.pathrepo = pathrepo[0:pathrepo.rfind("/")]
-        self.repo = git.Repo(self.pathrepo)
-        local_commit = self.repo.commit()
-        remote = self.repo.remote()
-        info = remote.fetch()[0]
-        remote_commit = info.commit
-        if local_commit.committed_date < remote_commit.committed_date:
-            self.ui.updatepushButton.setVisible(True)
-            self.ui.updatepushButton.clicked.connect(self.updateLearnblock)
-        else:
+        try:
+            self.repo = git.Repo(self.pathrepo)
+            local_commit = self.repo.commit()
+            remote = self.repo.remote()
+            info = remote.fetch()[0]
+            remote_commit = info.commit
+            if local_commit.committed_date < remote_commit.committed_date:
+                self.ui.updatepushButton.setVisible(True)
+                self.ui.updatepushButton.clicked.connect(self.updateLearnblock)
+            else:
+                self.ui.updatepushButton.setVisible(False)
+        except Exception as e:
             self.ui.updatepushButton.setVisible(False)
         # Execute the application
         r = self.app.exec_()
@@ -192,8 +199,8 @@ class LearnBlock(QtGui.QMainWindow):
             event.accept()
         else:
             msgBox = QtGui.QMessageBox()
-            msgBox.setText("The document has been modified.")
-            msgBox.setInformativeText("Do you want to save your changes?")
+            msgBox.setText(self.trUtf8("The document has been modified."))
+            msgBox.setInformativeText(self.trUtf8("Do you want to save your changes?"))
             msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtGui.QMessageBox.Save)
             ret = msgBox.exec_()
@@ -302,8 +309,8 @@ class LearnBlock(QtGui.QMainWindow):
             self.setWindowTitle("Learnblock2.0")
         else:
             msgBox = QtGui.QMessageBox()
-            msgBox.setText("The document has been modified.")
-            msgBox.setInformativeText("Do you want to save your changes?")
+            msgBox.setText(self.trUtf8("The document has been modified."))
+            msgBox.setInformativeText(self.trUtf8("Do you want to save your changes?"))
             msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtGui.QMessageBox.Save)
             ret = msgBox.exec_()
@@ -325,8 +332,12 @@ class LearnBlock(QtGui.QMainWindow):
         l = ["ES", "EN"]
         changeLanguageTo(l[self.ui.language.currentIndex()])
 
-        self.app.removeTranslator(self.currentTranslator)
-        self.app.installTranslator(self.translators[l[self.ui.language.currentIndex()]])
+        self.app.removeTranslator(self.currentTranslator[0])
+        self.app.removeTranslator(self.currentTranslator[1])
+        translator, qttranslator = self.translators[l[self.ui.language.currentIndex()]]
+        self.app.installTranslator(translator)
+        self.app.installTranslator(qttranslator)
+        # self.app.installTranslator(self.translators[l[self.ui.language.currentIndex()]])
         self.currentTranslator = self.translators[l[self.ui.language.currentIndex()]]
         self.ui.retranslateUi(self)
         Timer(0, self.updateLanguageAllButtons).start()
@@ -405,7 +416,7 @@ class LearnBlock(QtGui.QMainWindow):
         except Exception as e:
             print e
             msgBox = QtGui.QMessageBox()
-            msgBox.setText("You should check connection the" + robot + " robot")
+            msgBox.setText(self.trUtf8("You should check connection the" + robot + " robot"))
             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             msgBox.exec_()
@@ -493,8 +504,8 @@ class LearnBlock(QtGui.QMainWindow):
                     self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
         else:
             msgBox = QtGui.QMessageBox()
-            msgBox.setText("The document has been modified.")
-            msgBox.setInformativeText("Do you want to save your changes?")
+            msgBox.setText(self.trUtf8("The document has been modified."))
+            msgBox.setInformativeText(self.trUtf8("Do you want to save your changes?"))
             msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtGui.QMessageBox.Save)
             ret = msgBox.exec_()
@@ -590,8 +601,8 @@ class LearnBlock(QtGui.QMainWindow):
             self.generateTmpFile()
         else:
             msgBox = QtGui.QMessageBox()
-            msgBox.setText("You should check connection the physical robot")
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgBox.setText(self.trUtf8("You should check connection the physical robot"))
+            msgBox.setStandardButtons(self.trUtf8(QtGui.QMessageBox.Ok))
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             msgBox.exec_()
 
@@ -631,13 +642,13 @@ class LearnBlock(QtGui.QMainWindow):
             try:
                 if not parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot):
                     msgBox = QtGui.QMessageBox()
-                    msgBox.setText("Your code is empty or is not correct")
+                    msgBox.setText(self.trUtf8("Your code is empty or is not correct"))
                     msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                     msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                     msgBox.exec_()
             except Exception as e:
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("line: {}".format(e.line) + "\n    " + " " * e.col + "^")
+                msgBox.setText(self.trUtf8("line: {}".format(e.line) + "\n    " + " " * e.col + "^"))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 msgBox.exec_()
@@ -656,14 +667,14 @@ class LearnBlock(QtGui.QMainWindow):
                     self.ui.startPRTextPushButton.setEnabled(False)
                 except:
                     msgBox = QtGui.QMessageBox()
-                    msgBox.setText("You should check connection the " + robot + " robot")
+                    msgBox.setText(self.trUtf8("You should check connection the " + robot + " robot"))
                     msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                     msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                     msgBox.exec_()
 
             else:
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("Your code has an error. Check it out again")
+                msgBox.setText(self.trUtf8("Your code has an error. Check it out again"))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 msgBox.exec_()
@@ -792,14 +803,21 @@ class LearnBlock(QtGui.QMainWindow):
             name = name.replace(" ", "_")
             if name in self.listNameVars:
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("This name alredy exist")
+                msgBox.setText(self.trUtf8("This name alredy exist"))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            if name[0].isdigit():
+            if len(name) != 0 and name[0].isdigit():
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("The name can't start by number")
+                msgBox.setText(self.trUtf8("The name can't start by number"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if len(name) == 0:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText(self.trUtf8("Error Name is empty."))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
@@ -915,14 +933,21 @@ class LearnBlock(QtGui.QMainWindow):
             name = name.replace(" ", "_")
             if name in self.listNameUserFunctions:
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("This name alredy exist")
+                msgBox.setText(self.trUtf8("This name alredy exist"))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            if name[0].isdigit():
+            if len(name) != 0 and name[0].isdigit():
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("The name can't start by number")
+                msgBox.setText(self.trUtf8("The name can't start by number"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if len(name) == 0:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText(self.trUtf8("Error Name is empty."))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()

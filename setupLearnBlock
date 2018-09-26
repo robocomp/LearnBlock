@@ -26,10 +26,9 @@ then
   echo Installing Learnblock
   gksudo pip install paramiko gitpython
   gksudo python setup.py install
-  # gksudo pip install paramiko gitpython && python setup.py install --record files.txt
   cat files.txt
   echo Completed install successfully
-  
+
   echo [Desktop Entry] >> $path/Learnblock.desktop
   echoVersion=1.0 >> $path/Learnblock.desktop
   echoType=Application >> $path/Learnblock.desktop

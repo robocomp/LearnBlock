@@ -5,7 +5,6 @@ import visual_auxiliary as va
 
 def left_red_line(lbot, params=None, verbose=False):
 	frame = lbot.getImage()
-	cv2.imwrite('messigray.png',frame)
 	rois = va.detect_red_line(frame)
 	if verbose:
 		print("Red points", rois)

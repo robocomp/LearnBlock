@@ -138,13 +138,13 @@ class guiAddWhen(QtGui.QDialog):
             ret = None
             if self.ui.Run_start.isChecked() is False and self.ui.lineEditName.text() == "start":
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("Error the name can not be 'start'")
+                msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
             if self.ui.lineEditName.text() == "":
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("Error Name is empty.")
+                msgBox.setText(self.trUtf8("Error Name is empty."))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
