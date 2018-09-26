@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 x=$1
 
+
+
+DESKTOP_DIR=$(xdg-user-dir DESKTOP)
+echo $DESKTOP_DIR
+
 A="install"
 B="uninstall"
-path=$(dirname "$0")
-cd $path
+# path=$(dirname "$0")
+path=$(pwd)
 
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
-  exit
+if [ "$(id -u)" -eq "0" ]; then
+   echo "This script mustn't be run as root" 1>&2
+   exit 1
 fi
 
 if [ -z ${x} ]
@@ -16,18 +21,24 @@ then
   echo You must specify an argument install or uninstall.
 elif [ $1 = "install" ]
 then
-  pip install paramiko
+  echo Installing dependencies
   echo "" > files.txt
-  python setup.py install --record files.txt
+  echo Installing Learnblock
+  gksudo pip install paramiko gitpython
+  gksudo python setup.py install
+  # gksudo pip install paramiko gitpython && python setup.py install --record files.txt
   cat files.txt
   echo Completed install successfully
-  # echo [Desktop Entry]$'\n'Version=1.0$'\n'Type=Application$'\n'Name=Learnblock$'\n'Comment=$'\n'Exec=$path/startLearnblock.sh$'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png$'\n'Path=$path$'\n'Terminal=false$'\n'StartupNotify=false > ~/Escritorio/Learnblock.desktop
-  echo [Desktop Entry]$'\n'Version=1.0$'\n'Type=Application$'\n'Name=Learnblock$'\n'Comment=$'\n'Exec=$path/startLearnblock.sh$'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png$'\n'Path=$path$'\n'Terminal=false$'\n'StartupNotify=false > Learnblock.desktop
+  # echo [Desktop Entry]'\n'Version=1.0'\n'Type=Application'\n'Name=Learnblock'\n'Exec=python main.py'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png'\n'Path=$path/learnbot_dsl/learnbotCode/'\n'Terminal=false'\n'StartupNotify=false'\n' > $DESKTOP_DIR/Learnblock.desktop
+  echo [Desktop Entry]'\n'Version=1.0'\n'Type=Application'\n'Name=Learnblock'\n'Comment='\n'Exec=python main.py'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png'\n'Path=$path/learnbot_dsl/learnbotCode'\n'Terminal=false'\n'StartupNotify=false > $path/Learnblock.desktop
+  echo [Desktop Entry]'\n'Version=1.0'\n'Type=Application'\n'Name=Learnblock'\n'Comment='\n'Exec=python main.py'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png'\n'Path=$path/learnbot_dsl/learnbotCode'\n'Terminal=false'\n'StartupNotify=false > $DESKTOP_DIR/Learnblock.desktop
+
   chmod +x startLearnblock.sh
 elif [ $1 = "uninstall" ]
 then
-  cat files.txt | xargs rm -rf
-  rm files.txt
+  echo Unnstalling Learnblock
+  gksu cat files.txt | xargs rm -rf
+  gksu rm files.txt
   echo Completed uninstall successfully
 else
   echo You must specify an argument install or uninstall.
