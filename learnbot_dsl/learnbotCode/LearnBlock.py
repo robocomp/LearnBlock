@@ -209,7 +209,7 @@ class LearnBlock(QtGui.QMainWindow):
     def updateLearnblock(self):
         remote = self.repo.remote()
         remote.pull()
-        while os.system("pkexec " + self.pathrepo + "/setupLearnBlock install") != 0:
+        while os.system(self.pathrepo + "/setupLearnBlock install") != 0:
             gui = guiupdatedSuccessfully.Ui_Updated()
             self.updatedSuccessfullydialog = QtGui.QDialog()
             gui.setupUi(self.updatedSuccessfullydialog)
