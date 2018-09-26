@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Learnblock Install
+Exec=sh setupLearnBlock install
+Icon=./learnbot_dsl/learnbotCode/ico.png
+Terminal=true
+StartupNotify=false

@@ -29,9 +29,28 @@ then
   # gksudo pip install paramiko gitpython && python setup.py install --record files.txt
   cat files.txt
   echo Completed install successfully
-  # echo [Desktop Entry]'\n'Version=1.0'\n'Type=Application'\n'Name=Learnblock'\n'Exec=python main.py'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png'\n'Path=$path/learnbot_dsl/learnbotCode/'\n'Terminal=false'\n'StartupNotify=false'\n' > $DESKTOP_DIR/Learnblock.desktop
-  echo [Desktop Entry]'\n'Version=1.0'\n'Type=Application'\n'Name=Learnblock'\n'Comment='\n'Exec=python main.py'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png'\n'Path=$path/learnbot_dsl/learnbotCode'\n'Terminal=false'\n'StartupNotify=false > $path/Learnblock.desktop
-  echo [Desktop Entry]'\n'Version=1.0'\n'Type=Application'\n'Name=Learnblock'\n'Comment='\n'Exec=python main.py'\n'Icon=$path/learnbot_dsl/learnbotCode/ico.png'\n'Path=$path/learnbot_dsl/learnbotCode'\n'Terminal=false'\n'StartupNotify=false > $DESKTOP_DIR/Learnblock.desktop
+  
+  echo [Desktop Entry] >> $path/Learnblock.desktop
+  echoVersion=1.0 >> $path/Learnblock.desktop
+  echoType=Application >> $path/Learnblock.desktop
+  echoName=Learnblock >> $path/Learnblock.desktop
+  echoComment= >> $path/Learnblock.desktop
+  echoExec=python main.py >> $path/Learnblock.desktop
+  echoIcon=$path/learnbot_dsl/learnbotCode/ico.png >> $path/Learnblock.desktop
+  echoPath=$path/learnbot_dsl/learnbotCode >> $path/Learnblock.desktop
+  echoTerminal=false >> $path/Learnblock.desktop
+  echoStartupNotify=false >> $path/Learnblock.desktop
+
+  echo [Desktop Entry] >> $DESKTOP_DIR/Learnblock.desktop
+  echoVersion=1.0 >> $DESKTOP_DIR/Learnblock.desktop
+  echoType=Application >> $DESKTOP_DIR/Learnblock.desktop
+  echoName=Learnblock >> $DESKTOP_DIR/Learnblock.desktop
+  echoComment= >> $DESKTOP_DIR/Learnblock.desktop
+  echoExec=python main.py >> $DESKTOP_DIR/Learnblock.desktop
+  echoIcon=$path/learnbot_dsl/learnbotCode/ico.png >> $DESKTOP_DIR/Learnblock.desktop
+  echoPath=$path/learnbot_dsl/learnbotCode >> $DESKTOP_DIR/Learnblock.desktop
+  echoTerminal=false >> $DESKTOP_DIR/Learnblock.desktop
+  echoStartupNotify=false >> $DESKTOP_DIR/Learnblock.desktop
 
   chmod +x startLearnblock.sh
 elif [ $1 = "uninstall" ]
