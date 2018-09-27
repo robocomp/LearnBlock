@@ -3,7 +3,7 @@ import numpy
 import time
 
 
-def slow_down(lbot, duration=0.15, decAdv=-0.2, decRot=-0.001):
+def slow_down(lbot, duration=0.15, decAdv=-2, decRot=-0.02):
 	lbot.adv = lbot.adv + decAdv
 	if lbot.adv<0:
 		lbot.adv=0

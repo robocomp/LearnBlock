@@ -185,6 +185,7 @@ class LearnBlock(QtGui.QMainWindow):
         pathrepo = path[0:path.rfind("/")]
         self.pathrepo = pathrepo[0:pathrepo.rfind("/")]
         try:
+            urllib2.urlopen('http://216.58.192.142', timeout=1)
             self.repo = git.Repo(self.pathrepo)
             local_commit = self.repo.commit()
             remote = self.repo.remote()
@@ -195,6 +196,8 @@ class LearnBlock(QtGui.QMainWindow):
                 self.ui.updatepushButton.clicked.connect(self.updateLearnblock)
             else:
                 self.ui.updatepushButton.setVisible(False)
+        except urllib2.URLError as e:
+            self.ui.updatepushButton.setVisible(False)
         except Exception as e:
             self.ui.updatepushButton.setVisible(False)
 
@@ -273,7 +276,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.textCode.appendPlainText(text + code)
 
     def checkConnectionToBot(self):
-        r = os.system("ping -c 1 -W 1" + configSSH["ip"])
+        r = os.system("ping -c 1 -W 1 " + configSSH["ip"])
         return r is 0
 
     def startRobot(self):
@@ -637,7 +640,7 @@ class LearnBlock(QtGui.QMainWindow):
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setText(self.trUtf8("You should check connection the physical robot"))
-            msgBox.setStandardButtons(self.trUtf8(QtGui.QMessageBox.Ok))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             msgBox.exec_()
 
