@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>955</width>
-    <height>796</height>
+    <height>790</height>
    </rect>
   </property>
   <property name="cursor">
@@ -172,7 +172,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <widget class="QFrame" name="camera">
+           <widget class="QFrame" name="cameraFrame">
             <property name="minimumSize">
              <size>
               <width>320</width>
@@ -190,6 +190,25 @@
             </property>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QGraphicsView" name="cameragraphicsView">
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="connectCameraRobotpushButton">
+            <property name="text">
+             <string>Connect Camera Robot</string>
             </property>
            </widget>
           </item>

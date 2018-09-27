@@ -149,7 +149,7 @@
     <message>
         <location filename="gui.py" line="373"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Learnblock 2.0</translation>
     </message>
     <message>
         <location filename="gui.py" line="374"/>

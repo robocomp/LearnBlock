@@ -56,6 +56,9 @@ class Block_Button(QtGui.QPushButton):
         self.clicked.connect(self.on_clickedButton)
         self.__item = self.__table.item(self.__row, 0)
         self.updateToolTip()
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.updateImg)
+        self.timer.start(5)
 
     def updateToolTip(self):
         try:

@@ -22,8 +22,7 @@ from learnbot_dsl.functions import *
 from parserConfig import configSSH
 from blocksConfig.blocks import *
 print sys.version_info[0]
-import git
-
+import git, urllib2
 HEADER = """
 #EXECUTION: python code_example.py config
 from learnbot_dsl.functions import *
@@ -45,6 +44,12 @@ def loadfile(file):
     code = fh.read()
     fh.close()
     return code
+
+
+# Create de streamer
+
+
+
 
 
 class LearnBlock(QtGui.QMainWindow):
@@ -122,7 +127,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionExit.triggered.connect(self.close)
-
+        self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
 
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
         self.ui.openpushButton.setIcon(QtGui.QIcon("guis/open.png"))
@@ -167,6 +172,14 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.load_blocks()
         self.avtiveEvents(False)
+        self.stream = None
+        self.bytes = ''
+        self.pmlast = None
+        self.cameraScene = QtGui.QGraphicsScene()
+        self.ui.cameragraphicsView.setScene(self.cameraScene)
+        self.timerCamera = QtCore.QTimer()
+        self.timerCamera.timeout.connect(self.readCamera)
+        self.connectCameraRobot()
 
         # Check change on git repository
         pathrepo = path[0:path.rfind("/")]
@@ -184,6 +197,8 @@ class LearnBlock(QtGui.QMainWindow):
                 self.ui.updatepushButton.setVisible(False)
         except Exception as e:
             self.ui.updatepushButton.setVisible(False)
+
+
         # Execute the application
         r = self.app.exec_()
 
@@ -193,6 +208,31 @@ class LearnBlock(QtGui.QMainWindow):
         shutil.rmtree("tmp")
         sys.exit(r)
 
+
+            # self.ui.camerawidget.update()
+    def connectCameraRobot(self):
+        try:
+            self.stream = urllib2.urlopen('http://192.168.16.1:8080/?action=stream',timeout=4)
+            self.timerCamera.start(5)
+        except urllib2.URLError as e:
+            print "Error connect Streamer\n", e
+
+    def readCamera(self):
+        self.bytes += self.stream.read(5120)
+        a = self.bytes.find('\xff\xd8')
+        b = self.bytes.find('\xff\xd9')
+        if a != -1 and b != -1:
+            jpg = self.bytes[a:b + 2]
+            self.bytes = self.bytes[b + 2:]
+            img = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            image = toQImage(img)
+            pm = QtGui.QPixmap(image)
+            if self.pmlast is not None:
+                self.cameraScene.removeItem(self.pmlast)
+            self.pmlast = self.cameraScene.addPixmap(pm)
+            self.cameraScene.update()
+            
     def closeEvent(self, event):
         if self.scene.shouldSave is False:
             self.stopthread()
@@ -216,7 +256,7 @@ class LearnBlock(QtGui.QMainWindow):
     def updateLearnblock(self):
         remote = self.repo.remote()
         remote.pull()
-        while os.system(self.pathrepo + "/setupLearnBlock install") != 0:
+        if os.system(self.pathrepo + "/setupLearnBlock install") != 0:
             gui = guiupdatedSuccessfully.Ui_Updated()
             self.updatedSuccessfullydialog = QtGui.QDialog()
             gui.setupUi(self.updatedSuccessfullydialog)
@@ -324,10 +364,6 @@ class LearnBlock(QtGui.QMainWindow):
     def setZoom(self):
         self.view.setZoom(self.ui.zoompushButton.isChecked())
 
-    def updateLanguageAllButtons(self):
-        for b in self.listButtons:
-            b.updateImg()
-
     def changeLanguage(self):
         l = ["ES", "EN"]
         changeLanguageTo(l[self.ui.language.currentIndex()])
@@ -340,7 +376,6 @@ class LearnBlock(QtGui.QMainWindow):
         # self.app.installTranslator(self.translators[l[self.ui.language.currentIndex()]])
         self.currentTranslator = self.translators[l[self.ui.language.currentIndex()]]
         self.ui.retranslateUi(self)
-        Timer(0, self.updateLanguageAllButtons).start()
 
     def load_blocks(self):
         functions = reload_functions()
