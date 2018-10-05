@@ -93,6 +93,11 @@ class MyScene(QtGui.QGraphicsScene):
             block = self.dictVisualItem[id]
             block.start()
 
+    def stopAllblocks(self):
+        for id in self.dictVisualItem:
+            block = self.dictVisualItem[id]
+            block.stop()
+
     def removeItem(self, id):
         visualItem = self.getVisualItem(id)
         super(MyScene, self).removeItem(visualItem)

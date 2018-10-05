@@ -23,16 +23,22 @@ from parserConfig import configSSH
 from blocksConfig.blocks import *
 print sys.version_info[0]
 import git, urllib2
+
+import io, socket, struct, numpy as np, cv2, paho.mqtt.client, time
+from PIL import Image
+
+
 HEADER = """
 #EXECUTION: python code_example.py config
 from learnbot_dsl.functions import *
 import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
-import time
+import time,traceback
 try:
     lbot = <LearnBotClient>.Client(sys.argv)
 except Exception as e:
     print "hay un Error"
+    traceback.print_exc(file=sys.stdout)
     print e
 """
 
@@ -47,14 +53,29 @@ def loadfile(file):
 
 
 # Create de streamer
+class MySignal(QtCore.QObject):
+    signalUpdateStreamer = QtCore.Signal(QtGui.QImage)
 
 
-
-
+signal = None
+def on_message(client, userdata, message):
+    global signal
+    data = message.payload
+    image_stream = io.BytesIO()
+    image_stream.write(data)
+    image = Image.open(image_stream)
+    open_cv_image = np.array(image)
+    # open_cv_image = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)
+    image = toQImage(open_cv_image)
+    signal.signalUpdateStreamer[QtGui.QImage].emit(image)
 
 class LearnBlock(QtGui.QMainWindow):
 
     def __init__(self):
+        global signal
+        self.signal = MySignal()
+        self.signal.signalUpdateStreamer[QtGui.QImage].connect(self.readCamera)
+        signal = self.signal
         self.listNameUserFunctions = []
         self.listNameVars = []
         self.listNameBlock = []
@@ -172,13 +193,14 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.load_blocks()
         self.avtiveEvents(False)
-        self.stream = None
-        self.bytes = ''
+        # self.stream = None
+        # self.bytes = ''
         self.pmlast = None
         self.cameraScene = QtGui.QGraphicsScene()
         self.ui.cameragraphicsView.setScene(self.cameraScene)
-        self.timerCamera = QtCore.QTimer()
-        self.timerCamera.timeout.connect(self.readCamera)
+
+
+
         self.connectCameraRobot()
 
         # Check change on git repository
@@ -213,34 +235,41 @@ class LearnBlock(QtGui.QMainWindow):
 
 
             # self.ui.camerawidget.update()
-    def connectCameraRobot(self):
-        try:
-            self.stream = urllib2.urlopen('http://192.168.16.1:8080/?action=stream',timeout=4)
-            self.timerCamera.start(5)
-        except urllib2.URLError as e:
-            print "Error connect Streamer\n", e
 
-    def readCamera(self):
-        self.bytes += self.stream.read(5120)
-        a = self.bytes.find('\xff\xd8')
-        b = self.bytes.find('\xff\xd9')
-        if a != -1 and b != -1:
-            jpg = self.bytes[a:b + 2]
-            self.bytes = self.bytes[b + 2:]
-            img = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            image = toQImage(img)
+    def connectCameraRobot(self):
+        print  "connectCameraRobot"
+        # if self.checkConnectionToBot():
+        try:
+            self.client = paho.mqtt.client.Client(client_id='pc', clean_session=False)
+            self.client.on_message = on_message
+            self.client.connect(host='192.168.16.1', port=50000)
+            self.client.subscribe(topic='camara', qos=2)
+            self.client.loop_start()
+            self.count=0
+            self.start = time.time()
+        except Exception as e:
+            print "Error connect Streamer\n", e
+        print "Connect Successfully"
+
+    def readCamera(self,image):
+        try:
+            # global imageCamera
             pm = QtGui.QPixmap(image)
             if self.pmlast is not None:
                 self.cameraScene.removeItem(self.pmlast)
             self.pmlast = self.cameraScene.addPixmap(pm)
             self.cameraScene.update()
-            
+        except Exception as e:
+            print e
+
     def closeEvent(self, event):
         if self.scene.shouldSave is False:
             self.stopthread()
+            self.client.disconnect()
+            del self.client
             event.accept()
         else:
+            self.scene.stopAllblocks()
             msgBox = QtGui.QMessageBox()
             msgBox.setText(self.trUtf8("The document has been modified."))
             msgBox.setInformativeText(self.trUtf8("Do you want to save your changes?"))
@@ -249,11 +278,18 @@ class LearnBlock(QtGui.QMainWindow):
             ret = msgBox.exec_()
             if ret == 2048:
                 self.saveInstance()
+                self.client.disconnect()
+                del self.client
+                self.stopthread()
                 event.accept()
             elif ret == 8388608:
                 self.scene.shouldSave = False
+                self.client.disconnect()
+                del self.client
+                self.stopthread()
                 event.accept()
             else:
+                self.scene.startAllblocks()
                 event.ignore()
 
     def updateLearnblock(self):
@@ -434,7 +470,8 @@ class LearnBlock(QtGui.QMainWindow):
 
     def execTmp(self):
         try:
-            execfile("main_tmp.py")
+            # print "--------------", execfile("main_tmp.py")
+            import main_tmp
         except:
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
@@ -450,19 +487,23 @@ class LearnBlock(QtGui.QMainWindow):
                 sys.argv = [' ', path + '/etc/configSimulate']
                 robot = "simulate"
 
-            execfile("stop_main_tmp.py", globals())
+            # execfile("stop_main_tmp.py")
+            import stop_main_tmp
         except Exception as e:
             print e
             msgBox = QtGui.QMessageBox()
-            msgBox.setText(self.trUtf8("You should check connection the" + robot + " robot"))
+            msgBox.setText(self.trUtf8("You should check connection to the robot"))
             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             msgBox.exec_()
 
     def saveInstance(self):
         if self.__fileProject is None:
+            self.scene.stopAllblocks()
             fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', '.',
                                                          'Block Project file (*.blockProject)')
+            self.scene.startAllblocks()
+
             file = fileName[0]
             if "." in file:
                 file = file.split(".")[0]
@@ -483,7 +524,9 @@ class LearnBlock(QtGui.QMainWindow):
         self.scene.shouldSave = False
 
     def saveAs(self):
+        self.scene.stopAllblocks()
         fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', '.', 'Block Project file (*.blockProject)')
+        self.scene.startAllblocks()
         if fileName[0] != "":
             file = fileName[0]
             if "." in file:
@@ -495,9 +538,11 @@ class LearnBlock(QtGui.QMainWindow):
 
     def openProyect(self):
         if self.scene.shouldSave is False:
-            self.newProject()
+            # self.newProject()
+            self.scene.stopAllblocks()
             fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', '.',
                                                          'Block Project file (*.blockProject)')
+            self.scene.startAllblocks()
             if fileName[0] != "":
                 self.__fileProject = fileName[0]
                 self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
@@ -693,8 +738,8 @@ class LearnBlock(QtGui.QMainWindow):
                 return
             if compile("main_tmp.py"):
                 try:
-                    if not self.physicalRobot:
-                        LearnBotClient.Client(sys.argv)
+                    if self.hilo is not None:
+                        self.hilo.terminate()
                     self.hilo = Process(target=self.execTmp)
                     self.hilo.start()
                     self.ui.stopPushButton.setEnabled(True)
@@ -724,7 +769,7 @@ class LearnBlock(QtGui.QMainWindow):
         else:
             text = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
             sys.argv = [' ', 'config']
-        text += '\nfunctions.get("stop_bot")(lbot)'
+        text += '\nfunctions.get("stop_bot")(lbot)\nlbot.stop()'
         fh = open("stop_main_tmp.py", "wr")
         fh.writelines(text)
         fh.close()
@@ -733,7 +778,8 @@ class LearnBlock(QtGui.QMainWindow):
         try:
             self.hilo.terminate()
             self.generateStopTmpFile()
-            self.stopExecTmp()
+            self.hilo = Process(target=self.stopExecTmp)
+            self.hilo.start()
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
             self.ui.startPRPushButton.setEnabled(True)

@@ -162,6 +162,12 @@ class Client(Ice.Application, threading.Thread):
 
             time.sleep(0.01)
 
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
+
     def readSonars(self):
         for i in range(len(self.lasers_proxys)):
             lp = self.lasers_proxys[i]

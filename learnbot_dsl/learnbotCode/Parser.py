@@ -350,7 +350,7 @@ def __processWHILE(line, text="", index=0):
 
     index += 1
     for field in line.content:
-        text = __process(field, [], text, index)
+        text = __process(field, [], text, index) + "\n"
 
     index -= 1
     return text

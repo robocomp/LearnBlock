@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, traceback, Ice, os, math, time, json, ast, copy, threading
-import json
-import cv2
+import sys, traceback, Ice, os, math, time, json, ast, copy, threading, cv2
 import urllib
 from collections import namedtuple
 import numpy as np
-
+import io
+import socket
+import struct
+from PIL import Image
+import paho.mqtt.client
+from PySide import QtCore
 ROBOCOMP = ''
 try:
     ROBOCOMP = os.environ['ROBOCOMP']
@@ -39,12 +42,26 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 ic = None
 
 
+# class MySignal(QtCore.QObject):
+#     signalUpdateStreamer = QtCore.Signal(np.ndarray)
+
+# signalCamera = None
+open_cv_image = np.zeros((240,320,3), np.uint8)
+newImage = False
+def on_message(client, userdata, message):
+    global open_cv_image, newImage
+    newImage = True
+    data = message.payload
+    image_stream = io.BytesIO()
+    image_stream.write(data)
+    image = Image.open(image_stream)
+    open_cv_image = np.array(image)
+    open_cv_image = cv2.flip(open_cv_image, 0)
 
 class Client(Ice.Application, threading.Thread):
 
     def __init__(self, argv):
         threading.Thread.__init__(self)
-
         self.mutex = threading.Lock()
         self.newImg = False
         self.reading = False
@@ -53,6 +70,7 @@ class Client(Ice.Application, threading.Thread):
         self.rot = 0
         self.max_rot= 0.4
         self.image = np.zeros((240,320,3), np.uint8)
+        # self.image = open_cv_image
         self.simage = self.image
         self.usList = [1000]*7
         self.angleCamera = 0
@@ -159,8 +177,20 @@ class Client(Ice.Application, threading.Thread):
                 print 'Cannot get EmotionRecognition property.'
                 raise
             try:
-                self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
+                # self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
+
+                # self.stream = urllib2.urlopen('http://192.168.16.1:8080/?action=stream',timeout=4)
+                self.client = paho.mqtt.client.Client(client_id='learnbotClient', clean_session=False)
+                # self.client.on_connect = on_connect
+                self.client.on_message = on_message
+                self.client.connect(host='192.168.16.1', port=50000)
+                self.client.subscribe(topic='camara', qos=2)
+                self.client.loop_start()
+                self.count = 0
+                self.startfps = time.time()
+
                 self.streamOK = True
+                print "Streamer iniciado correctamente"
             except Exception as e:
                 print "Error connect Streamer\n", e
                 self.streamOK = False
@@ -171,38 +201,46 @@ class Client(Ice.Application, threading.Thread):
                 raise
 
         self.active = True
+        self._stop_event = threading.Event()
         self.start()
 
     def run(self):
+        global open_cv_image,newImage
+
         while self.active:
             self.reading = True
             self.mutex.acquire()
-            if self.streamOK:
-                self.getImageStream()
+            if self.streamOK and newImage:
+                newImage=False
+                self.getImageStream(open_cv_image)
             self.readSonars()
             self.mutex.release()
             self.reading = False
             time.sleep(0.002)
 
-    def getImageStream(self):
-        self.bytes += self.stream.read(5120)
-        a = self.bytes.find('\xff\xd8')
-        b = self.bytes.find('\xff\xd9')
-        if a!=-1 and b!=-1:
-            jpg = self.bytes[a:b+2]
-            self.bytes = self.bytes[b+2:]
-            image = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), cv2.IMREAD_COLOR)
-            try:
-                tempimage = cv2.cvtColor(image,cv2.COLOR_BGR2RGB)
-                image = cv2.flip(tempimage, 0)
-            except:
-                print "Error retrieving images!"
-                return None
-            # self.mutex.acquire()
-            self.image = image
-            self.newImg = True
-            # self.mutex.release()
-            self.emotion_current_exist = False
+    def stop(self):
+        self.client.disconnect()
+        del self.client
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
+
+    def getImageStream(self,image):
+        self.image = image
+        # cv2.imwrite("/home/ivan/prueba.png", self.image)
+        self.newImg = True
+        self.emotion_current_exist = False
+        self.count += 1
+        if self.count == 60:
+            finish = time.time()
+            if self.count / (finish - self.startfps) < 15:
+                print '\033[91m' + str(self.count / (finish - self.startfps))[:5], "fps" + '\033[0m'
+            else:
+                print str(self.count / (finish - self.startfps))[:5], "fps"
+
+                self.count = 0
+            self.startfps = time.time()
         return True
 
     def readSonars(self):
@@ -218,7 +256,7 @@ class Client(Ice.Application, threading.Thread):
         localUSList = self.usList
         self.mutex.release()
         # time.sleep(0.1)
-        print localUSList
+        # print localUSList
         return localUSList
 
     def getImage(self):
@@ -250,7 +288,7 @@ class Client(Ice.Application, threading.Thread):
 
     def setRobotSpeed(self, vAdvance=0, vRotation=0):
         try:
-            print vAdvance, vRotation
+            # print vAdvance, vRotation
             # if vAdvance!=0 or vRotation!=0:ll
             self.adv = vAdvance
             self.rot = vRotation
@@ -302,7 +340,7 @@ class Client(Ice.Application, threading.Thread):
 
     def setJointAngle(self, angle):
         self.angleCamera = angle
-        print "Enviando anglulo", angle
+        # print "Enviando anglulo", angle
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
         goal.position = angle

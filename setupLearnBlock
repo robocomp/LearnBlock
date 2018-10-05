@@ -30,26 +30,26 @@ then
   echo Completed install successfully
 
   echo [Desktop Entry] >> $path/Learnblock.desktop
-  echoVersion=1.0 >> $path/Learnblock.desktop
-  echoType=Application >> $path/Learnblock.desktop
-  echoName=Learnblock >> $path/Learnblock.desktop
-  echoComment= >> $path/Learnblock.desktop
-  echoExec=python main.py >> $path/Learnblock.desktop
-  echoIcon=$path/learnbot_dsl/learnbotCode/ico.png >> $path/Learnblock.desktop
-  echoPath=$path/learnbot_dsl/learnbotCode >> $path/Learnblock.desktop
-  echoTerminal=false >> $path/Learnblock.desktop
-  echoStartupNotify=false >> $path/Learnblock.desktop
+  echo Version=1.0 >> $path/Learnblock.desktop
+  echo Type=Application >> $path/Learnblock.desktop
+  echo Name=Learnblock >> $path/Learnblock.desktop
+  echo Comment= >> $path/Learnblock.desktop
+  echo Exec=python main.py >> $path/Learnblock.desktop
+  echo Icon=$path/learnbot_dsl/learnbotCode/ico.png >> $path/Learnblock.desktop
+  echo Path=$path/learnbot_dsl/learnbotCode >> $path/Learnblock.desktop
+  echo Terminal=false >> $path/Learnblock.desktop
+  echo StartupNotify=false >> $path/Learnblock.desktop
 
   echo [Desktop Entry] >> $DESKTOP_DIR/Learnblock.desktop
-  echoVersion=1.0 >> $DESKTOP_DIR/Learnblock.desktop
-  echoType=Application >> $DESKTOP_DIR/Learnblock.desktop
-  echoName=Learnblock >> $DESKTOP_DIR/Learnblock.desktop
-  echoComment= >> $DESKTOP_DIR/Learnblock.desktop
-  echoExec=python main.py >> $DESKTOP_DIR/Learnblock.desktop
-  echoIcon=$path/learnbot_dsl/learnbotCode/ico.png >> $DESKTOP_DIR/Learnblock.desktop
-  echoPath=$path/learnbot_dsl/learnbotCode >> $DESKTOP_DIR/Learnblock.desktop
-  echoTerminal=false >> $DESKTOP_DIR/Learnblock.desktop
-  echoStartupNotify=false >> $DESKTOP_DIR/Learnblock.desktop
+  echo Version=1.0 >> $DESKTOP_DIR/Learnblock.desktop
+  echo Type=Application >> $DESKTOP_DIR/Learnblock.desktop
+  echo Name=Learnblock >> $DESKTOP_DIR/Learnblock.desktop
+  echo Comment= >> $DESKTOP_DIR/Learnblock.desktop
+  echo Exec=python main.py >> $DESKTOP_DIR/Learnblock.desktop
+  echo Icon=$path/learnbot_dsl/learnbotCode/ico.png >> $DESKTOP_DIR/Learnblock.desktop
+  echo Path=$path/learnbot_dsl/learnbotCode >> $DESKTOP_DIR/Learnblock.desktop
+  echo Terminal=false >> $DESKTOP_DIR/Learnblock.desktop
+  echo StartupNotify=false >> $DESKTOP_DIR/Learnblock.desktop
 
   chmod +x startLearnblock.sh
 elif [ $1 = "uninstall" ]

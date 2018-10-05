@@ -154,6 +154,9 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         # self.update()
         self.timer.start(5)
 
+    def stop(self):
+        self.timer.stop()
+
     def activeUpdateConections(self):
         self.shouldUpdateConnections = True
 
