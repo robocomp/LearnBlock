@@ -1,10 +1,11 @@
 import io
-import picamera
+# import picamera
 import subprocess
 import time
 import paho.mqtt.client
-
-subprocess.Popen("mosquitto -c mosquitto.conf", shell=True)
+import os, inspect
+path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+subprocess.Popen("mosquitto -c " + path + "/mosquitto.conf", shell=True)
 time.sleep(2)
 
 client = None
