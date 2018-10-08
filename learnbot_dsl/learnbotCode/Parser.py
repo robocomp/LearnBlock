@@ -205,6 +205,8 @@ def __generatePy(lines):
 
     global ini
     for x in lines:
+        if x.getName() is "MAIN" and thereareWhens:
+            continue
         if x.getName() is "LINES":
             for y in x:
                 text = __process(y, list_var, text)

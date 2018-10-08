@@ -223,7 +223,7 @@ class LearnBlock(QtGui.QMainWindow):
         except Exception as e:
             self.ui.updatepushButton.setVisible(False)
 
-
+        self.client=None
         # Execute the application
         r = self.app.exec_()
 
@@ -238,17 +238,17 @@ class LearnBlock(QtGui.QMainWindow):
 
     def connectCameraRobot(self):
         print  "connectCameraRobot"
-        # if self.checkConnectionToBot():
-        try:
-            self.client = paho.mqtt.client.Client(client_id='pc', clean_session=False)
-            self.client.on_message = on_message
-            self.client.connect(host='192.168.16.1', port=50000)
-            self.client.subscribe(topic='camara', qos=2)
-            self.client.loop_start()
-            self.count=0
-            self.start = time.time()
-        except Exception as e:
-            print "Error connect Streamer\n", e
+        if self.checkConnectionToBot():
+            try:
+                self.client = paho.mqtt.client.Client(client_id='pc', clean_session=False)
+                self.client.on_message = on_message
+                self.client.connect(host='192.168.16.1', port=50000)
+                self.client.subscribe(topic='camara', qos=2)
+                self.client.loop_start()
+                self.count=0
+                self.start = time.time()
+            except Exception as e:
+                print "Error connect Streamer\n", e
         print "Connect Successfully"
 
     def readCamera(self,image):
@@ -265,8 +265,9 @@ class LearnBlock(QtGui.QMainWindow):
     def closeEvent(self, event):
         if self.scene.shouldSave is False:
             self.stopthread()
-            self.client.disconnect()
-            del self.client
+            if self.client:
+                self.client.disconnect()
+                del self.client
             event.accept()
         else:
             self.scene.stopAllblocks()
@@ -278,14 +279,16 @@ class LearnBlock(QtGui.QMainWindow):
             ret = msgBox.exec_()
             if ret == 2048:
                 self.saveInstance()
-                self.client.disconnect()
-                del self.client
+                if self.client:
+                    self.client.disconnect()
+                    del self.client
                 self.stopthread()
                 event.accept()
             elif ret == 8388608:
                 self.scene.shouldSave = False
-                self.client.disconnect()
-                del self.client
+                if self.client:
+                    self.client.disconnect()
+                    del self.client
                 self.stopthread()
                 event.accept()
             else:
@@ -769,7 +772,7 @@ class LearnBlock(QtGui.QMainWindow):
         else:
             text = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
             sys.argv = [' ', 'config']
-        text += '\nfunctions.get("stop_bot")(lbot)\nlbot.stop()'
+        text += '\nfunctions.get("stop_bot")(lbot)'
         fh = open("stop_main_tmp.py", "wr")
         fh.writelines(text)
         fh.close()
