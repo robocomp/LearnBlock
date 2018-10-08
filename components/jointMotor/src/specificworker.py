@@ -27,6 +27,12 @@ import Adafruit_PCA9685
 
 servo_min = 150  # Min pulse length out of 4096
 servo_max = 600  # Max pulse length out of 4096
+
+def bezier(p1, p2, t):
+	t = t / 10.
+	diff = p2- p1
+	return p1 + diff * t
+
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
@@ -39,7 +45,9 @@ class SpecificWorker(GenericWorker):
 		wiringpi.softPwmWrite(18, 8)
 		self.pwm = Adafruit_PCA9685.PCA9685()
 		self.pwm.set_pwm_freq(60)
-
+		self.oldAngle = int(self.Rad2OutPint(0))
+		print ("Enviando angulo", self.oldAngle)
+		self.pwm.set_pwm(7, 0, self.oldAngle)
 	def setParams(self, params):
 		return True
 
@@ -93,10 +101,13 @@ class SpecificWorker(GenericWorker):
 		return ret
 
 	def setPosition(self, goal):
-		angle = int(self.Rad2OutPint(goal.position))
-		print ("Enviando angulo", angle)
-		self.pwm.set_pwm(7, 0, angle)
-
+		new_angle = int(self.Rad2OutPint(goal.position))
+		print ("Enviando angulo", new_angle)
+		for t in range(10):
+			angle = int(bezier(self.oldAngle, new_angle, t))
+			self.pwm.set_pwm(7, 0, angle)
+			time.sleep(0.05)
+		self.oldAngle = new_angle
 		# wiringpi.softPwmWrite(18, angle)
 		# time.sleep(0.5)
 
