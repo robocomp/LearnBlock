@@ -1,5 +1,5 @@
 import io
-# import picamera
+import picamera
 import subprocess
 import time
 import paho.mqtt.client
