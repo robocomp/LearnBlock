@@ -646,6 +646,8 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
+    <addaction name="actionLoad_Library"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuTools_robot">
@@ -716,6 +718,11 @@
   <action name="actionNew_project">
    <property name="text">
     <string>New project</string>
+   </property>
+  </action>
+  <action name="actionLoad_Library">
+   <property name="text">
+    <string>Load Library</string>
    </property>
   </action>
  </widget>

@@ -5,6 +5,48 @@ import guis.var as var
 from Block import *
 from Language import *
 from toQImage import *
+from Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode
+from blocksConfig import pathImgBlocks
+import pickle
+import os
+
+def toLBotPy(inst, ntab=1):
+    text = inst[0]
+    if inst[1]["TYPE"] is USERFUNCTION:
+        text = inst[0] + "()"
+    if inst[1]["TYPE"] is CONTROL:
+        if inst[1]["VARIABLES"] is not None:
+            text = inst[0] + "("
+            for var in inst[1]["VARIABLES"]:
+                text += var + ", "
+            text = text[0:-2] + ""
+            text += ")"
+    if inst[1]["TYPE"] is FUNTION:
+        text = "function." + inst[0] + "("
+        if inst[1]["VARIABLES"] is not None:
+            for var in inst[1]["VARIABLES"]:
+                text += var + ", "
+            text = text[0:-2] + ""
+        text += ")"
+    elif inst[1]["TYPE"] is VARIABLE:
+        text = inst[0]
+        if inst[1]["VARIABLES"] is not None:
+            text += " = "
+            for var in inst[1]["VARIABLES"]:
+                text += var
+
+    if inst[1]["RIGHT"] is not None:
+        text += " " + toLBotPy(inst[1]["RIGHT"])
+    if inst[1]["BOTTOMIN"] is not None:
+        text += ":\n" + "\t" * ntab + toLBotPy(inst[1]["BOTTOMIN"], ntab + 1)
+    if inst[0] == "while":
+        text += "\n\t" * (ntab - 1) + "end"
+    if inst[0] == "else" or (inst[0] in ["if", "elif"] and (inst[1]["BOTTOM"] is None or (
+            inst[1]["BOTTOM"] is not None and inst[1]["BOTTOM"][0] not in ["elif", "else"]))):
+        text += "\n" + "\t" * (ntab - 1) + "end"
+    if inst[1]["BOTTOM"] is not None:
+        text += "\n" + "\t" * (ntab - 1) + toLBotPy(inst[1]["BOTTOM"], ntab)
+    return text
 
 def EuclideanDist(p1, p2):
     p = p1 - p2
@@ -106,16 +148,59 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.shouldUpdateConnections = False
         self.popMenu = QtGui.QMenu(self)
         if self.parentBlock.name not in ["main", "when"]:
-            action0 = QtGui.QAction('Duplicate', self)
-            action0.triggered.connect(self.on_clicked_menu_duplicate)
-            self.popMenu.addAction(action0)
-        action1 = QtGui.QAction('Edit', self)
+            if self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK:
+                action3 = QtGui.QAction(self.trUtf8('Export Block'), self)
+                action3.triggered.connect(self.on_clicked_menu_export_block)
+                self.popMenu.addAction(action3)
+            else:
+                action0 = QtGui.QAction(self.trUtf8('Duplicate'), self)
+                action0.triggered.connect(self.on_clicked_menu_duplicate)
+                self.popMenu.addAction(action0)
+
+        action1 = QtGui.QAction(self.trUtf8('Edit'), self)
         action1.triggered.connect(self.on_clicked_menu_edit)
         self.popMenu.addAction(action1)
         self.popMenu.addSeparator()
-        action2 = QtGui.QAction('Delete', self)
+        action2 = QtGui.QAction(self.trUtf8('Delete'), self)
         action2.triggered.connect(self.on_clicked_menu_delete)
         self.popMenu.addAction(action2)
+
+    def on_clicked_menu_export_block(self):
+        path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Select Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
+        try:
+            os.mkdir(path + "/" + self.parentBlock.name)
+        except:
+            print "El directorio ya existe"
+        path = path + "/" + self.parentBlock.name
+        # Save blockProject
+        lBInstance = self.scene.parent
+        with open(path + "/" + self.parentBlock.name + ".blockProject", 'wb') as fichero:
+            dic = copy.deepcopy(lBInstance.scene.dicBlockItem)
+            for id in dic:
+                block = dic[id]
+                block.file = block.file.replace(pathImgBlocks, "")
+            pickle.dump(
+                (dic, lBInstance.listNameWhens, lBInstance.listUserFunctions, lBInstance.listNameVars, lBInstance.listNameUserFunctions),
+                fichero, 0)
+        # Save config block
+        with open(path + "/" + self.parentBlock.name + ".conf",'wr') as f:
+            text ='''block{
+    type library
+    name ''' + self.parentBlock.name + '''
+    img block1
+    languages ES: "''' + self.parentBlock.name + '''", EN: "''' + self.parentBlock.name + '''"
+}'''
+            f.write(text)
+        # Save script learnCode
+        inst = self.getInstructions()
+        code = "def " + toLBotPy(inst) + "\nend\n\n"
+        with open(path + "/" + self.parentBlock.name + ".lb", 'wr') as f:
+            f.write(code)
+        # Save script python
+        codePython = parserLearntBotCodeOnlyUserFuntion(code)
+        with open(path + "/" + self.parentBlock.name + ".py", 'wr') as f:
+            f.write(codePython)
+        pass
 
     def on_clicked_menu_duplicate(self):
         self.duplicate()

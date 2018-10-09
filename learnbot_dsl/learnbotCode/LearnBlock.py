@@ -23,7 +23,7 @@ from parserConfig import configSSH
 from blocksConfig.blocks import *
 print sys.version_info[0]
 import git, urllib2
-
+from guiTabLibrary import Library
 import io, socket, struct, numpy as np, cv2, paho.mqtt.client, time
 from PIL import Image
 
@@ -85,6 +85,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.listUserFunctions = []
         self.listButtons = []
         self.listBlock = []
+        self.listLibrary =[]
 
         self.__fileProject = None
         self.hilo = None
@@ -147,8 +148,11 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionReboot.triggered.connect(self.rebootRobot)
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
+        self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
+
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
+
 
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
         self.ui.openpushButton.setIcon(QtGui.QIcon("guis/open.png"))
@@ -262,6 +266,16 @@ class LearnBlock(QtGui.QMainWindow):
         except Exception as e:
             print e
 
+    def addLibrary(self):
+        self.scene.stopAllblocks()
+        path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Load Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
+        nameLibrary = os.path.basename(path)
+        self.scene.startAllblocks()
+        if path not in self.listLibrary:
+            newLibrary = Library(self, path)
+            self.listLibrary.append(path)
+            self.ui.functions.addTab(newLibrary,nameLibrary)
+
     def closeEvent(self, event):
         if self.scene.shouldSave is False:
             self.stopthread()
@@ -306,6 +320,8 @@ class LearnBlock(QtGui.QMainWindow):
 
     def blocksToText(self):
         text=""
+        for library in self.listLibrary:
+            text = 'import "' + library +'"\n'
         if len(self.listNameVars) > 0:
             for name in self.listNameVars:
                 text += name + " = None\n"
@@ -472,13 +488,8 @@ class LearnBlock(QtGui.QMainWindow):
                 table.setCellWidget(table.rowCount() - 1, 0, button)
 
     def execTmp(self):
-        try:
-            # print "--------------", execfile("main_tmp.py")
-            import main_tmp
-        except:
-            self.ui.stopPushButton.setEnabled(False)
-            self.ui.startPushButton.setEnabled(True)
-            self.ui.startPRPushButton.setEnabled(True)
+        import main_tmp
+
 
     def stopExecTmp(self):
         robot = ""
@@ -494,11 +505,8 @@ class LearnBlock(QtGui.QMainWindow):
             import stop_main_tmp
         except Exception as e:
             print e
-            msgBox = QtGui.QMessageBox()
-            msgBox.setText(self.trUtf8("You should check connection to the robot"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-            msgBox.exec_()
+            raise e
+
 
     def saveInstance(self):
         if self.__fileProject is None:
@@ -699,6 +707,8 @@ class LearnBlock(QtGui.QMainWindow):
 
     def generateTmpFile(self, fromBlocks = True):
         text = ""
+        for library in self.listLibrary:
+            text = 'import "' + library +'"\n'
         if fromBlocks:
             blocks = self.scene.getListInstructions()
             if len(self.listNameVars) > 0:
@@ -752,6 +762,9 @@ class LearnBlock(QtGui.QMainWindow):
                     self.ui.startSRTextPushButton.setEnabled(False)
                     self.ui.startPRTextPushButton.setEnabled(False)
                 except:
+                    self.ui.stopPushButton.setEnabled(False)
+                    self.ui.startPushButton.setEnabled(True)
+                    self.ui.startPRPushButton.setEnabled(True)
                     msgBox = QtGui.QMessageBox()
                     msgBox.setText(self.trUtf8("You should check connection the " + robot + " robot"))
                     msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
@@ -782,7 +795,14 @@ class LearnBlock(QtGui.QMainWindow):
             self.hilo.terminate()
             self.generateStopTmpFile()
             self.hilo = Process(target=self.stopExecTmp)
-            self.hilo.start()
+            try:
+                self.hilo.start()
+            except:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setText(self.trUtf8("You should check connection to the robot"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox.exec_()
             self.ui.stopPushButton.setEnabled(False)
             self.ui.startPushButton.setEnabled(True)
             self.ui.startPRPushButton.setEnabled(True)
@@ -840,7 +860,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def toLBotPy(self, inst, ntab=1):
         text = inst[0]
-        if inst[1]["TYPE"] is USERFUNCTION:
+        if inst[1]["TYPE"] in [USERFUNCTION, LIBRARY]:
             text = inst[0] + "()"
         if inst[1]["TYPE"] is CONTROL:
             if inst[1]["VARIABLES"] is not None:

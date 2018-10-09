@@ -159,10 +159,13 @@ LINE << (SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | VAR | ACTIVATE | DEACTIV
 DEF = Group(Suppress(Literal("def ")) + identifier.setResultsName("name") + Suppress(lpar) + Suppress(
     rpar) + COLONS + LINES.setResultsName('content') + Suppress(Literal("end"))).setResultsName("DEF")
 
+"""-----------------IMPORT----------------------------"""
+IMPORT = Group(Suppress(Literal("import")) + QuotedString('"')).setResultsName("IMPORT")
+
 """-----------------MAIN----------------------------"""
 MAIN = Group(Suppress(Literal("main")) + COLONS + LINES.setResultsName('content')).setResultsName("MAIN") + Suppress(
     Literal("end"))
-LB = ZeroOrMore(LINES) + ZeroOrMore(DEF) + (MAIN | ZeroOrMore(BLOQUEWHENCOND))
+LB = ZeroOrMore(IMPORT) + ZeroOrMore(LINES) + ZeroOrMore(DEF) + (MAIN | ZeroOrMore(BLOQUEWHENCOND))
 LB.ignore(pythonStyleComment)
 
 ini = []
@@ -188,27 +191,40 @@ def __parserFromString(text):
 
 
 def __generatePy(lines):
-    print lines
     list_var = []
-    text = "\ntime_global_start = time.time()"
-
-    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\tprint time_global\n\treturn time_global > umbral\n\n"
+    text = ""
+    imports = None
     thereareWhens = False
     for x in lines:
-        if x.getName() is 'WHEN':
+        if x.getName is 'WHEN':
             thereareWhens = True
             list_var.append("time_" + str(x.name[0]))
             list_var.append(str(x.name[0]) + "_start")
             list_var.append(x.name[0])
-        elif x.getName is 'VAR':
+        elif x.getName() is 'VAR':
             list_var.append(x.name[0])
-
+        elif x.getName() is 'IMPORT':
+            if imports is None:
+                imports = "imports = ["
+            imports += '"' + x[0] + '", '
+    if imports is not None:
+        imports = imports[:-2] + "]"
+        text += imports + """
+for f in imports:
+    for subPath in [os.path.join(f, x) for x in os.listdir(f)]:
+        if os.path.isdir(os.path.abspath(subPath)):
+            for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
+                if os.path.basename(subsubPath) == os.path.basename(os.path.dirname(subsubPath)) + ".py":
+                    execfile(os.path.abspath(subsubPath), globals())
+"""
     global ini
     for x in lines:
+        x.getName()
         if x.getName() is "MAIN" and thereareWhens:
             continue
         if x.getName() is "LINES":
             for y in x:
+                print y.getName()
                 text = __process(y, list_var, text)
         else:
             text = __process(x, list_var, text)
@@ -280,7 +296,7 @@ def __process(line, list_var=[], text="", index=0):
     return text
 
 def __processDEF(line, list_var, text="", index=0):
-    text += "def " + line.name[0] + "():\n"
+    text += "\ndef " + line.name[0] + "():\n"
     for x in list_var:
         text += "\t" * index + "global " + x + "\n"
     for field in line.content:
@@ -468,6 +484,15 @@ def __processIF(line, text="", index=0):
         text = "\t" * index + __process(field, [], text, index)
     return text
 
+def parserLearntBotCodeOnlyUserFuntion(code):
+    text = ""
+    try:
+        tree = __parserFromString(code)
+
+        text = __generatePy(tree)
+    except Exception as e:
+        print e
+    return text
 
 def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     # print "----------------------------------" + inputFile + "----------------------------------------------"
@@ -476,7 +501,10 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     except Exception as e:
         print e
         raise e
-    text = __generatePy(tree)
+    text = "\ntime_global_start = time.time()"
+    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\tprint time_global\n\treturn time_global > umbral\n\n"
+    text += __generatePy(tree)
+
     # print "------------------\n", text "\n------------------",
     if physicalRobot:
         header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
@@ -503,7 +531,9 @@ if __name__ == "__main__":
         print bcolors.FAIL + "Imputfile must be different to outputfile" + bcolors.ENDC
         exit(-1)
     print bcolors.OKGREEN + "Generating file " + argv[1] + bcolors.ENDC
-    text = __generatePy(__parserFromFile(argv[0]))
+    text = "\ntime_global_start = time.time()"
+    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\tprint time_global\n\treturn time_global > umbral\n\n"
+    text += __generatePy(__parserFromFile(argv[0]))
     print bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC
     if bool(argv[2]):
         header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')

@@ -1,0 +1,12 @@
+def sigue_linea_roja():
+	if function.center_red_line():
+		function.move_straight()
+	elif function.left_red_line():
+		function.move_left()
+	elif function.right_red_line():
+		function.move_right()
+	else:
+		function.slow_down()
+	end
+end
+
