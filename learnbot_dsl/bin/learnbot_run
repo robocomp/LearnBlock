@@ -1,5 +1,0 @@
-#!/bin/bash
-cp ./$1.py ~/robocomp/components/learnbot/learnbot-dsl/$1.py
-cd ~/robocomp/components/learnbot/learnbot-dsl/
-python $1.py
-rm $1.py

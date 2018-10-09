@@ -1,8 +1,0 @@
-when obstacle_free do
-	move_straight 0 100
-end
-
-when not obstacle_free do
-	turn_right 0 0.4
-end
-

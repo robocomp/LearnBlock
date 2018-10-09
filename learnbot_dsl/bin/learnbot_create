@@ -1,7 +1,0 @@
-#!/bin/bash
-x=$(pwd)
-cd ~/robocomp/components/learnbot/learnbot-dsl/
-cat  $1.py
-python translator.py $x'/'$1
-cp $1.py $x'/'$1.py
-rm $1.py

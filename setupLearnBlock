@@ -24,12 +24,13 @@ then
   echo Installing dependencies
   echo "" > files.txt
   echo Installing Learnblock
-  gksudo pip install paramiko gitpython
-  gksudo python setup.py install
+  # gksudo pip install paramiko gitpython
+  # sudo pip install -r requirements.txt
+  sudo python setup.py install
   cat files.txt
   echo Completed install successfully
 
-  echo [Desktop Entry] >> $path/Learnblock.desktop
+  echo [Desktop Entry] > $path/Learnblock.desktop
   echo Version=1.0 >> $path/Learnblock.desktop
   echo Type=Application >> $path/Learnblock.desktop
   echo Name=Learnblock >> $path/Learnblock.desktop
@@ -40,7 +41,7 @@ then
   echo Terminal=false >> $path/Learnblock.desktop
   echo StartupNotify=false >> $path/Learnblock.desktop
 
-  echo [Desktop Entry] >> $DESKTOP_DIR/Learnblock.desktop
+  echo [Desktop Entry] > $DESKTOP_DIR/Learnblock.desktop
   echo Version=1.0 >> $DESKTOP_DIR/Learnblock.desktop
   echo Type=Application >> $DESKTOP_DIR/Learnblock.desktop
   echo Name=Learnblock >> $DESKTOP_DIR/Learnblock.desktop
