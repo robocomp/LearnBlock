@@ -170,37 +170,45 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         try:
             os.mkdir(path + "/" + self.parentBlock.name)
         except:
-            print "El directorio ya existe"
-        path = path + "/" + self.parentBlock.name
-        # Save blockProject
-        lBInstance = self.scene.parent
-        with open(path + "/" + self.parentBlock.name + ".blockProject", 'wb') as fichero:
-            dic = copy.deepcopy(lBInstance.scene.dicBlockItem)
-            for id in dic:
-                block = dic[id]
-                block.file = block.file.replace(pathImgBlocks, "")
-            pickle.dump(
-                (dic, lBInstance.listNameWhens, lBInstance.listUserFunctions, lBInstance.listNameVars, lBInstance.listNameUserFunctions),
-                fichero, 0)
-        # Save config block
-        with open(path + "/" + self.parentBlock.name + ".conf",'wr') as f:
-            text ='''block{
+            msgBox = QtGui.QMessageBox()
+            msgBox.setWindowTitle(self.trUtf8("Warning"))
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setText(self.trUtf8("This module already exists"))
+            msgBox.setInformativeText(self.trUtf8("Do you want to overwrite the changes?"))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok| QtGui.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            ret = msgBox.exec_()
+        if ret == QtGui.QMessageBox.Ok:
+            path = path + "/" + self.parentBlock.name
+            # Save blockProject
+            lBInstance = self.scene.parent
+            with open(path + "/" + self.parentBlock.name + ".blockProject", 'wb') as fichero:
+                dic = copy.deepcopy(lBInstance.scene.dicBlockItem)
+                for id in dic:
+                    block = dic[id]
+                    block.file = block.file.replace(pathImgBlocks, "")
+                pickle.dump(
+                    (dic, lBInstance.listNameWhens, lBInstance.listUserFunctions, lBInstance.listNameVars, lBInstance.listNameUserFunctions),
+                    fichero, 0)
+            # Save config block
+            with open(path + "/" + self.parentBlock.name + ".conf",'wr') as f:
+                text ='''block{
     type library
     name ''' + self.parentBlock.name + '''
     img block1
     languages ES: "''' + self.parentBlock.name + '''", EN: "''' + self.parentBlock.name + '''"
 }'''
-            f.write(text)
-        # Save script learnCode
-        inst = self.getInstructions()
-        code = "def " + toLBotPy(inst) + "\nend\n\n"
-        with open(path + "/" + self.parentBlock.name + ".lb", 'wr') as f:
-            f.write(code)
-        # Save script python
-        codePython = parserLearntBotCodeOnlyUserFuntion(code)
-        with open(path + "/" + self.parentBlock.name + ".py", 'wr') as f:
-            f.write(codePython)
-        pass
+                f.write(text)
+            # Save script learnCode
+            inst = self.getInstructions()
+            code = "def " + toLBotPy(inst) + "\nend\n\n"
+            with open(path + "/" + self.parentBlock.name + ".lb", 'wr') as f:
+                f.write(code)
+            # Save script python
+            codePython = parserLearntBotCodeOnlyUserFuntion(code)
+            with open(path + "/" + self.parentBlock.name + ".py", 'wr') as f:
+                f.write(codePython)
+            pass
 
     def on_clicked_menu_duplicate(self):
         self.duplicate()

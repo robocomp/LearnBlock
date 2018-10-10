@@ -6,7 +6,7 @@
     <message>
         <location filename="var.py" line="38"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Updated Successfully</translation>
     </message>
     <message>
         <location filename="addWhen.py" line="89"/>
@@ -145,246 +145,332 @@
     </message>
 </context>
 <context>
+    <name>Form</name>
+    <message>
+        <location filename="tabLibrary.py" line="32"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LearnBlock</name>
+    <message>
+        <location filename="LearnBlock.py" line="272"/>
+        <source>Load Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="1105"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="620"/>
+        <source>The document has been modified.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="621"/>
+        <source>Do you want to save your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="719"/>
+        <source>You should check connection the physical robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="766"/>
+        <source>Your code is empty or is not correct</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="774"/>
+        <source>line: {}</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="798"/>
+        <source>You should check connection the </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="807"/>
+        <source>Your code has an error. Check it out again</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="835"/>
+        <source>You should check connection to the robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="1089"/>
+        <source>This name alredy exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="1098"/>
+        <source>The name can&apos;t start by number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="1107"/>
+        <source>Error Name is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
-        <location filename="gui.py" line="373"/>
+        <location filename="interface.py" line="387"/>
         <source>MainWindow</source>
         <translation>Learnblock 2.0</translation>
     </message>
     <message>
-        <location filename="gui.py" line="374"/>
+        <location filename="interface.py" line="388"/>
         <source>Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="375"/>
+        <location filename="interface.py" line="389"/>
         <source>Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="376"/>
+        <location filename="interface.py" line="390"/>
         <source>Zoom</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="378"/>
+        <location filename="interface.py" line="392"/>
         <source>Add Number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="380"/>
+        <location filename="interface.py" line="394"/>
         <source>Add String</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="381"/>
+        <location filename="interface.py" line="395"/>
         <source>Use Events</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="382"/>
+        <location filename="interface.py" line="396"/>
         <source>ES</source>
         <translation>Spanish</translation>
     </message>
     <message>
-        <location filename="gui.py" line="383"/>
+        <location filename="interface.py" line="397"/>
         <source>EN</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="gui.py" line="385"/>
+        <location filename="interface.py" line="399"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;H&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="390"/>
+        <location filename="interface.py" line="405"/>
         <source>Text Code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="386"/>
+        <location filename="interface.py" line="400"/>
         <source>Program</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="411"/>
+        <location filename="interface.py" line="426"/>
         <source>Stop</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="412"/>
+        <location filename="interface.py" line="427"/>
         <source>LearnBlock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="394"/>
+        <location filename="interface.py" line="409"/>
         <source>Control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="392"/>
+        <location filename="interface.py" line="407"/>
         <source>Add When</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="393"/>
+        <location filename="interface.py" line="408"/>
         <source>Delete When</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="395"/>
+        <location filename="interface.py" line="410"/>
         <source>Expressions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="396"/>
+        <location filename="interface.py" line="411"/>
         <source>Motor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="397"/>
+        <location filename="interface.py" line="412"/>
         <source>Perceptual</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="398"/>
+        <location filename="interface.py" line="413"/>
         <source>Proprioceptive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="399"/>
+        <location filename="interface.py" line="414"/>
         <source>Operators</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="403"/>
+        <location filename="interface.py" line="418"/>
         <source>Variables</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="400"/>
+        <location filename="interface.py" line="415"/>
         <source>Add Variable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="401"/>
+        <location filename="interface.py" line="416"/>
         <source>Delete Variable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="402"/>
+        <location filename="interface.py" line="417"/>
         <source>Add List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="406"/>
+        <location filename="interface.py" line="421"/>
         <source>User functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="404"/>
+        <location filename="interface.py" line="419"/>
         <source>Create Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="405"/>
+        <location filename="interface.py" line="420"/>
         <source>Delete Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="407"/>
+        <location filename="interface.py" line="422"/>
         <source>Others</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="409"/>
+        <location filename="interface.py" line="424"/>
         <source>Start (simulated robot)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="410"/>
+        <location filename="interface.py" line="425"/>
         <source>Start (physical robot)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="413"/>
+        <location filename="interface.py" line="428"/>
         <source>File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="414"/>
+        <location filename="interface.py" line="429"/>
         <source>tools robot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="415"/>
+        <location filename="interface.py" line="430"/>
         <source>Exit</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="gui.py" line="416"/>
+        <location filename="interface.py" line="431"/>
         <source>Añadir Nueva Metodo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="417"/>
+        <location filename="interface.py" line="432"/>
         <source>Create New block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="418"/>
+        <location filename="interface.py" line="433"/>
         <source>Save Proyect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="419"/>
+        <location filename="interface.py" line="434"/>
         <source>Open Proyect</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="420"/>
+        <location filename="interface.py" line="435"/>
         <source>Save As</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="421"/>
+        <location filename="interface.py" line="436"/>
         <source>Start components</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="422"/>
+        <location filename="interface.py" line="437"/>
         <source>Reboot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="423"/>
+        <location filename="interface.py" line="438"/>
         <source>Shutdown</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="424"/>
+        <location filename="interface.py" line="439"/>
         <source>Start Simulator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="425"/>
+        <location filename="interface.py" line="440"/>
         <source>New project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="391"/>
+        <location filename="interface.py" line="406"/>
         <source>Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="408"/>
+        <location filename="interface.py" line="423"/>
         <source>Blocks to text</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="gui.py" line="384"/>
+        <location filename="interface.py" line="398"/>
         <source>Update</source>
         <translation>Update avaible</translation>
+    </message>
+    <message>
+        <location filename="interface.py" line="401"/>
+        <source>Connect Camera Robot</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="interface.py" line="441"/>
+        <source>Load Library</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -398,6 +484,108 @@
         <location filename="updatedSuccessfully.py" line="32"/>
         <source>Learnblock has been successfully updated,
 to load the updates close and reopen the program.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VisualBlock</name>
+    <message>
+        <location filename="VisualBlock.py" line="154"/>
+        <source>Export Block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="VisualBlock.py" line="158"/>
+        <source>Duplicate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="VisualBlock.py" line="162"/>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="VisualBlock.py" line="166"/>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="VisualBlock.py" line="171"/>
+        <source>Select Library</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="VisualBlock.py" line="176"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="VisualBlock.py" line="178"/>
+        <source>This module already exists</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="VisualBlock.py" line="179"/>
+        <source>Do you want to overwrite the changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>guiAddNumberOrString</name>
+    <message>
+        <location filename="guiAddNumberOrString.py" line="132"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="guiAddNumberOrString.py" line="134"/>
+        <source>Error Name is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>guiAddWhen</name>
+    <message>
+        <location filename="guiaddWhen.py" line="150"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="guiaddWhen.py" line="144"/>
+        <source>Error the name can not be &apos;start&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="guiaddWhen.py" line="152"/>
+        <source>Error Name is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>guiCreateBlock</name>
+    <message>
+        <location filename="guiCreateBlock.py" line="200"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="guiCreateBlock.py" line="156"/>
+        <source>Error Name is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="guiCreateBlock.py" line="164"/>
+        <source>Error Images of block is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="guiCreateBlock.py" line="172"/>
+        <source>Error name of vars is repit, name is empty or default value is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="guiCreateBlock.py" line="202"/>
+        <source>Are you sure you want to add this function?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

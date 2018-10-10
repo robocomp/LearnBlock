@@ -151,19 +151,25 @@ class guiCreateBlock(QtGui.QDialog):
             ret = None
             if self.ui.lineEditName.text() == "":
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("Error Name is empty.")
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("Error Name is empty."))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
             elif len(self.listImg) is 0:
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("Error Images of block is empty.")
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("Error Images of block is empty."))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
             elif self.__repitNameVar():
                 msgBox = QtGui.QMessageBox()
-                msgBox.setText("Error name of vars is repit, name is empty or default value is empty.")
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("Error name of vars is repit, name is empty or default value is empty."))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
@@ -191,7 +197,9 @@ block{\n"""
                 text += img + ", "
             text = text[:-2] + "\n}"
             msgBox = QtGui.QMessageBox()
-            msgBox.setText("Are you sure you want to add this function?")
+            msgBox.setWindowTitle(self.trUtf8("Warning"))
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setText(self.trUtf8("Are you sure you want to add this function?"))
             msgBox.setInformativeText(text)
             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)

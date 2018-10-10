@@ -129,6 +129,8 @@ class guiAddNumberOrString(QtGui.QDialog):
             ret = None
             if self.ui.lineEditName.text() == "":
                 msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
                 msgBox.setText(self.trUtf8("Error Name is empty."))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
