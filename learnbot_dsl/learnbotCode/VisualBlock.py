@@ -167,6 +167,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
     def on_clicked_menu_export_block(self):
         path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Select Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
+        ret = None
         try:
             os.mkdir(path + "/" + self.parentBlock.name)
         except:
@@ -178,7 +179,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             msgBox.setStandardButtons(QtGui.QMessageBox.Ok| QtGui.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             ret = msgBox.exec_()
-        if ret == QtGui.QMessageBox.Ok:
+        if ret is None or ret == QtGui.QMessageBox.Ok:
             path = path + "/" + self.parentBlock.name
             # Save blockProject
             lBInstance = self.scene.parent

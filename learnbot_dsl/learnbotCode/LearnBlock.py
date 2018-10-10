@@ -198,8 +198,6 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.load_blocks()
         self.avtiveEvents(False)
-        # self.stream = None
-        # self.bytes = ''
         self.pmlast = None
         self.cameraScene = QtGui.QGraphicsScene()
         self.ui.cameragraphicsView.setScene(self.cameraScene)
@@ -237,9 +235,6 @@ class LearnBlock(QtGui.QMainWindow):
 
         shutil.rmtree("tmp")
         sys.exit(r)
-
-
-            # self.ui.camerawidget.update()
 
     def connectCameraRobot(self):
         print  "connectCameraRobot"
@@ -578,9 +573,9 @@ class LearnBlock(QtGui.QMainWindow):
                                                          'Block Project file (*.blockProject)')
             self.scene.startAllblocks()
             if fileName[0] != "":
+                self.newProject()
                 self.__fileProject = fileName[0]
                 self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
-                self.newProject()
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
 
@@ -621,7 +616,7 @@ class LearnBlock(QtGui.QMainWindow):
                             nameLibrary = os.path.basename(l[0])
                             if path not in self.listLibrary:
                                 self.listLibraryWidget.append(Library(self, l[0]))
-                                self.listLibrary.append((path, self.ui.functions.addTab(newLibrary, nameLibrary)))
+                                self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
                     except:
                         pass
                     self.listButtonsWhen = []
@@ -859,7 +854,7 @@ class LearnBlock(QtGui.QMainWindow):
 
             pass
 
-    def parserBlocks(self, blocks, function):  # TODO add parser for blocks when
+    def parserBlocks(self, blocks, function):
         text = self.parserUserFuntions(blocks, function)
         text += "\n\n"
         if self.ui.useEventscheckBox.isChecked():

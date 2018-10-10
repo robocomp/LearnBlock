@@ -31,7 +31,7 @@ class Library(QtGui.QWidget):
         for f in functions:
             if f.name[0] in self.parent.listNameUserFunctions or f.name[0] in self.parent.listNameLibraryFunctions:
                 listRepitFuntions.append(f.name[0])
-                continue # TODO Show QMenssage funtion alredy exist
+                continue
             self.namesFunctions.append(f.name[0])
             self.parent.listNameLibraryFunctions.append(f.name[0])
             variables = []
