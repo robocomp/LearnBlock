@@ -155,68 +155,91 @@
 <context>
     <name>LearnBlock</name>
     <message>
-        <location filename="LearnBlock.py" line="272"/>
+        <location filename="LearnBlock.py" line="273"/>
         <source>Load Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="1105"/>
+        <location filename="LearnBlock.py" line="1123"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="620"/>
+        <location filename="LearnBlock.py" line="638"/>
         <source>The document has been modified.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="621"/>
+        <location filename="LearnBlock.py" line="639"/>
         <source>Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="719"/>
+        <location filename="LearnBlock.py" line="737"/>
         <source>You should check connection the physical robot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="766"/>
+        <location filename="LearnBlock.py" line="784"/>
         <source>Your code is empty or is not correct</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="774"/>
+        <location filename="LearnBlock.py" line="792"/>
         <source>line: {}</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="798"/>
+        <location filename="LearnBlock.py" line="816"/>
         <source>You should check connection the </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="807"/>
+        <location filename="LearnBlock.py" line="825"/>
         <source>Your code has an error. Check it out again</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="835"/>
+        <location filename="LearnBlock.py" line="853"/>
         <source>You should check connection to the robot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="1089"/>
+        <location filename="LearnBlock.py" line="1107"/>
         <source>This name alredy exist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="1098"/>
+        <location filename="LearnBlock.py" line="1116"/>
         <source>The name can&apos;t start by number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="1107"/>
+        <location filename="LearnBlock.py" line="1125"/>
         <source>Error Name is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="283"/>
+        <source>The library has already been imported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="284"/>
+        <source>Do you want select another library?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Library</name>
+    <message>
+        <location filename="guiTabLibrary.py" line="65"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="guiTabLibrary.py" line="67"/>
+        <source>The following functions have not been imported because there are others with the same name:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

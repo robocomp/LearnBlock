@@ -86,7 +86,8 @@ class LearnBlock(QtGui.QMainWindow):
         self.listButtons = []
         self.listBlock = []
         self.listLibrary =[]
-
+        self.listLibraryWidget = []
+        self.listNameLibraryFunctions = []
         self.__fileProject = None
         self.hilo = None
         self.physicalRobot = False
@@ -271,9 +272,20 @@ class LearnBlock(QtGui.QMainWindow):
         path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Load Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
         nameLibrary = os.path.basename(path)
         self.scene.startAllblocks()
-        if path not in self.listLibrary:
-            newLibrary = Library(self, path)
-            self.listLibrary.append((path, self.ui.functions.addTab(newLibrary,nameLibrary)))
+        if path not in [l[0] for l in self.listLibrary]:
+            self.listLibraryWidget.append(Library(self, path))
+            self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1],nameLibrary)))
+        else:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setWindowTitle(self.trUtf8("Warning"))
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setText(self.trUtf8("The library has already been imported."))
+            msgBox.setInformativeText(self.trUtf8("Do you want select another library?"))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            ret = msgBox.exec_()
+            if ret ==QtGui.QMessageBox.Ok:
+                self.addLibrary()
 
 
     def closeEvent(self, event):
@@ -293,14 +305,14 @@ class LearnBlock(QtGui.QMainWindow):
             msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtGui.QMessageBox.Save)
             ret = msgBox.exec_()
-            if ret == 2048:
+            if ret == QtGui.QMessageBox.Save:
                 self.saveInstance()
                 if self.client:
                     self.client.disconnect()
                     del self.client
                 self.stopthread()
                 event.accept()
-            elif ret == 8388608:
+            elif ret == QtGui.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 if self.client:
                     self.client.disconnect()
@@ -398,8 +410,13 @@ class LearnBlock(QtGui.QMainWindow):
             self.listNameUserFunctions = []
             for l in self.listLibrary:
                 self.ui.functions.removeTab(l[1])
+            for w in self.listLibraryWidget:
+                w.delete()
+
             self.listButtonsWhen = []
             self.listLibrary = []
+            self.listLibraryWidget = []
+            self.listNameLibraryFunctions =[]
             self.scene.setBlockDict({})
             self.scene.startAllblocks()
             self.listNameUserFunctions = []
@@ -418,10 +435,10 @@ class LearnBlock(QtGui.QMainWindow):
             msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtGui.QMessageBox.Save)
             ret = msgBox.exec_()
-            if ret == 2048:
+            if ret == QtGui.QMessageBox.Save:
                 self.saveInstance()
                 self.newProject()
-            elif ret == 8388608:
+            elif ret == QtGui.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 self.newProject()
 
@@ -563,6 +580,7 @@ class LearnBlock(QtGui.QMainWindow):
             if fileName[0] != "":
                 self.__fileProject = fileName[0]
                 self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+                self.newProject()
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
 
@@ -602,7 +620,7 @@ class LearnBlock(QtGui.QMainWindow):
                         for l in d[5]:
                             nameLibrary = os.path.basename(l[0])
                             if path not in self.listLibrary:
-                                newLibrary = Library(self, l[0])
+                                self.listLibraryWidget.append(Library(self, l[0]))
                                 self.listLibrary.append((path, self.ui.functions.addTab(newLibrary, nameLibrary)))
                     except:
                         pass
@@ -619,9 +637,9 @@ class LearnBlock(QtGui.QMainWindow):
             msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtGui.QMessageBox.Save)
             ret = msgBox.exec_()
-            if ret == 2048:
+            if ret == QtGui.QMessageBox.Save:
                 self.saveInstance()
-            elif ret == 8388608:
+            elif ret == QtGui.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 self.openProyect()
 
@@ -1072,7 +1090,7 @@ class LearnBlock(QtGui.QMainWindow):
         if ret is 1:
             name = self.userFunctionsGui.nameLineEdit.text()
             name = name.replace(" ", "_")
-            if name in self.listNameUserFunctions:
+            if name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
                 msgBox.setIcon(QtGui.QMessageBox.Warning)

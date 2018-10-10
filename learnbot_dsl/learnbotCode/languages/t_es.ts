@@ -155,12 +155,12 @@
 <context>
     <name>LearnBlock</name>
     <message>
-        <location filename="LearnBlock.py" line="620"/>
+        <location filename="LearnBlock.py" line="638"/>
         <source>The document has been modified.</source>
         <translation>El documento ha sido modificado.</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="621"/>
+        <location filename="LearnBlock.py" line="639"/>
         <source>Do you want to save your changes?</source>
         <translation>¿Quieres guardar los cambios?</translation>
     </message>
@@ -170,59 +170,82 @@
         <translation type="obsolete">Debes chequear la conexsión al</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="719"/>
+        <location filename="LearnBlock.py" line="737"/>
         <source>You should check connection the physical robot</source>
         <translation>Debes chequear la conexsión al robot fisico</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="766"/>
+        <location filename="LearnBlock.py" line="784"/>
         <source>Your code is empty or is not correct</source>
         <translation>tu codigo esta vacio o no es correcto</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="774"/>
+        <location filename="LearnBlock.py" line="792"/>
         <source>line: {}</source>
         <translation>linea: {}</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="798"/>
+        <location filename="LearnBlock.py" line="816"/>
         <source>You should check connection the </source>
         <translation>Debes chequear la conexsión al</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="807"/>
+        <location filename="LearnBlock.py" line="825"/>
         <source>Your code has an error. Check it out again</source>
         <translation>Tu código tiene un error. Verificalo de nuevo</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="1089"/>
+        <location filename="LearnBlock.py" line="1107"/>
         <source>This name alredy exist</source>
         <translation>Este nombre ya existe</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="1098"/>
+        <location filename="LearnBlock.py" line="1116"/>
         <source>The name can&apos;t start by number</source>
         <translation>En nombre no puede comenzar por numero</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="1107"/>
+        <location filename="LearnBlock.py" line="1125"/>
         <source>Error Name is empty.</source>
         <translation>Error el nombre esta vacio.</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="272"/>
+        <location filename="LearnBlock.py" line="273"/>
         <source>Load Library</source>
         <translation>Cargar Librería</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="1105"/>
+        <location filename="LearnBlock.py" line="1123"/>
         <source>Warning</source>
         <translation>Peligro</translation>
     </message>
     <message>
-        <location filename="LearnBlock.py" line="835"/>
+        <location filename="LearnBlock.py" line="853"/>
         <source>You should check connection to the robot</source>
         <translation>Debes chequear la conexsión al robot</translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="283"/>
+        <source>The library has already been imported.</source>
+        <translation>La librería ya ha sido importada.</translation>
+    </message>
+    <message>
+        <location filename="LearnBlock.py" line="284"/>
+        <source>Do you want select another library?</source>
+        <translation>¿Quiere seleccionar otra librería?</translation>
+    </message>
+</context>
+<context>
+    <name>Library</name>
+    <message>
+        <location filename="guiTabLibrary.py" line="65"/>
+        <source>Warning</source>
+        <translation>Peligro</translation>
+    </message>
+    <message>
+        <location filename="guiTabLibrary.py" line="67"/>
+        <source>The following functions have not been imported because there are others with the same name:</source>
+        <translation>Las siguientes funciones no han sido importadas porque hay otras funciones con el mismo nombre:</translation>
     </message>
 </context>
 <context>
