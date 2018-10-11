@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 #
-# Copyright (C) 2015 by YOUR NAME HERE
+# Copyright (C) 2018 by YOUR NAME HERE
 #
 #    This file is part of RoboComp
 #
@@ -20,7 +20,7 @@
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# \mainpage RoboComp::displaybot
+# \mainpage RoboComp::aprilTag
 #
 # \section intro_sec Introduction
 #
@@ -48,40 +48,21 @@
 #
 # \subsection execution_ssec Execution
 #
-# Just: "${PATH_TO_BINARY}/displaybot --Ice.Config=${PATH_TO_CONFIG_FILE}"
+# Just: "${PATH_TO_BINARY}/aprilTag --Ice.Config=${PATH_TO_CONFIG_FILE}"
 #
 # \subsection running_ssec Once running
 #
 #
 #
 
-import sys, traceback, Ice, IceStorm, subprocess, threading, time, Queue, os
+import sys, traceback, IceStorm, subprocess, threading, time, Queue, os, copy
 
 # Ctrl+c handling
 import signal
-signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-from PySide import *
+from PySide import QtGui, QtCore
 
 from specificworker import *
-
-ROBOCOMP = ''
-try:
-	ROBOCOMP = os.environ['ROBOCOMP']
-except:
-	pass
-if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
-	sys.exit()
-
-
-preStr = "-I"+ROBOCOMP+"/interfaces/ --all "+ROBOCOMP+"/interfaces/"
-Ice.loadSlice(preStr+"CommonBehavior.ice")
-import RoboCompCommonBehavior
-Ice.loadSlice(preStr+"DifferentialRobot.ice")
-import RoboCompDifferentialRobot
-Ice.loadSlice(preStr+"Ultrasound.ice")
-import RoboCompUltrasound
 
 
 class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
@@ -111,7 +92,7 @@ class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
 
 
 if __name__ == '__main__':
-	app = QtGui.QApplication(sys.argv)
+	app = QtCore.QCoreApplication(sys.argv)
 	params = copy.deepcopy(sys.argv)
 	if len(params) > 1:
 		if not params[1].startswith('--Ice.Config='):
@@ -121,54 +102,20 @@ if __name__ == '__main__':
 	ic = Ice.initialize(params)
 	status = 0
 	mprx = {}
-	try:
-
-		# Remote object connection for DifferentialRobot
-		try:
-			proxyString = ic.getProperties().getProperty('DifferentialRobotProxy')
-			try:
-				basePrx = ic.stringToProxy(proxyString)
-				differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)
-				mprx["DifferentialRobotProxy"] = differentialrobot_proxy
-			except Ice.Exception:
-				print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
-				#traceback.print_exc()
-				status = 1
-		except Ice.Exception, e:
-			print e
-			print 'Cannot get DifferentialRobotProxy property.'
-			status = 1
-
-
-		# Remote object connection for Ultrasound
-		try:
-			proxyString = ic.getProperties().getProperty('UltrasoundProxy')
-			try:
-				basePrx = ic.stringToProxy(proxyString)
-				ultrasound_proxy = RoboCompUltrasound.UltrasoundPrx.checkedCast(basePrx)
-				mprx["UltrasoundProxy"] = ultrasound_proxy
-				print "bien ultrasound"
-			except Ice.Exception:
-				print 'Cannot connect to the remote object (Ultrasound)', proxyString
-				#traceback.print_exc()
-				status = 1
-		except Ice.Exception, e:
-			print e
-			print 'Cannot get UltrasoundProxy property.'
-			status = 1
-
-	except:
-			traceback.print_exc()
-			status = 1
-
-
+	parameters = {}
+	for i in ic.getProperties():
+		parameters[str(i)] = str(ic.getProperties().getProperty(i))
 	if status == 0:
 		worker = SpecificWorker(mprx)
+		worker.setParams(parameters)
+
+	adapter = ic.createObjectAdapter('Apriltag')
+	adapter.add(ApriltagI(worker), ic.stringToIdentity('apriltag'))
+	adapter.activate()
 
 
-#		adapter.add(CommonBehaviorI(<LOWER>I, ic), ic.stringToIdentity('commonbehavior'))
-
-		app.exec_()
+	signal.signal(signal.SIGINT, signal.SIG_DFL)
+	app.exec_()
 
 	if ic:
 		try:

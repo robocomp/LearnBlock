@@ -1,16 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, traceback, Ice, os, math, time, json, ast, copy, threading, cv2
-import urllib
+import sys, traceback, Ice, os, apriltag, time, copy, threading, cv2
 from collections import namedtuple
 import numpy as np
 import io
-import socket
-import struct
 from PIL import Image
 import paho.mqtt.client
-from PySide import QtCore
 ROBOCOMP = ''
 try:
     ROBOCOMP = os.environ['ROBOCOMP']
@@ -202,7 +198,30 @@ class Client(Ice.Application, threading.Thread):
 
         self.active = True
         self._stop_event = threading.Event()
+        self.tagDetector = apriltag.Detector()
+        self.listIDs = []
         self.start()
+
+    def __detectAprilTags(self):
+        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.flip(gray, 0)
+        aprils = self.tagDetector.detect(gray)
+        self.listIDs = [a.tag_id for a in aprils]
+        cv2.waitKey(1)
+        if 1 in self.listIDs:
+            self.expressAnger()
+        elif 2 in self.listIDs:
+            self.expressJoy()
+        elif 3 in self.listIDs:
+            self.expressDisgust()
+        elif 4 in self.listIDs:
+            self.expressFear()
+        elif 5 in self.listIDs:
+            self.expressNeutral()
+        elif 6 in self.listIDs:
+            self.expressSadness()
+        elif 7 in self.listIDs:
+            self.expressSurprise()
 
     def run(self):
         global open_cv_image,newImage
@@ -213,10 +232,14 @@ class Client(Ice.Application, threading.Thread):
             if self.streamOK and newImage:
                 newImage=False
                 self.getImageStream(open_cv_image)
+                self.__detectAprilTags()
             self.readSonars()
             self.mutex.release()
             self.reading = False
             time.sleep(0.002)
+
+    def lookingLabel(self, id):
+        return id in self.listIDs
 
     def stop(self):
         self.client.disconnect()

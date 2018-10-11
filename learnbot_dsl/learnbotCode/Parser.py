@@ -196,7 +196,7 @@ def __generatePy(lines):
     imports = None
     thereareWhens = False
     for x in lines:
-        if x.getName is 'WHEN':
+        if x.getName() is 'WHEN':
             thereareWhens = True
             list_var.append("time_" + str(x.name[0]))
             list_var.append(str(x.name[0]) + "_start")
@@ -230,6 +230,7 @@ for f in imports:
             text = __process(x, list_var, text)
 
     if thereareWhens is True:
+        print thereareWhens
         for x in lines:
             if x.getName() is 'WHEN':
                 if x.name[0] == "start":

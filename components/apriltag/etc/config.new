@@ -1,6 +1,5 @@
-# Proxies for required interfaces
-DifferentialRobotProxy = differentialrobot:tcp -h odroid.local -p 10004
-UltrasoundProxy = ultrasound:tcp -h odroid.local -p 10104
+# Endpoints for implemented interfaces
+Apriltag.Endpoints=tcp -p 0
 
 
 
@@ -13,3 +12,5 @@ Ice.Trace.Network=0
 Ice.Trace.Protocol=0
 Ice.ACM.Client=10
 Ice.ACM.Server=10
+
+

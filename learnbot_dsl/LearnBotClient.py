@@ -7,6 +7,7 @@ import cv2
 import urllib
 from collections import namedtuple
 import numpy as np
+import apriltag
 
 ROBOCOMP = ''
 try:
@@ -144,9 +145,31 @@ class Client(Ice.Application, threading.Thread):
                 print "Error"
                 traceback.print_exc()
                 raise
-
+        self.tagDetector = apriltag.Detector()
+        self.listIDs = []
         self.active = True
         self.start()
+
+    def __detectAprilTags(self):
+        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.flip(gray, 0)
+        aprils = self.tagDetector.detect(gray)
+        self.listIDs = [a.tag_id for a in aprils]
+        cv2.waitKey(1)
+        if 1 in self.listIDs:
+            self.expressAnger()
+        elif 2 in self.listIDs:
+            self.expressJoy()
+        elif 3 in self.listIDs:
+            self.expressDisgust()
+        elif 4 in self.listIDs:
+            self.expressFear()
+        elif 5 in self.listIDs:
+            self.expressNeutral()
+        elif 6 in self.listIDs:
+            self.expressSadness()
+        elif 7 in self.listIDs:
+            self.expressSurprise()
 
     def run(self):
         while self.active:
@@ -161,6 +184,9 @@ class Client(Ice.Application, threading.Thread):
             self.image = np.fromstring(self.color, dtype=np.uint8).reshape((240, 320, 3))
 
             time.sleep(0.01)
+
+    def lookingLabel(self, id):
+        return id in self.listIDs
 
     def stop(self):
         self._stop_event.set()

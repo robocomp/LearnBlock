@@ -189,3 +189,13 @@ block{
     img block4, block3
     languages ES: "hay_alguien_sorprendido", EN: "is_there_somebody_surprised"
 }
+
+block{
+    type perceptual
+    name seeing_the_tag
+    variables{
+        float idTag 8
+    }
+    img block4, block3
+    languages ES: "veo_el_tag", EN: "seeing_the_tag"
+}

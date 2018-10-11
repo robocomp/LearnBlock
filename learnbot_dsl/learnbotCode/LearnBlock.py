@@ -67,7 +67,10 @@ def on_message(client, userdata, message):
     open_cv_image = np.array(image)
     # open_cv_image = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)
     image = toQImage(open_cv_image)
-    signal.signalUpdateStreamer[QtGui.QImage].emit(image)
+    try:
+        signal.signalUpdateStreamer[QtGui.QImage].emit(image)
+    except:
+        pass
 
 class LearnBlock(QtGui.QMainWindow):
 
@@ -247,9 +250,9 @@ class LearnBlock(QtGui.QMainWindow):
                 self.client.loop_start()
                 self.count=0
                 self.start = time.time()
+                print "Connect Successfully"
             except Exception as e:
                 print "Error connect Streamer\n", e
-        print "Connect Successfully"
 
     def readCamera(self,image):
         try:
@@ -286,9 +289,8 @@ class LearnBlock(QtGui.QMainWindow):
     def closeEvent(self, event):
         if self.scene.shouldSave is False:
             self.stopthread()
-            if self.client:
-                self.client.disconnect()
-                del self.client
+            self.disconnectCamera()
+            del self.client
             event.accept()
         else:
             self.scene.stopAllblocks()
@@ -302,21 +304,23 @@ class LearnBlock(QtGui.QMainWindow):
             ret = msgBox.exec_()
             if ret == QtGui.QMessageBox.Save:
                 self.saveInstance()
-                if self.client:
-                    self.client.disconnect()
-                    del self.client
+                self.disconnectCamera()
+                del self.client
                 self.stopthread()
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
                 self.scene.shouldSave = False
-                if self.client:
-                    self.client.disconnect()
-                    del self.client
+                self.disconnectCamera()
+                del self.client
                 self.stopthread()
                 event.accept()
             else:
                 self.scene.startAllblocks()
                 event.ignore()
+
+    def disconnectCamera(self):
+        if self.client is not None:
+            self.client.disconnect()
 
     def updateLearnblock(self):
         remote = self.repo.remote()
