@@ -258,7 +258,7 @@
     <message>
         <location filename="interface.py" line="392"/>
         <source>Add Number</source>
-        <translation>añadir numero</translation>
+        <translation>Añadir numero</translation>
     </message>
     <message>
         <location filename="interface.py" line="394"/>
@@ -373,7 +373,7 @@
     <message>
         <location filename="interface.py" line="425"/>
         <source>Start (physical robot)</source>
-        <translation>Iniciar (robot fisico)</translation>
+        <translation>Iniciar (Robot fisico)</translation>
     </message>
     <message>
         <location filename="interface.py" line="428"/>
@@ -498,7 +498,7 @@
     <message>
         <location filename="interface.py" line="401"/>
         <source>Connect Camera Robot</source>
-        <translation>Connectar camara (Robot)</translation>
+        <translation>Conectar camara (Robot)</translation>
     </message>
     <message>
         <location filename="interface.py" line="441"/>

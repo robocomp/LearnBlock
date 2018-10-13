@@ -258,54 +258,44 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         return self.parentBlock.name
 
     def getIdItemBottomConnect(self):
-        for c in self.connections:
-            if c.getType() is BOTTOM:
-                return self.scene.getVisualItem(c.getIdItem())
+        for c in [conn for conn in self.connections if conn.getType() is BOTTOM]:
+            return self.scene.getVisualItem(c.getIdItem())
 
     def getIdItemTopConnect(self):
-        for c in self.connections:
-            if c.getType() is TOP:
-                return self.scene.getVisualItem(c.getIdItem())
+        for c in [conn for conn in self.connections if conn.getType() is TOP]:
+            return self.scene.getVisualItem(c.getIdItem())
 
     def getNumSubBottom(self, n=0, size=0):
         size += self.img.height() - 5
-        for c in self.connections:
-            if c.getType() is BOTTOM:
-                if c.getConnect() is None:
-                    return n + 1, size + 1
-                else:
-                    return self.scene.getVisualItem(c.getIdItem()).getNumSubBottom(n + 1, size)
+        for c in [conn for conn in self.connections if conn.getType() is BOTTOM]:
+            if c.getConnect() is None:
+                return n + 1, size + 1
+            else:
+                return self.scene.getVisualItem(c.getIdItem()).getNumSubBottom(n + 1, size)
         return n + 1, size + 1
 
     def getNumSub(self, n=0):
-        for c in self.connections:
-            if c.getType() is BOTTOMIN:
-                if c.getConnect() is not None:
-                    return self.scene.getVisualItem(c.getIdItem()).getNumSubBottom()
-                else:
-                    return 0, 0
+        for c in [conn for conn in self.connections if conn.getType() is BOTTOMIN and conn.getConnect() is not None]:
+            return self.scene.getVisualItem(c.getIdItem()).getNumSubBottom()
         return 0, 0
 
     def getInstructionsRIGHT(self, inst=[]):
-        for c in self.connections:
-            if c.getType() is RIGHT and c.getIdItem() is not None:
-                inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
+        for c in [conn for conn in self.connections if conn.getType() is RIGHT and conn.getIdItem() is not None]:
+            inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
         if len(inst) is 0:
             return None
         return inst
 
     def getInstructionsBOTTOM(self, inst=[]):
-        for c in self.connections:
-            if c.getType() is BOTTOM and c.getIdItem() is not None:
-                inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
+        for c in [conn for conn in self.connections if conn.getType() is BOTTOM and conn.getIdItem() is not None]:
+            inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
         if len(inst) is 0:
             return None
         return inst
 
     def getInstructionsBOTTOMIN(self, inst=[]):
-        for c in self.connections:
-            if c.getType() is BOTTOMIN and c.getIdItem() is not None:
-                inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
+        for c in [conn for conn in self.connections if conn.getType() is BOTTOMIN and conn.getIdItem() is not None]:
+            inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
         if len(inst) is 0:
             return None
         return inst
@@ -386,13 +376,11 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                     break
 
     def updateConnections(self):
-        for c in self.connections:
-            if c.getConnect() is not None:
-                if EuclideanDist(c.getPosPoint(), c.getConnect().getPosPoint()) > 7:
-                    c.getConnect().setItem(None)
-                    c.getConnect().setConnect(None)
-                    c.setItem(None)
-                    c.setConnect(None)
+        for c in [conn for conn in self.connections if conn.getConnect() is not None and EuclideanDist(conn.getPosPoint(), conn.getConnect().getPosPoint()) > 7]:
+            c.getConnect().setItem(None)
+            c.getConnect().setConnect(None)
+            c.setItem(None)
+            c.setConnect(None)
 
     def update(self):
         if len(self.dicTrans) is not 0 and self.showtext is not self.dicTrans[getLanguage()]:
@@ -443,29 +431,25 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                         self.pos() + QtCore.QPointF(self.img.width() - 5, 0), connect)
 
     def getLastItem(self):
-        for c in self.connections:
-            if c.getType() is BOTTOM:
-                if c.getConnect() is None:
-                    return c
-                else:
-                    return self.scene.getVisualItem(c.getIdItem()).getLastItem()
+        for c in [conn for conn in self.connections if conn.getType() is BOTTOM]:
+            if c.getConnect() is None:
+                return c
+            else:
+                return self.scene.getVisualItem(c.getIdItem()).getLastItem()
         return None
 
     def getLastRightItem(self):
-        for c in self.connections:
-            if c.getType() is RIGHT:
-                if c.getConnect() is None:
-                    return c
-                else:
-                    return self.scene.getVisualItem(c.getIdItem()).getLastItem()
+        for c in [conn for conn in self.connections if conn.getType() is RIGHT]:
+            if c.getConnect() is None:
+                return c
+            else:
+                return self.scene.getVisualItem(c.getIdItem()).getLastItem()
         return None
 
     def moveToFront(self):
         self.setZValue(1)
-        for c in self.connections:
-            if c.getType() is BOTTOM and c.getConnect() is not None:
-                self.scene.getVisualItem(c.getIdItem()).moveToFront()
-                break
+        for c in [conn for conn in self.connections if conn.getType() in [BOTTOM, BOTTOMIN] and conn.getConnect() is not None]:
+            self.scene.getVisualItem(c.getIdItem()).moveToFront()
 
     def mouseMoveEvent(self, event):
         if self.isEnabled():
@@ -516,13 +500,12 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         del self.header
         del self.timer
         del self.DialogVar
-        for c in self.connections:
-            if c.getIdItem() is not None:
-                if c.getType() in [BOTTOM, BOTTOMIN, RIGHT]:
-                    self.scene.getVisualItem(c.getIdItem()).delete()
-                else:
-                    c.getConnect().setConnect(None)
-                    c.getConnect().setItem(None)
+        for c in [conn for conn in self.connections if conn.getIdItem() is not None]:
+            if c.getType() in [BOTTOM, BOTTOMIN, RIGHT]:
+                self.scene.getVisualItem(c.getIdItem()).delete()
+            else:
+                c.getConnect().setConnect(None)
+                c.getConnect().setItem(None)
         if self.parentBlock.name == "when":
             # self.scene.removeByNameControl(self.parentBlock.nameControl)
             self.scene.parent.delWhen(self.parentBlock.nameControl)
@@ -535,15 +518,12 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
     def isBlockDef(self):
         if self.parentBlock.name == "when":
             return True
-        for c in self.connections:
-            if c.getType() in [TOP, BOTTOM, RIGHT, LEFT]:
-                return False
-
+        if len([conn for conn in self.connections if conn.getType() in [TOP, BOTTOM, RIGHT, LEFT]])>0:
+            return False
         return True
 
     def setEnabledDependentBlocks(self,enable):
         self.shouldUpdate = True
         self.setEnabled(enable)
-        for c in self.connections:
-            if c.getIdItem() is not None and c.getType() not in [TOP, LEFT]:
-                self.scene.getVisualItem(c.getIdItem()).setEnabledDependentBlocks(enable)
+        for c in [conn for conn in self.connections if conn.getIdItem() is not None and conn.getType() not in [TOP, LEFT]]:
+            self.scene.getVisualItem(c.getIdItem()).setEnabledDependentBlocks(enable)

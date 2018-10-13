@@ -105,25 +105,21 @@ class MyScene(QtGui.QGraphicsScene):
         del self.dictVisualItem[id]
 
     def removeByName(self, name):
-        for id in self.dicBlockItem:
-            visualItem = self.getVisualItem(id)
-            if visualItem.parentBlock.name == name:
-                visualItem.delete()
-                return
+        for visualItem in [self.getVisualItem(id) for id in self.dicBlockItem if self.getVisualItem(id).parentBlock.name == name]:
+            visualItem.delete()
+            return
 
     def removeWhenByName(self, name):
-        for id in self.dicBlockItem:
-            visualItem = self.getVisualItem(id)
-            if visualItem.parentBlock.nameControl == name:
-                visualItem.delete()
-                return
+        for visualItem in [self.getVisualItem(id) for id in self.dicBlockItem if
+                           self.getVisualItem(id).parentBlock.name == name]:
+            visualItem.delete()
+            return
 
     def removeByNameControl(self, name):
-        for id in self.dicBlockItem:
-            visualItem = self.getVisualItem(id)
-            if visualItem.parentBlock.nameControl == name:
-                visualItem.delete()
-                return
+        for visualItem in [self.getVisualItem(id) for id in self.dicBlockItem if
+                           self.getVisualItem(id).parentBlock.name == name]:
+            visualItem.delete()
+            return
 
     def getClosestItem(self):
         min_dist = None
@@ -131,24 +127,16 @@ class MyScene(QtGui.QGraphicsScene):
         min_cItS = None
         if self.idItemS is not None:
             itemS = self.getItemSelected()
-            for id in self.dictVisualItem:
-                if id is not self.idItemS:
-                    item = self.dictVisualItem[id]
-                    if item.isEnabled():
-                        item.setZValue(-1)
-                        for cItS in itemS.connections:
-                            if cItS.getType() in (BOTTOM, BOTTOMIN, RIGHT) and cItS.getIdItem() is not None:
-                                continue
-                            for c in item.connections:
-                                if c.getType() in (TOP, LEFT) and c.getIdItem() is not None:
-                                    continue
-                                if abs(c.getType() - cItS.getType()) == 1 and (
-                                        cItS.getConnect() is not c or cItS.getConnect() is None):
-                                    dist = EuclideanDist(cItS.getPosPoint(), c.getPosPoint())
-                                    if dist < min_dist or min_dist is None:
-                                        min_c = c
-                                        min_cItS = cItS
-                                        min_dist = dist
+            for item in [self.dictVisualItem[id] for id in self.dictVisualItem if id is not self.idItemS and self.dictVisualItem[id].isEnabled()]:
+                item.setZValue(-1)
+                for cItS in [c for c in itemS.connections if not (c.getType() in (BOTTOM, BOTTOMIN, RIGHT) and c.getIdItem() is not None)]:
+                    for c in [conn for conn in item.connections if not (conn.getType() in (TOP, LEFT) and conn.getIdItem() is not None)]:
+                        if abs(c.getType() - cItS.getType()) == 1 and (cItS.getConnect() is not c or cItS.getConnect() is None):
+                            dist = EuclideanDist(cItS.getPosPoint(), c.getPosPoint())
+                            if dist < min_dist or min_dist is None:
+                                min_c = c
+                                min_cItS = cItS
+                                min_dist = dist
             itemS.moveToFront()
         if min_dist is not None and min_dist < 30:
             return min_c, min_cItS
@@ -198,11 +186,9 @@ class MyScene(QtGui.QGraphicsScene):
 
     def getListInstructions(self):
         list = []
-        for id in self.dictVisualItem:
-            item = self.getVisualItem(id)
-            if item.isBlockDef():
-                inst = item.getInstructions()
-                list.append(inst)
+        for item in [self.getVisualItem(id) for id in self.dictVisualItem if self.dictVisualItem.isBlockDef()]:
+            inst = item.getInstructions()
+            list.append(inst)
         return list
 
     def mouseMoveEvent(self, event):
@@ -276,7 +262,6 @@ class MyScene(QtGui.QGraphicsScene):
 
     def useEvents(self, used):
         for VBlock in self.dictVisualItem.values():
-            # print VBlock.parentBlock.name
             if VBlock.parentBlock.name == "when":
                 VBlock.setEnabledDependentBlocks(used)
             elif VBlock.parentBlock.name == "main":

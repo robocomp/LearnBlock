@@ -157,7 +157,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
 
-
+        # Load image buttons
         self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
         self.ui.openpushButton.setIcon(QtGui.QIcon("guis/open.png"))
         self.ui.openpushButton.setFixedSize(QtCore.QSize(24, 22))
@@ -167,6 +167,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.zoompushButton.setIcon(QtGui.QIcon("guis/zoom.png"))
         self.ui.zoompushButton.setIconSize(QtCore.QSize(30, 30))
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30, 30))
+
         self.ui.stopPushButton.setEnabled(False)
         self.ui.stoptextPushButton.setEnabled(False)
         self.ui.startPushButton.setEnabled(True)
@@ -179,6 +180,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.view.setScene(self.scene)
         self.view.show()
         self.view.setZoom(False)
+
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.dicTables = {'control': self.ui.tableControl, 'motor': self.ui.tableMotor,
                           'perceptual': self.ui.tablePerceptual,
@@ -241,7 +243,6 @@ class LearnBlock(QtGui.QMainWindow):
         sys.exit(r)
 
     def connectCameraRobot(self):
-        print  "connectCameraRobot"
         if self.checkConnectionToBot():
             try:
                 self.client = paho.mqtt.client.Client(client_id='pc', clean_session=False)
@@ -251,7 +252,7 @@ class LearnBlock(QtGui.QMainWindow):
                 self.client.loop_start()
                 self.count=0
                 self.start = time.time()
-                print "Connect Successfully"
+                print "Connect Camera Successfully"
             except Exception as e:
                 print "Error connect Streamer\n", e
 
@@ -285,7 +286,6 @@ class LearnBlock(QtGui.QMainWindow):
             ret = msgBox.exec_()
             if ret ==QtGui.QMessageBox.Ok:
                 self.addLibrary()
-
 
     def closeEvent(self, event):
         if self.scene.shouldSave is False:
@@ -386,41 +386,31 @@ class LearnBlock(QtGui.QMainWindow):
         currentable.setRowCount(0)
         currentable.setColumnCount(1)
         if len(text) is not 0:
-            for button in self.listButtons:
-                textButtom = button.getCurrentText()
-                if text in textButtom:
-                    currentable.insertRow(currentable.rowCount())
-                    buttonCopy = button.getCopy(currentable)
-                    currentable.setCellWidget(currentable.rowCount() - 1, 0, buttonCopy)
+            for button in [b for b in self.listButtons if text.lower() in b.getCurrentText().lower()]:
+                currentable.insertRow(currentable.rowCount())
+                buttonCopy = button.getCopy(currentable)
+                currentable.setCellWidget(currentable.rowCount() - 1, 0, buttonCopy)
 
     def newProject(self):
         if self.scene.shouldSave is False:
-            # delete all whens
-            auxList = copy.deepcopy(self.listNameWhens)
-            for x in auxList:
+            # Delete all whens
+            for x in self.listNameWhens:
                 self.delWhen(x[0])
-            self.listNameWhens = []
-            auxList = copy.deepcopy(self.listNameVars)
-            for name in auxList:
+            # Delete all variables
+            for name in self.listNameVars:
                 self.delVar(name)
-            self.listNameVars = []
-            auxList = copy.deepcopy(self.listNameUserFunctions)
-            for name in auxList:
+            # Delete all user functions
+            for name in self.listNameUserFunctions:
                 self.delUserFunction(name)
-            self.listNameUserFunctions = []
-            for l in self.listLibrary:
+            # Delete all library
+            for l, w in zip(self.listLibrary, self.listLibraryWidget):
                 self.ui.functions.removeTab(l[1])
-            for w in self.listLibraryWidget:
+                self.listLibrary.remove(l)
                 w.delete()
+                del self.listLibraryWidget[self.listLibraryWidget.index(w)]
 
-            self.listButtonsWhen = []
-            self.listLibrary = []
-            self.listLibraryWidget = []
-            self.listNameLibraryFunctions =[]
             self.scene.setBlockDict({})
             self.scene.startAllblocks()
-            self.listNameUserFunctions = []
-            self.listNameUserFunctions = []
             self.__fileProject = None
             self.ui.deleteWhenpushButton.setEnabled(False)
             self.ui.deleteVarPushButton.setEnabled(False)
@@ -513,7 +503,6 @@ class LearnBlock(QtGui.QMainWindow):
     def execTmp(self):
         import main_tmp
 
-
     def stopExecTmp(self):
         robot = ""
         try:
@@ -529,7 +518,6 @@ class LearnBlock(QtGui.QMainWindow):
         except Exception as e:
             print e
             raise e
-
 
     def saveInstance(self):
         if self.__fileProject is None:
@@ -583,6 +571,7 @@ class LearnBlock(QtGui.QMainWindow):
                 self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
+                    # Load Libraries
                     try:
                         for path in d[5]:
                             nameLibrary = os.path.basename(path)
@@ -591,40 +580,24 @@ class LearnBlock(QtGui.QMainWindow):
                                 self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
                     except:
                         pass
+
                     dictBlock = d[0]
                     for id in dictBlock:
                         block = dictBlock[id]
                         block.file = pathImgBlocks + block.file
-
-                    # delete all whens
-                    auxList = copy.deepcopy(self.listNameWhens)
-                    for x in auxList:
-                        self.delWhen(x[0])
-                    self.listNameWhens = []
-
+                    # Load Whens
                     for x in d[1]:
                         self.addButtonsWhens(x[1], x[0])
                     self.listNameWhens = d[1]
-
-                    auxList = copy.deepcopy(self.listNameVars)
-                    for name in auxList:
-                        self.delVar(name)
-                    self.listNameVars = []
-
+                    # Load Variable
                     for name in d[3]:
                         self.addVariable(name)
                     self.listNameVars = d[3]
-
-                    auxList = copy.deepcopy(self.listNameUserFunctions)
-                    for name in auxList:
-                        self.delUserFunction(name)
-                    self.listNameUserFunctions = []
-
+                    # Load UserFunctions
                     for name in d[4]:
                         self.addUserFunction(name)
                     self.listNameUserFunctions = d[4]
 
-                    self.listButtonsWhen = []
                     self.scene.setBlockDict(d[0])
                     self.scene.startAllblocks()
                     self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
@@ -870,38 +843,35 @@ class LearnBlock(QtGui.QMainWindow):
 
     def parserUserFuntions(self, blocks, function):
         text = ""
-        for b in blocks:
-            if b[1]["TYPE"] is USERFUNCTION:
-                text += "def " + function(b, 1)
-                text += "\nend\n\n"
+        for b in [block for block in blocks if block[1]["TYPE"] is USERFUNCTION]:
+            text += "def " + function(b, 1)
+            text += "\nend\n\n"
         return text
 
     def parserWhenBlocks(self, blocks, function):
         text = ""
-        for b in blocks:
-            if b[0] == "when":
-                text += "when " + b[1]['NAMECONTROL']
-                if b[1]['RIGHT'] is not None:
-                    text += " = " + function(b[1]['RIGHT'], 0)
-                text += ":\n"
+        for b in [block for block in blocks if block[0] == "when"]:
+            text += "when " + b[1]['NAMECONTROL']
+            if b[1]['RIGHT'] is not None:
+                text += " = " + function(b[1]['RIGHT'], 0)
+            text += ":\n"
 
-                if b[1]['BOTTOMIN'] is not None:
-                    text += "\t" + function(b[1]['BOTTOMIN'], 2) + "\n"
-                else:
-                    text += "pass\n"
-                text += "end\n\n"
+            if b[1]['BOTTOMIN'] is not None:
+                text += "\t" + function(b[1]['BOTTOMIN'], 2) + "\n"
+            else:
+                text += "pass\n"
+            text += "end\n\n"
         return text
 
     def parserOtherBlocks(self, blocks, function):
         text = ""
-        for b in blocks:
-            if "main" == b[0]:
-                text += b[0] + ":\n"
-                if b[1]["BOTTOMIN"] is not None:
-                    text += "\t" + function(b[1]["BOTTOMIN"], 2)
-                else:
-                    text += "pass"
-                text += "\nend\n\n"
+        for b in [block for block in blocks if "main" == block[0]]:
+            text += b[0] + ":\n"
+            if b[1]["BOTTOMIN"] is not None:
+                text += "\t" + function(b[1]["BOTTOMIN"], 2)
+            else:
+                text += "pass"
+            text += "\nend\n\n"
         return text
 
     def toLBotPy(self, inst, ntab=1):
@@ -1033,12 +1003,10 @@ class LearnBlock(QtGui.QMainWindow):
     def delVar(self, name):
         table = self.dicTables['variables']
         rango = reversed(range(0, table.rowCount()))
-        for row in rango:
-            item = table.cellWidget(row, 0)
-            if item.getText() == name:
-                item.delete(row)
-                item.removeTmpFile()
-                self.listButtons.remove(item)
+        for item, row in [(table.cellWidget(r, 0), r) for r in reversed(range(0, table.rowCount())) if table.cellWidget(r, 0).getText() == name]:
+            item.delete(row)
+            item.removeTmpFile()
+            self.listButtons.remove(item)
         self.listNameVars.remove(name)
 
     def deleteWhen(self):
@@ -1065,15 +1033,13 @@ class LearnBlock(QtGui.QMainWindow):
     def delWhen(self, name):
         table = self.dicTables['control']
         rango = reversed(range(0, table.rowCount()))
-        for row in rango:
-            item = table.cellWidget(row, 0)
-            if item.getText() in ["activate " + name, "deactivate " + name, "time_" + name]:
-                item.delete(row)
-                item.removeTmpFile()
-                self.listButtons.remove(item)
-        for x in self.listNameWhens:
-            if x[0] == name:
-                self.listNameWhens.remove(x)
+        for item, row in [(table.cellWidget(r, 0), r) for r in rango if table.cellWidget(r, 0).getText() in ["activate " + name, "deactivate " + name, "time_" + name]]:
+            item.delete(row)
+            item.removeTmpFile()
+            self.listButtons.remove(item)
+            self.listButtonsWhen.remove(item)
+        for n in [n for n in self.listNameWhens if n[0] == name]:
+            self.listNameWhens.remove(n)
         self.scene.removeWhenByName(name)
         if len(self.listNameWhens) is 0:
             self.ui.deleteWhenpushButton.setEnabled(False)
@@ -1160,10 +1126,8 @@ class LearnBlock(QtGui.QMainWindow):
     def delUserFunction(self, name):
         table = self.dicTables['funtions']
         rango = reversed(range(0, table.rowCount()))
-        for row in rango:
-            item = table.cellWidget(row, 0)
-            if item.getText() == name:
-                item.delete(row)
-                item.removeTmpFile()
-                self.listButtons.remove(item)
+        for item,row in [(table.cellWidget(r,0),r) for r in rango if table.cellWidget(r,0).getText() == name]:
+            item.delete(row)
+            item.removeTmpFile()
+            self.listButtons.remove(item)
         self.listNameUserFunctions.remove(name)
