@@ -168,6 +168,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.zoompushButton.setIconSize(QtCore.QSize(30, 30))
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30, 30))
         self.ui.stopPushButton.setEnabled(False)
+        self.ui.stoptextPushButton.setEnabled(False)
         self.ui.startPushButton.setEnabled(True)
         self.ui.functions.setFixedWidth(221)
 
@@ -334,7 +335,7 @@ class LearnBlock(QtGui.QMainWindow):
     def blocksToText(self):
         text=""
         for library in self.listLibrary:
-            text = 'import "' + library +'"\n'
+            text = 'import "' + library[0] +'"\n'
         if len(self.listNameVars) > 0:
             for name in self.listNameVars:
                 text += name + " = None\n"
@@ -552,7 +553,7 @@ class LearnBlock(QtGui.QMainWindow):
                     block = dic[id]
                     block.file = block.file.replace(pathImgBlocks, "")
                 pickle.dump(
-                    (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions, self.listLibrary),
+                    (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions, [x[0] for x in self.listLibrary]),
                     fichero, 0)
         self.scene.shouldSave = False
 
@@ -564,10 +565,10 @@ class LearnBlock(QtGui.QMainWindow):
             file = fileName[0]
             if "." in file:
                 file = file.split(".")[0]
-            elif fileName[1] == "Block Project file (*.blockProject)":
+            if fileName[1] == "Block Project file (*.blockProject)":
                 file = file + ".blockProject"
-                self.__fileProject = file
-                self.saveInstance()
+            self.__fileProject = file
+            self.saveInstance()
 
     def openProyect(self):
         if self.scene.shouldSave is False:
@@ -582,7 +583,14 @@ class LearnBlock(QtGui.QMainWindow):
                 self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
-
+                    try:
+                        for path in d[5]:
+                            nameLibrary = os.path.basename(path)
+                            if path not in self.listLibrary:
+                                self.listLibraryWidget.append(Library(self, path))
+                                self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
+                    except:
+                        pass
                     dictBlock = d[0]
                     for id in dictBlock:
                         block = dictBlock[id]
@@ -615,14 +623,7 @@ class LearnBlock(QtGui.QMainWindow):
                     for name in d[4]:
                         self.addUserFunction(name)
                     self.listNameUserFunctions = d[4]
-                    try:
-                        for l in d[5]:
-                            nameLibrary = os.path.basename(l[0])
-                            if path not in self.listLibrary:
-                                self.listLibraryWidget.append(Library(self, l[0]))
-                                self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
-                    except:
-                        pass
+
                     self.listButtonsWhen = []
                     self.scene.setBlockDict(d[0])
                     self.scene.startAllblocks()
@@ -743,7 +744,7 @@ class LearnBlock(QtGui.QMainWindow):
     def generateTmpFile(self, fromBlocks = True):
         text = ""
         for library in self.listLibrary:
-            text = 'import "' + library +'"\n'
+            text = 'import "' + library[0] +'"\n'
         if fromBlocks:
             blocks = self.scene.getListInstructions()
             if len(self.listNameVars) > 0:
