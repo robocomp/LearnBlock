@@ -19,6 +19,14 @@ block{
     languages ES: "linea_roja_derecha", EN: "right_red_line"
 }
 
+
+block{
+    type perceptual
+    name is_there_red_line
+    img block4, block3
+    languages ES: "hay_linea_roja", EN: "is_there_red_line"
+}
+
 block{
     type perceptual
     name center_black_line
@@ -38,6 +46,41 @@ block{
     name right_black_line
     img block4, block3
     languages ES: "linea_negra_derecha", EN: "right_black_line"
+}
+
+block{
+    type perceptual
+    name is_there_black_line
+    img block4, block3
+    languages ES: "hay_linea_negra", EN: "is_there_black_line"
+}
+
+block{
+    type perceptual
+    name center_blue_line
+    img block4, block3
+    languages ES: "linea_azul_centro", EN: "center_blue_line"
+}
+
+block{
+    type perceptual
+    name left_blue_line
+    img block4, block3
+    languages ES: "linea_azul_izquierda", EN: "left_blue_line"
+}
+
+block{
+    type perceptual
+    name right_blue_line
+    img block4, block3
+    languages ES: "linea_azul_derecha", EN: "right_blue_line"
+}
+
+block{
+    type perceptual
+    name is_there_blue_line
+    img block4, block3
+    languages ES: "hay_linea_azul", EN: "is_there_blue_line"
 }
 
 block{
