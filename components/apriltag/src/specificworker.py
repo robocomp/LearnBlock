@@ -28,33 +28,7 @@ import numpy as np
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
-		# self.timer.timeout.connect(self.compute)
-		# self.Period = 2000
-		# self.timer.start(self.Period)
 		self.detector = apriltag.Detector()
-		self.cap = cv2.VideoCapture(0)
-		while (True):
-			# Capture frame-by-frame
-			ret, frame = self.cap.read()
-
-			# Our operations on the frame come here
-			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-			aprils = self.detector.detect(gray)
-			for a in aprils:
-				print a.tag_id
-				# tag = tag()
-				# id = a.tag_id
-				# tx =
-				# ty =
-				# tz =
-				# rx =
-				# ry =
-				# rz =
-				# ret.append(tag)
-			# Display the resulting frame
-			cv2.imshow('frame', gray)
-			if cv2.waitKey(1) & 0xFF == ord('q'):
-				break
 
 	def setParams(self, params):
 		return True
@@ -63,7 +37,6 @@ class SpecificWorker(GenericWorker):
 	def compute(self):
 
 		return True
-
 
 	#
 	# processimage
@@ -78,16 +51,17 @@ class SpecificWorker(GenericWorker):
 			frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 			aprils = self.detector.detect(frame)
 			for a in aprils:
-				tag = tag()
-				id = a.tag_id
+				Tag = tag()
+				Tag.id = a.tag_id
 				# tx =
 				# ty =
 				# tz =
 				# rx =
 				# ry =
 				# rz =
-				ret.append(tag)
-		except:
+				ret.append(Tag)
+		except Exception as e:
+			print e
 			print "Error Tag"
 		return ret
 

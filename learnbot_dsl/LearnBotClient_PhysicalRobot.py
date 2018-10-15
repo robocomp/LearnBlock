@@ -14,14 +14,28 @@ except KeyError:
     print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
     ROBOCOMP = '/opt/robocomp'
 
-preStr = "-I/home/robocomp/robocomp/components/learnbot/interfaces/   --all /home/robocomp/robocomp/components/learnbot/interfaces/"
+ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "EmotionRecognition.ice", "EmotionalMotor.ice", "GenericBase.ice", "Apriltag.ice" ]
 
-Ice.loadSlice(preStr+"Laser.ice")
-Ice.loadSlice(preStr+"DifferentialRobot.ice")
-Ice.loadSlice(preStr+"JointMotor.ice")
-Ice.loadSlice(preStr+"GenericBase.ice")
-Ice.loadSlice(preStr+"EmotionalMotor.ice")
-Ice.loadSlice(preStr+"EmotionRecognition.ice")
+additionalPathStr = ''
+icePaths = []
+try:
+    SLICE_PATH = os.environ['SLICE_PATH'].split(':')
+    for p in SLICE_PATH:
+        icePaths.append(p)
+        additionalPathStr += ' -I' + p + ' '
+    icePaths.append('/opt/robocomp/interfaces')
+except:
+    print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+    pass
+
+for ice in ICEs:
+    for p in icePaths:
+        if os.path.isfile(p + "/" + ice):
+            preStr = additionalPathStr + "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/  --all "+p+'/'
+            print preStr
+            wholeStr = preStr + ice
+            Ice.loadSlice(wholeStr)
+            break
 
 import RoboCompLaser
 import RoboCompDifferentialRobot
@@ -29,6 +43,7 @@ import RoboCompJointMotor
 import RoboCompGenericBase
 import RoboCompEmotionalMotor
 import RoboCompEmotionRecognition
+import RoboCompApriltag
 
 import subprocess
 
@@ -66,7 +81,6 @@ class Client(Ice.Application, threading.Thread):
         self.rot = 0
         self.max_rot= 0.4
         self.image = np.zeros((240,320,3), np.uint8)
-        # self.image = open_cv_image
         self.simage = self.image
         self.usList = [1000]*7
         self.angleCamera = 0
@@ -172,6 +186,20 @@ class Client(Ice.Application, threading.Thread):
                 print e
                 print 'Cannot get EmotionRecognition property.'
                 raise
+            # Remote object connection for AprilTag
+            try:
+                proxyString = ic.getProperties().getProperty('ApriltagProxy')
+                try:
+                    basePrx = ic.stringToProxy(proxyString)
+                    self.apriltagProxy = RoboCompApriltag.ApriltagPrx.checkedCast(basePrx)
+                    print "Connection Successful: ", proxyString
+                except Ice.Exception:
+                    print 'Cannot connect to the remote object (Apriltag)', proxyString
+                    raise
+            except Ice.Exception, e:
+                print e
+                print 'Cannot get JointMotorPrx property.'
+                raise
             try:
                 # self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
 
@@ -197,48 +225,37 @@ class Client(Ice.Application, threading.Thread):
                 raise
 
         self.active = True
+        self.apriltag_current_exist = True
         self._stop_event = threading.Event()
-        self.tagDetector = apriltag.Detector()
         self.listIDs = []
         self.start()
 
     def __detectAprilTags(self):
-        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-        gray = cv2.flip(gray, 0)
-        aprils = self.tagDetector.detect(gray)
-        self.listIDs = [a.tag_id for a in aprils]
-        cv2.waitKey(1)
-        if 1 in self.listIDs:
-            self.expressAnger()
-        elif 2 in self.listIDs:
-            self.expressJoy()
-        elif 3 in self.listIDs:
-            self.expressDisgust()
-        elif 4 in self.listIDs:
-            self.expressFear()
-        elif 5 in self.listIDs:
-            self.expressNeutral()
-        elif 6 in self.listIDs:
-            self.expressSadness()
-        elif 7 in self.listIDs:
-            self.expressSurprise()
+        if not self.apriltag_current_exist:
+            frame = RoboCompApriltag.TImage()
+            frame.width = self.image.shape[0]
+            frame.height = self.image.shape[1]
+            frame.depth = self.image.shape[2]
+            frame.image = np.fromstring(self.image, np.uint8)
+            aprils = self.apriltagProxy.processimage(frame)
+            self.apriltag_current_exist = True
+            self.listIDs = [a.id for a in aprils]
 
     def run(self):
         global open_cv_image,newImage
-
         while self.active:
             self.reading = True
             self.mutex.acquire()
             if self.streamOK and newImage:
                 newImage=False
                 self.getImageStream(open_cv_image)
-                self.__detectAprilTags()
             self.readSonars()
             self.mutex.release()
             self.reading = False
             time.sleep(0.002)
 
     def lookingLabel(self, id):
+        self.__detectAprilTags()
         return id in self.listIDs
 
     def stop(self):
@@ -251,9 +268,9 @@ class Client(Ice.Application, threading.Thread):
 
     def getImageStream(self,image):
         self.image = image
-        # cv2.imwrite("/home/ivan/prueba.png", self.image)
         self.newImg = True
         self.emotion_current_exist = False
+        self.apriltag_current_exist = False
         self.count += 1
         if self.count == 60:
             finish = time.time()
@@ -261,7 +278,6 @@ class Client(Ice.Application, threading.Thread):
                 print '\033[91m' + str(self.count / (finish - self.startfps))[:5], "fps" + '\033[0m'
             else:
                 print str(self.count / (finish - self.startfps))[:5], "fps"
-
                 self.count = 0
             self.startfps = time.time()
         return True
@@ -359,6 +375,7 @@ class Client(Ice.Application, threading.Thread):
         try:
             self.emotionalmotor_proxy.expressNeutral()
         except Exception as e:
+            print e
             print "Error expressNeutral"
 
     def setJointAngle(self, angle):
@@ -370,12 +387,12 @@ class Client(Ice.Application, threading.Thread):
         self.jointmotor_proxy.setPosition(goal)
 
     def getEmotions(self):
-        frame = RoboCompEmotionRecognition.TImage()
-        frame.width = self.image.shape[0]
-        frame.height = self.image.shape[1]
-        frame.depth = self.image.shape[2]
-        frame.image = np.fromstring(self.image, np.uint8)
         if not self.emotion_current_exist:
+            frame = RoboCompEmotionRecognition.TImage()
+            frame.width = self.image.shape[0]
+            frame.height = self.image.shape[1]
+            frame.depth = self.image.shape[2]
+            frame.image = np.fromstring(self.image, np.uint8)
             self.currents_emotions = self.emotionrecognition_proxy.processimage(frame)
             self.emotion_current_exist = True
         return self.currents_emotions

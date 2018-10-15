@@ -186,7 +186,7 @@ class MyScene(QtGui.QGraphicsScene):
 
     def getListInstructions(self):
         list = []
-        for item in [self.getVisualItem(id) for id in self.dictVisualItem if self.dictVisualItem.isBlockDef()]:
+        for item in [self.getVisualItem(id) for id in self.dictVisualItem if self.getVisualItem(id).isBlockDef()]:
             inst = item.getInstructions()
             list.append(inst)
         return list

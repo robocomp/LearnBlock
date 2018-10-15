@@ -166,7 +166,9 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.popMenu.addAction(action2)
 
     def on_clicked_menu_export_block(self):
+        self.scene.stopAllblocks()
         path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Select Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
+        self.scene.startAllblocks()
         ret = None
         try:
             os.mkdir(path + "/" + self.parentBlock.name)

@@ -16,15 +16,28 @@ except KeyError:
     print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
     ROBOCOMP = '/opt/robocomp'
 
-preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
 
-Ice.loadSlice(preStr+"RGBD.ice")
-Ice.loadSlice(preStr+"Laser.ice")
-Ice.loadSlice(preStr+"DifferentialRobot.ice")
-Ice.loadSlice(preStr+"JointMotor.ice")
-Ice.loadSlice(preStr+"GenericBase.ice")
-Ice.loadSlice(preStr+"Display.ice")
+ICEs = ["RGBD.ice", "Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "GenericBase.ice", "Display.ice", "Apriltag.ice" ]
 
+additionalPathStr = ''
+icePaths = []
+try:
+    SLICE_PATH = os.environ['SLICE_PATH'].split(':')
+    for p in SLICE_PATH:
+        icePaths.append(p)
+        additionalPathStr += ' -I' + p + ' '
+    icePaths.append('/opt/robocomp/interfaces')
+except:
+    print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+    pass
+
+for ice in ICEs:
+    for p in icePaths:
+        if os.path.isfile(p + "/"+ ice):
+            preStr = additionalPathStr + "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/  --all "+p+'/'
+            wholeStr = preStr + ice
+            Ice.loadSlice(wholeStr)
+            break
 
 import RoboCompRGBD
 import RoboCompLaser
@@ -32,6 +45,7 @@ import RoboCompDifferentialRobot
 import RoboCompJointMotor
 import RoboCompGenericBase
 import RoboCompDisplay
+import RoboCompApriltag
 
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -141,39 +155,46 @@ class Client(Ice.Application, threading.Thread):
                 print e
                 print 'Cannot get JointMotorPrx property.'
                 raise
+            # Remote object connection for AprilTag
+            try:
+                proxyString = ic.getProperties().getProperty('ApriltagProxy')
+                try:
+                    basePrx = ic.stringToProxy(proxyString)
+                    self.apriltagProxy = RoboCompApriltag.ApriltagPrx.checkedCast(basePrx)
+                    print "Connection Successful: ", proxyString
+                except Ice.Exception:
+                    print 'Cannot connect to the remote object (Apriltag)', proxyString
+                    raise
+            except Ice.Exception, e:
+                print e
+                print 'Cannot get JointMotorPrx property.'
+                raise
         except Ice.Exception, e:
                 print "Error"
                 traceback.print_exc()
                 raise
-        self.tagDetector = apriltag.Detector()
+        # self.tagDetector = apriltag.Detector()
+        self._stop_event = threading.Event()
+        self.apriltag_current_exist = False
         self.listIDs = []
         self.active = True
         self.start()
 
     def __detectAprilTags(self):
-        gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-        gray = cv2.flip(gray, 0)
-        aprils = self.tagDetector.detect(gray)
-        self.listIDs = [a.tag_id for a in aprils]
-        cv2.waitKey(1)
-        if 1 in self.listIDs:
-            self.expressAnger()
-        elif 2 in self.listIDs:
-            self.expressJoy()
-        elif 3 in self.listIDs:
-            self.expressDisgust()
-        elif 4 in self.listIDs:
-            self.expressFear()
-        elif 5 in self.listIDs:
-            self.expressNeutral()
-        elif 6 in self.listIDs:
-            self.expressSadness()
-        elif 7 in self.listIDs:
-            self.expressSurprise()
+        if not self.apriltag_current_exist:
+            frame = RoboCompApriltag.TImage()
+            frame.width = self.image.shape[0]
+            frame.height = self.image.shape[1]
+            frame.depth = self.image.shape[2]
+            frame.image = np.fromstring(self.image, np.uint8)
+            aprils = self.apriltagProxy.processimage(frame)
+            self.apriltag_current_exist = True
+            self.listIDs = [a.id for a in aprils]
 
     def run(self):
         while self.active:
             try:
+                self.apriltag_current_exist = False
                 self.color, self.depth, self.headState, self.baseState = self.rgbd_proxy.getData()
                 if (len(self.color) == 0) or (len(self.depth) == 0):
                         print 'Error retrieving images!'
@@ -186,6 +207,7 @@ class Client(Ice.Application, threading.Thread):
             time.sleep(0.01)
 
     def lookingLabel(self, id):
+        self.__detectAprilTags()
         return id in self.listIDs
 
     def stop(self):

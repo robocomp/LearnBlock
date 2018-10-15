@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import cPickle as pickle
-import learnbot_dsl.LearnBotClient as LearnBotClient
+# import learnbot_dsl.LearnBotClient as LearnBotClient
 import paramiko, shutil, subprocess, sys
 from multiprocessing import Process
 from threading import Timer
