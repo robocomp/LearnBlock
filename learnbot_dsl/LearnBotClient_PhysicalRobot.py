@@ -32,7 +32,6 @@ for ice in ICEs:
     for p in icePaths:
         if os.path.isfile(p + "/" + ice):
             preStr = additionalPathStr + "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/  --all "+p+'/'
-            print preStr
             wholeStr = preStr + ice
             Ice.loadSlice(wholeStr)
             break
