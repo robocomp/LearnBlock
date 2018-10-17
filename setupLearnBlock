@@ -35,7 +35,7 @@ then
   echo Type=Application >> $path/Learnblock.desktop
   echo Name=Learnblock >> $path/Learnblock.desktop
   echo Comment= >> $path/Learnblock.desktop
-  echo Exec=python main.py >> $path/Learnblock.desktop
+  echo Exec=Learnblock >> $path/Learnblock.desktop
   echo Icon=$path/learnbot_dsl/learnbotCode/ico.png >> $path/Learnblock.desktop
   echo Path=$path/learnbot_dsl/learnbotCode >> $path/Learnblock.desktop
   echo Terminal=false >> $path/Learnblock.desktop
@@ -49,7 +49,7 @@ then
       echo Type=Application >> $DESKTOP_DIR/Learnblock.desktop
       echo Name=Learnblock >> $DESKTOP_DIR/Learnblock.desktop
       echo Comment= >> $DESKTOP_DIR/Learnblock.desktop
-      echo Exec=python main.py >> $DESKTOP_DIR/Learnblock.desktop
+      echo Exec=Learnblock >> $DESKTOP_DIR/Learnblock.desktop
       echo Icon=$path/learnbot_dsl/learnbotCode/ico.png >> $DESKTOP_DIR/Learnblock.desktop
       echo Path=$path/learnbot_dsl/learnbotCode >> $DESKTOP_DIR/Learnblock.desktop
       echo Terminal=false >> $DESKTOP_DIR/Learnblock.desktop

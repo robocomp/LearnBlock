@@ -1,12 +1,12 @@
 from PySide import QtGui,QtCore
 from math import *
 
-import guis.var as var
-from Block import *
-from Language import *
-from toQImage import *
-from Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode
-from blocksConfig import pathImgBlocks
+import learnbot_dsl.learnbotCode.guis.var as var
+from learnbot_dsl.learnbotCode.Block import *
+from learnbot_dsl.learnbotCode.Language import *
+from learnbot_dsl.learnbotCode.toQImage import *
+from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode
+from learnbot_dsl.learnbotCode.blocksConfig import pathImgBlocks
 import pickle
 import os
 

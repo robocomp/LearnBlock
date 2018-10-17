@@ -19,23 +19,20 @@ except KeyError:
 
 ICEs = ["RGBD.ice", "Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "GenericBase.ice", "Display.ice", "Apriltag.ice" ]
 
-additionalPathStr = ''
 icePaths = []
 try:
     SLICE_PATH = os.environ['SLICE_PATH'].split(':')
     for p in SLICE_PATH:
         icePaths.append(p)
-        additionalPathStr += ' -I' + p + ' '
-    icePaths.append('/opt/robocomp/interfaces')
+    icePaths.append(os.path.join(ROBOCOMP, "interfaces"))
 except:
     print 'SLICE_PATH environment variable was not exported. Using only the default paths'
     pass
 
 for ice in ICEs:
     for p in icePaths:
-        if os.path.isfile(p + "/"+ ice):
-            preStr = additionalPathStr + "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/  --all "+p+'/'
-            wholeStr = preStr + ice
+        if os.path.isfile(os.path.join(p, ice)):
+            wholeStr = ' -I' + p + " --all "+os.path.join(p, ice)
             Ice.loadSlice(wholeStr)
             break
 

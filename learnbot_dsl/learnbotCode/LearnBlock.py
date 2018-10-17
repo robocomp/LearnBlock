@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import cPickle as pickle
+import tempfile
 # import learnbot_dsl.LearnBotClient as LearnBotClient
 import paramiko, shutil, subprocess, sys
 from multiprocessing import Process
@@ -17,7 +18,7 @@ from checkFile import compile
 from guiAddNumberOrString import *
 from guiCreateBlock import *
 from guiaddWhen import *
-from guis import addVar, guiupdatedSuccessfully, guiGui, delVar, delWhen, createFunctions as guiCreateFunctions
+from guis import pathGuis, addVar, guiupdatedSuccessfully, guiGui, delVar, delWhen, createFunctions as guiCreateFunctions
 from learnbot_dsl.functions import *
 from parserConfig import configSSH
 from blocksConfig.blocks import *
@@ -158,13 +159,13 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
 
         # Load image buttons
-        self.ui.savepushButton.setIcon(QtGui.QIcon("guis/save.png"))
-        self.ui.openpushButton.setIcon(QtGui.QIcon("guis/open.png"))
+        self.ui.savepushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"save.png")))
+        self.ui.openpushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"open.png")))
         self.ui.openpushButton.setFixedSize(QtCore.QSize(24, 22))
         self.ui.savepushButton.setFixedSize(QtCore.QSize(24, 22))
         self.ui.openpushButton.setIconSize(QtCore.QSize(24, 22))
         self.ui.savepushButton.setIconSize(QtCore.QSize(24, 22))
-        self.ui.zoompushButton.setIcon(QtGui.QIcon("guis/zoom.png"))
+        self.ui.zoompushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"zoom.png")))
         self.ui.zoompushButton.setIconSize(QtCore.QSize(30, 30))
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30, 30))
 
@@ -180,7 +181,6 @@ class LearnBlock(QtGui.QMainWindow):
         self.view.setScene(self.scene)
         self.view.show()
         self.view.setZoom(False)
-
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.dicTables = {'control': self.ui.tableControl, 'motor': self.ui.tableMotor,
                           'perceptual': self.ui.tablePerceptual,
@@ -197,7 +197,9 @@ class LearnBlock(QtGui.QMainWindow):
             table.setRowCount(0)
 
         try:
-            os.mkdir("tmp")
+            tempfile.tempdir = tempfile.mkdtemp("learnblock")
+            with open(os.path.join(tempfile.gettempdir(), "__init__.py"),'w') as f:
+                f.write("")
         except Exception as e:
             print e
             pass
@@ -235,10 +237,10 @@ class LearnBlock(QtGui.QMainWindow):
         # Execute the application
         r = self.app.exec_()
 
-        for b in self.listButtons:
-            b.removeTmpFile()
+        # for b in self.listButtons:
+        #     b.removeTmpFile()
 
-        shutil.rmtree("tmp")
+        # shutil.rmtree(tempfile.gettempdir())
         sys.exit(r)
 
     def connectCameraRobot(self):
@@ -502,6 +504,7 @@ class LearnBlock(QtGui.QMainWindow):
                 table.setCellWidget(table.rowCount() - 1, 0, button)
 
     def execTmp(self):
+        sys.path.insert(0, tempfile.gettempdir())
         import main_tmp
 
     def stopExecTmp(self):
@@ -515,6 +518,7 @@ class LearnBlock(QtGui.QMainWindow):
                 robot = "simulate"
 
             # execfile("stop_main_tmp.py")
+            sys.path.insert(0, tempfile.gettempdir())
             import stop_main_tmp
         except Exception as e:
             print e
@@ -583,7 +587,6 @@ class LearnBlock(QtGui.QMainWindow):
                     dictBlock = d[0]
                     for id in dictBlock:
                         block = dictBlock[id]
-                        # print pathImgBlocks, block.file, "\n", os.path.join(pathImgBlocks, os.path.basename(block.file))
                         block.file = os.path.join(pathImgBlocks, os.path.basename(block.file))
                     # Load Whens
                     for x in d[1]:
@@ -740,12 +743,12 @@ class LearnBlock(QtGui.QMainWindow):
             else:
                 code = self.ui.textCode.toPlainText()
 
-            fh = open("main_tmp.lb", "wr")
+            fh = open(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), "wr")
             fh.writelines(text + code)
             fh.close()
 
             try:
-                if not parserLearntBotCode("main_tmp.lb", "main_tmp.py", self.physicalRobot):
+                if not parserLearntBotCode(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), os.path.join(tempfile.gettempdir(), "main_tmp.py"), self.physicalRobot):
                     msgBox = QtGui.QMessageBox()
                     msgBox.setWindowTitle(self.trUtf8("Warning"))
                     msgBox.setIcon(QtGui.QMessageBox.Warning)
@@ -762,7 +765,7 @@ class LearnBlock(QtGui.QMainWindow):
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 msgBox.exec_()
                 return
-            if compile("main_tmp.py"):
+            if compile(os.path.join(tempfile.gettempdir(), "main_tmp.py")):
                 try:
                     if self.hilo is not None:
                         self.hilo.terminate()
@@ -803,7 +806,7 @@ class LearnBlock(QtGui.QMainWindow):
             text = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
             sys.argv = [' ', 'config']
         text += '\nfunctions.get("stop_bot")(lbot)'
-        fh = open("stop_main_tmp.py", "wr")
+        fh = open(os.path.join(tempfile.gettempdir(), "stop_main_tmp.py"), "wr")
         fh.writelines(text)
         fh.close()
 

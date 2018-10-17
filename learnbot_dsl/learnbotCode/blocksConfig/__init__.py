@@ -4,7 +4,7 @@ import inspect
 import os
 path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
-from blocks import pathBlocks
+from learnbot_dsl.learnbotCode.blocksConfig.blocks import pathBlocks
 
 from parserConfigBlock import *
 __all__ = ["pathImgBlocks","pathConfig","reload_functions"]

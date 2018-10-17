@@ -1,6 +1,6 @@
 from math import *
 
-from VisualBlock import *
+from learnbot_dsl.learnbotCode.VisualBlock import *
 from blocksConfig import pathImgBlocks
 
 

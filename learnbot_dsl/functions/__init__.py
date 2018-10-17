@@ -2,7 +2,7 @@
 import os
 import inspect
 from importlib import import_module
-import perceptual.back_obstacle
+# import perceptual.back_obstacle
 
 ignore = [
     '__init__.py',
@@ -19,15 +19,14 @@ dirnames = [__path]
 for dirname in dirnames:
 	for filename in os.listdir(dirname):
 		fullname = os.path.join(dirname, filename)
-		if filename.find('.pyc')>0 or filename in ignore:
+		name, extension = os.path.splitext(filename)
+		if extension == '.pyc' or filename in ignore:
 			continue
 		if os.path.isdir(fullname):
 			dirnames.append(fullname)
 			continue
-		name = os.path.splitext(filename)[0]
 		module_name = dirname.replace('/','.') + '.' + name
-		module_name = module_name[module_name.find("learnbot_dsl"):]
-
+		module_name = module_name[module_name.rfind("learnbot_dsl"):]
 		try:
 			func = getattr(import_module(module_name), name)
 		except Exception as e:

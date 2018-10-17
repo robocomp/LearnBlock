@@ -5,16 +5,18 @@ from subprocess import call
 path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 for x in os.listdir(path):
-    if os.path.isfile(path + "/" + x) and x.endswith(".ui"):
-        if not os.path.exists(path + "/" + x.replace(".ui", ".py")) or os.path.getmtime(path + "/" + x) > os.path.getmtime(path + "/" + x.replace(".ui", ".py")):
-            if call(["pyside-uic", "-o", path + "/" + x.replace(".ui", ".py"), path + "/" + x]) is 1:
+    absPath = os.path.abspath(x)
+    name, extension = os.path.splitext(absPath)
+    if os.path.isfile(absPath) and extension == ".ui":
+        if not os.path.exists(name + ".py") or os.path.getmtime(absPath) > os.path.getmtime(name + ".py"):
+            if call(["pyside-uic", "-o", name + ".py", absPath]) is 1:
                 print "Error al generar gui.py"
                 exit(-1)
             else:
-                print "pyside-uic", "-o", x.replace(".ui", ".py"), x + "    successfully"
+                print "pyside-uic", "-o", os.path.splitext(x)[-1] + ".py", x + "    successfully"
 
-
-__all__ = ['guiAddVar', 'guiupdatedSuccessfully', 'guiGui', 'guiGuiCreateBlock', 'guiDelVar', 'guiCreateFunctions', 'guiAddNumberOrString', 'guiAddWhen', 'guiDelWhen']
+pathGuis=path
+__all__ = ['guiAddVar', 'guiupdatedSuccessfully', 'guiGui', 'guiGuiCreateBlock', 'guiDelVar', 'guiCreateFunctions', 'guiAddNumberOrString', 'guiAddWhen', 'guiDelWhen', "pathGuis"]
 
 
 import addVar as guiAddVar
