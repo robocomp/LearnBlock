@@ -15,7 +15,7 @@
 				</transform>
 			</transform>
 			<transform id="display" tx="-95" ty="-40" tz="97.5"  rx="-0.009999999776" ry="-0.2256000042" rz="1.340000033">
-				<!--<plane id="pantalla" nx="1" size="75,1,51" repeat="1" texture="#000000" />&ndash;&gt;-->
+				<!--<plane id="pantalla" nx="1" size="75,1,51" repeat="1" texture="#000000" />-->
 				<display id="pantalla" nx="1" size="75,1,51" repeat="1" port="30000" texture="#000000" />
 			</transform>
 			<transform id="laser1" tx="-50.18000031" ty="-97" tz="186.3999939"  rx="0" ry="-0.1700000018" rz="0">

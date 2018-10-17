@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import visual_auxiliary as va
 
-def right_black_line(lbot, params=None, verbose=False):
+def right_blue_line(lbot, params=None, verbose=False):
 	frame = lbot.getImage()
 	rois = va.detect_blue_line(frame)
 	if verbose:

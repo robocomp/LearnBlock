@@ -102,12 +102,12 @@ class LearnBlock(QtGui.QMainWindow):
         # Load tranlators
         self.translators = {}
         pathLanguages = {'EN': "t_en.qm", "ES": "t_es.qm"}
-        for l in ['EN', 'ES']:
+        for k, v in pathLanguages.iteritems():
             translator = QtCore.QTranslator()
-            print('Localization loaded: ', translator.load(pathLanguages[l], path + "/languages"))
+            print('Localization loaded: ', translator.load(v, os.path.join(path , "languages")))
             qttranslator = QtCore.QTranslator()
-            qttranslator.load("q"+pathLanguages[l],QtCore.QLibraryInfo.location( QtCore.QLibraryInfo.TranslationsPath))
-            self.translators[l] = (translator, qttranslator)
+            qttranslator.load("q"+v,QtCore.QLibraryInfo.location( QtCore.QLibraryInfo.TranslationsPath))
+            self.translators[k] = (translator, qttranslator)
         self.currentTranslator = self.translators[getLanguage()]
 
         # install translators
@@ -115,7 +115,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.app.installTranslator(translator)
         self.app.installTranslator(qttranslator)
 
-        self.app.setWindowIcon(QtGui.QIcon(path + '/ico.png'))
+        self.app.setWindowIcon(QtGui.QIcon(os.path.join(path, 'ico.png')))
 
         self.Dialog = QtGui.QMainWindow()
         QtGui.QMainWindow.__init__(self)
@@ -213,8 +213,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.connectCameraRobot()
 
         # Check change on git repository
-        pathrepo = path[0:path.rfind("/")]
-        self.pathrepo = pathrepo[0:pathrepo.rfind("/")]
+        self.pathrepo = os.path.dirname(os.path.dirname(path))
         try:
             urllib2.urlopen('http://216.58.192.142', timeout=1)
             self.repo = git.Repo(self.pathrepo)
@@ -272,6 +271,8 @@ class LearnBlock(QtGui.QMainWindow):
         path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Load Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
         nameLibrary = os.path.basename(path)
         self.scene.startAllblocks()
+        if path is "":
+            return
         if path not in [l[0] for l in self.listLibrary]:
             self.listLibraryWidget.append(Library(self, path))
             self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1],nameLibrary)))
@@ -326,7 +327,7 @@ class LearnBlock(QtGui.QMainWindow):
     def updateLearnblock(self):
         remote = self.repo.remote()
         remote.pull()
-        if os.system(self.pathrepo + "/setupLearnBlock install") != 0:
+        if os.system(os.path.join(self.pathrepo, "setupLearnBlock") + " install") != 0:
             gui = guiupdatedSuccessfully.Ui_Updated()
             self.updatedSuccessfullydialog = QtGui.QDialog()
             gui.setupUi(self.updatedSuccessfullydialog)
@@ -507,10 +508,10 @@ class LearnBlock(QtGui.QMainWindow):
         robot = ""
         try:
             if self.physicalRobot:
-                sys.argv = [' ', path + '/etc/configPhysical']
+                sys.argv = [' ', os.path.join(path,"etc", "configPhysical")]
                 robot = "physical"
             else:
-                sys.argv = [' ', path + '/etc/configSimulate']
+                sys.argv = [' ', os.path.join(path,"etc", "configSimulate")]
                 robot = "simulate"
 
             # execfile("stop_main_tmp.py")
@@ -539,7 +540,7 @@ class LearnBlock(QtGui.QMainWindow):
                 dic = copy.deepcopy(self.scene.dicBlockItem)
                 for id in dic:
                     block = dic[id]
-                    block.file = block.file.replace(pathImgBlocks, "")
+                    block.file = os.path.basename(block.file)
                 pickle.dump(
                     (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions, [x[0] for x in self.listLibrary]),
                     fichero, 0)
@@ -549,11 +550,9 @@ class LearnBlock(QtGui.QMainWindow):
         self.scene.stopAllblocks()
         fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', '.', 'Block Project file (*.blockProject)')
         self.scene.startAllblocks()
-        if fileName[0] != "":
+        if fileName[0] != "" and fileName[1] == "Block Project file (*.blockProject)":
             file = fileName[0]
-            if "." in file:
-                file = file.split(".")[0]
-            if fileName[1] == "Block Project file (*.blockProject)":
+            if os.path.splitext(file)[-1] != ".blockProject":
                 file = file + ".blockProject"
             self.__fileProject = file
             self.saveInstance()
@@ -584,7 +583,8 @@ class LearnBlock(QtGui.QMainWindow):
                     dictBlock = d[0]
                     for id in dictBlock:
                         block = dictBlock[id]
-                        block.file = pathImgBlocks + block.file
+                        # print pathImgBlocks, block.file, "\n", os.path.join(pathImgBlocks, os.path.basename(block.file))
+                        block.file = os.path.join(pathImgBlocks, os.path.basename(block.file))
                     # Load Whens
                     for x in d[1]:
                         self.addButtonsWhens(x[1], x[0])
@@ -629,7 +629,7 @@ class LearnBlock(QtGui.QMainWindow):
     def addBlockNumberOrString(self):
         text = self.addNumberOrStringGui.value
         imgPath = self.addNumberOrStringGui.imgName
-        configImgPath = imgPath.replace(".png", "")
+        configImgPath = os.path.splitext(imgPath)[0]
         blockType, connections = loadConfigBlock(configImgPath)
         block = AbstractBlock(0, 0, text, {}, imgPath, [], HUE_NUMBER, "", connections, blockType, VARIABLE)
         self.scene.addItem(block)
@@ -643,7 +643,7 @@ class LearnBlock(QtGui.QMainWindow):
         if self.addWhenGui.isOk:
             text = self.addWhenGui.value
             imgPath = self.addWhenGui.imgName
-            configImgPath = imgPath.replace(".png", "")
+            configImgPath = os.path.splitext(imgPath)[0]
             blockType, connections = loadConfigBlock(configImgPath)
 
             block = AbstractBlock(0, 0, text, {'ES': "Cuando ", 'EN': "When "}, imgPath, [], HUE_WHEN,
@@ -653,13 +653,13 @@ class LearnBlock(QtGui.QMainWindow):
                 self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
 
     def addButtonsWhens(self, configImgPath, name):
-        if configImgPath.split('/')[-1] == 'block8':
-            blockType, connections = loadConfigBlock(pathBlocks + "/block1")
+        if os.path.basename(configImgPath) == 'block8':
+            blockType, connections = loadConfigBlock(os.path.join(pathBlocks, "block1"))
             table = self.dicTables['control']
 
             table.insertRow(table.rowCount())
             button = Block_Button((self, "activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name}, HUE_WHEN,
-                                   self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType,
+                                   self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections, [], blockType,
                                    table, table.rowCount() - 1, VARIABLE,
                                    {'ES': "Activa el evento " + name, 'EN': "Activate the event " + name}))
             self.listButtonsWhen.append(button)
@@ -668,7 +668,7 @@ class LearnBlock(QtGui.QMainWindow):
 
             table.insertRow(table.rowCount())
             button = Block_Button((self, "deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name}, HUE_WHEN,
-                                   self.view, self.scene, pathBlocks + "/block1" + ".png", connections, [], blockType,
+                                   self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections, [], blockType,
                                    table, table.rowCount() - 1, VARIABLE,
                                    {'ES': "Desactiva el evento " + name, 'EN': "Deactivate the event " + name}))
             self.listButtonsWhen.append(button)
@@ -676,12 +676,12 @@ class LearnBlock(QtGui.QMainWindow):
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
         table = self.dicTables['control']
-        for x in ["/block2", "/block3", "/block4"]:
-            blockType, connections = loadConfigBlock(pathBlocks + x)
+        for x in ["block2", "block3", "block4"]:
+            blockType, connections = loadConfigBlock(os.path.join(pathBlocks, x))
 
             table.insertRow(table.rowCount())
             button = Block_Button((self, "time_" + name, {'ES': "Tiempo_" + name, 'EN': "Time_" + name}, HUE_WHEN, self.view,
-                                   self.scene, pathBlocks + x + ".png", connections, [], blockType, table,
+                                   self.scene, os.path.join(pathBlocks, x + ".png"), connections, [], blockType, table,
                                    table.rowCount() - 1, VARIABLE,
                                    {'ES': "Es el numero de segundos que lleva en ejecucion el evento " + name,
                                     'EN': " " + name}))
@@ -725,10 +725,10 @@ class LearnBlock(QtGui.QMainWindow):
                     text += name + " = None\n"
         robot = ""
         if self.physicalRobot:
-            sys.argv = [' ', path + '/etc/configPhysical']
+            sys.argv = [' ', os.path.join(path,"etc","configPhysical")]
             robot = "physical"
         else:
-            sys.argv = [' ', path + '/etc/configSimulate']
+            sys.argv = [' ', os.path.join(path,"etc","configSimulate")]
             robot = "simulate"
 
 
@@ -960,21 +960,21 @@ class LearnBlock(QtGui.QMainWindow):
         imgs = ['block2', 'block3', 'block4']
 
         self.listNameVars.append(name)
-        blockType, connections = loadConfigBlock(pathBlocks + "/block1")
+        blockType, connections = loadConfigBlock(os.path.join(pathBlocks, "block1"))
         table = self.dicTables['variables']
         table.insertRow(table.rowCount())
         variables = []
         variables.append(Variable("float", "set to ", "0"))
-        button = Block_Button((self, name, {}, HUE_WHEN, self.view, self.scene, pathBlocks + "/block1" + ".png", connections,
+        button = Block_Button((self, name, {}, HUE_WHEN, self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections,
                                variables, blockType, table, table.rowCount() - 1, VARIABLE, {}))
         self.listButtons.append(button)
         table.setCellWidget(table.rowCount() - 1, 0, button)
         self.listVars.append(button.getAbstracBlockItem())
         for img in imgs:
-            blockType, connections = loadConfigBlock(pathBlocks + "/" + img)
+            blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
             table = self.dicTables['variables']
             table.insertRow(table.rowCount())
-            button = Block_Button((self, name, {}, HUE_VARIABLE, self.view, self.scene, pathBlocks + "/" + img + ".png", connections,
+            button = Block_Button((self, name, {}, HUE_VARIABLE, self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections,
                                    [], blockType, table, table.rowCount() - 1, VARIABLE, {}))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1094,9 +1094,9 @@ class LearnBlock(QtGui.QMainWindow):
         table = self.dicTables['funtions']
         i = 0
         for img in imgs:
-            blockType, connections = loadConfigBlock(pathBlocks + "/" + img)
+            blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
             table.insertRow(table.rowCount())
-            button = Block_Button((self, name, {}, HUE_USERFUNCTION, self.view, self.scene, pathBlocks + "/" + img + ".png", connections,
+            button = Block_Button((self, name, {}, HUE_USERFUNCTION, self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections,
                                    [], blockType, table, table.rowCount() - 1, USERFUNCTION, {}))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)

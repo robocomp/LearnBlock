@@ -171,7 +171,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.scene.startAllblocks()
         ret = None
         try:
-            os.mkdir(path + "/" + self.parentBlock.name)
+            os.mkdir(os.path.join(path, self.parentBlock.name))
         except:
             msgBox = QtGui.QMessageBox()
             msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -182,19 +182,19 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
             ret = msgBox.exec_()
         if ret is None or ret == QtGui.QMessageBox.Ok:
-            path = path + "/" + self.parentBlock.name
+            path = os.path.join(path, self.parentBlock.name)
             # Save blockProject
             lBInstance = self.scene.parent
-            with open(path + "/" + self.parentBlock.name + ".blockProject", 'wb') as fichero:
+            with open(os.path.join(path, self.parentBlock.name + ".blockProject"), 'wb') as fichero:
                 dic = copy.deepcopy(lBInstance.scene.dicBlockItem)
                 for id in dic:
                     block = dic[id]
-                    block.file = block.file.replace(pathImgBlocks, "")
+                    block.file = os.path.basename(block.file)
                 pickle.dump(
                     (dic, lBInstance.listNameWhens, lBInstance.listUserFunctions, lBInstance.listNameVars, lBInstance.listNameUserFunctions),
                     fichero, 0)
             # Save config block
-            with open(path + "/" + self.parentBlock.name + ".conf",'wr') as f:
+            with open(os.path.join(path, self.parentBlock.name + ".conf"),'wr') as f:
                 text ='''block{
     type library
     name ''' + self.parentBlock.name + '''
@@ -205,11 +205,11 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             # Save script learnCode
             inst = self.getInstructions()
             code = "def " + toLBotPy(inst) + "\nend\n\n"
-            with open(path + "/" + self.parentBlock.name + ".lb", 'wr') as f:
+            with open(os.path.join(path, self.parentBlock.name + ".lb"), 'wr') as f:
                 f.write(code)
             # Save script python
             codePython = parserLearntBotCodeOnlyUserFuntion(code)
-            with open(path + "/" + self.parentBlock.name + ".py", 'wr') as f:
+            with open(os.path.join(path, self.parentBlock.name + ".py"), 'wr') as f:
                 f.write(codePython)
             pass
 

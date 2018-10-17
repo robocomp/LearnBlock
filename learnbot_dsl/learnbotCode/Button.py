@@ -12,7 +12,7 @@ class Block_Button(QtGui.QPushButton):
     def __init__(self, args):
         if len(args) is 14:
             self.__parent, self.__text, self.__dicTrans, self.hue, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType, self.__table, self.__row, self.__type, self.__dicToolTip = args
-            self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
+            self.tmpFile = os.path.join("tmp", self.__text + str(self.__type) + str(self.__row) + ".png")
 
         elif len(args) is 6:
             self.__parent, abstracBlock, self.__view, self.__scene, self.__table, self.__row = args
@@ -25,7 +25,7 @@ class Block_Button(QtGui.QPushButton):
             self.__blockType = abstracBlock.typeBlock
             self.__type = abstracBlock.type
             self.hue = abstracBlock.hue
-            self.tmpFile = "tmp/" + self.__text + str(self.__type) + str(self.__row) + ".png"
+            self.tmpFile = os.path.join("tmp", self.__text + str(self.__type) + str(self.__row) + ".png")
 
         QtGui.QPushButton.__init__(self)
         #change color block

@@ -40,12 +40,12 @@ def __parserFromString(text):
         exit(-1)
 
 
-configSSH = __parserFromFile(path + "/etc/config")
+configSSH = __parserFromFile(os.path.join(path, "etc","config"))
 
 
 def reloadConfig():
     global configSSH
-    configSSH = __parserFromFile(path + "/etc/config")
+    configSSH = __parserFromFile(os.path.join(path, "etc","config"))
 
 
 __all__ = ['configSSH']

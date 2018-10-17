@@ -18,10 +18,10 @@ class MyScene(QtGui.QGraphicsScene):
         self.timer.start(5)
         self.table = None
         self.posibleConnect = []
-        self.imgPosibleConnectH = QtGui.QGraphicsPixmapItem(pathImgBlocks + "/ConnectH.png")
+        self.imgPosibleConnectH = QtGui.QGraphicsPixmapItem(os.path.join(pathImgBlocks, "ConnectH.png"))
         super(MyScene, self).addItem(self.imgPosibleConnectH)
         self.imgPosibleConnectH.setVisible(False)
-        self.imgPosibleConnectV = QtGui.QGraphicsPixmapItem(pathImgBlocks + "/ConnectV.png")
+        self.imgPosibleConnectV = QtGui.QGraphicsPixmapItem(os.path.join(pathImgBlocks, "ConnectV.png"))
         super(MyScene, self).addItem(self.imgPosibleConnectV)
         self.imgPosibleConnectV.setVisible(False)
         self.dicBlockItem = {}

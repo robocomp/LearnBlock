@@ -39,7 +39,7 @@ class Library(QtGui.QWidget):
             HUE = HUE_LIBRARY
             # blockType = None
             for img in f.img:
-                img = imgPath + "/" + img
+                img = os.path.join(imgPath, img)
                 blockType, connections = loadConfigBlock(img)
                 table = self.ui.tableLibrary
                 table.insertRow(table.rowCount())
