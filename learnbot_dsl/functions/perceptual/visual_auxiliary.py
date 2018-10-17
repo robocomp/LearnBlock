@@ -1,6 +1,7 @@
 from __future__ import print_function
 import cv2
 import numpy as np
+import os
 
 LL_red = (0, 50, 100)
 LU_red = (10, 255, 255)
@@ -55,9 +56,8 @@ def detect_blue_line(frame):
     rois[2] = cv2.countNonZero(binary[10:240, 200:320])
     return rois
 
-
-face_cascade = cv2.CascadeClassifier('/home/software/opencv/data/haarcascades/haarcascade_frontalface_alt.xml')
-face_cascade2 = cv2.CascadeClassifier('/home/software/opencv/data/haarcascades/haarcascade_profileface.xml')
+face_cascade = cv2.CascadeClassifier(os.path.join(os.path.abspath("."), "haarcascades", "haarcascade_frontalface_alt.xml"))
+face_cascade2 = cv2.CascadeClassifier(os.path.join(os.path.abspath("."), "haarcascades", "haarcascade_profileface.xml"))
 
 
 # cv2.namedWindow("base-image", cv2.WINDOW_AUTOSIZE)
