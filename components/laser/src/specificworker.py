@@ -17,10 +17,8 @@
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import sys, os, traceback, time
 import Adafruit_PCA9685, threading
 
-from PySide import QtGui, QtCore
 from genericworker import *
 import VL53L0X, time
 

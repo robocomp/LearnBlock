@@ -14,20 +14,22 @@ try:
     ROBOCOMP = os.environ['ROBOCOMP']
 except KeyError:
     print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
-    ROBOCOMP = '/opt/robocomp'
+    ROBOCOMP = os.path.join('opt', 'robocomp')
 
 
 ICEs = ["RGBD.ice", "Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "GenericBase.ice", "Display.ice", "Apriltag.ice" ]
 
 icePaths = []
-try:
-    SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-    for p in SLICE_PATH:
-        icePaths.append(p)
-    icePaths.append(os.path.join(ROBOCOMP, "interfaces"))
-except:
-    print 'SLICE_PATH environment variable was not exported. Using only the default paths'
-    pass
+# try:
+#     SLICE_PATH = os.environ['SLICE_PATH'].split(':')
+#     for p in SLICE_PATH:
+#         icePaths.append(p)
+#     icePaths.append(os.path.join(ROBOCOMP, "interfaces"))
+# except:
+#     print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+#     pass
+
+icePaths.append(os.path.join(os.path.dirname(__file__), "interfaces"))
 
 for ice in ICEs:
     for p in icePaths:

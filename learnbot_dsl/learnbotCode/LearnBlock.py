@@ -215,23 +215,23 @@ class LearnBlock(QtGui.QMainWindow):
         self.connectCameraRobot()
 
         # Check change on git repository
-        self.pathrepo = os.path.dirname(os.path.dirname(path))
-        try:
-            urllib2.urlopen('http://216.58.192.142', timeout=1)
-            self.repo = git.Repo(self.pathrepo)
-            local_commit = self.repo.commit()
-            remote = self.repo.remote()
-            info = remote.fetch()[0]
-            remote_commit = info.commit
-            if local_commit.committed_date < remote_commit.committed_date:
-                self.ui.updatepushButton.setVisible(True)
-                self.ui.updatepushButton.clicked.connect(self.updateLearnblock)
-            else:
-                self.ui.updatepushButton.setVisible(False)
-        except urllib2.URLError as e:
-            self.ui.updatepushButton.setVisible(False)
-        except Exception as e:
-            self.ui.updatepushButton.setVisible(False)
+        # self.pathrepo = os.path.dirname(os.path.dirname(path))
+        # try:
+        #     urllib2.urlopen('http://216.58.192.142', timeout=1)
+        #     self.repo = git.Repo(self.pathrepo)
+        #     local_commit = self.repo.commit()
+        #     remote = self.repo.remote()
+        #     info = remote.fetch()[0]
+        #     remote_commit = info.commit
+        #     if local_commit.committed_date < remote_commit.committed_date:
+        #         self.ui.updatepushButton.setVisible(True)
+        #         self.ui.updatepushButton.clicked.connect(self.updateLearnblock)
+        #     else:
+        #         self.ui.updatepushButton.setVisible(False)
+        # except urllib2.URLError as e:
+        #     self.ui.updatepushButton.setVisible(False)
+        # except Exception as e:
+        self.ui.updatepushButton.setVisible(False)
 
         self.client=None
         # Execute the application
@@ -326,14 +326,14 @@ class LearnBlock(QtGui.QMainWindow):
         if self.client is not None:
             self.client.disconnect()
 
-    def updateLearnblock(self):
-        remote = self.repo.remote()
-        remote.pull()
-        if os.system(os.path.join(self.pathrepo, "setupLearnBlock") + " install") != 0:
-            gui = guiupdatedSuccessfully.Ui_Updated()
-            self.updatedSuccessfullydialog = QtGui.QDialog()
-            gui.setupUi(self.updatedSuccessfullydialog)
-            self.updatedSuccessfullydialog.open()
+    # def updateLearnblock(self):
+    #     remote = self.repo.remote()
+    #     remote.pull()
+    #     if os.system(os.path.join(self.pathrepo, "setupLearnBlock") + " install") != 0:
+    #         gui = guiupdatedSuccessfully.Ui_Updated()
+    #         self.updatedSuccessfullydialog = QtGui.QDialog()
+    #         gui.setupUi(self.updatedSuccessfullydialog)
+    #         self.updatedSuccessfullydialog.open()
 
     def blocksToText(self):
         text=""
@@ -359,7 +359,13 @@ class LearnBlock(QtGui.QMainWindow):
         stdin, stdout, stderr = client.exec_command(configSSH["start"])
 
     def startSimulatorRobot(self):
-        subprocess.Popen(configSSH["start_simulator"], shell=True, stdout=subprocess.PIPE)
+        self.scene.stopAllblocks()
+        fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open xml', os.environ.get('HOME'),
+                                                     'Rcis file (*.xml)')
+        self.scene.startAllblocks()
+        if fileName[0] != "":
+            print configSSH["start_simulator"] + " " + fileName[0]
+            subprocess.Popen(configSSH["start_simulator"] + " " + fileName[0], shell=True, stdout=subprocess.PIPE)
 
     def shutdownRobot(self):
         client = paramiko.SSHClient()

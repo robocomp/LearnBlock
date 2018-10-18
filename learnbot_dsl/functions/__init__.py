@@ -20,7 +20,7 @@ for dirname in dirnames:
 	for filename in os.listdir(dirname):
 		fullname = os.path.join(dirname, filename)
 		name, extension = os.path.splitext(filename)
-		if extension == '.pyc' or filename in ignore:
+		if (os.path.isfile(fullname) and extension != '.py') or filename in ignore:
 			continue
 		if os.path.isdir(fullname):
 			dirnames.append(fullname)
