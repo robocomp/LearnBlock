@@ -12,7 +12,7 @@ def read(fname):
 exclude=['components']
 
 setup(name="learnbot_dsl",
-      version="0.1.12",
+      version="0.1.14",
       description="Learnblock is a IDE for program learnbot using blocks",
       author="Ivan Barbecho",
       author_email="ivanbd@unex.es",
@@ -27,13 +27,14 @@ setup(name="learnbot_dsl",
       package_data={'':["*"], 'learnbot_dsl':["*", "interfaces/*","*.md"]},
       zip_safe=False,
       long_description=read('learnbot_dsl/description.md'),
+      long_description_content_type='text/markdown',
       install_requires=[
             "pyunpack",
             "patool",
             "opencv-python-headless==3.4.3.18",
-            'numpy==1.14.5',
+            # 'numpy==1.14.5',
             'matplotlib==2.2.2',
-            'pyparsing==2.0.3',
+            # 'pyparsing==2.0.3',
             'imutils==0.5.1',
             'six==1.10.0',
             'scipy==1.0.0',
@@ -44,9 +45,24 @@ setup(name="learnbot_dsl",
             'Keras==2.0.5',
             'h5py==2.7.0',
             'epitran==0.4',
-            'zeroc-ice==3.6.0',
+            # 'zeroc-ice==3.6.0',
             'Pillow==5.3.0',
-            'PySide',
+            # 'PySide',
             'GitPython==2.1.11',
             'paho_mqtt==1.4.0'],
       )
+
+# deskLauncher = raw_input("Do you want to have a launcher on your desk?[Y/N]")
+#
+# if deskLauncher == "Y":
+#       with open(os.path.join(os.getenv('DESKTOP_DIR'),"Learnblock.desktop"),'wr') as f:
+#             f.write("[Desktop Entry]")
+#             f.write("Version = 1.0")
+#             f.write("Type = Application")
+#             f.write("Name = Learnblock")
+#             f.write("Comment = ")
+#             f.write("Exec = Learnblock")
+#             f.write("Icon =$path/learnbot_dsl/learnbotCode/ico.png")
+#             f.write("Path = ~")
+#             f.write("Terminal = false")
+#             f.write("StartupNotify = false")
