@@ -1,12 +1,12 @@
 	<innerModel>
 	<differentialrobot id="base" port="10004" tx="0" ty="0" tz="0">
 		<transform id="Learnbot" tx="-117" ty="127" tz="-12.5"  rx="0" ry="1.820000052" rz="0">
-			<mesh id="baseLearnBot" file="/home/robocomp/robocomp/components/learnbot/learnbot_desings/Learnbot2.1/Learnbot2.1.stl" scale="10,10,10" tx="0" ty="0" tz="0" rx="0.1030000001" ry="0" rz="-0.05000000075" collide="0" />
+			<mesh id="baseLearnBot" file="../../learnbot_desings/Learnbot2.1/Learnbot2.1.stl" scale="10,10,10" tx="0" ty="0" tz="0" rx="0.1030000001" ry="0" rz="-0.05000000075" collide="0" />
 			<transform id="camera" tx="-86" ty="-3" tz="98"  rx="0" ry="4.489999771" rz="0">
 				<transform id="camera2" tx="0" ty="0" tz="0"  rx="0.3" ry="0" rz="0">
 					<joint id="servo" port="20000" axis="x" home="0.6000000238" min="-1.570796371" max="1.570796371" tx="0" ty="0" tz="0"  rx="0" ry="0" rz="0">
 						<transform id="cameraCaseT" tx="0" ty="0" tz="0"  rx="-1.570790052" ry="0" rz="3.151590109">
-							<mesh id="cameraCase" file="/home/robocomp/robocomp/components/learnbot/learnbot_desings/Learnbot2.1/case_camera.stl" scale="10,10,10" tx="5.5" ty="-7" tz="-5.650000095" rx="0" ry="0" rz="0" collide="0" />
+							<mesh id="cameraCase" file="../../learnbot_desings/Learnbot2.1/case_camera.stl" scale="10,10,10" tx="5.5" ty="-7" tz="-5.650000095" rx="0" ry="0" rz="0" collide="0" />
 						</transform>
 						<transform id="cameraT" tz="3">
 							<rgbd id="rgbdLearnBot" width="320" height="240" focal="480" port="10097" ifconfig="40000,10004" noise="0" />
