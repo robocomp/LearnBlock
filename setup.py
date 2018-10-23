@@ -2,16 +2,16 @@ from setuptools import setup, find_packages
 import os
 
 def read(fname):
-      with open(os.path.join(os.path.dirname(__file__), fname)).read() as f:
+      with open(os.path.join(os.path.dirname(__file__), fname)) as f:
             return f.read()
 exclude=[]
 
 setup(name="learnbot_components",
-      version="0.0.1",
+      version="0.0.3",
       description="learnbot_components contains some components to install in learnbot robot.",
       author="Ivan Barbecho",
       author_email="ivanbd@unex.es",
-      url="https://github.com/robocomp/learnbot/tree/version-2-components-pip",
+      url="https://github.com/robocomp/learnbot/tree/version-2-component-pip",
       license="GPL",
       scripts=[
             'learnbot_components/baserobot/src/baserobot.py',
