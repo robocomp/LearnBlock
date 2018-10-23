@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #
@@ -62,7 +62,7 @@ import signal
 
 from PySide import QtGui, QtCore
 
-from specificworker import *
+from learnbot_components.laser.src.specificworker import *
 
 
 class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):

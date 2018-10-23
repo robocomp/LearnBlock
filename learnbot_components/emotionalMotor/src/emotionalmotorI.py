@@ -29,26 +29,13 @@ if len(ROBOCOMP)<1:
 	print ('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
-additionalPathStr = ''
-icePaths = ['/home/pi/learnbot/interfaces/']
-try:
-	icePaths.append('/opt/robocomp/interfaces')
-	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-	for p in SLICE_PATH:
-		icePaths.append(p)
-		additionalPathStr += ' -I' + p + ' '
-except:
-	print ('SLICE_PATH environment variable was not exported. Using only the default paths')
-	pass
-
+from learnbot_components import pathInterfaces
 ice_EmotionalMotor = False
-for p in icePaths:
-	if os.path.isfile(p+'/EmotionalMotor.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
-		wholeStr = preStr+"EmotionalMotor.ice"
-		Ice.loadSlice(wholeStr)
-		ice_EmotionalMotor = True
-		break
+if os.path.isfile(os.path.join(pathInterfaces,+'EmotionalMotor.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'EmotionalMotor.ice')
+	Ice.loadSlice(wholeStr)
+	ice_EmotionalMotor = True
+
 if not ice_EmotionalMotor:
 	print ('Couldn\'t load EmotionalMotor')
 	sys.exit(-1)

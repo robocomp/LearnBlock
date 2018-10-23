@@ -29,26 +29,13 @@ if len(ROBOCOMP)<1:
 	print ('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
-additionalPathStr = ''
-icePaths = []
-try:
-	icePaths.append('/opt/robocomp/interfaces')
-	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-	for p in SLICE_PATH:
-		icePaths.append(p)
-		additionalPathStr += ' -I' + p + ' '
-except:
-	print ('SLICE_PATH environment variable was not exported. Using only the default paths')
-	pass
-
+from learnbot_components import pathInterfaces
 ice_JointMotor = False
-for p in icePaths:
-	if os.path.isfile(p+'/JointMotor.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
-		wholeStr = preStr+"JointMotor.ice"
-		Ice.loadSlice(wholeStr)
-		ice_JointMotor = True
-		break
+if os.path.isfile(os.path.join(pathInterfaces,+'JointMotor.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'JointMotor.ice')
+	Ice.loadSlice(wholeStr)
+	ice_JointMotor = True
+
 if not ice_JointMotor:
 	print ('Couldn\'t load JointMotor')
 	sys.exit(-1)

@@ -30,26 +30,15 @@ preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /home/pi/
 Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 
-additionalPathStr = ''
-icePaths = [ '/opt/robocomp/interfaces' ]
-try:
-	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-	for p in SLICE_PATH:
-		icePaths.append(p)
-		additionalPathStr += ' -I' + p + ' '
-	icePaths.append('/opt/robocomp/interfaces')
-except:
-	print ('SLICE_PATH environment variable was not exported. Using only the default paths')
-	pass
 
+
+from learnbot_components import pathInterfaces
 ice_Display = False
-for p in icePaths:
-	if os.path.isfile(p+'/Display.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
-		wholeStr = preStr+"Display.ice"
-		Ice.loadSlice(wholeStr)
-		ice_Display = True
-		break
+if os.path.isfile(os.path.join(pathInterfaces,+'Display.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'Display.ice')
+	Ice.loadSlice(wholeStr)
+	ice_Display = True
+
 if not ice_Display:
 	print ('Couln\'t load Display')
 	sys.exit(-1)

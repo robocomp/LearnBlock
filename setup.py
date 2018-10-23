@@ -2,11 +2,8 @@ from setuptools import setup, find_packages
 import os
 
 def read(fname):
-    try:
-         text = open(os.path.join(os.path.dirname(__file__), fname)).read()
-    except:
-          text = ""
-    return text
+      with open(os.path.join(os.path.dirname(__file__), fname)).read() as f:
+            return f.read()
 exclude=[]
 
 setup(name="learnbot_components",
