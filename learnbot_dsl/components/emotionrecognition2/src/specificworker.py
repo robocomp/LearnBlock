@@ -30,19 +30,19 @@ import tempfile
 from pyunpack import Archive
 configPath = os.path.join(os.path.dirname(os.path.dirname(__file__)),'etc','config')
 
-MODEL_FILE = os.path.dirname(os.path.dirname(__file__))+'/assets/emotion_classifier.pb'
+MODEL_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)),'assets','emotion_classifier.pb')
 IMAGE_SIZE = 128
 NUM_CHANNELS = 1
 NUM_FL = 272
 EMOTIONS=['Happy','Sad','Neutral','Angry','Surprised']
 path = os.path.dirname(os.path.dirname(__file__))
 
-tempfile.tempdir = tempfile.mkdtemp()
-Archive(path+'/assets/shape_predictor_68_face_landmarks.dat.7z.001').extractall(tempfile.gettempdir())
-# if !os.path.isfile(os.path.dirname(__file__))+'/assets/shape_predictor_68_face_landmarks.dat'):
+# tempfile.tempdir = tempfile.mkdtemp()
+# Archive(path+'/assets/shape_predictor_68_face_landmarks.dat.7z.001').extractall(tempfile.gettempdir())
+# # if !os.path.isfile(os.path.dirname(__file__))+'/assets/shape_predictor_68_face_landmarks.dat'):
 
-face_cascade = cv2.CascadeClassifier(path+'/assets/haarcascade_frontalface_default.xml')
-predictor = dlib.shape_predictor(os.path.join(tempfile.gettempdir(),'shape_predictor_68_face_landmarks.dat'))
+face_cascade = cv2.CascadeClassifier(os.path.join(path,'assets','haarcascade_frontalface_default.xml'))
+predictor = dlib.shape_predictor(os.path.join(path,'assets','shape_predictor_68_face_landmarks.dat'))
 
 features = np.empty([1, NUM_FL], dtype=np.float64)
 class SpecificWorker(GenericWorker):

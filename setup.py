@@ -12,7 +12,7 @@ def read(fname):
 exclude=['components']
 
 setup(name="learnbot_dsl",
-      version="0.1.15'",
+      version="0.1.19",
       description="Learnblock is a IDE for program learnbot using blocks",
       author="Ivan Barbecho",
       author_email="ivanbd@unex.es",
@@ -54,17 +54,20 @@ setup(name="learnbot_dsl",
       )
 
 
-from pyunpack import Archive
-import requests
-tempfile.tempdir = tempfile.mkdtemp("xmls-ebo")
-r = requests.get("https://github.com/robocomp/learnbot/archive/xmls.zip")
-pathzip = os.path.join(tempfile.gettempdir(),"xmls.zip")
-
-with open(pathzip, "wb") as code:
-    code.write(r.content)
-
-Archive(pathzip).extractall(os.environ.get('HOME'))
-
+# from pyunpack import Archive
+# import requests
+# tempfile.tempdir = tempfile.mkdtemp("xmls-ebo")
+# r = requests.get("https://github.com/robocomp/learnbot/archive/xmls.zip")
+# pathzip = os.path.join(tempfile.gettempdir(),"xmls.zip")
+#
+# with open(pathzip, "wb") as code:
+#     code.write(r.content)
+#
+# Archive(pathzip).extractall(os.environ.get('HOME'))
+#
+# for f in os.listdir(tempfile.gettempdir()):
+#       os.remove(os.path.join(tempfile.gettempdir(),f))
+# os.removedirs(tempfile.gettempdir())
 
 # deskLauncher = raw_input("Do you want to have a launcher on your desk?[Y/N]")
 #

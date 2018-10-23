@@ -660,6 +660,8 @@
     <addaction name="separator"/>
     <addaction name="actionReboot"/>
     <addaction name="actionShutdown"/>
+    <addaction name="separator"/>
+    <addaction name="actionDownload_xmls"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools_robot"/>
@@ -745,6 +747,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionDownload_xmls">
+   <property name="text">
+    <string>Download xmls</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+5</string>
    </property>
   </action>
  </widget>

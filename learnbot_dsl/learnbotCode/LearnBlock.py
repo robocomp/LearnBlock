@@ -27,6 +27,8 @@ import git, urllib2
 from guiTabLibrary import Library
 import io, socket, struct, numpy as np, cv2, paho.mqtt.client, time
 from PIL import Image
+from pyunpack import Archive
+import requests
 
 
 HEADER = """
@@ -154,7 +156,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
-
+        self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
 
@@ -242,6 +244,20 @@ class LearnBlock(QtGui.QMainWindow):
 
         # shutil.rmtree(tempfile.gettempdir())
         sys.exit(r)
+
+    def downloadXMLs(self):
+        tempXMLs = tempfile.mkdtemp("xmls-ebo")
+        r = requests.get("https://github.com/robocomp/learnbot/archive/xmls.zip")
+        pathzip = os.path.join(tempXMLs, "xmls.zip")
+
+        with open(pathzip, "wb") as code:
+            code.write(r.content)
+
+        Archive(pathzip).extractall(os.environ.get('HOME'))
+
+        for f in os.listdir(tempXMLs):
+            os.remove(os.path.join(tempXMLs, f))
+        os.removedirs(tempXMLs)
 
     def connectCameraRobot(self):
         if self.checkConnectionToBot():
