@@ -93,7 +93,7 @@ class Client(Ice.Application, threading.Thread):
         ic = Ice.initialize(params)
 
         print "iniciando componente emotionrecognition"
-        # subprocess.Popen("python /home/robocomp/robocomp/components/learnbot/components/emotionrecognition2/src/emotionrecognition2.py /home/robocomp/robocomp/components/learnbot/components/emotionrecognition2/etc/config", shell=True, stdout=subprocess.PIPE)
+        # subprocess.Popen("python /home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionrecognition2/src/emotionrecognition2.py /home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionrecognition2/etc/config", shell=True, stdout=subprocess.PIPE)
 
 
         status = 0

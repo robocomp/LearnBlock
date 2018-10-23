@@ -247,31 +247,31 @@ class Client(Ice.Application, threading.Thread):
 
     def expressFear(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/miedo.png")
+            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/miedo.png")
 
     def expressSurprise(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/sorpresa.png")
+            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/sorpresa.png")
 
     def expressAnger(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/ira.png")
+            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/ira.png")
 
     def expressSadness(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/tristeza.png")
+            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/tristeza.png")
 
     def expressDisgust(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/asco.png")
+            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/asco.png")
 
     def expressJoy(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/alegria.png")
+            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/alegria.png")
 
     def expressNeutral(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/components/learnbot/components/emotionalMotor/imgs/SinEmocion2.png")
+            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/SinEmocion2.png")
 
     def setJointAngle(self, angle):
         self.angleCamera = angle

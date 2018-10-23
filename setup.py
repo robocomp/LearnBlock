@@ -1,6 +1,4 @@
 from setuptools import setup, find_packages
-# from distutils.core import setup
-import tempfile
 import os
 
 def read(fname):
@@ -9,77 +7,44 @@ def read(fname):
     except:
           text = ""
     return text
-exclude=['components']
+exclude=[]
 
-setup(name="learnbot_dsl",
-      version="0.1.19",
-      description="Learnblock is a IDE for program learnbot using blocks",
+setup(name="learnbot_components",
+      version="0.0.1",
+      description="learnbot_components contains some components to install in learnbot robot.",
       author="Ivan Barbecho",
       author_email="ivanbd@unex.es",
-      url="https://github.com/robocomp/learnbot",
+      url="https://github.com/robocomp/learnbot/tree/version-2-components-pip",
       license="GPL",
       scripts=[
-            'learnbot_dsl/learnbotCode/Learnblock',
-            'learnbot_dsl/components/apriltag/src/aprilTag.py',
-            'learnbot_dsl/components/emotionrecognition2/src/emotionrecognition2.py'],
+            'learnbot_components/baserobot/src/baserobot.py',
+            'learnbot_components/camera/camera.py',
+            'learnbot_components/display/src/display.py',
+            'learnbot_components/emotionalMotor/src/emotionalMotor.py',
+            'learnbot_components/jointMotor/src/jointMotor.py',
+            'learnbot_components/laser/src/laser.py',
+            ],
       packages=find_packages(exclude=exclude),
       include_package_data=True,
-      package_data={'':["*"], 'learnbot_dsl':["*", "interfaces/*","*.md"]},
+      package_data={'':["*"]},
       zip_safe=False,
-      long_description=read('learnbot_dsl/description.md'),
+      long_description=read('learnbot_components/description.md'),
       long_description_content_type='text/markdown',
       install_requires=[
-            "requests",
-            "pyunpack",
-            "patool",
-            "opencv-python-headless==3.4.3.18",
-            # 'numpy==1.14.5',
             'matplotlib==2.2.2',
-            # 'pyparsing==2.0.3',
-            'imutils==0.5.1',
-            'six==1.10.0',
+            'opencv_python_headless==3.4.3.18',
             'scipy==1.0.0',
             'tensorflow==1.10.1',
-            'dlib==19.13.1',
             'pandas==0.19.1',
-            'paramiko==2.4.1',
             'Keras==2.0.5',
             'h5py==2.7.0',
             'epitran==0.4',
-            # 'zeroc-ice==3.6.0',
-            'Pillow==5.3.0',
-            # 'PySide',
-            'GitPython==2.1.11',
-            'paho_mqtt==1.4.0'],
+            'numpy==1.13.3',
+            'Adafruit-PCA9685==1.0.1',
+            'ice==0.0.2',
+            'PySide==1.2.4',
+            'paho_mqtt==1.4.0',
+            'picamera==1.13',
+            'wiringpi==2.46.0',
+            'wiringpi2==2.32.3'],
       )
-
-
-# from pyunpack import Archive
-# import requests
-# tempfile.tempdir = tempfile.mkdtemp("xmls-ebo")
-# r = requests.get("https://github.com/robocomp/learnbot/archive/xmls.zip")
-# pathzip = os.path.join(tempfile.gettempdir(),"xmls.zip")
-#
-# with open(pathzip, "wb") as code:
-#     code.write(r.content)
-#
-# Archive(pathzip).extractall(os.environ.get('HOME'))
-#
-# for f in os.listdir(tempfile.gettempdir()):
-#       os.remove(os.path.join(tempfile.gettempdir(),f))
-# os.removedirs(tempfile.gettempdir())
-
-# deskLauncher = raw_input("Do you want to have a launcher on your desk?[Y/N]")
-#
-# if deskLauncher == "Y":
-#       with open(os.path.join(os.getenv('DESKTOP_DIR'),"Learnblock.desktop"),'wr') as f:
-#             f.write("[Desktop Entry]")
-#             f.write("Version = 1.0")
-#             f.write("Type = Application")
-#             f.write("Name = Learnblock")
-#             f.write("Comment = ")
-#             f.write("Exec = Learnblock")
-#             f.write("Icon =$path/learnbot_dsl/learnbotCode/ico.png")
-#             f.write("Path = ~")
-#             f.write("Terminal = false")
-#             f.write("StartupNotify = false")
