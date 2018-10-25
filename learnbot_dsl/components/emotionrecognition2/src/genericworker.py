@@ -15,6 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import print_function, absolute_import
 
 import sys, Ice, os
 from PySide import QtGui, QtCore
@@ -23,7 +24,7 @@ ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except KeyError:
-	print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
@@ -40,7 +41,7 @@ icePaths = [  os.path.dirname(__file__) ]
 # 		additionalPathStr += ' -I' + p + ' '
 # 	icePaths.append('/opt/robocomp/interfaces')
 # except:
-# 	print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+# 	print('SLICE_PATH environment variable was not exported. Using only the default paths')
 # 	pass
 
 ice_EmotionRecognition = False
@@ -50,15 +51,15 @@ for p in icePaths:
 		wholeStr = preStr+"EmotionRecognition.ice"
 		Ice.loadSlice(wholeStr)
 		ice_EmotionRecognition = True
-		print wholeStr
+		print(wholeStr)
 		break
 if not ice_EmotionRecognition:
-	print 'Couln\'t load EmotionRecognition'
+	print('Couln\'t load EmotionRecognition')
 	sys.exit(-1)
 from RoboCompEmotionRecognition import *
 
 
-from emotionrecognitionI import *
+from learnbot_dsl.components.emotionrecognition2.src.emotionrecognitionI import *
 
 
 class GenericWorker(QtCore.QObject):
@@ -85,6 +86,6 @@ class GenericWorker(QtCore.QObject):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print "Period changed", p
+		print("Period changed", p)
 		Period = p
 		timer.start(Period)

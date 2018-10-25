@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 import time, math
 
 def turn(lbot, angle=0, verbose=False):

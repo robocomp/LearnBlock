@@ -41,7 +41,7 @@ class SpecificWorker(GenericWorker):
 		#	self.innermodel = InnerModel(params["InnerModelPath"])
 		#except:
 		#	traceback.print_exc()
-		#	print ("Error reading config params")
+		#	print("Error reading config params")
 		return True
 
 	@QtCore.Slot()
@@ -59,7 +59,7 @@ class SpecificWorker(GenericWorker):
 		try:
 			self.display_proxy.setImage(im)
 		except Exception as e:
-			print (e)
+			print(e)
 
 	#
 	# expressFear

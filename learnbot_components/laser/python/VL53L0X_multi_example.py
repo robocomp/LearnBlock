@@ -65,20 +65,20 @@ tof1.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 timing = tof.get_timing()
 if (timing < 20000):
     timing = 20000
-print ("Timing %d ms" % (timing/1000))
+print("Timing %d ms" % (timing/1000))
 
 for count in range(1,101):
     distance = tof.get_distance()
     if (distance > 0):
-        print ("sensor %d - %d mm, %d cm, iteration %d" % (tof.my_object_number, distance, (distance/10), count))
+        print("sensor %d - %d mm, %d cm, iteration %d" % (tof.my_object_number, distance, (distance/10), count))
     else:
-        print ("%d - Error" % tof.my_object_number)
+        print("%d - Error" % tof.my_object_number)
 
     distance = tof1.get_distance()
     if (distance > 0):
-        print ("sensor %d - %d mm, %d cm, iteration %d" % (tof1.my_object_number, distance, (distance/10), count))
+        print("sensor %d - %d mm, %d cm, iteration %d" % (tof1.my_object_number, distance, (distance/10), count))
     else:
-        print ("%d - Error" % tof.my_object_number)
+        print("%d - Error" % tof.my_object_number)
 
     time.sleep(timing/1000000.00)
 

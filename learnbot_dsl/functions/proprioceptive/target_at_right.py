@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 import math as m
 
 def target_at_right(lbot, targetX, targetY, verbose=False):

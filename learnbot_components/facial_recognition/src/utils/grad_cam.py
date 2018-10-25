@@ -9,7 +9,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.python.framework import ops
 
-from .preprocessor import preprocess_input
+from preprocessor import preprocess_input
 
 
 def reset_optimizer_weights(model_filename):

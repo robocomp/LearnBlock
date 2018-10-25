@@ -47,14 +47,14 @@ class SpecificWorker(GenericWorker):
 		self.pwm = Adafruit_PCA9685.PCA9685()
 		self.pwm.set_pwm_freq(60)
 		self.oldAngle = int(self.Rad2OutPint(0))
-		print ("Enviando angulo", self.oldAngle)
+		print("Enviando angulo", self.oldAngle)
 		self.pwm.set_pwm(7, 0, self.oldAngle)
 	def setParams(self, params):
 		return True
 
 	@QtCore.Slot()
 	def compute(self):
-		print ('SpecificWorker.compute...')
+		print('SpecificWorker.compute...')
 		return True
 
 	def Rad2OutPint(self, angle):
@@ -103,7 +103,7 @@ class SpecificWorker(GenericWorker):
 
 	def setPosition(self, goal):
 		new_angle = int(self.Rad2OutPint(goal.position))
-		print ("Enviando angulo", new_angle)
+		print("Enviando angulo", new_angle)
 		for t in range(10):
 			angle = int(bezier(self.oldAngle, new_angle, t))
 			self.pwm.set_pwm(7, 0, angle)

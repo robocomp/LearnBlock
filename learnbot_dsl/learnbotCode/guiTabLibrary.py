@@ -1,16 +1,17 @@
+from __future__ import print_function, absolute_import
+import os, sys
 from PySide import QtGui
-from guis import tabLibrary
-import os
-from blocksConfig.parserConfigBlock import parserConfigBlock
-from blocksConfig.blocks import *
-from blocksConfig.blocks import pathBlocks as imgPath
-from Block import *
-from Button import Block_Button
+import learnbot_dsl.guis.TabLibrary as TabLibrary
+from learnbot_dsl.blocksConfig.parserConfigBlock import parserConfigBlock
+from learnbot_dsl.blocksConfig.blocks import *
+from learnbot_dsl.blocksConfig.blocks import pathBlocks as imgPath
+from learnbot_dsl.learnbotCode.Block import *
+from learnbot_dsl.learnbotCode.Button import Block_Button
 class Library(QtGui.QWidget):
 
     def __init__(self, parent, path):
         QtGui.QWidget.__init__(self)
-        self.ui = tabLibrary.Ui_Form()
+        self.ui = TabLibrary.Ui_Form()
         self.parent = parent
         self.ui.setupUi(self)
         self.pathLibrary = path
@@ -77,4 +78,4 @@ class Library(QtGui.QWidget):
             self.parent.listNameLibraryFunctions.remove(name)
 
     def __del__(self):
-        print "delete Library"
+        print("delete Library")

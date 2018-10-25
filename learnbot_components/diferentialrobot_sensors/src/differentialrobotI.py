@@ -16,6 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import print_function, absolute_import
 
 import sys, os, Ice
 
@@ -25,7 +26,7 @@ try:
 except:
 	pass
 if len(ROBOCOMP)<1:
-	print ('ROBOCOMP environment variable not set! Exiting.')
+	print('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 	
 

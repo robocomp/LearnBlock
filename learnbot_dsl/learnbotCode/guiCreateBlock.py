@@ -1,12 +1,13 @@
-import os
-
-import guis.createBlock as createBlock
-from VisualBlock import *
-from blocksConfig import pathBlocks, pathConfig
-
+from __future__ import print_function, absolute_import
+import os, cv2
+from PySide import QtGui
+import learnbot_dsl.guis.CreateBlock as CreateBlock
+from learnbot_dsl.blocksConfig.blocks import pathBlocks
+from learnbot_dsl.blocksConfig.parserConfigBlock import pathConfig
+from learnbot_dsl.learnbotCode.Block import *
+from learnbot_dsl.learnbotCode.toQImage import *
 listBlock = []
 listNameBlocks = []
-import cv2
 
 for base, dirs, files in os.walk(pathBlocks):
     for f in files:
@@ -38,7 +39,7 @@ class guiCreateBlock(QtGui.QDialog):
         self.FuntionType = None
         self.img = None
         self.listImg = []
-        self.ui = createBlock.Ui_Dialog()
+        self.ui = CreateBlock.Ui_Dialog()
 
         self.ui.setupUi(self)
         self.__updateBlockType(0)

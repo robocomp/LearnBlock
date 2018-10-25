@@ -1,12 +1,13 @@
-import os
+from __future__ import print_function, absolute_import
+import os, cv2
 
-import guis.addNumberOrString as addNumberOrString
-from VisualBlock import *
-from blocksConfig import pathBlocks
-from blocksConfig.blocks import *
+import learnbot_dsl.guis.AddNumberOrString as AddNumberOrString
+from learnbot_dsl.learnbotCode.VisualBlock import *
+from learnbot_dsl.blocksConfig import pathBlocks
+from learnbot_dsl.blocksConfig.blocks import *
 listBlock = []
 listNameBlocks = []
-import cv2
+
 
 for base, dirs, files in os.walk(pathBlocks):
     for f in files:
@@ -39,7 +40,7 @@ class guiAddNumberOrString(QtGui.QDialog):
         self.FuntionType = None
         self.img = None
         self.imgName = []
-        self.ui = addNumberOrString.Ui_Dialog()
+        self.ui = AddNumberOrString.Ui_Dialog()
         self.value = None
         self.hue = HUE_STRING
         if type is 1:

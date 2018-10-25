@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 
 def is_there_somebody_angry(lbot, params=None, verbose=False):

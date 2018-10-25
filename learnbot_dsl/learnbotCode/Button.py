@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, absolute_import
 import os
 from PySide import QtGui
 
-from AbstractBlock import *
-from Language import *
-import tempfile
-import uuid
-
+from learnbot_dsl.learnbotCode.AbstractBlock import *
+from learnbot_dsl.learnbotCode.Language import getLanguage
+import tempfile, uuid, sys
 class Block_Button(QtGui.QPushButton):
 
     def __init__(self, args):
@@ -88,7 +87,7 @@ class Block_Button(QtGui.QPushButton):
         try:
             os.remove(self.tmpFile)
         except Exception as e:
-            print e
+            print(e)
 
     def updateImg(self):
         if len(self.__dicTrans) is not 0 and self.showtext is not self.__dicTrans[getLanguage()]:

@@ -1,9 +1,10 @@
+from __future__ import print_function, absolute_import
 import os
 
-import guis.addWhen as addWhen
-from VisualBlock import *
-from blocksConfig import pathBlocks
-from blocksConfig.blocks import *
+import learnbot_dsl.guis.AddWhen as AddWhen
+from learnbot_dsl.learnbotCode.VisualBlock import *
+from learnbot_dsl.blocksConfig import pathBlocks
+from learnbot_dsl.blocksConfig.blocks import *
 listBlock = []
 listNameBlocks = []
 import cv2
@@ -39,7 +40,7 @@ class guiAddWhen(QtGui.QDialog):
         self.FuntionType = None
         self.img = None
         self.imgName = []
-        self.ui = addWhen.Ui_Dialog()
+        self.ui = AddWhen.Ui_Dialog()
         self.value = None
         self.ui.setupUi(self)
         self.hue = HUE_WHEN

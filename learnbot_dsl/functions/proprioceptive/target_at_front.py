@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 import math as m
 
 def target_at_front(lbot, targetX, targetY, diffTargetX = 20, verbose=False):

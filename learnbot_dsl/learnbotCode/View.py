@@ -1,4 +1,5 @@
-from VisualBlock import *
+from __future__ import print_function, absolute_import
+from learnbot_dsl.learnbotCode.VisualBlock import *
 
 
 class MyView(QtGui.QGraphicsView):

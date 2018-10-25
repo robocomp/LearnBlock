@@ -23,7 +23,7 @@ ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except KeyError:
-	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
+	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /home/pi/learnbot/interfaces/"
@@ -38,7 +38,7 @@ if os.path.isfile(os.path.join(pathInterfaces,+'EmotionalMotor.ice')):
 	ice_EmotionalMotor = True
 
 if not ice_EmotionalMotor:
-	print ('Couln\'t load EmotionalMotor')
+	print('Couln\'t load EmotionalMotor')
 	sys.exit(-1)
 from RoboCompEmotionalMotor import *
 ice_Display = False
@@ -50,7 +50,7 @@ for p in icePaths:
 		ice_Display = True
 		break
 if not ice_Display:
-	print ('Couln\'t load Display')
+	print('Couln\'t load Display')
 	sys.exit(-1)
 from RoboCompDisplay import *
 
@@ -83,6 +83,6 @@ class GenericWorker(QtCore.QObject):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print ("Period changed", p)
+		print("Period changed", p)
 		Period = p
 		timer.start(Period)

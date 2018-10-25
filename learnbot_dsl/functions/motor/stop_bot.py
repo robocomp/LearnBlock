@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 def stop_bot(lbot, params=None, verbose=False):
 	lbot.adv, lbot.rot = 0,0

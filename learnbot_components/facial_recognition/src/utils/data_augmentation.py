@@ -1,9 +1,9 @@
 import numpy as np
 from random import shuffle
-from .preprocessor import preprocess_input
-from .preprocessor import _imread as imread
-from .preprocessor import _imresize as imresize
-from .preprocessor import to_categorical
+from preprocessor import preprocess_input
+from preprocessor import _imread as imread
+from preprocessor import _imresize as imresize
+from preprocessor import to_categorical
 import scipy.ndimage as ndi
 import cv2
 

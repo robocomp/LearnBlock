@@ -38,18 +38,18 @@ tof2.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 timing = tof1.get_timing()
 if (timing < 20000):
     timing = 20000
-print ("Timing %d ms" % (timing/1000))
+print("Timing %d ms" % (timing/1000))
 
 for count in range(1,101):
     # Get distance from VL53L0X  on TCA9548A bus 1
     distance = tof1.get_distance()
     if (distance > 0):
-        print ("1: %d mm, %d cm, %d" % (distance, (distance/10), count))
+        print("1: %d mm, %d cm, %d" % (distance, (distance/10), count))
 
     # Get distance from VL53L0X  on TCA9548A bus 2
     distance = tof2.get_distance()
     if (distance > 0):
-        print ("2: %d mm, %d cm, %d" % (distance, (distance/10), count))
+        print("2: %d mm, %d cm, %d" % (distance, (distance/10), count))
 
     time.sleep(timing/1000000.00)
 

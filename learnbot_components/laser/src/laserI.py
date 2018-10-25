@@ -22,10 +22,10 @@ ROBOCOMP = ''
 try:
     ROBOCOMP = os.environ['ROBOCOMP']
 except:
-    print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
+    print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
     ROBOCOMP = '/opt/robocomp'
 if len(ROBOCOMP) < 1:
-    print ('ROBOCOMP environment variable not set! Exiting.')
+    print('ROBOCOMP environment variable not set! Exiting.')
     sys.exit()
 
 from learnbot_components import pathInterfaces
@@ -36,7 +36,7 @@ if os.path.isfile(os.path.join(pathInterfaces,+'Laser.ice')):
 	ice_Laser = True
 
 if not ice_Laser:
-    print ('Couldn\'t load Laser')
+    print('Couldn\'t load Laser')
     sys.exit(-1)
 from RoboCompLaser import *
 

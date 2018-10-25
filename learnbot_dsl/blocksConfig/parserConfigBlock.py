@@ -1,8 +1,10 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+from __future__ import print_function, absolute_import
+import os,inspect
 from pyparsing import *
+from learnbot_dsl.blocksConfig.blocks import pathBlocks as pathImgBlocks
+pathConfig = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 semicolon = Suppress( Word( ";" ) )
 quote     = Suppress( Word( "\"" ) )
@@ -58,52 +60,6 @@ block = Group( Suppress( Literal( "block" ) ) + op +  TYPE + name + Optional( va
 
 parser = block + ZeroOrMore( block )
 parser.ignore(pythonStyleComment)
-config = """
-
-block{
-    type operador
-    name +
-    file None
-    img blocks/block4, blocks/block3
-    blocktype simple
-    languages
-}
-
-block{
-    type operador
-    name -
-    file None
-    img blocks/block4, blocks/block3
-    blocktype simple
-}
-
-block{
-    type operador
-    name *
-    file None
-    img blocks/block4, blocks/block3
-    blocktype simple
-}
-
-block{
-    type operador
-    name /
-    file None
-    img blocks/block4, blocks/block3
-    blocktype simple
-}
-
-block{
-    type operador
-    name =
-    file None
-    img blocks/block4, blocks/block3
-    blocktype simple
-}
-
-"""
-#print parser.parseString(config)
-
 
 def parserConfigBlock( file ):
     fh = open( file, "r" )
@@ -117,3 +73,16 @@ def parserConfigBlock( file ):
         print("line: {}".format(pe.line))
         print("    "+" "*pe.col+"^")
     return r
+
+def reload_functions():
+    functions = parserConfigBlock(os.path.join(pathConfig, "configMotor"))
+    functions += parserConfigBlock(os.path.join(pathConfig, "configOthers"))
+    functions += parserConfigBlock(os.path.join(pathConfig, "configControl"))
+    functions += parserConfigBlock(os.path.join(pathConfig, "configPerceptual"))
+    functions += parserConfigBlock(os.path.join(pathConfig, "configPropriopercetive"))
+    functions += parserConfigBlock(os.path.join(pathConfig, "configOperators"))
+    functions += parserConfigBlock(os.path.join(pathConfig, "configExpressions"))
+    for f in functions:
+        for i in range(len(f.img)):
+            f.img[i] = os.path.join(pathImgBlocks, f.img[i])
+    return functions

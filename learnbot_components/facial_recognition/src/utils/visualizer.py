@@ -1,10 +1,13 @@
+from __future__ import print_function, absolute_import
+
 import numpy as np
 import matplotlib.cm as cm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 import matplotlib.pyplot as plt
 import numpy.ma as ma
 import cv2
-from .inference import draw_text
+from inference import draw_text
+
 
 def make_mosaic(images, num_rows, num_cols, border=1, class_names=None):
     num_images = len(images)

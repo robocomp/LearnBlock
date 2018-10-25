@@ -53,9 +53,9 @@ tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 timing = tof.get_timing()
 if (timing < 20000):
     timing = 20000
-print ("Timing %d ms" % (timing/1000))
+print("Timing %d ms" % (timing/1000))
 
-print ("Press ctrl-c to exit")
+print("Press ctrl-c to exit")
 
 ani = animation.FuncAnimation(fig, animate, interval=100)
 plt.show()

@@ -1,14 +1,13 @@
+from __future__ import print_function, absolute_import
 from PySide import QtGui,QtCore
 from math import *
-
-import learnbot_dsl.learnbotCode.guis.var as var
+import pickle, os
+import learnbot_dsl.guis.EditVar as EditVar
 from learnbot_dsl.learnbotCode.Block import *
-from learnbot_dsl.learnbotCode.Language import *
+from learnbot_dsl.learnbotCode.Language import getLanguage
 from learnbot_dsl.learnbotCode.toQImage import *
 from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode
-from learnbot_dsl.learnbotCode.blocksConfig import pathImgBlocks
-import pickle
-import os
+from learnbot_dsl.blocksConfig import pathImgBlocks
 
 def toLBotPy(inst, ntab=1):
     text = inst[0]
@@ -53,7 +52,7 @@ def EuclideanDist(p1, p2):
     return sqrt(pow(p.x(), 2) + pow(p.y(), 2))
 
 
-class VarGui(QtGui.QDialog, var.Ui_Dialog):
+class VarGui(QtGui.QDialog, EditVar.Ui_Dialog):
 
     def init(self):
         self.setupUi(self)

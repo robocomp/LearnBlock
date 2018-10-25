@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, absolute_import
 
-import sys, traceback, Ice, os, apriltag, time, copy, threading, cv2
+import sys, traceback, Ice, os, time, copy, threading, cv2
 from collections import namedtuple
 import numpy as np
 import io
@@ -11,7 +12,7 @@ ROBOCOMP = ''
 try:
     ROBOCOMP = os.environ['ROBOCOMP']
 except KeyError:
-    print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+    print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
     ROBOCOMP = os.path.join('opt', 'robocomp')
 
 ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "EmotionRecognition.ice", "EmotionalMotor.ice", "GenericBase.ice", "Apriltag.ice" ]
@@ -23,7 +24,7 @@ icePaths = []
 #         icePaths.append(p)
 #     icePaths.append(os.path.join(ROBOCOMP, "interfaces"))
 # except:
-#     print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+#     print('SLICE_PATH environment variable was not exported. Using only the default paths')
 #     pass
 icePaths.append(os.path.join(os.path.dirname(__file__), "interfaces"))
 
@@ -92,7 +93,7 @@ class Client(Ice.Application, threading.Thread):
             params.append('--Ice.Config=config')
         ic = Ice.initialize(params)
 
-        print "iniciando componente emotionrecognition"
+        print("iniciando componente emotionrecognition")
         # subprocess.Popen("python /home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionrecognition2/src/emotionrecognition2.py /home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionrecognition2/etc/config", shell=True, stdout=subprocess.PIPE)
 
 
@@ -105,13 +106,13 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)
-                    print "Connection Successful: ", proxyString
+                    print("Connection Successful: ", proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
+                    print('Cannot connect to the remote object (DifferentialRobot)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get DifferentialRobotProxy property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get DifferentialRobotProxy property.')
                 raise
 
             try:
@@ -119,13 +120,13 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.laser_proxy = RoboCompLaser.LaserPrx.checkedCast(basePrx)
-                    print "Connection Successful: ", proxyString
+                    print("Connection Successful: ", proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (Laser)', proxyString
+                    print('Cannot connect to the remote object (Laser)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get Laser Proxy property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get Laser Proxy property.'())
                 raise
 
 
@@ -136,13 +137,13 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.emotionalmotor_proxy = RoboCompEmotionalMotor.EmotionalMotorPrx.checkedCast(basePrx)
-                    print "Connection Successful: ", proxyString
+                    print("Connection Successful: ", proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (EmotionalMotor)', proxyString
+                    print('Cannot connect to the remote object (EmotionalMotor)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get EmotionalMotor property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get EmotionalMotor property.')
                 raise
 
             # Remote object connection for JointMotor
@@ -152,11 +153,11 @@ class Client(Ice.Application, threading.Thread):
                     basePrx = ic.stringToProxy(proxyString)
                     self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (JointMotor)', proxyString
+                    print('Cannot connect to the remote object (JointMotor)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get JointMotor property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get JointMotor property.')
                 raise
 
             # Remote object connection for EmotionRecognition
@@ -174,14 +175,14 @@ class Client(Ice.Application, threading.Thread):
                             if i is 4:
                                 raise
                             else:
-                                print "try ", i
+                                print("try ", i)
                                 time.sleep(1.5)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (EmotionRecognition)', proxyString
+                    print('Cannot connect to the remote object (EmotionRecognition)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get EmotionRecognition property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get EmotionRecognition property.')
                 raise
             # Remote object connection for AprilTag
             try:
@@ -189,13 +190,13 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.apriltagProxy = RoboCompApriltag.ApriltagPrx.checkedCast(basePrx)
-                    print "Connection Successful: ", proxyString
+                    print("Connection Successful: ", proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (Apriltag)', proxyString
+                    print('Cannot connect to the remote object (Apriltag)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get JointMotorPrx property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get JointMotorPrx property.')
                 raise
             try:
                 # self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
@@ -211,9 +212,9 @@ class Client(Ice.Application, threading.Thread):
                 self.startfps = time.time()
 
                 self.streamOK = True
-                print "Streamer iniciado correctamente"
+                print("Streamer iniciado correctamente")
             except Exception as e:
-                print "Error connect Streamer\n", e
+                print("Error connect Streamer\n", e)
                 self.streamOK = False
             self.bytes = ''
 
@@ -272,9 +273,9 @@ class Client(Ice.Application, threading.Thread):
         if self.count == 60:
             finish = time.time()
             if self.count / (finish - self.startfps) < 15:
-                print '\033[91m' + str(self.count / (finish - self.startfps))[:5], "fps" + '\033[0m'
+                print('\033[91m' + str(self.count / (finish - self.startfps))[:5], "fps" + '\033[0m')
             else:
-                print str(self.count / (finish - self.startfps))[:5], "fps"
+                print(str(self.count / (finish - self.startfps))[:5], "fps")
                 self.count = 0
             self.startfps = time.time()
         return True
@@ -284,7 +285,7 @@ class Client(Ice.Application, threading.Thread):
             laserdata = self.laser_proxy.getLaserData()
             self.usList = [d.dist for d in laserdata]
         except Exception as e:
-            print "Error readSonars"
+            print("Error readSonars")
 
     def getSonars(self):
         # self.readSonars()
@@ -292,7 +293,7 @@ class Client(Ice.Application, threading.Thread):
         localUSList = self.usList
         self.mutex.release()
         # time.sleep(0.1)
-        # print localUSList
+        # print(localUSList)
         return localUSList
 
     def getImage(self):
@@ -312,7 +313,7 @@ class Client(Ice.Application, threading.Thread):
             x, y, alpha = self.differentialrobot_proxy.getBasePose()
             return x, y, alpha
         except Exception as e:
-            print "Error getPose"
+            print("Error getPose")
 
     def setAngleJointMotor(self, angle):
         try:
@@ -320,64 +321,64 @@ class Client(Ice.Application, threading.Thread):
             goal.position = -angle
             self.jointmotor_proxy.setPosition(goal)
         except Exception as e:
-            print "Error setAngleJointMotor\n",e, type(angle)
+            print("Error setAngleJointMotor\n",e, type(angle))
 
     def setRobotSpeed(self, vAdvance=0, vRotation=0):
         try:
-            # print vAdvance, vRotation
+            # print(vAdvance, vRotation)
             # if vAdvance!=0 or vRotation!=0:ll
             self.adv = vAdvance
             self.rot = vRotation
             self.differentialrobot_proxy.setSpeedBase(-self.adv*8,self.rot*15)
         except Exception as e:
-            print "Error setRobotSpeed"
+            print("Error setRobotSpeed")
 
     def expressJoy(self):
         try:
             self.emotionalmotor_proxy.expressJoy()
         except Exception as e:
-            print "Error expressJoy"
+            print("Error expressJoy")
 
     def expressSadness(self):
         try:
             self.emotionalmotor_proxy.expressSadness()
         except Exception as e:
-            print "Error expressSadness"
+            print("Error expressSadness")
 
     def expressSurprise(self):
         try:
             self.emotionalmotor_proxy.expressSurprise()
         except Exception as e:
-            print "Error expressSurprise"
+            print("Error expressSurprise")
 
     def expressFear(self):
         try:
             self.emotionalmotor_proxy.expressFear()
         except Exception as e:
-            print "Error expressFear"
+            print("Error expressFear")
 
     def expressAnger(self):
         try:
             self.emotionalmotor_proxy.expressAnger()
         except Exception as e:
-            print "Error expressAnger"
+            print("Error expressAnger")
 
     def expressDisgust(self):
         try:
             self.emotionalmotor_proxy.expressDisgust()
         except Exception as e:
-            print "Error expressDisgust"
+            print("Error expressDisgust")
 
     def expressNeutral(self):
         try:
             self.emotionalmotor_proxy.expressNeutral()
         except Exception as e:
-            print e
-            print "Error expressNeutral"
+            print(e)
+            print("Error expressNeutral")
 
     def setJointAngle(self, angle):
         self.angleCamera = angle
-        # print "Enviando anglulo", angle
+        # print("Enviando anglulo", angle)
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
         goal.position = angle

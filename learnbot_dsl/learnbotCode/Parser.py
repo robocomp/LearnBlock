@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, absolute_import
 
 import sys
 from pyparsing import *
 
 HEADER = """
 #EXECUTION: python code_example.py config
+from __future__ import print_function, absolute_import
 from learnbot_dsl.functions import *
 import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
@@ -15,8 +17,8 @@ global lbot
 try:
     lbot = <LearnBotClient>.Client(sys.argv)
 except Exception as e:
-    print "hay un Error"
-    print e
+    print("hay un Error")
+    print(e)
     
 """
 
@@ -224,13 +226,13 @@ for f in imports:
             continue
         if x.getName() is "LINES":
             for y in x:
-                print y.getName()
+                print(y.getName())
                 text = __process(y, list_var, text)
         else:
             text = __process(x, list_var, text)
 
     if thereareWhens is True:
-        print thereareWhens
+        print(thereareWhens)
         for x in lines:
             if x.getName() is 'WHEN':
                 if x.name[0] == "start":
@@ -247,9 +249,9 @@ for f in imports:
 
 
 def __process(line, list_var=[], text="", index=0):
-    # print "------------Procesando ",line
+    # print("------------Procesando ",line)
     TYPE = line.getName()
-    # print "\t",TYPE, line
+    # print("\t",TYPE, line)
 
     if TYPE is 'MAIN':
         for cLine in line.content:
@@ -293,7 +295,7 @@ def __process(line, list_var=[], text="", index=0):
     elif TYPE in ['FALSE', 'TRUE', 'IDENTIFIER', 'SRMD', 'ORAND', "NUMBER"]:
         text = line[0]
     else:
-        print "The type is ", TYPE , line
+        print("The type is ", TYPE , line)
     return text
 
 def __processDEF(line, list_var, text="", index=0):
@@ -333,8 +335,8 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 # ---------------------------------------
 
 def __processASSIG(line, text="", index=0):
-    # print line
-    # print "------------------------__processASSIG-----", line[1]
+    # print(line
+    # print("------------------------__processASSIG-----", line[1])
     text += "\t" * index + line.name[0] + " = " + __process(line[1]) + "\n"
     return text
 
@@ -361,7 +363,7 @@ def __processDEACTIVATE(line, text="", index=0):
 
 
 def __processWHILE(line, text="", index=0):
-    # print "-----------------------------------------------------",index
+    # print("-----------------------------------------------------",index)
     text += "\n" + "\t" * index + "while "
     for c in line.condition:
         text += __process(line.condition[0])
@@ -426,7 +428,7 @@ def __processCOMPOP(line, text="", index=0):
 
 
 def __processSIMPLECONDITION(line, text="", index=0):
-    # print "------------------------", line
+    # print("------------------------", line)
     for field in line:
         TYPE = field.getName()
         if TYPE is 'NOT':
@@ -492,21 +494,21 @@ def parserLearntBotCodeOnlyUserFuntion(code):
 
         text = __generatePy(tree)
     except Exception as e:
-        print e
+        print(e)
     return text
 
 def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
-    # print "----------------------------------" + inputFile + "----------------------------------------------"
+    # print("----------------------------------" + inputFile + "----------------------------------------------")
     try:
         tree = __parserFromFile(inputFile)
     except Exception as e:
-        print e
+        print(e)
         raise e
     text = "\ntime_global_start = time.time()"
-    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\tprint time_global\n\treturn time_global > umbral\n\n"
+    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\treturn time_global > umbral\n\n"
     text += __generatePy(tree)
 
-    # print "------------------\n", text "\n------------------",
+    # print("------------------\n", text "\n------------------")
     if physicalRobot:
         header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
     else:
@@ -523,19 +525,19 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
 if __name__ == "__main__":
     argv = sys.argv[1:]
     if len(argv) is not 3:
-        print bcolors.FAIL + "You must give 2 arguments"
-        print "\timputfile\tFile to parser"
-        print "\toutputfile\tFile to parser"
-        print "\tphysicalRobot\t 1/0 to true or false" + bcolors.ENDC
+        print(bcolors.FAIL + "You must give 2 arguments")
+        print("\timputfile\tFile to parser")
+        print("\toutputfile\tFile to parser")
+        print("\tphysicalRobot\t 1/0 to true or false" + bcolors.ENDC)
         exit(-1)
     if argv[0] == argv[1]:
-        print bcolors.FAIL + "Imputfile must be different to outputfile" + bcolors.ENDC
+        print(bcolors.FAIL + "Imputfile must be different to outputfile" + bcolors.ENDC)
         exit(-1)
-    print bcolors.OKGREEN + "Generating file " + argv[1] + bcolors.ENDC
+    print(bcolors.OKGREEN + "Generating file " + argv[1] + bcolors.ENDC)
     text = "\ntime_global_start = time.time()"
-    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\tprint time_global\n\treturn time_global > umbral\n\n"
+    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\treturn time_global > umbral\n\n"
     text += __generatePy(__parserFromFile(argv[0]))
-    print bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC
+    print(bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC)
     if bool(argv[2]):
         header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
     else:

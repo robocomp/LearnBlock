@@ -1,38 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import cPickle as pickle
+from __future__ import print_function, absolute_import
+import sys
+if sys.version_info[0] < 3:
+    import cPickle as pickle
+else:
+    import _pickle as pickle
 import tempfile
 # import learnbot_dsl.LearnBotClient as LearnBotClient
-import paramiko, shutil, subprocess, sys
-from multiprocessing import Process
-from threading import Timer
-
-from Button import *
-from Parser import parserLearntBotCode
-from Scene import *
-from View import *
-from blocksConfig import reload_functions
-from blocksConfig.blocks import pathBlocks
-from checkFile import compile
-from guiAddNumberOrString import *
-from guiCreateBlock import *
-from guiaddWhen import *
-from guis import pathGuis, addVar, guiupdatedSuccessfully, guiGui, delVar, delWhen, createFunctions as guiCreateFunctions
-from learnbot_dsl.functions import *
-from parserConfig import configSSH
-from blocksConfig.blocks import *
-print sys.version_info[0]
-import git, urllib2
-from guiTabLibrary import Library
-import io, socket, struct, numpy as np, cv2, paho.mqtt.client, time
+import shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko, inspect
 from PIL import Image
 from pyunpack import Archive
-import requests
+
+from multiprocessing import Process
+for p in sys.path:
+    print(p)
+
+from learnbot_dsl.learnbotCode.Button import *
+from learnbot_dsl.learnbotCode.Scene import *
+from learnbot_dsl.learnbotCode.View import *
+from learnbot_dsl.blocksConfig.parserConfigBlock import reload_functions
+from learnbot_dsl.learnbotCode.checkFile import compile
+from learnbot_dsl.learnbotCode.dialogAddNumberOrString import *
+from learnbot_dsl.learnbotCode.guiCreateBlock import *
+from learnbot_dsl.learnbotCode.guiaddWhen import *
+import learnbot_dsl.guis.Learnblock as Learnblock
+from learnbot_dsl.guis import pathGuis
+import learnbot_dsl.guis.AddVar as AddVar
+import learnbot_dsl.guis.DelWhen as DelWhen
+import learnbot_dsl.guis.CreateBlock as CreateBlock
+import learnbot_dsl.guis.DelVar as DelVar
+from learnbot_dsl.learnbotCode.Language import changeLanguageTo
+from learnbot_dsl.learnbotCode.parserConfig import configSSH
+from learnbot_dsl.blocksConfig.blocks import *
+from learnbot_dsl.learnbotCode.guiTabLibrary import Library
 
 
 HEADER = """
 #EXECUTION: python code_example.py config
+from __future__ import print_function, absolute_import
 from learnbot_dsl.functions import *
 import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
@@ -40,9 +46,9 @@ import time,traceback
 try:
     lbot = <LearnBotClient>.Client(sys.argv)
 except Exception as e:
-    print "hay un Error"
+    print("hay un Error")
     traceback.print_exc(file=sys.stdout)
-    print e
+    print(e)
 """
 
 path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -105,9 +111,9 @@ class LearnBlock(QtGui.QMainWindow):
         # Load tranlators
         self.translators = {}
         pathLanguages = {'EN': "t_en.qm", "ES": "t_es.qm"}
-        for k, v in pathLanguages.iteritems():
+        for k, v in iter(pathLanguages.items()):
             translator = QtCore.QTranslator()
-            print('Localization loaded: ', translator.load(v, os.path.join(path , "languages")))
+            print('Localization loaded: ', os.path.join(path , "languages"), translator.load(v, os.path.join(path , "languages")))
             qttranslator = QtCore.QTranslator()
             qttranslator.load("q"+v,QtCore.QLibraryInfo.location( QtCore.QLibraryInfo.TranslationsPath))
             self.translators[k] = (translator, qttranslator)
@@ -122,7 +128,7 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.Dialog = QtGui.QMainWindow()
         QtGui.QMainWindow.__init__(self)
-        self.ui = guiGui.Ui_MainWindow()
+        self.ui = Learnblock.Ui_MainWindow()
         self.ui.setupUi(self)
         self.showMaximized()
 
@@ -203,7 +209,7 @@ class LearnBlock(QtGui.QMainWindow):
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"),'w') as f:
                 f.write("")
         except Exception as e:
-            print e
+            print(e)
             pass
 
         self.load_blocks()
@@ -269,9 +275,9 @@ class LearnBlock(QtGui.QMainWindow):
                 self.client.loop_start()
                 self.count=0
                 self.start = time.time()
-                print "Connect Camera Successfully"
+                print("Connect Camera Successfully")
             except Exception as e:
-                print "Error connect Streamer\n", e
+                print("Error connect Streamer\n", e)
 
     def readCamera(self,image):
         try:
@@ -282,7 +288,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.pmlast = self.cameraScene.addPixmap(pm)
             self.cameraScene.update()
         except Exception as e:
-            print e
+            print(e)
 
     def addLibrary(self):
         self.scene.stopAllblocks()
@@ -380,7 +386,7 @@ class LearnBlock(QtGui.QMainWindow):
                                                      'Rcis file (*.xml)')
         self.scene.startAllblocks()
         if fileName[0] != "":
-            print configSSH["start_simulator"] + " " + fileName[0]
+            print(configSSH["start_simulator"] + " " + fileName[0])
             subprocess.Popen(configSSH["start_simulator"] + " " + fileName[0], shell=True, stdout=subprocess.PIPE)
 
     def shutdownRobot(self):
@@ -472,6 +478,8 @@ class LearnBlock(QtGui.QMainWindow):
         # self.app.installTranslator(self.translators[l[self.ui.language.currentIndex()]])
         self.currentTranslator = self.translators[l[self.ui.language.currentIndex()]]
         self.ui.retranslateUi(self)
+        for b in self.listButtons:
+            b.updateImg()
 
     def load_blocks(self):
         functions = reload_functions()
@@ -543,7 +551,7 @@ class LearnBlock(QtGui.QMainWindow):
             sys.path.insert(0, tempfile.gettempdir())
             import stop_main_tmp
         except Exception as e:
-            print e
+            print(e)
             raise e
 
     def saveInstance(self):
@@ -938,7 +946,7 @@ class LearnBlock(QtGui.QMainWindow):
         return text
 
     def newVariable(self):
-        self.addVarGui = addVar.Ui_Dialog()
+        self.addVarGui = AddVar.Ui_Dialog()
         self.addVarDialog = QtGui.QDialog()
         self.addVarGui.setupUi(self.addVarDialog)
         self.addVarDialog.open()
@@ -1006,7 +1014,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.listVars.append(button.getAbstracBlockItem())
 
     def deleteVar(self):
-        self.delVarGui = delVar.Ui_Dialog()
+        self.delVarGui = DelVar.Ui_Dialog()
         self.delVarDialgo = QtGui.QDialog()
         self.delVarGui.setupUi(self.delVarDialgo)
         self.delVarDialgo.open()
@@ -1035,7 +1043,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.listNameVars.remove(name)
 
     def deleteWhen(self):
-        self.delWhenGui = delWhen.Ui_Dialog()
+        self.delWhenGui = DelWhen.Ui_Dialog()
         self.delWhenDialgo = QtGui.QDialog()
         self.delWhenGui.setupUi(self.delWhenDialgo)
         self.delWhenDialgo.open()
@@ -1070,7 +1078,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.ui.deleteWhenpushButton.setEnabled(False)
 
     def newUserFunctions(self):
-        self.userFunctionsGui = guiCreateFunctions.Ui_Dialog()
+        self.userFunctionsGui = CreateFunctions.Ui_Dialog()
         self.userFunctionsDialgo = QtGui.QDialog()
         self.userFunctionsGui.setupUi(self.userFunctionsDialgo)
         self.userFunctionsDialgo.open()
@@ -1129,7 +1137,7 @@ class LearnBlock(QtGui.QMainWindow):
             i += 1
 
     def deleteUserFunctions(self):
-        self.delUserFunctionsGui = delVar.Ui_Dialog()
+        self.delUserFunctionsGui = DelVar.Ui_Dialog()
         self.delUserFunctionsDialgo = QtGui.QDialog()
         self.delUserFunctionsGui.setupUi(self.delUserFunctionsDialgo)
         self.delUserFunctionsDialgo.open()

@@ -16,6 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import print_function, absolute_import
 
 import traceback
 import numpy as np
@@ -23,9 +24,9 @@ import cv2
 import tensorflow as tf
 import dlib
 from tensorflow.python.platform import gfile
-from genericworker import *
-from face_alignment import FaceAligner
-import face_detector
+from learnbot_dsl.components.emotionrecognition2.src.genericworker import *
+from learnbot_dsl.components.emotionrecognition2.src.face_alignment import FaceAligner
+import learnbot_dsl.components.emotionrecognition2.src.face_detector as face_detector
 import tempfile
 from pyunpack import Archive
 configPath = os.path.join(os.path.dirname(os.path.dirname(__file__)),'etc','config')
@@ -72,7 +73,7 @@ class SpecificWorker(GenericWorker):
 
     @QtCore.Slot()
     def compute(self):
-        # print 'SpecificWorker.compute...'
+        # print('SpecificWorker.compute...')
 
 
         return True
@@ -139,8 +140,8 @@ class SpecificWorker(GenericWorker):
                 # For testing purpose
                 # cv2.imshow("Image Fed to Classifier", cropped_frame.reshape((IMAGE_SIZE, IMAGE_SIZE)))
 
-        except Ice.Exception, e:
+        except Ice.Exception as e:
             traceback.print_exc()
-            print e
+            print(e)
         finally:
             return emotions_temp

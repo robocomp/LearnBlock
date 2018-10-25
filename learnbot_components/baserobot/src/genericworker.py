@@ -23,7 +23,7 @@ ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
 except KeyError:
-	print ('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
+	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 
 preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /home/pi/learnbot/interfaces/"
@@ -38,7 +38,7 @@ if os.path.isfile(os.path.join(pathInterfaces,+'DifferentialRobot.ice')):
 	ice_DifferentialRobot = True
 
 if not ice_DifferentialRobot:
-	print ('Couln\'t load DifferentialRobot')
+	print('Couln\'t load DifferentialRobot')
 	sys.exit(-1)
 from RoboCompDifferentialRobot import *
 ice_GenericBase = False
@@ -50,7 +50,7 @@ for p in icePaths:
 		ice_GenericBase = True
 		break
 if not ice_GenericBase:
-	print ('Couln\'t load GenericBase')
+	print('Couln\'t load GenericBase')
 	sys.exit(-1)
 from RoboCompGenericBase import *
 
@@ -82,6 +82,6 @@ class GenericWorker(QtCore.QObject):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print ("Period changed", p)
+		print("Period changed", p)
 		Period = p
 		timer.start(Period)

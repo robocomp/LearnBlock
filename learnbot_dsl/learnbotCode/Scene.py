@@ -1,7 +1,8 @@
+from __future__ import print_function, absolute_import
 from math import *
 
 from learnbot_dsl.learnbotCode.VisualBlock import *
-from blocksConfig import pathImgBlocks
+from learnbot_dsl.blocksConfig import pathImgBlocks
 
 
 class MyScene(QtGui.QGraphicsScene):
@@ -83,7 +84,7 @@ class MyScene(QtGui.QGraphicsScene):
 
     def clean(self):
         while len(self.dictVisualItem) > 0:
-            id = self.dictVisualItem.keys()[0]
+            id = list(self.dictVisualItem.keys())[0]
             self.dictVisualItem[id].delete()
         self.dictVisualItem = {}
         self.dicBlockItem = {}
@@ -116,8 +117,7 @@ class MyScene(QtGui.QGraphicsScene):
             return
 
     def removeByNameControl(self, name):
-        for visualItem in [self.getVisualItem(id) for id in self.dicBlockItem if
-                           self.getVisualItem(id).parentBlock.name == name]:
+        for visualItem in [self.getVisualItem(id) for id in self.dicBlockItem if self.getVisualItem(id).parentBlock.nameControl == name]:
             visualItem.delete()
             return
 
@@ -132,8 +132,9 @@ class MyScene(QtGui.QGraphicsScene):
                 for cItS in [c for c in itemS.connections if not (c.getType() in (BOTTOM, BOTTOMIN, RIGHT) and c.getIdItem() is not None)]:
                     for c in [conn for conn in item.connections if not (conn.getType() in (TOP, LEFT) and conn.getIdItem() is not None)]:
                         if abs(c.getType() - cItS.getType()) == 1 and (cItS.getConnect() is not c or cItS.getConnect() is None):
+
                             dist = EuclideanDist(cItS.getPosPoint(), c.getPosPoint())
-                            if dist < min_dist or min_dist is None:
+                            if min_dist is None or dist < min_dist :
                                 min_c = c
                                 min_cItS = cItS
                                 min_dist = dist

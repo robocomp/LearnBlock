@@ -1,6 +1,6 @@
+from __future__ import print_function, absolute_import
 
-import os
-import inspect
+import os, inspect,sys
 from importlib import import_module
 # import perceptual.back_obstacle
 
@@ -30,7 +30,7 @@ for dirname in dirnames:
 		try:
 			func = getattr(import_module(module_name), name)
 		except Exception as e:
-			print e, module_name, name
+			print(e, module_name, name)
 		args = inspect.getargspec(func)
 		functions[name] = func
 		params[name] = args.args[1:]

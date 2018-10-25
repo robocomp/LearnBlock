@@ -16,9 +16,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import print_function, absolute_import
 
 import sys, os, traceback, time
-
 from PySide import QtGui, QtCore
 from learnbot_dsl.components.apriltag.src.genericworker import *
 import apriltag
@@ -61,7 +61,7 @@ class SpecificWorker(GenericWorker):
 				# rz =
 				ret.append(Tag)
 		except Exception as e:
-			print e
-			print "Error Tag"
+			print(e)
+			print("Error Tag")
 		return ret
 

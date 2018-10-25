@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
+from __future__ import print_function, absolute_import
 # import pyttsx
 # speak = pyttsx.init()
 # voices = speak.getProperty('voices')
@@ -28,7 +28,7 @@
 # def main():
 #     # Get the text
 #     text = raw_input('Text: ')
-#     print text
+#     print(text)
 #     # Synthesize it
 #     s = synthesize(text)
 #
@@ -45,7 +45,7 @@
 #     parameters['text'] = text
 #
 #     # Request foo!
-#     print 'https://text-to-speech-demo.ng.bluemix.net/api/synthesize?' + urlencode(parameters ) + '&accept=audio%2Fmp3'
+#     print('https://text-to-speech-demo.ng.bluemix.net/api/synthesize?' + urlencode(parameters ) + '&accept=audio%2Fmp3')
 #     r = requests.get('https://text-to-speech-demo.ng.bluemix.net/api/synthesize?' + urlencode(parameters) +'&accept=audio%2Fmp3')
 #     # 'https://text-to-speech-demo.mybluemix.net/api/synthesize?download=true&text=hola&voice=es-ES_EnriqueVoice&accept=audio%252Fmp3' \
 #     # 'https://text-to-speech-demo.ng.bluemix.net/api/synthesize?text=hola&voice=es-ES_EnriqueVoice&download=true&accept=audio%2Fmp3'
@@ -58,4 +58,4 @@
 
 import epitran
 epi = epitran.Epitran('spa-Latn')
-print epi.trans_list(u'cesa')
+print(epi.trans_list(u'cesa'))

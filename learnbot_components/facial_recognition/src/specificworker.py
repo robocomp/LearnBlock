@@ -16,12 +16,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
+from __future__ import print_function, absolute_import
 
 import sys
 import os
 import traceback
 import time
-
 import cv2
 import numpy as np
 
@@ -73,7 +73,7 @@ class SpecificWorker(GenericWorker):
 		#	self.innermodel = InnerModel(params["InnerModelPath"])
 		#except:
 		#	traceback.print_exc()
-		#	print "Error reading config params"
+		#	print("Error reading config params")
 		return True
 
 	@QtCore.Slot()
@@ -150,6 +150,6 @@ class SpecificWorker(GenericWorker):
 		self.mutex.lock()
 		emotionL = self.list_emotions
 		self.mutex.unlock()
-		print emotionL
+		print(emotionL)
 		return emotionL
 

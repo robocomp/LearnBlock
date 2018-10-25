@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 import math as m
 
 def near_to_target(lbot, targetX, targetY, nearDist = 50, verbose=False):

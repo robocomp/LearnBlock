@@ -1,3 +1,4 @@
+from __future__ import print_function, absolute_import
 import copy
 from PySide import QtCore
 
@@ -71,7 +72,7 @@ class Connection:
         del self.__parent
         del self.__connect
         del self.__point
-        del self.__item
+        # del self.__item
         del self.__type
 
 

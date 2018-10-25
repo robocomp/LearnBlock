@@ -18,6 +18,8 @@
 #
 
 # Import required Python libraries
+from __future__ import print_function, absolute_import
+
 import time
 import RPi.GPIO as GPIO
 import wiringpi2 as wpi
@@ -27,6 +29,7 @@ from genericworker import *
 from ultrasoundI import *
 from differentialrobotI import *
 import os, sys
+
 
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
@@ -83,7 +86,7 @@ class SpecificWorker(GenericWorker):
 
 	@QtCore.Slot()
 	def compute(self):
-#		print 'SpecificWorker.compute...'
+#		print('SpecificWorker.compute...')
 		#Ultrasound adquisition
 		self.readUltrasound()
 		return True
@@ -148,15 +151,15 @@ class SpecificWorker(GenericWorker):
 
 	def getAllSensorData(self):
                 return str(self.ultrasound)
-#		print self.SensorParamsList
-#		return self.SensorParamsList
+#		print( self.SensorParamsList)
+#		return (self.SensorParamsList)
 
 	def getSensorData(self, sensor):
 
 		if sensor in self.ultrasound.keys():
 			return self.ultrasound[sensor]
 		else:
-			print "sheep"
+			print("sheep")
 			return {}
 
 		ret = int()

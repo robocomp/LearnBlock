@@ -1,5 +1,5 @@
-from __future__ import print_function
-import visual_auxiliary as va
+from __future__ import print_function, absolute_import
+import learnbot_dsl.functions.perceptual.visual_auxiliary as va
 import numpy as np
 
 def is_there_black_line(lbot, params=None, verbose=False):

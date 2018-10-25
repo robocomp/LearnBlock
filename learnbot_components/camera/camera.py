@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import print_function, absolute_import
 
 import io
 import picamera
@@ -32,7 +33,7 @@ class SplitFrames(object):
                 client.publish('camara', image.__str__())
                 self.count += 1
                 if self.count == 60:
-                    print self.count/(time.time()-self.start), "fps"
+                    print(self.count/(time.time()-self.start), "fps")
                     self.start = time.time()
                     self.count = 0
         self.stream.write(buf)

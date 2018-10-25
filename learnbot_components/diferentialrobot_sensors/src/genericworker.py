@@ -15,6 +15,7 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import print_function, absolute_import
 
 import sys
 from PySide import *
@@ -45,6 +46,6 @@ class GenericWorker(QtCore.QObject):
 	# @param per Period in ms
 	@QtCore.Slot(int)
 	def setPeriod(self, p):
-		print "Period changed", p
+		print("Period changed", p)
 		Period = p
 		timer.start(Period)

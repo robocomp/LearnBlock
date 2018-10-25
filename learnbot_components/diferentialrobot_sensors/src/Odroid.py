@@ -54,6 +54,7 @@
 #
 #
 #
+from __future__ import print_function, absolute_import
 
 import sys, traceback, Ice, IceStorm, subprocess, threading, time, Queue, os
 
@@ -62,7 +63,6 @@ import signal
 # GPIO
 import RPi.GPIO as GPIO
 #signal.signal(signal.SIGINT, signal.SIG_DFL)
-
 # poweroffLED
 def signal_handler(signal, frame):
     print('Bye bye :-)')
@@ -87,7 +87,7 @@ try:
 except:
 	pass
 if len(ROBOCOMP)<1:
-	print 'ROBOCOMP environment variable not set! Exiting.'
+	print('ROBOCOMP environment variable not set! Exiting.')
 	sys.exit()
 
 
@@ -112,14 +112,14 @@ class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
 		try:
 			return self.handler.timeAwake()
 		except:
-			print 'Problem getting timeAwake'
+			print('Problem getting timeAwake')
 	def killYourSelf(self, current = None):
 		self.handler.killYourSelf()
 	def getAttrList(self, current = None):
 		try:
 			return self.handler.getAttrList(self.communicator)
 		except:
-			print 'Problem getting getAttrList'
+			print('Problem getting getAttrList')
 			traceback.print_exc()
 			status = 1
 			return

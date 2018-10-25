@@ -1,19 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, absolute_import
 
-import sys, traceback, Ice, os, math, time, json, ast, copy, threading
-import json
-import cv2
-import urllib
+import sys, traceback, Ice, os, math, time, json, ast, copy, threading, json, cv2, urllib
 from collections import namedtuple
 import numpy as np
-import apriltag
 
 ROBOCOMP = ''
 try:
     ROBOCOMP = os.environ['ROBOCOMP']
 except KeyError:
-    print '$ROBOCOMP environment variable not set, using the default value /opt/robocomp'
+    print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
     ROBOCOMP = os.path.join('opt', 'robocomp')
 
 
@@ -26,7 +23,7 @@ icePaths = []
 #         icePaths.append(p)
 #     icePaths.append(os.path.join(ROBOCOMP, "interfaces"))
 # except:
-#     print 'SLICE_PATH environment variable was not exported. Using only the default paths'
+#     print('SLICE_PATH environment variable was not exported. Using only the default paths')
 #     pass
 
 icePaths.append(os.path.join(os.path.dirname(__file__), "interfaces"))
@@ -84,13 +81,13 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.differentialrobot_proxy = RoboCompDifferentialRobot.DifferentialRobotPrx.checkedCast(basePrx)
-                    print "Connection Successful: ",proxyString
+                    print("Connection Successful: ",proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (DifferentialRobot)', proxyString
+                    print('Cannot connect to the remote object (DifferentialRobot)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get DifferentialRobotProxy property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get DifferentialRobotProxy property.')
                 raise
 
 
@@ -102,13 +99,13 @@ class Client(Ice.Application, threading.Thread):
                     try:
                         basePrx = ic.stringToProxy(proxyString)
                         self.lasers_proxys.append(RoboCompLaser.LaserPrx.checkedCast(basePrx))
-                        print "Connection Successful: ", proxyString
+                        print("Connection Successful: ", proxyString)
                     except Ice.Exception:
-                        print 'Cannot connect to the remote object (Laser)', i, proxyString
+                        print('Cannot connect to the remote object (Laser)', i, proxyString)
                         raise
-                except Ice.Exception, e:
-                    print e
-                    print 'Cannot get Laser', i, 'Proxy property.'
+                except Ice.Exception as e:
+                    print(e)
+                    print('Cannot get Laser', i, 'Proxy property.')
                     raise
 
             # Remote object connection for Display
@@ -117,13 +114,13 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.display_proxy = RoboCompDisplay.DisplayPrx.checkedCast(basePrx)
-                    print "Connection Successful: ", proxyString
+                    print("Connection Successful: ", proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (Display)', proxyString
+                    print('Cannot connect to the remote object (Display)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get DisplayProxy Proxy property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get DisplayProxy Proxy property.')
                 raise
 
             # Remote object connection for RGBD
@@ -132,13 +129,13 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.rgbd_proxy = RoboCompRGBD.RGBDPrx.checkedCast(basePrx)
-                    print "Connection Successful: ",proxyString
+                    print("Connection Successful: ",proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (RGBD)', proxyString
+                    print('Cannot connect to the remote object (RGBD)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get RGBDProxy property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get RGBDProxy property.')
                 raise
             # Remote object connection for JointMotor
             try:
@@ -146,13 +143,13 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.jointmotor_proxy = RoboCompJointMotor.JointMotorPrx.checkedCast(basePrx)
-                    print "Connection Successful: ",proxyString
+                    print("Connection Successful: ",proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (JointMotor)', proxyString
+                    print('Cannot connect to the remote object (JointMotor)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get JointMotorPrx property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get JointMotorPrx property.')
                 raise
             # Remote object connection for AprilTag
             try:
@@ -160,16 +157,16 @@ class Client(Ice.Application, threading.Thread):
                 try:
                     basePrx = ic.stringToProxy(proxyString)
                     self.apriltagProxy = RoboCompApriltag.ApriltagPrx.checkedCast(basePrx)
-                    print "Connection Successful: ", proxyString
+                    print("Connection Successful: ", proxyString)
                 except Ice.Exception:
-                    print 'Cannot connect to the remote object (Apriltag)', proxyString
+                    print('Cannot connect to the remote object (Apriltag)', proxyString)
                     raise
-            except Ice.Exception, e:
-                print e
-                print 'Cannot get JointMotorPrx property.'
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get JointMotorPrx property.')
                 raise
-        except Ice.Exception, e:
-                print "Error"
+        except Ice.Exception as e:
+                print("Error")
                 traceback.print_exc()
                 raise
         # self.tagDetector = apriltag.Detector()
@@ -196,7 +193,7 @@ class Client(Ice.Application, threading.Thread):
                 self.apriltag_current_exist = False
                 self.color, self.depth, self.headState, self.baseState = self.rgbd_proxy.getData()
                 if (len(self.color) == 0) or (len(self.depth) == 0):
-                        print 'Error retrieving images!'
+                        print('Error retrieving images!')
             except Ice.Exception:
                 traceback.print_exc()
 
@@ -237,7 +234,7 @@ class Client(Ice.Application, threading.Thread):
             self.rot = vRotation
             self.differentialrobot_proxy.setSpeedBase(-self.adv*8, self.rot*15)
         except Exception as e:
-            print "Error setRobotSpeed"
+            print("Error setRobotSpeed")
 
     def setRobotSpeed(self, vAdvance=0, vRotation=0):
         if vAdvance!=0 or vRotation!=0:
