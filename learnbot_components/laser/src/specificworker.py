@@ -19,8 +19,8 @@
 
 import Adafruit_PCA9685, threading
 
-from genericworker import *
-import VL53L0X, time
+from learnbot_components.laser.src.genericworker import *
+import learnbot_components.laser.src.VL53L0X as VL53L0X, time
 configPath = os.path.join(os.path.dirname(os.path.dirname(__file__)),'etc','config')
 
 # If RoboComp was compiled with Python bindings you can use InnerModel in Python

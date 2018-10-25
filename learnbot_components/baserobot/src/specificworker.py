@@ -20,7 +20,7 @@
 import sys, os, traceback, time
 
 from PySide import QtGui, QtCore
-from genericworker import *
+from learnbot_components.baserobot.src.genericworker import *
 from pololu_drv8835_rpi import motors, MAX_SPEED
 
 configPath = os.path.join(os.path.dirname(os.path.dirname(__file__)),'etc','config')

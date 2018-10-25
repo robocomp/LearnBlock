@@ -55,8 +55,11 @@
 #
 #
 
-import sys, traceback, IceStorm, subprocess, threading, time, queue, os, copy
-
+import sys, traceback, Ice, IceStorm, subprocess, threading, time, os,copy
+if sys.version_info[0]<3:
+	import Queue
+else:
+	import queue as Queue
 # Ctrl+c handling
 import signal
 

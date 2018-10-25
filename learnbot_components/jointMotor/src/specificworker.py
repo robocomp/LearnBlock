@@ -20,7 +20,7 @@
 import sys, os, traceback, time
 
 from PySide import QtGui, QtCore
-from genericworker import *
+from learnbot_components.jointMotor.src.genericworker import *
 import wiringpi
 from math import pi
 import Adafruit_PCA9685
