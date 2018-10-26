@@ -1,2 +1,2 @@
-import os, inspect
-pathInterfaces = os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), 'interfaces')
+import os
+pathInterfaces = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'interfaces')

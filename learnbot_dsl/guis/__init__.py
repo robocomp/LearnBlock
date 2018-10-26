@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-import inspect, os, sys
+import os, sys
 from subprocess import call
 # import learnbot_dsl.guis.DelWhen as DelWhen
 # import learnbot_dsl.guis.TabLibrary as TabLibrary
@@ -13,7 +13,7 @@ from subprocess import call
 # import learnbot_dsl.guis.EditVar as EditVar
 # import learnbot_dsl.guis.AddWhen as AddWhen
 
-path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+path = os.path.dirname(os.path.realpath(__file__))
 # sys.path.append(path)
 # __all__ = ['pathGuis',
 #            'DelWhen',

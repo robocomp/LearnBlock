@@ -6,7 +6,7 @@ import picamera
 import subprocess
 import time
 import paho.mqtt.client
-import os, inspect
+import os
 from learnbot_components.camera import path
 subprocess.Popen("mosquitto -c " + os.path.join(path, "mosquitto.conf"), shell=True)
 time.sleep(2)

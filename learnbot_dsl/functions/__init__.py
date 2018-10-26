@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 
-import os, inspect,sys
+import os, sys, inspect
 from importlib import import_module
 # import perceptual.back_obstacle
 
@@ -9,7 +9,7 @@ ignore = [
     'visual_auxiliary.py'
 ]
 
-__path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+__path = os.path.dirname(os.path.realpath(__file__))
 
 functions = {}
 params = {}

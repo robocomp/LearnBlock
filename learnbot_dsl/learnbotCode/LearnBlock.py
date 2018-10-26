@@ -8,7 +8,7 @@ else:
     import _pickle as pickle
 import tempfile
 # import learnbot_dsl.LearnBotClient as LearnBotClient
-import shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko, inspect
+import shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko
 from PIL import Image
 from pyunpack import Archive
 
@@ -51,7 +51,7 @@ except Exception as e:
     print(e)
 """
 
-path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+path = os.path.dirname(os.path.realpath(__file__))
 
 
 def loadfile(file):
@@ -164,6 +164,8 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
         self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
         self.ui.actionExit.triggered.connect(self.close)
+        self.ui.actionChange_Libraries_path.triggered.connect(self.changeLibraryPath)
+        self.ui.actionChange_Workspace.triggered.connect(self.changeWorkSpace)
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
 
         # Load image buttons
@@ -204,10 +206,18 @@ class LearnBlock(QtGui.QMainWindow):
             table.setColumnCount(1)
             table.setRowCount(0)
 
+        self.ui.updatepushButton.setVisible(False)
+
+        self.loadConfigFile()
+
+        tmpP = [os.path.join(tempfile._get_default_tempdir(),p) for p in os.listdir(tempfile._get_default_tempdir()) if p.endswith('learnblock')]
         try:
-            tempfile.tempdir = tempfile.mkdtemp("learnblock")
-            with open(os.path.join(tempfile.gettempdir(), "__init__.py"),'w') as f:
-                f.write("")
+            if len(tmpP)!=1:
+                tempfile.tempdir = tempfile.mkdtemp("learnblock")
+                with open(os.path.join(tempfile.gettempdir(), "__init__.py"),'w') as f:
+                    f.write("")
+            else:
+                tempfile.tempdir = tmpP[0]
         except Exception as e:
             print(e)
             pass
@@ -239,8 +249,6 @@ class LearnBlock(QtGui.QMainWindow):
         # except urllib2.URLError as e:
         #     self.ui.updatepushButton.setVisible(False)
         # except Exception as e:
-        self.ui.updatepushButton.setVisible(False)
-
         self.client=None
         # Execute the application
         r = self.app.exec_()
@@ -250,6 +258,77 @@ class LearnBlock(QtGui.QMainWindow):
 
         # shutil.rmtree(tempfile.gettempdir())
         sys.exit(r)
+
+    def loadConfigFile(self):
+        conf = [f for f in os.listdir(tempfile._get_default_tempdir()) if f.endswith("learnblock.conf")]
+        print(conf)
+        if len(conf) != 1:
+            with tempfile.NamedTemporaryFile(suffix="learnblock.conf",delete=False) as confFile:
+                while True:
+                    self.workSpace = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose workspace directory'), os.environ.get('HOME'),
+                                                                  QtGui.QFileDialog.ShowDirsOnly)
+                    if self.workSpace is "":
+                        msgBox = QtGui.QMessageBox()
+                        msgBox.setWindowTitle(self.trUtf8("Warning"))
+                        msgBox.setIcon(QtGui.QMessageBox.Warning)
+                        msgBox.setText(self.trUtf8("Workspace is empty"))
+                        msgBox.setInformativeText(self.trUtf8("The working directory will be created in") + os.path.join(os.environ.get('HOME'), "learnbotWorkSpace"))
+                        msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+                        msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+                        ret = msgBox.exec_()
+                        if ret == QtGui.QMessageBox.Ok:
+                            self.workSpace = os.path.join(os.environ.get('HOME'), "learnbotWorkSpace")
+                            os.mkdir(self.workSpace)
+                            break
+                    else:
+                        self.workSpace = os.path.join(self.workSpace)
+                        break
+                while True:
+                    self.libraryPath = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose the libraries directory'), os.environ.get('HOME'),
+                                                                  QtGui.QFileDialog.ShowDirsOnly)
+                    if self.libraryPath is "":
+                        msgBox = QtGui.QMessageBox()
+                        msgBox.setWindowTitle(self.trUtf8("Warning"))
+                        msgBox.setIcon(QtGui.QMessageBox.Warning)
+                        msgBox.setText(self.trUtf8("Workspace is empty"))
+                        msgBox.setInformativeText(self.trUtf8("The libraries directory will be ") + os.environ.get('HOME'))
+                        msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+                        msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+                        ret = msgBox.exec_()
+                        if ret == QtGui.QMessageBox.Ok:
+                            self.libraryPath = os.environ.get('HOME')
+                            break
+                    else:
+                        break
+                pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath), confFile, 0)
+                self.confFile = confFile.name
+        else:
+            with open(os.path.join(tempfile._get_default_tempdir(), conf[0]), 'rb') as fichero:
+                d = pickle.load(fichero)
+                self.workSpace = d[0]
+                self.ui.language.setCurrentIndex(d[1])
+                self.libraryPath = d[2]
+            self.confFile = os.path.join(tempfile._get_default_tempdir(), conf[0])
+
+    def changeWorkSpace(self):
+        newworkSpace = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose workspace directory'),
+                                                                os.environ.get('HOME'),
+                                                                QtGui.QFileDialog.ShowDirsOnly)
+        if newworkSpace is "":
+            return
+        self.workSpace = newworkSpace
+
+    def changeLibraryPath(self):
+        newlibraryPath = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose the libraries directory'),
+                                                                  os.environ.get('HOME'),
+                                                                  QtGui.QFileDialog.ShowDirsOnly)
+        if newlibraryPath is "":
+            return
+        self.libraryPath = newlibraryPath
+
+    def saveConfigFile(self):
+        with open(self.confFile, 'wb') as fichero:
+            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath), fichero, 0)
 
     def downloadXMLs(self):
         tempXMLs = tempfile.mkdtemp("xmls-ebo")
@@ -292,7 +371,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def addLibrary(self):
         self.scene.stopAllblocks()
-        path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Load Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
+        path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Load Library'), self.libraryPath, QtGui.QFileDialog.ShowDirsOnly)
         nameLibrary = os.path.basename(path)
         self.scene.startAllblocks()
         if path is "":
@@ -313,6 +392,7 @@ class LearnBlock(QtGui.QMainWindow):
                 self.addLibrary()
 
     def closeEvent(self, event):
+        self.saveConfigFile()
         if self.scene.shouldSave is False:
             self.stopthread()
             self.disconnectCamera()
@@ -595,7 +675,7 @@ class LearnBlock(QtGui.QMainWindow):
         if self.scene.shouldSave is False:
             # self.newProject()
             self.scene.stopAllblocks()
-            fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', '.',
+            fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', self.workSpace,
                                                          'Block Project file (*.blockProject)')
             self.scene.startAllblocks()
             if fileName[0] != "":

@@ -1,8 +1,8 @@
 from __future__ import print_function, absolute_import
-import inspect, os, sys
+import os, sys
 from pyparsing import *
 
-path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+path = os.path.dirname(os.path.realpath(__file__))
 
 reserved_words = (Keyword('=') | Keyword('command.') | Keyword('learnbot.') | Keyword('ip') | Keyword('user') | Keyword(
     'pass') | Keyword('start') | Keyword('stop'))

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function, absolute_import
-import os,inspect
+import os
 from pyparsing import *
 from learnbot_dsl.blocksConfig.blocks import pathBlocks as pathImgBlocks
-pathConfig = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+pathConfig = os.path.dirname(os.path.realpath(__file__))
 
 semicolon = Suppress( Word( ";" ) )
 quote     = Suppress( Word( "\"" ) )

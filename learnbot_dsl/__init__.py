@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-import inspect, os, sys
+import os, sys
 # import learnbot_dsl.LearnBotClient as LearnBotClient
 # import learnbot_dsl.learnbotCode as learnbotCode
 # import learnbot_dsl.components as components
@@ -8,7 +8,7 @@ import inspect, os, sys
 # import learnbot_dsl.guis as guis
 # __all__ = ['LearnBotClient', 'learnbotCode', 'components', 'LearnBotClient_PhysicalRobot', 'functions', 'guis']
 
-path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+path = os.path.dirname(os.path.realpath(__file__))
 # sys.path.append(path)
 
 

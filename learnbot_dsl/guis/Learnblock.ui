@@ -118,6 +118,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="updatepushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Update</string>
         </property>
@@ -649,6 +652,8 @@
     <addaction name="actionLoad_Library"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="actionChange_Libraries_path"/>
+    <addaction name="actionChange_Workspace"/>
    </widget>
    <widget class="QMenu" name="menuTools_robot">
     <property name="title">
@@ -755,6 +760,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+5</string>
+   </property>
+  </action>
+  <action name="actionChange_Libraries_path">
+   <property name="text">
+    <string>Change Libraries path</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+L</string>
+   </property>
+  </action>
+  <action name="actionChange_Workspace">
+   <property name="text">
+    <string>Change Workspace</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+W</string>
    </property>
   </action>
  </widget>
