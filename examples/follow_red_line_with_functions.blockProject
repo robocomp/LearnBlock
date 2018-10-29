@@ -1,7 +1,7 @@
 ((dp0
 S'11'
 p1
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p2
 (dp3
@@ -44,7 +44,7 @@ p21
 NsS'connections'
 p22
 (lp23
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p24
 (dp25
@@ -57,7 +57,7 @@ p28
 I4
 sS'_Connection__connect'
 p29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p30
 (dp31
@@ -69,7 +69,7 @@ sg29
 g24
 sS'_Connection__parent'
 p32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p33
 (dp34
@@ -99,7 +99,7 @@ Rp41
 sg21
 Nsg22
 (lp42
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p43
 (dp44
@@ -109,7 +109,7 @@ p45
 sg28
 I0
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p46
 (dp47
@@ -121,7 +121,7 @@ I1
 sg29
 g43
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p49
 (dp50
@@ -151,7 +151,7 @@ Rp57
 sg21
 Nsg22
 (lp58
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p59
 (dp60
@@ -161,7 +161,7 @@ p61
 sg28
 I0
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p62
 (dp63
@@ -173,7 +173,7 @@ I-1
 sg29
 g59
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p65
 (dp66
@@ -228,7 +228,7 @@ F5.0
 tp82
 Rp83
 sbag46
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p84
 (dp85
@@ -238,7 +238,7 @@ p86
 sg28
 I-1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p87
 (dp88
@@ -250,7 +250,7 @@ I0
 sg29
 g84
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p90
 (dp91
@@ -281,7 +281,7 @@ sg21
 Nsg22
 (lp99
 g87
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p100
 (dp101
@@ -291,7 +291,7 @@ p102
 sg28
 I1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p103
 (dp104
@@ -302,7 +302,7 @@ I0
 sg29
 g100
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p105
 (dp106
@@ -333,7 +333,7 @@ sg21
 Nsg22
 (lp114
 g103
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p115
 (dp116
@@ -395,7 +395,7 @@ g18
 F33.0
 tp127
 Rp128
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p129
 (dp130
@@ -405,7 +405,7 @@ p131
 sg28
 I3
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p132
 (dp133
@@ -417,7 +417,7 @@ I4
 sg29
 g129
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p135
 (dp136
@@ -496,7 +496,7 @@ g18
 F5.0
 tp155
 Rp156
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p157
 (dp158
@@ -506,7 +506,7 @@ p159
 sg28
 I1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p160
 (dp161
@@ -518,7 +518,7 @@ I0
 sg29
 g157
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p163
 (dp164
@@ -546,7 +546,7 @@ sg21
 Nsg22
 (lp169
 g160
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p170
 (dp171
@@ -556,7 +556,7 @@ p172
 sg28
 I1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p173
 (dp174
@@ -568,7 +568,7 @@ I0
 sg29
 g170
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p176
 (dp177
@@ -599,7 +599,7 @@ sg21
 Nsg22
 (lp185
 g173
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p186
 (dp187
@@ -615,7 +615,7 @@ g18
 F132.0
 tp188
 Rp189
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p190
 (dp191
@@ -625,7 +625,7 @@ p192
 sg28
 I-1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p193
 (dp194
@@ -637,7 +637,7 @@ I0
 sg29
 g190
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p196
 (dp197
@@ -668,7 +668,7 @@ sg21
 Nsg22
 (lp205
 g193
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p206
 (dp207
@@ -678,7 +678,7 @@ p208
 sg28
 I1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p209
 (dp210
@@ -689,7 +689,7 @@ I0
 sg29
 g206
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p211
 (dp212
@@ -720,7 +720,7 @@ sg21
 Nsg22
 (lp220
 g209
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p221
 (dp222
@@ -806,7 +806,7 @@ g18
 F132.0
 tp239
 Rp240
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p241
 (dp242
@@ -816,7 +816,7 @@ p243
 sg28
 I-1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p244
 (dp245
@@ -828,7 +828,7 @@ I0
 sg29
 g241
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p247
 (dp248
@@ -859,7 +859,7 @@ sg21
 Nsg22
 (lp256
 g244
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p257
 (dp258
@@ -869,7 +869,7 @@ p259
 sg28
 I1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p260
 (dp261
@@ -880,7 +880,7 @@ I0
 sg29
 g257
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p262
 (dp263
@@ -908,7 +908,7 @@ sg21
 Nsg22
 (lp268
 g260
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p269
 (dp270
@@ -970,7 +970,7 @@ g18
 F33.0
 tp281
 Rp282
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p283
 (dp284
@@ -980,7 +980,7 @@ p285
 sg28
 I3
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p286
 (dp287
@@ -992,7 +992,7 @@ I4
 sg29
 g283
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p289
 (dp290
@@ -1070,7 +1070,7 @@ g18
 F132.0
 tp308
 Rp309
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p310
 (dp311
@@ -1080,7 +1080,7 @@ p312
 sg28
 I-1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p313
 (dp314
@@ -1092,7 +1092,7 @@ I0
 sg29
 g310
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p316
 (dp317
@@ -1123,7 +1123,7 @@ sg21
 Nsg22
 (lp325
 g313
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p326
 (dp327
@@ -1133,7 +1133,7 @@ p328
 sg28
 I1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p329
 (dp330
@@ -1144,7 +1144,7 @@ I0
 sg29
 g326
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p331
 (dp332
@@ -1172,7 +1172,7 @@ sg21
 Nsg22
 (lp337
 g329
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p338
 (dp339
@@ -1288,7 +1288,7 @@ sg259
 g262
 sS'1'
 p359
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p360
 (dp361
@@ -1318,7 +1318,7 @@ Rp368
 sg21
 Nsg22
 (lp369
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p370
 (dp371
@@ -1328,7 +1328,7 @@ p372
 sg28
 I0
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p373
 (dp374
@@ -1340,7 +1340,7 @@ I-1
 sg29
 g370
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p376
 (dp377
@@ -1395,7 +1395,7 @@ g18
 F5.0
 tp390
 Rp391
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p392
 (dp393
@@ -1411,7 +1411,7 @@ g18
 F99.0
 tp394
 Rp395
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p396
 (dp397
@@ -1421,7 +1421,7 @@ p398
 sg28
 I-1
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p399
 (dp400
@@ -1433,7 +1433,7 @@ I0
 sg29
 g396
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p402
 (dp403
@@ -1457,7 +1457,7 @@ sg21
 Nsg22
 (lp408
 g399
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p409
 (dp410
@@ -1497,7 +1497,7 @@ g18
 F33.0
 tp417
 Rp418
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p419
 (dp420
@@ -1507,7 +1507,7 @@ p421
 sg28
 I3
 sg29
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p422
 (dp423
@@ -1519,7 +1519,7 @@ I4
 sg29
 g419
 sg32
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p425
 (dp426
@@ -1603,7 +1603,7 @@ sg236
 g176
 s(lp442
 (lp443
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p444
 (dp445
@@ -1626,7 +1626,7 @@ Rp449
 sg21
 Nsg22
 (lp450
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p451
 (dp452
@@ -1653,7 +1653,7 @@ sg77
 c__builtin__
 id
 p456
-sba(iAbstractBlock
+sba(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p457
 (dp458
@@ -1676,7 +1676,7 @@ Rp462
 sg21
 Nsg22
 (lp463
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p464
 (dp465
@@ -1692,7 +1692,7 @@ g18
 F5.0
 tp466
 Rp467
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p468
 (dp469

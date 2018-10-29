@@ -1,7 +1,7 @@
 ((dp0
 S'50'
 p1
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p2
 (dp3
@@ -15,7 +15,7 @@ p6
 sS'vars'
 p7
 (lp8
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Variable
 p9
 (dp10
@@ -59,7 +59,7 @@ p28
 NsS'connections'
 p29
 (lp30
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p31
 (dp32
@@ -72,7 +72,7 @@ p35
 I4
 sS'_Connection__connect'
 p36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p37
 (dp38
@@ -84,7 +84,7 @@ sg36
 g31
 sS'_Connection__parent'
 p39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p40
 (dp41
@@ -117,7 +117,7 @@ sg28
 Nsg29
 (lp51
 g37
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p52
 (dp53
@@ -127,7 +127,7 @@ p54
 sg35
 I4
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p55
 (dp56
@@ -139,7 +139,7 @@ I3
 sg36
 g52
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p58
 (dp59
@@ -170,7 +170,7 @@ Rp67
 sg28
 Nsg29
 (lp68
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p69
 (dp70
@@ -187,7 +187,7 @@ g25
 F627.0
 tp72
 Rp73
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p74
 (dp75
@@ -197,7 +197,7 @@ p76
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p77
 (dp78
@@ -209,7 +209,7 @@ I0
 sg36
 g74
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p80
 (dp81
@@ -240,7 +240,7 @@ sg28
 Nsg29
 (lp89
 g77
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p90
 (dp91
@@ -250,7 +250,7 @@ p92
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p93
 (dp94
@@ -261,7 +261,7 @@ I0
 sg36
 g90
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p95
 (dp96
@@ -292,7 +292,7 @@ sg28
 Nsg29
 (lp104
 g93
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p105
 (dp106
@@ -302,7 +302,7 @@ p107
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p108
 (dp109
@@ -314,7 +314,7 @@ I0
 sg36
 g105
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p111
 (dp112
@@ -345,7 +345,7 @@ sg28
 Nsg29
 (lp120
 g108
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p121
 (dp122
@@ -355,7 +355,7 @@ p123
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p124
 (dp125
@@ -367,7 +367,7 @@ I0
 sg36
 g121
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p127
 (dp128
@@ -395,7 +395,7 @@ sg28
 Nsg29
 (lp133
 g124
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p134
 (dp135
@@ -405,7 +405,7 @@ p136
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p137
 (dp138
@@ -417,7 +417,7 @@ I0
 sg36
 g134
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p140
 (dp141
@@ -448,7 +448,7 @@ sg28
 Nsg29
 (lp149
 g137
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p150
 (dp151
@@ -464,7 +464,7 @@ g25
 F132.0
 tp152
 Rp153
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p154
 (dp155
@@ -474,7 +474,7 @@ p156
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p157
 (dp158
@@ -486,7 +486,7 @@ I0
 sg36
 g154
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p160
 (dp161
@@ -517,7 +517,7 @@ sg28
 Nsg29
 (lp169
 g157
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p170
 (dp171
@@ -527,7 +527,7 @@ p172
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p173
 (dp174
@@ -538,7 +538,7 @@ I0
 sg36
 g170
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p175
 (dp176
@@ -569,7 +569,7 @@ sg28
 Nsg29
 (lp184
 g173
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p185
 (dp186
@@ -658,7 +658,7 @@ g25
 F132.0
 tp206
 Rp207
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p208
 (dp209
@@ -668,7 +668,7 @@ p210
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p211
 (dp212
@@ -680,7 +680,7 @@ I0
 sg36
 g208
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p214
 (dp215
@@ -711,7 +711,7 @@ sg28
 Nsg29
 (lp223
 g211
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p224
 (dp225
@@ -721,7 +721,7 @@ p226
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p227
 (dp228
@@ -732,7 +732,7 @@ I0
 sg36
 g224
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p229
 (dp230
@@ -763,7 +763,7 @@ sg28
 Nsg29
 (lp238
 g227
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p239
 (dp240
@@ -825,7 +825,7 @@ g25
 F33.0
 tp251
 Rp252
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p253
 (dp254
@@ -835,7 +835,7 @@ p255
 sg35
 I3
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p256
 (dp257
@@ -847,7 +847,7 @@ I4
 sg36
 g253
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p259
 (dp260
@@ -925,7 +925,7 @@ g25
 F132.0
 tp278
 Rp279
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p280
 (dp281
@@ -935,7 +935,7 @@ p282
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p283
 (dp284
@@ -947,7 +947,7 @@ I0
 sg36
 g280
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p286
 (dp287
@@ -978,7 +978,7 @@ sg28
 Nsg29
 (lp295
 g283
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p296
 (dp297
@@ -988,7 +988,7 @@ p298
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p299
 (dp300
@@ -999,7 +999,7 @@ I0
 sg36
 g296
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p301
 (dp302
@@ -1027,7 +1027,7 @@ sg28
 Nsg29
 (lp307
 g299
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p308
 (dp309
@@ -1089,7 +1089,7 @@ g25
 F33.0
 tp320
 Rp321
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p322
 (dp323
@@ -1099,7 +1099,7 @@ p324
 sg35
 I3
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p325
 (dp326
@@ -1111,7 +1111,7 @@ I4
 sg36
 g322
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p328
 (dp329
@@ -1189,7 +1189,7 @@ g25
 F132.0
 tp347
 Rp348
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p349
 (dp350
@@ -1199,7 +1199,7 @@ p351
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p352
 (dp353
@@ -1211,7 +1211,7 @@ I0
 sg36
 g349
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p355
 (dp356
@@ -1242,7 +1242,7 @@ sg28
 Nsg29
 (lp364
 g352
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p365
 (dp366
@@ -1252,7 +1252,7 @@ p367
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p368
 (dp369
@@ -1263,7 +1263,7 @@ I0
 sg36
 g365
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p370
 (dp371
@@ -1291,7 +1291,7 @@ sg28
 Nsg29
 (lp376
 g368
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p377
 (dp378
@@ -1353,7 +1353,7 @@ g25
 F33.0
 tp389
 Rp390
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p391
 (dp392
@@ -1363,7 +1363,7 @@ p393
 sg35
 I3
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p394
 (dp395
@@ -1375,7 +1375,7 @@ I4
 sg36
 g391
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p397
 (dp398
@@ -1536,7 +1536,7 @@ sg192
 g1
 sbsS'61'
 p436
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p437
 (dp438
@@ -1560,7 +1560,7 @@ Rp443
 sg28
 Nsg29
 (lp444
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p445
 (dp446
@@ -1570,7 +1570,7 @@ p447
 sg35
 I3
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p448
 (dp449
@@ -1581,7 +1581,7 @@ I4
 sg36
 g445
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p450
 (dp451
@@ -1629,7 +1629,7 @@ g25
 F16.0
 tp461
 Rp462
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p463
 (dp464
@@ -1639,7 +1639,7 @@ p465
 sg35
 I4
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p466
 (dp467
@@ -1650,7 +1650,7 @@ I3
 sg36
 g463
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p468
 (dp469
@@ -1681,7 +1681,7 @@ sg28
 Nsg29
 (lp477
 g466
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p478
 (dp479
@@ -1691,7 +1691,7 @@ p480
 sg35
 I4
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p481
 (dp482
@@ -1702,7 +1702,7 @@ I3
 sg36
 g478
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p483
 (dp484
@@ -1729,7 +1729,7 @@ Rp488
 sg28
 Nsg29
 (lp489
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p490
 (dp491
@@ -1739,7 +1739,7 @@ p492
 sg35
 I0
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p493
 (dp494
@@ -1750,7 +1750,7 @@ I1
 sg36
 g490
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p495
 (dp496
@@ -1780,7 +1780,7 @@ Rp503
 sg28
 Nsg29
 (lp504
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p505
 (dp506
@@ -1790,7 +1790,7 @@ p507
 sg35
 I0
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p508
 (dp509
@@ -1801,7 +1801,7 @@ I-1
 sg36
 g505
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p510
 (dp511
@@ -1829,7 +1829,7 @@ Rp516
 sg28
 Nsg29
 (lp517
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p518
 (dp519
@@ -1846,7 +1846,7 @@ F495.0
 tp520
 Rp521
 sbag508
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p522
 (dp523
@@ -1856,7 +1856,7 @@ p524
 sg35
 I3
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p525
 (dp526
@@ -1868,7 +1868,7 @@ I4
 sg36
 g522
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p528
 (dp529
@@ -1878,7 +1878,7 @@ sg5
 g6
 sg7
 (lp530
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Variable
 p531
 (dp532
@@ -1974,7 +1974,7 @@ g25
 F5.0
 tp551
 Rp552
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p553
 (dp554
@@ -1984,7 +1984,7 @@ p555
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p556
 (dp557
@@ -1995,7 +1995,7 @@ I0
 sg36
 g553
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p558
 (dp559
@@ -2028,7 +2028,7 @@ sg28
 Nsg29
 (lp569
 g556
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p570
 (dp571
@@ -2044,7 +2044,7 @@ g25
 F297.0
 tp572
 Rp573
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p574
 (dp575
@@ -2054,7 +2054,7 @@ p576
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p577
 (dp578
@@ -2065,7 +2065,7 @@ I0
 sg36
 g574
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p579
 (dp580
@@ -2096,7 +2096,7 @@ sg28
 Nsg29
 (lp588
 g577
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p589
 (dp590
@@ -2106,7 +2106,7 @@ p591
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p592
 (dp593
@@ -2117,7 +2117,7 @@ I0
 sg36
 g589
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p594
 (dp595
@@ -2145,7 +2145,7 @@ sg28
 Nsg29
 (lp600
 g592
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p601
 (dp602
@@ -2155,7 +2155,7 @@ p603
 sg35
 I1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p604
 (dp605
@@ -2166,7 +2166,7 @@ I0
 sg36
 g601
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p606
 (dp607
@@ -2194,7 +2194,7 @@ sg28
 Nsg29
 (lp612
 g604
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p613
 (dp614
@@ -2210,7 +2210,7 @@ g25
 F99.0
 tp615
 Rp616
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p617
 (dp618
@@ -2220,7 +2220,7 @@ p619
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p620
 (dp621
@@ -2231,7 +2231,7 @@ I0
 sg36
 g617
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p622
 (dp623
@@ -2262,7 +2262,7 @@ sg28
 Nsg29
 (lp631
 g620
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p632
 (dp633
@@ -2324,7 +2324,7 @@ g25
 F99.0
 tp644
 Rp645
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p646
 (dp647
@@ -2334,7 +2334,7 @@ p648
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p649
 (dp650
@@ -2345,7 +2345,7 @@ I0
 sg36
 g646
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p651
 (dp652
@@ -2376,7 +2376,7 @@ sg28
 Nsg29
 (lp660
 g649
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p661
 (dp662
@@ -2415,7 +2415,7 @@ g25
 F33.0
 tp668
 Rp669
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p670
 (dp671
@@ -2425,7 +2425,7 @@ p672
 sg35
 I3
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p673
 (dp674
@@ -2436,7 +2436,7 @@ I4
 sg36
 g670
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p675
 (dp676
@@ -2559,7 +2559,7 @@ g25
 F99.0
 tp703
 Rp704
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p705
 (dp706
@@ -2569,7 +2569,7 @@ p707
 sg35
 I-1
 sg36
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p708
 (dp709
@@ -2580,7 +2580,7 @@ I0
 sg36
 g705
 sg39
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p710
 (dp711
@@ -2611,7 +2611,7 @@ sg28
 Nsg29
 (lp719
 g708
-a(iBlock
+a(learnbot_dsl.learnbotCode.Block
 Connection
 p720
 (dp721
@@ -2782,7 +2782,7 @@ S'/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/blocksConfig
 p745
 tp746
 a(lp747
-(iAbstractBlock
+(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p748
 (dp749
@@ -2806,7 +2806,7 @@ Rp754
 sg28
 Nsg29
 (lp755
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p756
 (dp757
@@ -2833,7 +2833,7 @@ sg192
 c__builtin__
 id
 p761
-sba(iAbstractBlock
+sba(ilearnbot_dsl.learnbotCode.AbstractBlock
 AbstractBlock
 p762
 (dp763
@@ -2856,7 +2856,7 @@ Rp767
 sg28
 Nsg29
 (lp768
-(iBlock
+(learnbot_dsl.learnbotCode.Block
 Connection
 p769
 (dp770
@@ -2872,7 +2872,7 @@ g25
 F5.0
 tp771
 Rp772
-sba(iBlock
+sba(learnbot_dsl.learnbotCode.Block
 Connection
 p773
 (dp774

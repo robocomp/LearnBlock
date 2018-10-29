@@ -16,6 +16,7 @@ from multiprocessing import Process
 for p in sys.path:
     print(p)
 
+from learnbot_dsl.learnbotCode.AbstractBlock import *
 from learnbot_dsl.learnbotCode.Button import *
 from learnbot_dsl.learnbotCode.Scene import *
 from learnbot_dsl.learnbotCode.View import *
@@ -28,7 +29,7 @@ import learnbot_dsl.guis.Learnblock as Learnblock
 from learnbot_dsl.guis import pathGuis
 import learnbot_dsl.guis.AddVar as AddVar
 import learnbot_dsl.guis.DelWhen as DelWhen
-import learnbot_dsl.guis.CreateBlock as CreateBlock
+# import learnbot_dsl.guis.CreateBlock as CreateBlock
 import learnbot_dsl.guis.CreateFunctions as CreateFunctions
 import learnbot_dsl.guis.DelVar as DelVar
 from learnbot_dsl.learnbotCode.Language import changeLanguageTo
@@ -691,7 +692,7 @@ class LearnBlock(QtGui.QMainWindow):
     def saveInstance(self):
         if self.__fileProject is None:
             self.scene.stopAllblocks()
-            fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', '.',
+            fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', self.workSpace,
                                                          'Block Project file (*.blockProject)')
             self.scene.startAllblocks()
 
