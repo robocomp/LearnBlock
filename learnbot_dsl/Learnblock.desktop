@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Learnblock
+Comment=
+Exec=/usr/local/bin/Learnblock
+Icon=Learnbot_ico.png
+Path=
+Terminal=true
+StartupNotify=false

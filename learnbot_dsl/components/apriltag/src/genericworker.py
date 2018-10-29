@@ -57,7 +57,7 @@ if not ice_Apriltag:
 from RoboCompApriltag import *
 
 
-from apriltagI import *
+from learnbot_dsl.components.apriltag.src.apriltagI import *
 
 
 class GenericWorker(QtCore.QObject):

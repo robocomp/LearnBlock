@@ -8,7 +8,8 @@ from pyparsing import *
 HEADER = """
 #EXECUTION: python code_example.py config
 from __future__ import print_function, absolute_import
-from learnbot_dsl.functions import *
+from learnbot_dsl.functions import getFuntions
+functions = getFuntions()
 import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
 import time
@@ -19,7 +20,8 @@ try:
 except Exception as e:
     print("hay un Error")
     print(e)
-    
+    raise(e)
+
 """
 
 

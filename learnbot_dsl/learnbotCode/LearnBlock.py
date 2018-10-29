@@ -29,26 +29,32 @@ from learnbot_dsl.guis import pathGuis
 import learnbot_dsl.guis.AddVar as AddVar
 import learnbot_dsl.guis.DelWhen as DelWhen
 import learnbot_dsl.guis.CreateBlock as CreateBlock
+import learnbot_dsl.guis.CreateFunctions as CreateFunctions
 import learnbot_dsl.guis.DelVar as DelVar
 from learnbot_dsl.learnbotCode.Language import changeLanguageTo
 from learnbot_dsl.learnbotCode.parserConfig import configSSH
 from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.learnbotCode.guiTabLibrary import Library
+from learnbot_dsl.learnbotCode.Highlighter import *
 
 
 HEADER = """
 #EXECUTION: python code_example.py config
 from __future__ import print_function, absolute_import
-from learnbot_dsl.functions import *
+from learnbot_dsl.functions import getFuntions
+functions = getFuntions()
 import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
 import time,traceback
 try:
-    lbot = <LearnBotClient>.Client(sys.argv)
+    lbot = <LearnBotCl
+    ient>.Client(sys.argv)
 except Exception as e:
     print("hay un Error")
     traceback.print_exc(file=sys.stdout)
     print(e)
+    raise(e)
+
 """
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -199,6 +205,9 @@ class LearnBlock(QtGui.QMainWindow):
                           'funtions': self.ui.tableUserfunctions, 'express': self.ui.tableExpress,
                           'others': self.ui.tableOthers}
 
+        self.highlighter = Highlighter(self.ui.textCode.document())
+        self.updateTextCodeStyle()
+
         for t in self.dicTables:
             table = self.dicTables[t]
             table.verticalHeader().setVisible(False)
@@ -258,6 +267,20 @@ class LearnBlock(QtGui.QMainWindow):
 
         # shutil.rmtree(tempfile.gettempdir())
         sys.exit(r)
+
+    def updateTextCodeStyle(self):
+        font = QtGui.QFont()
+        font.setFamily('Courier')
+        font.setFixedPitch(True)
+        font.setPointSize(14)
+        self.ui.textCode.setFont(font)
+        self.ui.textCode.setTextColor(QtGui.QColor(255, 255, 255, 255))
+        p = self.ui.textCode.palette()
+        p.setColor(self.ui.textCode.viewport().backgroundRole(), QtGui.QColor(101, 101, 101, 255))
+        self.ui.textCode.setPalette(p)
+
+        c = self.ui.textCode.cursor()
+        # c.palette()
 
     def loadConfigFile(self):
         conf = [f for f in os.listdir(tempfile._get_default_tempdir()) if f.endswith("learnblock.conf")]
@@ -447,7 +470,7 @@ class LearnBlock(QtGui.QMainWindow):
         blocks = self.scene.getListInstructions()
         code = self.parserBlocks(blocks, self.toLBotPy)
         self.ui.textCode.clear()
-        self.ui.textCode.appendPlainText(text + code)
+        self.ui.textCode.setText(text + code)
 
     def checkConnectionToBot(self):
         r = os.system("ping -c 1 -W 1 " + configSSH["ip"])
@@ -849,11 +872,11 @@ class LearnBlock(QtGui.QMainWindow):
             if fromBlocks:
                 code = self.parserBlocks(blocks, self.toLBotPy)
                 self.ui.textCode.clear()
-                self.ui.textCode.appendPlainText(text + code)
+                self.ui.textCode.setText(text + code)
             else:
                 code = self.ui.textCode.toPlainText()
 
-            fh = open(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), "wr")
+            fh = open(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), "w+")
             fh.writelines(text + code)
             fh.close()
 

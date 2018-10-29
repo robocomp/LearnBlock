@@ -9,7 +9,7 @@ from learnbot_dsl.learnbotCode.Language import getLanguage
 import tempfile, uuid, sys
 
 def str2hex(text):
-    if sys.version_info[0]>3:
+    if sys.version_info[0]>=3:
         return text.encode('utf-8').hex()
     else:
         return str(binascii.hexlify(bytes(text)))

@@ -27,7 +27,7 @@ icePaths = []
 #     pass
 
 icePaths.append(os.path.join(os.path.dirname(__file__), "interfaces"))
-
+imgPaths = os.path.join(os.path.dirname(os.path.realpath(__file__)),'imgs')
 for ice in ICEs:
     for p in icePaths:
         if os.path.isfile(os.path.join(p, ice)):
@@ -244,31 +244,31 @@ class Client(Ice.Application, threading.Thread):
 
     def expressFear(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/miedo.png")
+            os.path.join(imgPaths,"miedo.png"))
 
     def expressSurprise(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/sorpresa.png")
+            os.path.join(imgPaths,"sorpresa.png"))
 
     def expressAnger(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/ira.png")
+            os.path.join(imgPaths,"ira.png"))
 
     def expressSadness(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/tristeza.png")
+            os.path.join(imgPaths,"tristeza.png"))
 
     def expressDisgust(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/asco.png")
+            os.path.join(imgPaths,"asco.png"))
 
     def expressJoy(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/alegria.png")
+            os.path.join(imgPaths,"alegria.png"))
 
     def expressNeutral(self):
         self.display_proxy.setImageFromFile(
-            "/home/robocomp/robocomp/learnbot_components/learnbot/learnbot_components/emotionalMotor/imgs/SinEmocion2.png")
+            os.path.join(imgPaths,"SinEmocion2.png"))
 
     def setJointAngle(self, angle):
         self.angleCamera = angle

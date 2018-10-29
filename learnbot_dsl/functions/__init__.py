@@ -10,28 +10,31 @@ ignore = [
 ]
 
 __path = os.path.dirname(os.path.realpath(__file__))
+def getFuntions():
+	functions = {}
+	params = {}
+	paramsDefaults = {}
+	dirnames = [__path]
+	sys.path.append(__path)
 
-functions = {}
-params = {}
-paramsDefaults = {}
-dirnames = [__path]
+	for dirname in dirnames:
+		for filename in os.listdir(dirname):
+			fullname = os.path.join(dirname, filename)
+			name, extension = os.path.splitext(filename)
+			if (os.path.isfile(fullname) and extension != '.py') or filename in ignore:
+				continue
+			if os.path.isdir(fullname):
+				dirnames.append(fullname)
+				continue
+			module_name = dirname.replace('/','.') + '.' + name
+			module_name = module_name[module_name.rfind("learnbot_dsl"):]
+			try:
+				func = getattr(import_module(module_name), name)
+				args = inspect.getargspec(func)
+				functions[name] = func
+				params[name] = args.args[1:]
+				paramsDefaults[name] = args.defaults
+			except Exception as e:
+				print("error", e, module_name, name)
+	return functions
 
-for dirname in dirnames:
-	for filename in os.listdir(dirname):
-		fullname = os.path.join(dirname, filename)
-		name, extension = os.path.splitext(filename)
-		if (os.path.isfile(fullname) and extension != '.py') or filename in ignore:
-			continue
-		if os.path.isdir(fullname):
-			dirnames.append(fullname)
-			continue
-		module_name = dirname.replace('/','.') + '.' + name
-		module_name = module_name[module_name.rfind("learnbot_dsl"):]
-		try:
-			func = getattr(import_module(module_name), name)
-		except Exception as e:
-			print(e, module_name, name)
-		args = inspect.getargspec(func)
-		functions[name] = func
-		params[name] = args.args[1:]
-		paramsDefaults[name] = args.defaults
