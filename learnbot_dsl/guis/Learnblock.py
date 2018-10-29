@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui'
 #
-# Created: Mon Oct 29 12:37:16 2018
+# Created: Mon Oct 29 17:53:08 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -97,6 +97,20 @@ class Ui_MainWindow(object):
         self.connectCameraRobotpushButton = QtGui.QPushButton(self.program_text)
         self.connectCameraRobotpushButton.setObjectName("connectCameraRobotpushButton")
         self.verticalLayout_5.addWidget(self.connectCameraRobotpushButton)
+        self.gridLayout_2 = QtGui.QGridLayout()
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.spinBoxLeterSize = QtGui.QSpinBox(self.program_text)
+        self.spinBoxLeterSize.setMaximumSize(QtCore.QSize(61, 29))
+        self.spinBoxLeterSize.setProperty("value", 12)
+        self.spinBoxLeterSize.setObjectName("spinBoxLeterSize")
+        self.gridLayout_2.addWidget(self.spinBoxLeterSize, 1, 1, 1, 1)
+        self.label = QtGui.QLabel(self.program_text)
+        self.label.setObjectName("label")
+        self.gridLayout_2.addWidget(self.label, 1, 2, 1, 1)
+        self.label_2 = QtGui.QLabel(self.program_text)
+        self.label_2.setObjectName("label_2")
+        self.gridLayout_2.addWidget(self.label_2, 0, 1, 1, 1)
+        self.verticalLayout_5.addLayout(self.gridLayout_2)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_5.addItem(spacerItem1)
         self.verticalLayout_17 = QtGui.QVBoxLayout()
@@ -411,6 +425,8 @@ class Ui_MainWindow(object):
         self.Tabwi.setWhatsThis(QtGui.QApplication.translate("MainWindow", "<html><head/><body><p>H</p><p><br/></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.label_3.setText(QtGui.QApplication.translate("MainWindow", "Program", None, QtGui.QApplication.UnicodeUTF8))
         self.connectCameraRobotpushButton.setText(QtGui.QApplication.translate("MainWindow", "Connect Camera Robot", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("MainWindow", "px", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Size Leter", None, QtGui.QApplication.UnicodeUTF8))
         self.stoptextPushButton.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.startPRTextPushButton.setText(QtGui.QApplication.translate("MainWindow", "Start (physical robot)", None, QtGui.QApplication.UnicodeUTF8))
         self.startSRTextPushButton.setText(QtGui.QApplication.translate("MainWindow", "Start (simulated robot)", None, QtGui.QApplication.UnicodeUTF8))

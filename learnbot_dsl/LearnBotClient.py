@@ -14,7 +14,7 @@ except KeyError:
     ROBOCOMP = os.path.join('opt', 'robocomp')
 
 
-ICEs = ["RGBD.ice", "Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "GenericBase.ice", "Display.ice", "Apriltag.ice" ]
+ICEs = ["RGBD.ice", "Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "GenericBase.ice", "Display.ice", "Apriltag.ice","EmotionRecognition.ice" ]
 
 icePaths = []
 # try:
@@ -42,6 +42,8 @@ import RoboCompJointMotor
 import RoboCompGenericBase
 import RoboCompDisplay
 import RoboCompApriltag
+import RoboCompEmotionRecognition
+
 
 import signal
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -62,6 +64,7 @@ class Client(Ice.Application, threading.Thread):
         self.usList = [1000]*7
         self.lasers_proxys=[]
         self.angleCamera = 0
+        self.emotion_current_exist = False
         global ic
 
         params = copy.deepcopy(sys.argv)
@@ -165,6 +168,30 @@ class Client(Ice.Application, threading.Thread):
                 print(e)
                 print('Cannot get JointMotorPrx property.')
                 raise
+            # Remote object connection for EmotionRecognition
+            try:
+                proxyString = ic.getProperties().getProperty('EmotionRecognition')
+                i = 0
+                try:
+                    while(True):
+                        try:
+                            i += 1
+                            basePrx = ic.stringToProxy(proxyString)
+                            self.emotionrecognition_proxy = RoboCompEmotionRecognition.EmotionRecognitionPrx.checkedCast(basePrx)
+                            break
+                        except Ice.Exception:
+                            if i is 4:
+                                raise
+                            else:
+                                print("try ", i)
+                                time.sleep(1.5)
+                except Ice.Exception:
+                    print('Cannot connect to the remote object (EmotionRecognition)', proxyString)
+                    raise
+            except Ice.Exception as e:
+                print(e)
+                print('Cannot get EmotionRecognition property.')
+                raise
         except Ice.Exception as e:
                 print("Error")
                 traceback.print_exc()
@@ -191,6 +218,7 @@ class Client(Ice.Application, threading.Thread):
         while self.active:
             try:
                 self.apriltag_current_exist = False
+                self.emotion_current_exist = False
                 self.color, self.depth, self.headState, self.baseState = self.rgbd_proxy.getData()
                 if (len(self.color) == 0) or (len(self.depth) == 0):
                         print('Error retrieving images!')
@@ -276,6 +304,17 @@ class Client(Ice.Application, threading.Thread):
         goal.name = 'servo'
         goal.position = -angle
         self.jointmotor_proxy.setPosition(goal)
+
+    def getEmotions(self):
+        if not self.emotion_current_exist:
+            frame = RoboCompEmotionRecognition.TImage()
+            frame.width = self.image.shape[0]
+            frame.height = self.image.shape[1]
+            frame.depth = self.image.shape[2]
+            frame.image = np.fromstring(self.image, np.uint8)
+            self.currents_emotions = self.emotionrecognition_proxy.processimage(frame)
+            self.emotion_current_exist = True
+        return self.currents_emotions
 
     def __del__(self):
             self.active = False

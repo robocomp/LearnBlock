@@ -93,8 +93,6 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         quotationFormat.setForeground(QtCore.Qt.darkGreen)
         self.highlightingRules.append((QtCore.QRegExp("\".*\""),
                 quotationFormat))
-        # self.highlightingRules.append((QtCore.QRegExp("\"\"\".*\"\"\""),
-        #                                quotationFormat))
 
         functionFormat = QtGui.QTextCharFormat()
         functionFormat.setFontItalic(False)
@@ -104,10 +102,11 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.highlightingRules.append((QtCore.QRegExp("\\b[A-Za-z0-9_]+(?=\\()"),
                 functionFormat))
 
-        self.commentStartExpression = QtCore.QRegExp("\"\"\"")
-        self.commentEndExpression = QtCore.QRegExp("\"\"\"")
+        self.commentStartExpression = QtCore.QRegExp("'''")
+        self.commentEndExpression = QtCore.QRegExp("'''")
 
     def highlightBlock(self, text):
+        self.setFormat(0, len(text), QtCore.Qt.white)
         for pattern, format in self.highlightingRules:
             expression = QtCore.QRegExp(pattern)
             index = expression.indexIn(text)
@@ -115,23 +114,21 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                 length = expression.matchedLength()
                 self.setFormat(index, length, format)
                 index = expression.indexIn(text, index + length)
-
         self.setCurrentBlockState(0)
 
         startIndex = 0
         if self.previousBlockState() != 1:
             startIndex = self.commentStartExpression.indexIn(text)
-
+        # print(self.previousBlockState() ,startIndex)
         while startIndex >= 0:
-            endIndex = self.commentEndExpression.indexIn(text, startIndex)
-
+            endIndex = self.commentEndExpression.indexIn(text, startIndex+3)
+            print(startIndex, endIndex)
             if endIndex == -1:
                 self.setCurrentBlockState(1)
                 commentLength = len(text) - startIndex
             else:
                 commentLength = endIndex - startIndex + self.commentEndExpression.matchedLength()
 
-            self.setFormat(startIndex, commentLength,
-                    self.multiLineCommentFormat)
-            startIndex = self.commentStartExpression.indexIn(text, startIndex + commentLength)
+            self.setFormat(startIndex, commentLength,self.multiLineCommentFormat)
 
+            startIndex = self.commentStartExpression.indexIn(text, startIndex + commentLength + 3)

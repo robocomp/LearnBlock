@@ -47,8 +47,7 @@ import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
 import sys
 import time,traceback
 try:
-    lbot = <LearnBotCl
-    ient>.Client(sys.argv)
+    lbot = <LearnBotClient>.Client(sys.argv)
 except Exception as e:
     print("hay un Error")
     traceback.print_exc(file=sys.stdout)
@@ -173,6 +172,8 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionChange_Libraries_path.triggered.connect(self.changeLibraryPath)
         self.ui.actionChange_Workspace.triggered.connect(self.changeWorkSpace)
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
+        self.ui.spinBoxLeterSize.valueChanged.connect(self.updateTextCodeStyle)
+        self.ui.textCode.textChanged.connect(self.updateTextCodeStyle)
 
         # Load image buttons
         self.ui.savepushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"save.png")))
@@ -296,15 +297,14 @@ class LearnBlock(QtGui.QMainWindow):
         font = QtGui.QFont()
         font.setFamily('Courier')
         font.setFixedPitch(True)
-        font.setPointSize(14)
+        font.setPointSize(self.ui.spinBoxLeterSize.value())
         self.ui.textCode.setFont(font)
-        self.ui.textCode.setTextColor(QtGui.QColor(255, 255, 255, 255))
+        self.ui.textCode.setTextColor(QtCore.Qt.white)
+        self.ui.textCode.setCursorWidth(2)
         p = self.ui.textCode.palette()
         p.setColor(self.ui.textCode.viewport().backgroundRole(), QtGui.QColor(101, 101, 101, 255))
         self.ui.textCode.setPalette(p)
 
-        c = self.ui.textCode.cursor()
-        # c.palette()
 
     def loadConfigFile(self):
         conf = [f for f in os.listdir(tempfile._get_default_tempdir()) if f.endswith("learnblock.conf")]
@@ -513,7 +513,10 @@ class LearnBlock(QtGui.QMainWindow):
 
     def startSimulatorRobot(self):
         self.scene.stopAllblocks()
-        fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open xml', os.environ.get('HOME'),
+        path = os.environ.get('HOME')
+        if os.path.exists(os.path.join(os.environ.get('HOME'), "learnbot-xmls")):
+            path = os.path.join(os.environ.get('HOME'), "learnbot-xmls")
+        fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open xml', path,
                                                      'Rcis file (*.xml)')
         self.scene.startAllblocks()
         if fileName[0] != "":
@@ -973,34 +976,35 @@ class LearnBlock(QtGui.QMainWindow):
             text = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
             sys.argv = [' ', 'config']
         text += '\nfunctions.get("stop_bot")(lbot)'
-        fh = open(os.path.join(tempfile.gettempdir(), "stop_main_tmp.py"), "wr")
-        fh.writelines(text)
-        fh.close()
+        with open(os.path.join(tempfile.gettempdir(), "stop_main_tmp.py"), "w+") as fh:
+            fh.writelines(text)
 
     def stopthread(self):
-        try:
-            self.hilo.terminate()
-            self.generateStopTmpFile()
-            self.hilo = Process(target=self.stopExecTmp)
+        if self.hilo is not None:
             try:
-                self.hilo.start()
-            except:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("You should check connection to the robot"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                msgBox.exec_()
-            self.ui.stopPushButton.setEnabled(False)
-            self.ui.startPushButton.setEnabled(True)
-            self.ui.startPRPushButton.setEnabled(True)
-            self.ui.stoptextPushButton.setEnabled(False)
-            self.ui.startPRTextPushButton.setEnabled(True)
-            self.ui.startSRTextPushButton.setEnabled(True)
-        except Exception as e:
-
-            pass
+                self.hilo.terminate()
+                self.generateStopTmpFile()
+                self.hilo = Process(target=self.stopExecTmp)
+                try:
+                    self.hilo.start()
+                except:
+                    msgBox = QtGui.QMessageBox()
+                    msgBox.setWindowTitle(self.trUtf8("Warning"))
+                    msgBox.setIcon(QtGui.QMessageBox.Warning)
+                    msgBox.setText(self.trUtf8("You should check connection to the robot"))
+                    msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                    msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                    msgBox.exec_()
+            except Exception as e:
+                print(e)
+                pass
+            finally:
+                self.ui.stopPushButton.setEnabled(False)
+                self.ui.startPushButton.setEnabled(True)
+                self.ui.startPRPushButton.setEnabled(True)
+                self.ui.stoptextPushButton.setEnabled(False)
+                self.ui.startPRTextPushButton.setEnabled(True)
+                self.ui.startSRTextPushButton.setEnabled(True)
 
     def parserBlocks(self, blocks, function):
         text = self.parserUserFuntions(blocks, function)

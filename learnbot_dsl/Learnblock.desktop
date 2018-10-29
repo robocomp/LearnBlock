@@ -6,5 +6,5 @@ Comment=
 Exec=/usr/local/bin/Learnblock
 Icon=Learnbot_ico.png
 Path=
-Terminal=true
+Terminal=false
 StartupNotify=false

@@ -97,33 +97,15 @@ class Block_Button(QtGui.QPushButton):
         return self.showtext
 
     def removeTmpFile(self):
-        try:
-            os.remove(self.tmpFile)
-        except Exception as e:
-            print(e)
+        pass
+        # try:
+        #     os.remove(self.tmpFile)
+        # except Exception as e:
+        #     print(e)
 
     def updateImg(self):
         if len(self.__dicTrans) is not 0 and self.showtext is not self.__dicTrans[getLanguage()]:
             self.loadImg()
-
-            # self.showtext = self.__dicTrans[getLanguage()]
-            # im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
-            # # change color block
-            # r, g, b, a = cv2.split(im)
-            # rgb = cv2.merge((r, g, b))
-            # hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
-            # h, s, v = cv2.split(hsv)
-            # h = h + self.hue
-            # s = s + 130
-            # hsv = cv2.merge((h, s, v))
-            # im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
-            # r, g, b = cv2.split(im)
-            # im = cv2.merge((r, g, b, a))
-            # img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, None, self.__type)
-            # cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
-            # self.setIcon(QtGui.QIcon(self.tmpFile))
-            # self.setIconSize(QtCore.QSize(135, im.shape[0]))
-            # self.setFixedSize(QtCore.QSize(150, im.shape[0]))
             self.updateToolTip()
 
     def on_clickedButton(self):
