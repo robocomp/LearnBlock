@@ -130,7 +130,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.app.installTranslator(translator)
         self.app.installTranslator(qttranslator)
 
-        self.app.setWindowIcon(QtGui.QIcon(os.path.join(path, 'ico.png')))
+        self.app.setWindowIcon(QtGui.QIcon(os.path.join(path, 'Learnbot_ico.png')))
 
         self.Dialog = QtGui.QMainWindow()
         QtGui.QMainWindow.__init__(self)
