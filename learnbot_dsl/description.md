@@ -30,6 +30,7 @@ For install apriltag you should run the follow command:
     git clone https://github.com/ibarbech/apriltag
     cd apriltag
     mkdir build
+    cd build
     cmake ..
     make -j4
     sudo make install
@@ -41,4 +42,4 @@ For install apriltag you should run the follow command:
 
 For install learnbot-dsl you should run the follow command:
 
-    pip install learnbot-dsl
+    sudo pip install learnbot-dsl

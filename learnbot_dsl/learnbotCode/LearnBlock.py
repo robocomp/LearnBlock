@@ -217,7 +217,13 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.ui.updatepushButton.setVisible(False)
 
+        self.lopenRecent = []
+
         self.loadConfigFile()
+        self.menuOpenRecent = QtGui.QMenu()
+        self.ui.actionOpen_Recent.setMenu(self.menuOpenRecent)
+
+        self.updateOpenRecent()
 
         tmpP = [os.path.join(tempfile._get_default_tempdir(),p) for p in os.listdir(tempfile._get_default_tempdir()) if p.endswith('learnblock')]
         try:
@@ -267,6 +273,24 @@ class LearnBlock(QtGui.QMainWindow):
 
         # shutil.rmtree(tempfile.gettempdir())
         sys.exit(r)
+
+    def updateOpenRecent(self):
+        if self.__fileProject is not None:
+            if self.__fileProject not in self.lopenRecent:
+                self.lopenRecent.insert(0, self.__fileProject)
+            else:
+                self.lopenRecent.insert(0, self.lopenRecent.pop(self.lopenRecent.index(self.__fileProject)))
+        self.menuOpenRecent.clear()
+
+        for f,i in zip(self.lopenRecent, range(len(self.lopenRecent))):
+            if i == 10:
+                break
+            name, ext = os.path.splitext(f)
+            name = os.path.basename(name)
+            qA = QtGui.QAction(name, self.ui.actionOpen_Recent)
+            qA.setShortcut("Ctrl+Shift+"+str(i+1))
+            qA.triggered.connect(lambda:self.openProyect(f))
+            self.menuOpenRecent.addAction(qA)
 
     def updateTextCodeStyle(self):
         font = QtGui.QFont()
@@ -323,7 +347,7 @@ class LearnBlock(QtGui.QMainWindow):
                             break
                     else:
                         break
-                pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath), confFile, 0)
+                pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), confFile, 0)
                 self.confFile = confFile.name
         else:
             with open(os.path.join(tempfile._get_default_tempdir(), conf[0]), 'rb') as fichero:
@@ -331,6 +355,10 @@ class LearnBlock(QtGui.QMainWindow):
                 self.workSpace = d[0]
                 self.ui.language.setCurrentIndex(d[1])
                 self.libraryPath = d[2]
+                try:
+                    self.lopenRecent = d[3]
+                except Exception as e:
+                    pass
             self.confFile = os.path.join(tempfile._get_default_tempdir(), conf[0])
 
     def changeWorkSpace(self):
@@ -351,7 +379,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def saveConfigFile(self):
         with open(self.confFile, 'wb') as fichero:
-            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath), fichero, 0)
+            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), fichero, 0)
 
     def downloadXMLs(self):
         tempXMLs = tempfile.mkdtemp("xmls-ebo")
@@ -681,6 +709,7 @@ class LearnBlock(QtGui.QMainWindow):
                 pickle.dump(
                     (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions, [x[0] for x in self.listLibrary]),
                     fichero, 0)
+            self.updateOpenRecent()
         self.scene.shouldSave = False
 
     def saveAs(self):
@@ -694,16 +723,20 @@ class LearnBlock(QtGui.QMainWindow):
             self.__fileProject = file
             self.saveInstance()
 
-    def openProyect(self):
+    def openProyect(self, file=None):
         if self.scene.shouldSave is False:
             # self.newProject()
-            self.scene.stopAllblocks()
-            fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', self.workSpace,
+            if file is None:
+                self.scene.stopAllblocks()
+                fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', self.workSpace,
                                                          'Block Project file (*.blockProject)')
-            self.scene.startAllblocks()
-            if fileName[0] != "":
+                self.scene.startAllblocks()
+            if file is not None or fileName[0] != "":
                 self.newProject()
-                self.__fileProject = fileName[0]
+                if file is None:
+                    self.__fileProject = fileName[0]
+                else:
+                    self.__fileProject = file
                 self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
@@ -737,6 +770,7 @@ class LearnBlock(QtGui.QMainWindow):
                     self.scene.setBlockDict(d[0])
                     self.scene.startAllblocks()
                     self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
+                self.updateOpenRecent()
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -750,7 +784,7 @@ class LearnBlock(QtGui.QMainWindow):
                 self.saveInstance()
             elif ret == QtGui.QMessageBox.Discard:
                 self.scene.shouldSave = False
-                self.openProyect()
+                self.openProyect(file)
 
     def showCreateBlock(self):
         self.createBlockGui = guiCreateBlock(self.load_blocks)
