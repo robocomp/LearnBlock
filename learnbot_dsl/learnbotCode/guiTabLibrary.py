@@ -14,13 +14,25 @@ class Library(QtGui.QWidget):
         self.ui = TabLibrary.Ui_Form()
         self.parent = parent
         self.ui.setupUi(self)
-        self.pathLibrary = path
         self.ui.tableLibrary.verticalHeader().setVisible(False)
         self.ui.tableLibrary.horizontalHeader().setVisible(False)
         self.ui.tableLibrary.setColumnCount(1)
         self.ui.tableLibrary.setRowCount(0)
         self.namesFunctions = []
         self.listButons = []
+        if not os.path.exists(path):
+            dirs = [self.parent.libraryPath]
+            for dir in dirs:
+                for p in os.listdir(dir):
+                    if p == os.path.basename(path):
+                        path = os.path.join(dir, p)
+                        dirs = []
+                        break
+                    if os.path.isdir(os.path.join(dir, p)):
+                        dirs.append(os.path.join(dir, p))
+                    if os.path.isfile(os.path.join(dir, p)):
+                        continue
+        self.pathLibrary = path
         for subPath in [os.path.join(path, x) for x in os.listdir(path)]:
             if os.path.isdir(os.path.abspath(subPath)):
                 for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:

@@ -341,6 +341,7 @@ class LearnBlock(QtGui.QMainWindow):
                 self.lopenRecent.insert(0, self.lopenRecent.pop(self.lopenRecent.index(self.__fileProject)))
         self.menuOpenRecent.clear()
         lqA = []
+        self.lopenRecent = [p for p in self.lopenRecent if os.path.exists(p)]
         for f,i in zip(self.lopenRecent, range(len(self.lopenRecent))):
             if i == 9:
                 break
@@ -438,6 +439,25 @@ class LearnBlock(QtGui.QMainWindow):
     def saveConfigFile(self):
         with open(self.confFile, 'wb') as fichero:
             pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), fichero, 0)
+
+    def downloadLibraries(self):
+        if internet_on():
+            tempLibraries = tempfile.mkdtemp("Libraries-ebo")
+            pathzip = os.path.join(tempLibraries, "Libraries.zip")
+            self.dw = DownloadingWindow(self, self.trUtf8("Donwloading Libraries files please wait"), self.trUtf8("Donwloading Libraries"))
+            self.dw.show()
+            self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/Libraries.zip", pathzip, self.dw)
+            self.dwTh.start()
+            self.dwTh.finished.connect(lambda : self.unzip(pathzip, tempLibraries, self.libraryPath))
+
+        else:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setWindowTitle(self.trUtf8("Warning"))
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setText(self.trUtf8("Your computer does not have an internet connection."))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.exec_()
 
     def downloadExamples(self):
         if internet_on():
@@ -809,7 +829,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def saveAs(self):
         self.scene.stopAllblocks()
-        fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', '.', 'Block Project file (*.blockProject)')
+        fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', self.workSpace, 'Block Project file (*.blockProject)')
         self.scene.startAllblocks()
         if fileName[0] != "" and fileName[1] == "Block Project file (*.blockProject)":
             file = fileName[0]
