@@ -226,6 +226,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
         self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
         self.ui.actionDownload_examples.triggered.connect(self.downloadExamples)
+        self.ui.actionDownload_libraries.triggered.connect(self.downloadLibraries)
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.actionChange_Libraries_path.triggered.connect(self.changeLibraryPath)
         self.ui.actionChange_Workspace.triggered.connect(self.changeWorkSpace)
@@ -860,9 +861,10 @@ class LearnBlock(QtGui.QMainWindow):
                     try:
                         for path in d[5]:
                             nameLibrary = os.path.basename(path)
-                            if path not in self.listLibrary:
-                                self.listLibraryWidget.append(Library(self, path))
-                                self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
+                            l = Library(self, path)
+                            if l.pathLibrary is not None:
+                                self.listLibraryWidget.append(l)
+                                self.listLibrary.append((l.pathLibrary, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
                     except:
                         pass
 

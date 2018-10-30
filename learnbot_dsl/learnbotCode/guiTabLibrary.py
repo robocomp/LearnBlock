@@ -22,22 +22,27 @@ class Library(QtGui.QWidget):
         self.listButons = []
         if not os.path.exists(path):
             dirs = [self.parent.libraryPath]
+            exist = False
             for dir in dirs:
                 for p in os.listdir(dir):
                     if p == os.path.basename(path):
                         path = os.path.join(dir, p)
                         dirs = []
+                        exist = True
                         break
                     if os.path.isdir(os.path.join(dir, p)):
                         dirs.append(os.path.join(dir, p))
                     if os.path.isfile(os.path.join(dir, p)):
                         continue
+            if not exist:
+                path = None
         self.pathLibrary = path
-        for subPath in [os.path.join(path, x) for x in os.listdir(path)]:
-            if os.path.isdir(os.path.abspath(subPath)):
-                for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
-                    if os.path.splitext(subsubPath)[-1] == ".conf":
-                        self.load(parserConfigBlock(subsubPath))
+        if path is not None:
+            for subPath in [os.path.join(path, x) for x in os.listdir(path)]:
+                if os.path.isdir(os.path.abspath(subPath)):
+                    for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
+                        if os.path.splitext(subsubPath)[-1] == ".conf":
+                            self.load(parserConfigBlock(subsubPath))
 
     def load(self, functions):
         listRepitFuntions = []

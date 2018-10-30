@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui'
 #
-# Created: Tue Oct 30 16:11:06 2018
+# Created: Tue Oct 30 18:04:19 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -382,6 +382,8 @@ class Ui_MainWindow(object):
         self.actionOpen_Recent.setObjectName("actionOpen_Recent")
         self.actionDownload_examples = QtGui.QAction(MainWindow)
         self.actionDownload_examples.setObjectName("actionDownload_examples")
+        self.actionDownload_libraries = QtGui.QAction(MainWindow)
+        self.actionDownload_libraries.setObjectName("actionDownload_libraries")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_New_block)
@@ -404,6 +406,7 @@ class Ui_MainWindow(object):
         self.menuTools_robot.addSeparator()
         self.menuTools_robot.addAction(self.actionDownload_xmls)
         self.menuTools_robot.addAction(self.actionDownload_examples)
+        self.menuTools_robot.addAction(self.actionDownload_libraries)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuTools_robot.menuAction())
 
@@ -486,4 +489,5 @@ class Ui_MainWindow(object):
         self.actionChange_Workspace.setShortcut(QtGui.QApplication.translate("MainWindow", "Shift+W", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen_Recent.setText(QtGui.QApplication.translate("MainWindow", "Open Recent", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDownload_examples.setText(QtGui.QApplication.translate("MainWindow", "Download examples", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionDownload_libraries.setText(QtGui.QApplication.translate("MainWindow", "Download libraries", None, QtGui.QApplication.UnicodeUTF8))
 

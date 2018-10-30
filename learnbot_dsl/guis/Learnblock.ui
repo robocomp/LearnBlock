@@ -700,6 +700,7 @@
     <addaction name="separator"/>
     <addaction name="actionDownload_xmls"/>
     <addaction name="actionDownload_examples"/>
+    <addaction name="actionDownload_libraries"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools_robot"/>
@@ -819,6 +820,11 @@
   <action name="actionDownload_examples">
    <property name="text">
     <string>Download examples</string>
+   </property>
+  </action>
+  <action name="actionDownload_libraries">
+   <property name="text">
+    <string>Download libraries</string>
    </property>
   </action>
  </widget>
