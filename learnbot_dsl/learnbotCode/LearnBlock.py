@@ -41,7 +41,6 @@ from future.standard_library import install_aliases
 install_aliases()
 from urllib.request import urlopen
 from urllib.error import URLError
-import threading
 HEADER = """
 #EXECUTION: python code_example.py config
 from __future__ import print_function, absolute_import
@@ -443,7 +442,7 @@ class LearnBlock(QtGui.QMainWindow):
     def downloadExamples(self):
         if internet_on():
             tempXMLs = tempfile.mkdtemp("examples-ebo")
-            pathzip = os.path.join(tempXMLs, "xmls.zip")
+            pathzip = os.path.join(tempXMLs, "examples.zip")
             self.dw = DownloadingWindow(self, self.trUtf8("Donwloading Examples files please wait"), self.trUtf8("Donwloading Examples"))
             self.dw.show()
             self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/examples.zip", pathzip, self.dw)
