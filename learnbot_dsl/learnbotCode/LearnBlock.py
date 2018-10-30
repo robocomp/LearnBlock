@@ -283,15 +283,16 @@ class LearnBlock(QtGui.QMainWindow):
             else:
                 self.lopenRecent.insert(0, self.lopenRecent.pop(self.lopenRecent.index(self.__fileProject)))
         self.menuOpenRecent.clear()
-
+        lqA = []
         for f,i in zip(self.lopenRecent, range(len(self.lopenRecent))):
-            if i == 10:
+            if i == 9:
                 break
+            print(f)
             name, ext = os.path.splitext(f)
             name = os.path.basename(name)
-            qA = QtGui.QAction(name, self.ui.actionOpen_Recent)
+            qA =(QtGui.QAction(name, self.ui.actionOpen_Recent))
             qA.setShortcut("Ctrl+Shift+"+str(i+1))
-            qA.triggered.connect(lambda:self.openProyect(f))
+            qA.triggered.connect(lambda f=f: self.openProyect(f))
             self.menuOpenRecent.addAction(qA)
 
     def updateTextCodeStyle(self):
@@ -742,6 +743,7 @@ class LearnBlock(QtGui.QMainWindow):
                 else:
                     self.__fileProject = file
                 self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+                print(self.__fileProject)
                 with open(self.__fileProject, 'rb') as fichero:
                     d = pickle.load(fichero)
                     # Load Libraries
