@@ -37,8 +37,11 @@ from learnbot_dsl.learnbotCode.parserConfig import configSSH
 from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.learnbotCode.guiTabLibrary import Library
 from learnbot_dsl.learnbotCode.Highlighter import *
-
-
+from future.standard_library import install_aliases
+install_aliases()
+from urllib.request import urlopen
+from urllib.error import URLError
+import threading
 HEADER = """
 #EXECUTION: python code_example.py config
 from __future__ import print_function, absolute_import
@@ -59,6 +62,60 @@ except Exception as e:
 
 path = os.path.dirname(os.path.realpath(__file__))
 
+class DownloadThread(QtCore.QThread):
+    def __init__(self, url, tmp_file_name, downloading_window):
+        QtCore.QThread.__init__(self)
+        self.url = url
+        self.tmp_file_name = tmp_file_name
+        self.downloading_window = downloading_window
+
+    def run(self):
+        u = urlopen(self.url)
+        with open(self.tmp_file_name, 'wb') as f:
+            downloaded_bytes = 0
+            block_size = 1024 * 8
+            while True:
+                buffer = u.read(block_size)
+                if not buffer:
+                    break
+
+                f.write(buffer)
+                downloaded_bytes += block_size
+        self.downloading_window.finish = True
+        return
+
+class DownloadingWindow(QtGui.QWidget):
+    def __init__(self, parent, text, titel ):
+        QtGui.QWidget.__init__(self)
+        self.parent = parent
+        vbox = QtGui.QVBoxLayout()
+        self.setWindowTitle(titel)
+        label = QtGui.QLabel(text)
+        label.setAlignment(QtCore.Qt.AlignCenter)
+        vbox.addWidget(label)
+
+        self.progress_bar = QtGui.QProgressBar()
+        self.progress_bar.setAlignment(QtCore.Qt.AlignCenter)
+        vbox.addWidget(self.progress_bar)
+        self.setLayout(vbox)
+        self.setGeometry(300, 300, 300, 50)
+        self.progress_bar.setRange(0,0)
+        self.move(self.parent.pos() + self.parent.rect().center() - self.rect().center())
+        self.finish = False
+        self.timer = QtCore.QTimer()
+        self.timer.timeout.connect(self.run)
+        self.timer.start(100)
+
+    def run(self):
+        if self.finish:
+            self.close()
+
+def internet_on():
+    try:
+        urlopen('http://216.58.192.142', timeout=1)
+        return True
+    except URLError as err:
+        return False
 
 def loadfile(file):
     fh = open(file, "r")
@@ -169,6 +226,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
         self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
+        self.ui.actionDownload_examples.triggered.connect(self.downloadExamples)
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.actionChange_Libraries_path.triggered.connect(self.changeLibraryPath)
         self.ui.actionChange_Workspace.triggered.connect(self.changeWorkSpace)
@@ -287,7 +345,6 @@ class LearnBlock(QtGui.QMainWindow):
         for f,i in zip(self.lopenRecent, range(len(self.lopenRecent))):
             if i == 9:
                 break
-            print(f)
             name, ext = os.path.splitext(f)
             name = os.path.basename(name)
             qA =(QtGui.QAction(name, self.ui.actionOpen_Recent))
@@ -383,16 +440,48 @@ class LearnBlock(QtGui.QMainWindow):
         with open(self.confFile, 'wb') as fichero:
             pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), fichero, 0)
 
+    def downloadExamples(self):
+        if internet_on():
+            tempXMLs = tempfile.mkdtemp("examples-ebo")
+            pathzip = os.path.join(tempXMLs, "xmls.zip")
+            self.dw = DownloadingWindow(self, self.trUtf8("Donwloading Examples files please wait"), self.trUtf8("Donwloading Examples"))
+            self.dw.show()
+            self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/examples.zip", pathzip, self.dw)
+            self.dwTh.start()
+            self.dwTh.finished.connect(lambda : self.unzip(pathzip,tempXMLs,self.workSpace))
+
+        else:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setWindowTitle(self.trUtf8("Warning"))
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setText(self.trUtf8("Your computer does not have an internet connection."))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.exec_()
+
     def downloadXMLs(self):
-        tempXMLs = tempfile.mkdtemp("xmls-ebo")
-        r = requests.get("https://github.com/robocomp/learnbot/archive/xmls.zip")
-        pathzip = os.path.join(tempXMLs, "xmls.zip")
+        if internet_on():
+            tempXMLs = tempfile.mkdtemp("xmls-ebo")
+            pathzip = os.path.join(tempXMLs, "xmls.zip")
+            self.dw = DownloadingWindow(self, self.trUtf8("Donwloading XML's files please wait"), self.trUtf8("Donwloading XML's"))
+            self.dw.show()
+            self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/xmls.zip", pathzip, self.dw)
+            self.dwTh.start()
+            self.dwTh.finished.connect(lambda : self.unzip(pathzip,tempXMLs,os.environ.get('HOME')))
 
-        with open(pathzip, "wb") as code:
-            code.write(r.content)
+        else:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setWindowTitle(self.trUtf8("Warning"))
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setText(self.trUtf8("Your computer does not have an internet connection."))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.exec_()
 
-        Archive(pathzip).extractall(os.environ.get('HOME'))
-
+    def unzip(self, pathzip, tempXMLs, outputPath):
+        del self.dwTh
+        del self.dw
+        Archive(pathzip).extractall(outputPath)
         for f in os.listdir(tempXMLs):
             os.remove(os.path.join(tempXMLs, f))
         os.removedirs(tempXMLs)
@@ -410,6 +499,8 @@ class LearnBlock(QtGui.QMainWindow):
                 print("Connect Camera Successfully")
             except Exception as e:
                 print("Error connect Streamer\n", e)
+        else:
+            self.client = None
 
     def readCamera(self,image):
         try:

@@ -699,6 +699,7 @@
     <addaction name="actionShutdown"/>
     <addaction name="separator"/>
     <addaction name="actionDownload_xmls"/>
+    <addaction name="actionDownload_examples"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTools_robot"/>
@@ -813,6 +814,11 @@
   <action name="actionOpen_Recent">
    <property name="text">
     <string>Open Recent</string>
+   </property>
+  </action>
+  <action name="actionDownload_examples">
+   <property name="text">
+    <string>Download examples</string>
    </property>
   </action>
  </widget>
