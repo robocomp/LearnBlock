@@ -55,7 +55,6 @@ class Library(QtGui.QWidget):
             variables = []
             funtionType = LIBRARY
             HUE = HUE_LIBRARY
-            # blockType = None
             for img in f.img:
                 img = os.path.join(imgPath, img)
                 blockType, connections = loadConfigBlock(img)

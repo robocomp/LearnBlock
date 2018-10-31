@@ -251,9 +251,7 @@ for f in imports:
 
 
 def __process(line, list_var=[], text="", index=0):
-    # print("------------Procesando ",line)
     TYPE = line.getName()
-    # print("\t",TYPE, line)
 
     if TYPE is 'MAIN':
         for cLine in line.content:
@@ -337,8 +335,6 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 # ---------------------------------------
 
 def __processASSIG(line, text="", index=0):
-    # print(line
-    # print("------------------------__processASSIG-----", line[1])
     text += "\t" * index + line.name[0] + " = " + __process(line[1]) + "\n"
     return text
 
@@ -365,7 +361,6 @@ def __processDEACTIVATE(line, text="", index=0):
 
 
 def __processWHILE(line, text="", index=0):
-    # print("-----------------------------------------------------",index)
     text += "\n" + "\t" * index + "while "
     for c in line.condition:
         text += __process(line.condition[0])
@@ -383,12 +378,8 @@ def __processWHEN(line, list_var, text="", index=0):
     global ini
     text += "\ndef when_" + str(line.name[0]) + "():\n"
     index += 1
-    # list_var.append("time_" + str(line.name[0]))
-    # list_var.append(str(line.name[0]) + "_start")
     for x in list_var:
         text += "\t" * index + "global " + x + "\n"
-    # text += "\t"*index + "global " + "time_" + str(line.name[0]) + "\n"
-    # text += "\t"*index + "global " + str(line.name[0]) + "_start\n"
     if str(line.name[0]) != "start":
         text += "\t" * index + "if time_" + str(line.name[0]) + " is 0:\n\t\t" + str(
         line.name[0]) + "_start = time.time()\n"
@@ -430,7 +421,6 @@ def __processCOMPOP(line, text="", index=0):
 
 
 def __processSIMPLECONDITION(line, text="", index=0):
-    # print("------------------------", line)
     for field in line:
         TYPE = field.getName()
         if TYPE is 'NOT':
@@ -439,8 +429,6 @@ def __processSIMPLECONDITION(line, text="", index=0):
             text += __process(field)
         elif TYPE is "COMPOP":
             text += __processCOMPOP(field)
-        # else:
-        # text += field
     return text
 
 
@@ -500,7 +488,6 @@ def parserLearntBotCodeOnlyUserFuntion(code):
     return text
 
 def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
-    # print("----------------------------------" + inputFile + "----------------------------------------------")
     try:
         tree = __parserFromFile(inputFile)
     except Exception as e:
@@ -510,7 +497,6 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\treturn time_global > umbral\n\n"
     text += __generatePy(tree)
 
-    # print("------------------\n", text "\n------------------")
     if physicalRobot:
         header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
     else:

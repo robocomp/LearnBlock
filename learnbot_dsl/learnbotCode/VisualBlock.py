@@ -246,7 +246,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.delete()
 
     def start(self):
-        # self.update()
         self.timer.start(5)
 
     def stop(self):
@@ -467,10 +466,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                     self.DialogVar.close()
             if event.button() is QtCore.Qt.MouseButton.RightButton:
                 self.popMenu.exec_(event.screenPos())
-                # self.scene.setIdItemSelected(None)
-                # if self.DialogVar is not None:
-                #     self.DialogVar.open()
-                #     self.scene.setTable(self.DialogVar)
 
     def mouseDoubleClickEvent(self, event):
         if self.isEnabled():
@@ -508,7 +503,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 c.getConnect().setConnect(None)
                 c.getConnect().setItem(None)
         if self.parentBlock.name == "when":
-            # self.scene.removeByNameControl(self.parentBlock.nameControl)
             self.scene.parent.delWhen(self.parentBlock.nameControl)
         if self.parentBlock.name == "main":
             self.scene.parent.mainButton.setEnabled(True)

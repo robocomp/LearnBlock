@@ -3,6 +3,11 @@ import os,sys, shutil
 def read(fname):
       with open(os.path.join(os.path.dirname(__file__), fname)) as f:
             return f.read()
+def readVersion(fname):
+    with open(fname,'rb') as f:
+        for l in f.readlines():
+            if '__version__' in l:
+                return l.split("=")[-1].replace("'","").replace(" ","")
 setup(name="learnbot_components",
     version=read('version'),
     description="learnbot_components contains some components to install in learnbot robot.",

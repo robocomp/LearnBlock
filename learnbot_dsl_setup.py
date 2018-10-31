@@ -3,9 +3,14 @@ import os,sys, shutil
 def read(fname):
       with open(os.path.join(os.path.dirname(__file__), fname)) as f:
             return f.read()
+def readVersion(fname):
+    with open(fname,'rb') as f:
+        for l in f.readlines():
+            if '__version__' in l:
+                return l.split("=")[-1].replace("'","").replace(" ","")
 
 setup(name="learnbot_dsl",
-    version=read('version'),
+    version=readVersion(os.path.join(os.path.dirname(__file__),"learnbot_dsl","__init__.py")),
     description="Learnblock is a IDE for program learnbot using blocks",
     author="Ivan Barbecho",
     author_email="ivanbd@unex.es",

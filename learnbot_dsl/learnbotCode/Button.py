@@ -30,7 +30,6 @@ class Block_Button(QtGui.QPushButton):
             self.__blockType = abstracBlock.typeBlock
             self.__type = abstracBlock.type
             self.hue = abstracBlock.hue
-            # self.tmpFile = os.path.join(tempfile.gettempdir(), str(uuid.uuid4().hex) + ".png")
 
         QtGui.QPushButton.__init__(self)
         #change color block

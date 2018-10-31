@@ -31,16 +31,6 @@ if len(ROBOCOMP)<1:
 
 additionalPathStr = ''
 icePaths = [os.path.dirname(__file__)]
-# try:
-# 	icePaths.append('/opt/robocomp/interfaces')
-# 	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-# 	for p in SLICE_PATH:
-# 		icePaths.append(p)
-# 		additionalPathStr += ' -I' + p + ' '
-# except:
-# 	print('SLICE_PATH environment variable was not exported. Using only the default paths')
-# 	pass
-
 ice_Apriltag = False
 for p in icePaths:
 	if os.path.isfile(p+'/Apriltag.ice'):

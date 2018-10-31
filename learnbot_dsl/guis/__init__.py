@@ -1,34 +1,7 @@
 from __future__ import print_function, absolute_import
 import os, sys
 from subprocess import call
-# import learnbot_dsl.guis.DelWhen as DelWhen
-# import learnbot_dsl.guis.TabLibrary as TabLibrary
-# import learnbot_dsl.guis.Learnblock as Learnblock
-# import learnbot_dsl.guis.UpdatedSuccessfully as UpdatedSuccessfully
-# import learnbot_dsl.guis.AddNumberOrString as AddNumberOrString
-# import learnbot_dsl.guis.DelVar as DelVar
-# import learnbot_dsl.guis.CreateFunctions as CreateFunctions
-# import learnbot_dsl.guis.CreateBlock as CreateBlock
-# import learnbot_dsl.guis.AddVar as AddVar
-# import learnbot_dsl.guis.EditVar as EditVar
-# import learnbot_dsl.guis.AddWhen as AddWhen
-
 path = os.path.dirname(os.path.realpath(__file__))
-# sys.path.append(path)
-# __all__ = ['pathGuis',
-#            'DelWhen',
-#            'TabLibrary',
-#            'Learnblock',
-#            'UpdatedSuccessfully',
-#            'AddNumberOrString',
-#            'DelVar',
-#            'CreateFunctions',
-#            'CreateBlock',
-#            'AddVar',
-#            'EditVar.py',
-#            'AddWhen'
-#            ]
-
 pathGuis = path
 
 for x in os.listdir(path):
@@ -43,14 +16,3 @@ for x in os.listdir(path):
             else:
                 print("pyside-uic", "-o", os.path.splitext(x)[-1] + ".py", x + "    successfully")
 
-# import learnbot_dsl.guis.DelWhen as DelWhen
-# import learnbot_dsl.guis.TabLibrary as TabLibrary
-# import learnbot_dsl.guis.Learnblock as Learnblock
-# import learnbot_dsl.guis.UpdatedSuccessfully as UpdatedSuccessfully
-# import learnbot_dsl.guis.AddNumberOrString as AddNumberOrString
-# import learnbot_dsl.guis.DelVar as DelVar
-# import learnbot_dsl.guis.CreateFunctions as CreateFunctions
-# import learnbot_dsl.guis.CreateBlock as CreateBlock
-# import learnbot_dsl.guis.AddVar as AddVar
-# import learnbot_dsl.guis.EditVar as EditVar
-# import learnbot_dsl.guis.AddWhen as AddWhen

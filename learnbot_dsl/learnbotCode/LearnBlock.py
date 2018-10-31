@@ -2,12 +2,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 import sys
-if sys.version_info[0] < 3:
-    import cPickle as pickle
-else:
-    import _pickle as pickle
+import pickle
 import tempfile
-# import learnbot_dsl.LearnBotClient as LearnBotClient
 import shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko
 from PIL import Image
 from pyunpack import Archive
@@ -29,7 +25,6 @@ import learnbot_dsl.guis.Learnblock as Learnblock
 from learnbot_dsl.guis import pathGuis
 import learnbot_dsl.guis.AddVar as AddVar
 import learnbot_dsl.guis.DelWhen as DelWhen
-# import learnbot_dsl.guis.CreateBlock as CreateBlock
 import learnbot_dsl.guis.CreateFunctions as CreateFunctions
 import learnbot_dsl.guis.DelVar as DelVar
 from learnbot_dsl.learnbotCode.Language import changeLanguageTo
@@ -136,7 +131,6 @@ def on_message(client, userdata, message):
     image_stream.write(data)
     image = Image.open(image_stream)
     open_cv_image = np.array(image)
-    # open_cv_image = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2RGB)
     image = toQImage(open_cv_image)
     try:
         signal.signalUpdateStreamer[QtGui.QImage].emit(image)
@@ -165,10 +159,8 @@ class LearnBlock(QtGui.QMainWindow):
         self.__fileProject = None
         self.hilo = None
         self.physicalRobot = False
-
         # Create the application
         self.app = QtGui.QApplication(sys.argv)
-        # self.app.aboutToQuit.connect(self.exit)
 
         # Load tranlators
         self.translators = {}
@@ -279,23 +271,18 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.lopenRecent = []
 
+        tempfile.tempdir = os.path.join(os.getenv('HOME'), ".learnblock")
+        if not os.path.exists(tempfile.gettempdir()):
+            tempfile.tempdir = os.path.join(os.getenv('HOME'), ".learnblock")
+            os.mkdir(tempfile.gettempdir())
+            print(os.path.join(tempfile.gettempdir(), "__init__.py"))
+            with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
+                f.write("")
         self.loadConfigFile()
         self.menuOpenRecent = QtGui.QMenu()
         self.ui.actionOpen_Recent.setMenu(self.menuOpenRecent)
 
         self.updateOpenRecent()
-
-        tmpP = [os.path.join(tempfile._get_default_tempdir(),p) for p in os.listdir(tempfile._get_default_tempdir()) if p.endswith('learnblock')]
-        try:
-            if len(tmpP)!=1:
-                tempfile.tempdir = tempfile.mkdtemp("learnblock")
-                with open(os.path.join(tempfile.gettempdir(), "__init__.py"),'w') as f:
-                    f.write("")
-            else:
-                tempfile.tempdir = tmpP[0]
-        except Exception as e:
-            print(e)
-            pass
 
         self.load_blocks()
         self.avtiveEvents(False)
@@ -303,35 +290,12 @@ class LearnBlock(QtGui.QMainWindow):
         self.cameraScene = QtGui.QGraphicsScene()
         self.ui.cameragraphicsView.setScene(self.cameraScene)
 
-
-
         self.connectCameraRobot()
 
-        # Check change on git repository
-        # self.pathrepo = os.path.dirname(os.path.dirname(path))
-        # try:
-        #     urllib2.urlopen('http://216.58.192.142', timeout=1)
-        #     self.repo = git.Repo(self.pathrepo)
-        #     local_commit = self.repo.commit()
-        #     remote = self.repo.remote()
-        #     info = remote.fetch()[0]
-        #     remote_commit = info.commit
-        #     if local_commit.committed_date < remote_commit.committed_date:
-        #         self.ui.updatepushButton.setVisible(True)
-        #         self.ui.updatepushButton.clicked.connect(self.updateLearnblock)
-        #     else:
-        #         self.ui.updatepushButton.setVisible(False)
-        # except urllib2.URLError as e:
-        #     self.ui.updatepushButton.setVisible(False)
-        # except Exception as e:
         self.client=None
         # Execute the application
         r = self.app.exec_()
 
-        # for b in self.listButtons:
-        #     b.removeTmpFile()
-
-        # shutil.rmtree(tempfile.gettempdir())
         sys.exit(r)
 
     def updateOpenRecent(self):
@@ -367,10 +331,9 @@ class LearnBlock(QtGui.QMainWindow):
 
 
     def loadConfigFile(self):
-        conf = [f for f in os.listdir(tempfile._get_default_tempdir()) if f.endswith("learnblock.conf")]
-        print(conf)
-        if len(conf) != 1:
-            with tempfile.NamedTemporaryFile(suffix="learnblock.conf",delete=False) as confFile:
+        self.confFile = os.path.join(tempfile.gettempdir(), "learnblock.conf")
+        if not os.path.exists(self.confFile):
+            with open(self.confFile,'wb') as confFile:
                 while True:
                     self.workSpace = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose workspace directory'), os.environ.get('HOME'),
                                                                   QtGui.QFileDialog.ShowDirsOnly)
@@ -407,10 +370,10 @@ class LearnBlock(QtGui.QMainWindow):
                             break
                     else:
                         break
-                pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), confFile, 0)
-                self.confFile = confFile.name
+                pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), confFile, protocol=0)
+
         else:
-            with open(os.path.join(tempfile._get_default_tempdir(), conf[0]), 'rb') as fichero:
+            with open(self.confFile, 'rb') as fichero:
                 d = pickle.load(fichero)
                 self.workSpace = d[0]
                 self.ui.language.setCurrentIndex(d[1])
@@ -419,11 +382,10 @@ class LearnBlock(QtGui.QMainWindow):
                     self.lopenRecent = d[3]
                 except Exception as e:
                     pass
-            self.confFile = os.path.join(tempfile._get_default_tempdir(), conf[0])
 
     def changeWorkSpace(self):
         newworkSpace = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose workspace directory'),
-                                                                os.environ.get('HOME'),
+                                                                self.workSpace,
                                                                 QtGui.QFileDialog.ShowDirsOnly)
         if newworkSpace is "":
             return
@@ -431,7 +393,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def changeLibraryPath(self):
         newlibraryPath = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose the libraries directory'),
-                                                                  os.environ.get('HOME'),
+                                                                  self.libraryPath,
                                                                   QtGui.QFileDialog.ShowDirsOnly)
         if newlibraryPath is "":
             return
@@ -439,7 +401,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def saveConfigFile(self):
         with open(self.confFile, 'wb') as fichero:
-            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), fichero, 0)
+            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), fichero, protocol=0)
 
     def downloadLibraries(self):
         if internet_on():
@@ -462,13 +424,13 @@ class LearnBlock(QtGui.QMainWindow):
 
     def downloadExamples(self):
         if internet_on():
-            tempXMLs = tempfile.mkdtemp("examples-ebo")
-            pathzip = os.path.join(tempXMLs, "examples.zip")
+            tempExamples = tempfile.mkdtemp("examples-ebo")
+            pathzip = os.path.join(tempExamples, "examples.zip")
             self.dw = DownloadingWindow(self, self.trUtf8("Donwloading Examples files please wait"), self.trUtf8("Donwloading Examples"))
             self.dw.show()
             self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/examples.zip", pathzip, self.dw)
             self.dwTh.start()
-            self.dwTh.finished.connect(lambda : self.unzip(pathzip,tempXMLs,self.workSpace))
+            self.dwTh.finished.connect(lambda : self.unzip(pathzip,tempExamples,self.workSpace))
 
         else:
             msgBox = QtGui.QMessageBox()
@@ -592,15 +554,6 @@ class LearnBlock(QtGui.QMainWindow):
         if self.client is not None:
             self.client.disconnect()
 
-    # def updateLearnblock(self):
-    #     remote = self.repo.remote()
-    #     remote.pull()
-    #     if os.system(os.path.join(self.pathrepo, "setupLearnBlock") + " install") != 0:
-    #         gui = guiupdatedSuccessfully.Ui_Updated()
-    #         self.updatedSuccessfullydialog = QtGui.QDialog()
-    #         gui.setupUi(self.updatedSuccessfullydialog)
-    #         self.updatedSuccessfullydialog.open()
-
     def blocksToText(self):
         text=""
         for library in self.listLibrary:
@@ -722,7 +675,6 @@ class LearnBlock(QtGui.QMainWindow):
         translator, qttranslator = self.translators[l[self.ui.language.currentIndex()]]
         self.app.installTranslator(translator)
         self.app.installTranslator(qttranslator)
-        # self.app.installTranslator(self.translators[l[self.ui.language.currentIndex()]])
         self.currentTranslator = self.translators[l[self.ui.language.currentIndex()]]
         self.ui.retranslateUi(self)
         for b in self.listButtons:
@@ -762,7 +714,6 @@ class LearnBlock(QtGui.QMainWindow):
                 funtionType = FUNTION
                 HUE = HUE_OTHERS
 
-            # blockType = None
             for img in f.img:
                 blockType, connections = loadConfigBlock(img)
                 table = self.dicTables[f.type[0]]
@@ -794,7 +745,6 @@ class LearnBlock(QtGui.QMainWindow):
                 sys.argv = [' ', os.path.join(path,"etc", "configSimulate")]
                 robot = "simulate"
 
-            # execfile("stop_main_tmp.py")
             sys.path.insert(0, tempfile.gettempdir())
             import stop_main_tmp
         except Exception as e:
@@ -824,7 +774,7 @@ class LearnBlock(QtGui.QMainWindow):
                     block.file = os.path.basename(block.file)
                 pickle.dump(
                     (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions, [x[0] for x in self.listLibrary]),
-                    fichero, 0)
+                    fichero, protocol=0)
             self.updateOpenRecent()
         self.scene.shouldSave = False
 
@@ -841,7 +791,6 @@ class LearnBlock(QtGui.QMainWindow):
 
     def openProyect(self, file=None):
         if self.scene.shouldSave is False:
-            # self.newProject()
             if file is None:
                 self.scene.stopAllblocks()
                 fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', self.workSpace,
@@ -906,7 +855,6 @@ class LearnBlock(QtGui.QMainWindow):
 
     def showCreateBlock(self):
         self.createBlockGui = guiCreateBlock(self.load_blocks)
-        # self.createBlockGui.ui.pushButtonOK.clicked.connect(self.load_blocks)
         self.createBlockGui.open()
 
     def showGuiAddNumberOrString(self, type):

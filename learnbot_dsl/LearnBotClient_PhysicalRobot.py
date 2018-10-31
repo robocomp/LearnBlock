@@ -18,14 +18,6 @@ except KeyError:
 ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "EmotionRecognition.ice", "EmotionalMotor.ice", "GenericBase.ice", "Apriltag.ice" ]
 
 icePaths = []
-# try:
-#     SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-#     for p in SLICE_PATH:
-#         icePaths.append(p)
-#     icePaths.append(os.path.join(ROBOCOMP, "interfaces"))
-# except:
-#     print('SLICE_PATH environment variable was not exported. Using only the default paths')
-#     pass
 icePaths.append(os.path.join(os.path.dirname(__file__), "interfaces"))
 
 for ice in ICEs:
@@ -50,11 +42,6 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 ic = None
 
-
-# class MySignal(QtCore.QObject):
-#     signalUpdateStreamer = QtCore.Signal(np.ndarray)
-
-# signalCamera = None
 open_cv_image = np.zeros((240,320,3), np.uint8)
 newImage = False
 def on_message(client, userdata, message):
@@ -199,11 +186,7 @@ class Client(Ice.Application, threading.Thread):
                 print('Cannot get JointMotorPrx property.')
                 raise
             try:
-                # self.stream = urllib.urlopen('http://192.168.16.1:8080/?action=stream')
-
-                # self.stream = urllib2.urlopen('http://192.168.16.1:8080/?action=stream',timeout=4)
                 self.client = paho.mqtt.client.Client(client_id='learnbotClient', clean_session=False)
-                # self.client.on_connect = on_connect
                 self.client.on_message = on_message
                 self.client.connect(host='192.168.16.1', port=50000)
                 self.client.subscribe(topic='camara', qos=2)
@@ -288,24 +271,19 @@ class Client(Ice.Application, threading.Thread):
             print("Error readSonars")
 
     def getSonars(self):
-        # self.readSonars()
         self.mutex.acquire()
         localUSList = self.usList
         self.mutex.release()
-        # time.sleep(0.1)
-        # print(localUSList)
         return localUSList
 
     def getImage(self):
         while self.reading:
             time.sleep(0.005)
         self.mutex.acquire()
-        # if self.newImg:
         self.simage = self.image
         self.newImg = False
         self.mutex.release()
 
-        # time.sleep(0.05)
         return self.simage
 
     def getPose(self):
@@ -325,8 +303,6 @@ class Client(Ice.Application, threading.Thread):
 
     def setRobotSpeed(self, vAdvance=0, vRotation=0):
         try:
-            # print(vAdvance, vRotation)
-            # if vAdvance!=0 or vRotation!=0:ll
             self.adv = vAdvance
             self.rot = vRotation
             self.differentialrobot_proxy.setSpeedBase(-self.adv*8,self.rot*15)
@@ -378,7 +354,6 @@ class Client(Ice.Application, threading.Thread):
 
     def setJointAngle(self, angle):
         self.angleCamera = angle
-        # print("Enviando anglulo", angle)
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
         goal.position = angle

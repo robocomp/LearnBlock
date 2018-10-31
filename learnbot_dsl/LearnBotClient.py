@@ -17,15 +17,6 @@ except KeyError:
 ICEs = ["RGBD.ice", "Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "GenericBase.ice", "Display.ice", "Apriltag.ice","EmotionRecognition.ice" ]
 
 icePaths = []
-# try:
-#     SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-#     for p in SLICE_PATH:
-#         icePaths.append(p)
-#     icePaths.append(os.path.join(ROBOCOMP, "interfaces"))
-# except:
-#     print('SLICE_PATH environment variable was not exported. Using only the default paths')
-#     pass
-
 icePaths.append(os.path.join(os.path.dirname(__file__), "interfaces"))
 imgPaths = os.path.join(os.path.dirname(os.path.realpath(__file__)),'imgs')
 for ice in ICEs:
@@ -196,7 +187,6 @@ class Client(Ice.Application, threading.Thread):
                 print("Error")
                 traceback.print_exc()
                 raise
-        # self.tagDetector = apriltag.Detector()
         self._stop_event = threading.Event()
         self.apriltag_current_exist = False
         self.listIDs = []

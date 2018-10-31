@@ -1,6 +1,5 @@
 
 import os
-# import cv2, time
 pathBlocks = os.path.dirname(os.path.realpath(__file__))
 
 __all__ = ["pathBlocks",
