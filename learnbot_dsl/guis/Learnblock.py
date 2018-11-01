@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui'
 #
-# Created: Tue Oct 30 18:04:19 2018
+# Created: Thu Nov  1 16:32:40 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -346,6 +346,10 @@ class Ui_MainWindow(object):
         self.menuFile.setObjectName("menuFile")
         self.menuTools_robot = QtGui.QMenu(self.menubar)
         self.menuTools_robot.setObjectName("menuTools_robot")
+        self.menuEdit = QtGui.QMenu(self.menubar)
+        self.menuEdit.setObjectName("menuEdit")
+        self.menuProyect = QtGui.QMenu(self.menubar)
+        self.menuProyect.setObjectName("menuProyect")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -384,6 +388,18 @@ class Ui_MainWindow(object):
         self.actionDownload_examples.setObjectName("actionDownload_examples")
         self.actionDownload_libraries = QtGui.QAction(MainWindow)
         self.actionDownload_libraries.setObjectName("actionDownload_libraries")
+        self.actionUndo = QtGui.QAction(MainWindow)
+        self.actionUndo.setObjectName("actionUndo")
+        self.actionRedo = QtGui.QAction(MainWindow)
+        self.actionRedo.setObjectName("actionRedo")
+        self.actionBlocks_to_text = QtGui.QAction(MainWindow)
+        self.actionBlocks_to_text.setObjectName("actionBlocks_to_text")
+        self.actionStart_simulated_robot = QtGui.QAction(MainWindow)
+        self.actionStart_simulated_robot.setObjectName("actionStart_simulated_robot")
+        self.actionStart_physical_robot = QtGui.QAction(MainWindow)
+        self.actionStart_physical_robot.setObjectName("actionStart_physical_robot")
+        self.actionStop = QtGui.QAction(MainWindow)
+        self.actionStop.setObjectName("actionStop")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_New_block)
@@ -407,7 +423,15 @@ class Ui_MainWindow(object):
         self.menuTools_robot.addAction(self.actionDownload_xmls)
         self.menuTools_robot.addAction(self.actionDownload_examples)
         self.menuTools_robot.addAction(self.actionDownload_libraries)
+        self.menuEdit.addAction(self.actionUndo)
+        self.menuEdit.addAction(self.actionRedo)
+        self.menuProyect.addAction(self.actionBlocks_to_text)
+        self.menuProyect.addAction(self.actionStart_simulated_robot)
+        self.menuProyect.addAction(self.actionStart_physical_robot)
+        self.menuProyect.addAction(self.actionStop)
         self.menubar.addAction(self.menuFile.menuAction())
+        self.menubar.addAction(self.menuEdit.menuAction())
+        self.menubar.addAction(self.menuProyect.menuAction())
         self.menubar.addAction(self.menuTools_robot.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -461,6 +485,8 @@ class Ui_MainWindow(object):
         self.Tabwi.setTabText(self.Tabwi.indexOf(self.program_visual), QtGui.QApplication.translate("MainWindow", "LearnBlock", None, QtGui.QApplication.UnicodeUTF8))
         self.menuFile.setTitle(QtGui.QApplication.translate("MainWindow", "File", None, QtGui.QApplication.UnicodeUTF8))
         self.menuTools_robot.setTitle(QtGui.QApplication.translate("MainWindow", "tools robot", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "Edit", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuProyect.setTitle(QtGui.QApplication.translate("MainWindow", "Proyect", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExit.setText(QtGui.QApplication.translate("MainWindow", "Exit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCreate_New_block.setText(QtGui.QApplication.translate("MainWindow", "Create New block", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save Proyect", None, QtGui.QApplication.UnicodeUTF8))
@@ -490,4 +516,16 @@ class Ui_MainWindow(object):
         self.actionOpen_Recent.setText(QtGui.QApplication.translate("MainWindow", "Open Recent", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDownload_examples.setText(QtGui.QApplication.translate("MainWindow", "Download examples", None, QtGui.QApplication.UnicodeUTF8))
         self.actionDownload_libraries.setText(QtGui.QApplication.translate("MainWindow", "Download libraries", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionUndo.setText(QtGui.QApplication.translate("MainWindow", "Undo", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionUndo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Z", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRedo.setText(QtGui.QApplication.translate("MainWindow", "Redo", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionRedo.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+Z", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionBlocks_to_text.setText(QtGui.QApplication.translate("MainWindow", "Blocks to text", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionBlocks_to_text.setShortcut(QtGui.QApplication.translate("MainWindow", "F4", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStart_simulated_robot.setText(QtGui.QApplication.translate("MainWindow", "Start (simulated robot)", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStart_simulated_robot.setShortcut(QtGui.QApplication.translate("MainWindow", "F5", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStart_physical_robot.setText(QtGui.QApplication.translate("MainWindow", "Start (physical robot)", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStart_physical_robot.setShortcut(QtGui.QApplication.translate("MainWindow", "F6", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStop.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStop.setShortcut(QtGui.QApplication.translate("MainWindow", "F7", None, QtGui.QApplication.UnicodeUTF8))
 

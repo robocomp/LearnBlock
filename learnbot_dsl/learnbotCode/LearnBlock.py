@@ -159,6 +159,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.__fileProject = None
         self.hilo = None
         self.physicalRobot = False
+        self.index = -1
         # Create the application
         self.app = QtGui.QApplication(sys.argv)
 
@@ -225,6 +226,12 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
         self.ui.spinBoxLeterSize.valueChanged.connect(self.updateTextCodeStyle)
         self.ui.textCode.textChanged.connect(self.updateTextCodeStyle)
+        self.ui.actionRedo.triggered.connect(self.redo)
+        self.ui.actionUndo.triggered.connect(self.undo)
+        self.ui.actionStart_simulated_robot.triggered.connect(self.StartProgramSR)
+        self.ui.actionStart_physical_robot.triggered.connect(self.StartProgramPR)
+        self.ui.actionStop.triggered.connect(self.stopthread)
+        self.ui.actionBlocks_to_text.triggered.connect(self.blocksToText)
 
         # Load image buttons
         self.ui.savepushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"save.png")))
@@ -237,9 +244,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.zoompushButton.setIconSize(QtCore.QSize(30, 30))
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30, 30))
 
-        self.ui.stopPushButton.setEnabled(False)
-        self.ui.stoptextPushButton.setEnabled(False)
-        self.ui.startPushButton.setEnabled(True)
+        self.disablestartButtons(False)
         self.ui.functions.setFixedWidth(221)
 
         self.view = MyView(self, self.ui.frame)
@@ -259,7 +264,7 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.highlighter = Highlighter(self.ui.textCode.document())
         self.updateTextCodeStyle()
-
+        self.listBackUps = []
         for t in self.dicTables:
             table = self.dicTables[t]
             table.verticalHeader().setVisible(False)
@@ -293,10 +298,69 @@ class LearnBlock(QtGui.QMainWindow):
         self.connectCameraRobot()
 
         self.client=None
+        self.isOpen = True
+        self.savetmpProyect()
         # Execute the application
         r = self.app.exec_()
 
         sys.exit(r)
+
+    def disablestartButtons(self, disabled):
+        self.ui.stopPushButton.setEnabled(disabled)
+        self.ui.startPushButton.setEnabled(not disabled)
+        self.ui.startPRPushButton.setEnabled(not disabled)
+        self.ui.stoptextPushButton.setEnabled(disabled)
+        self.ui.startSRTextPushButton.setEnabled(not disabled)
+        self.ui.startPRTextPushButton.setEnabled(not disabled)
+        self.ui.actionStart_simulated_robot.setEnabled(not disabled)
+        self.ui.actionStart_physical_robot.setEnabled(not disabled)
+        self.ui.actionStop.setEnabled(disabled)
+
+
+    def redo(self):
+        self.isOpen = False
+        self.scene.shouldSave = False
+        if self.index<len(self.listBackUps)-1:
+            self.index += 1
+            self.openProyect(self.listBackUps[self.index], False)
+        self.isOpen = True
+
+    def undo(self):
+        self.isOpen = False
+        self.scene.shouldSave = False
+        if self.index is not 0:
+            self.index -= 1
+            self.openProyect(self.listBackUps[self.index], False)
+        self.isOpen = True
+
+    def savetmpProyect(self):
+        if self.isOpen:
+            aux = tempfile.gettempdir()
+            tempfile.tempdir = tempfile._get_default_tempdir()
+            if self.index + 1 != len(self.listBackUps):
+                for f in self.listBackUps[self.index+1:]:
+                    os.remove(f)
+                    self.listBackUps = self.listBackUps[:self.index+1]
+                self.savetmpProyect()
+            elif len(self.listBackUps) < 30:
+                with tempfile.NamedTemporaryFile(delete=False) as f:
+                    dic = copy.deepcopy(self.scene.dicBlockItem)
+                    for id in dic:
+                        block = dic[id]
+                        block.file = os.path.basename(block.file)
+                    pickle.dump(
+                        (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions,
+                         [x[0] for x in self.listLibrary]),
+                        f, protocol=0)
+
+                    self.listBackUps.append(f.name)
+                    self.index = self.listBackUps.index(f.name)
+            else:
+                os.remove(self.listBackUps[0])
+                self.listBackUps = self.listBackUps[1:]
+                self.index -= 1
+                self.savetmpProyect()
+            tempfile.tempdir = aux
 
     def updateOpenRecent(self):
         if self.__fileProject is not None:
@@ -582,8 +646,8 @@ class LearnBlock(QtGui.QMainWindow):
         path = os.environ.get('HOME')
         if os.path.exists(os.path.join(os.environ.get('HOME'), "learnbot-xmls")):
             path = os.path.join(os.environ.get('HOME'), "learnbot-xmls")
-        fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open xml', path,
-                                                     'Rcis file (*.xml)')
+        fileName = QtGui.QFileDialog.getOpenFileName(self, self.trUtf8('Open xml'), path,
+                                                     self.trUtf8('Rcis file (*.xml)'))
         self.scene.startAllblocks()
         if fileName[0] != "":
             print(configSSH["start_simulator"] + " " + fileName[0])
@@ -622,7 +686,7 @@ class LearnBlock(QtGui.QMainWindow):
                 buttonCopy = button.getCopy(currentable)
                 currentable.setCellWidget(currentable.rowCount() - 1, 0, buttonCopy)
 
-    def newProject(self):
+    def newProject(self, resetAll=True):
         if self.scene.shouldSave is False:
             # Delete all whens
             for x in self.listNameWhens:
@@ -643,6 +707,8 @@ class LearnBlock(QtGui.QMainWindow):
             self.scene.setBlockDict({})
             self.scene.startAllblocks()
             self.__fileProject = None
+            if resetAll:
+                self.index = -1
             self.ui.deleteWhenpushButton.setEnabled(False)
             self.ui.deleteVarPushButton.setEnabled(False)
             self.ui.deleteFuntionsPushButton.setEnabled(False)
@@ -754,15 +820,14 @@ class LearnBlock(QtGui.QMainWindow):
     def saveInstance(self):
         if self.__fileProject is None:
             self.scene.stopAllblocks()
-            fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', self.workSpace,
-                                                         'Block Project file (*.blockProject)')
+            fileName = QtGui.QFileDialog.getSaveFileName(self, self.trUtf8('Save Project'), self.workSpace,
+                                                         self.trUtf8('Block Project file (*.blockProject)'))
             self.scene.startAllblocks()
-
-            file = fileName[0]
-            if "." in file:
-                file = file.split(".")[0]
-            file = file + ".blockProject"
-            if file != "":
+            if fileName[0] != "":
+                file = fileName[0]
+                if "." in file:
+                    file = file.split(".")[0]
+                file = file + ".blockProject"
                 self.__fileProject = file
                 self.saveInstance()
         else:
@@ -780,31 +845,34 @@ class LearnBlock(QtGui.QMainWindow):
 
     def saveAs(self):
         self.scene.stopAllblocks()
-        fileName = QtGui.QFileDialog.getSaveFileName(self, 'Save Project', self.workSpace, 'Block Project file (*.blockProject)')
+        fileName = QtGui.QFileDialog.getSaveFileName(self, self.trUtf8('Save Project'), self.workSpace, self.trUtf8('Block Project file (*.blockProject)'))
         self.scene.startAllblocks()
-        if fileName[0] != "" and fileName[1] == "Block Project file (*.blockProject)":
+        if fileName[0] != "" and fileName[1] == self.trUtf8("Block Project file (*.blockProject)"):
             file = fileName[0]
             if os.path.splitext(file)[-1] != ".blockProject":
                 file = file + ".blockProject"
             self.__fileProject = file
             self.saveInstance()
 
-    def openProyect(self, file=None):
+    def openProyect(self, file=None, changeFileName=True ):
         if self.scene.shouldSave is False:
             if file is None:
                 self.scene.stopAllblocks()
-                fileName = QtGui.QFileDialog.getOpenFileName(self, 'Open Project', self.workSpace,
-                                                         'Block Project file (*.blockProject)')
+                fileName = QtGui.QFileDialog.getOpenFileName(self, self.trUtf8('Open Project'), self.workSpace,
+                                                         self.trUtf8('Block Project file (*.blockProject)'))
                 self.scene.startAllblocks()
             if file is not None or fileName[0] != "":
-                self.newProject()
+                self.newProject(resetAll=False)
                 if file is None:
-                    self.__fileProject = fileName[0]
-                else:
+                    file = fileName[0]
+                if changeFileName:
                     self.__fileProject = file
-                self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
-                print(self.__fileProject)
-                with open(self.__fileProject, 'rb') as fichero:
+                    self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+                    for f in self.listBackUps:
+                        os.remove(f)
+                    self.listBackUps = []
+                    self.index = -1
+                with open(file, 'rb') as fichero:
                     d = pickle.load(fichero)
                     # Load Libraries
                     try:
@@ -838,6 +906,8 @@ class LearnBlock(QtGui.QMainWindow):
                     self.scene.startAllblocks()
                     self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
                 self.updateOpenRecent()
+                if self.scene.thereisMain():
+                    self.mainButton.setEnabled(False)
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -884,9 +954,9 @@ class LearnBlock(QtGui.QMainWindow):
 
             block = AbstractBlock(0, 0, text, {'ES': "Cuando ", 'EN': "When "}, imgPath, [], HUE_WHEN,
                                   self.addWhenGui.nameControl.replace(" ", "_"), connections, blockType, WHEN)
-            self.scene.addItem(block)
             if self.addWhenGui.nameControl != "start":
                 self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
+            self.scene.addItem(block)
 
     def addButtonsWhens(self, configImgPath, name):
         if os.path.basename(configImgPath) == 'block8':
@@ -1004,16 +1074,9 @@ class LearnBlock(QtGui.QMainWindow):
                         self.hilo.terminate()
                     self.hilo = Process(target=self.execTmp)
                     self.hilo.start()
-                    self.ui.stopPushButton.setEnabled(True)
-                    self.ui.startPushButton.setEnabled(False)
-                    self.ui.startPRPushButton.setEnabled(False)
-                    self.ui.stoptextPushButton.setEnabled(True)
-                    self.ui.startSRTextPushButton.setEnabled(False)
-                    self.ui.startPRTextPushButton.setEnabled(False)
+                    self.disablestartButtons(True)
                 except:
-                    self.ui.stopPushButton.setEnabled(False)
-                    self.ui.startPushButton.setEnabled(True)
-                    self.ui.startPRPushButton.setEnabled(True)
+                    self.disablestartButtons(False)
                     msgBox = QtGui.QMessageBox()
                     msgBox.setWindowTitle(self.trUtf8("Warning"))
                     msgBox.setIcon(QtGui.QMessageBox.Warning)
@@ -1062,12 +1125,7 @@ class LearnBlock(QtGui.QMainWindow):
                 print(e)
                 pass
             finally:
-                self.ui.stopPushButton.setEnabled(False)
-                self.ui.startPushButton.setEnabled(True)
-                self.ui.startPRPushButton.setEnabled(True)
-                self.ui.stoptextPushButton.setEnabled(False)
-                self.ui.startPRTextPushButton.setEnabled(True)
-                self.ui.startSRTextPushButton.setEnabled(True)
+                self.disablestartButtons(False)
 
     def parserBlocks(self, blocks, function):
         text = self.parserUserFuntions(blocks, function)

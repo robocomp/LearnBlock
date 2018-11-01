@@ -75,13 +75,15 @@ def parserConfigBlock( file ):
     return r
 
 def reload_functions():
-    functions = parserConfigBlock(os.path.join(pathConfig, "configMotor"))
-    functions += parserConfigBlock(os.path.join(pathConfig, "configOthers"))
-    functions += parserConfigBlock(os.path.join(pathConfig, "configControl"))
-    functions += parserConfigBlock(os.path.join(pathConfig, "configPerceptual"))
-    functions += parserConfigBlock(os.path.join(pathConfig, "configPropriopercetive"))
-    functions += parserConfigBlock(os.path.join(pathConfig, "configOperators"))
-    functions += parserConfigBlock(os.path.join(pathConfig, "configExpressions"))
+    functions = None
+    pathsConfig = [pathConfig, os.path.join(os.getenv('HOME'), ".learnblock", "block")]
+    for path in pathsConfig:
+        if os.path.exists(path):
+            for conffile in [p for p in os.listdir(path) if os.path.splitext(p)[-1] == ".conf"]:
+                if functions is None:
+                    functions = parserConfigBlock(os.path.join(path, conffile))
+                else:
+                    functions += parserConfigBlock(os.path.join(path, conffile))
     for f in functions:
         for i in range(len(f.img)):
             f.img[i] = os.path.join(pathImgBlocks, f.img[i])

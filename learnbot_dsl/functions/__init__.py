@@ -14,10 +14,11 @@ def getFuntions():
 	functions = {}
 	params = {}
 	paramsDefaults = {}
-	dirnames = [__path]
+	dirnames = [__path, os.path.join(os.getenv('HOME'), ".learnblock", "functions")]
 	sys.path.append(__path)
-
 	for dirname in dirnames:
+		if not os.path.exists(dirname):
+			continue
 		for filename in os.listdir(dirname):
 			fullname = os.path.join(dirname, filename)
 			name, extension = os.path.splitext(filename)
@@ -26,8 +27,10 @@ def getFuntions():
 			if os.path.isdir(fullname):
 				dirnames.append(fullname)
 				continue
-			module_name = dirname.replace('/','.') + '.' + name
-			module_name = module_name[module_name.rfind("learnbot_dsl"):]
+			sys.path.append(dirname)
+			# module_name = dirname.replace('/','.') + '.' + name
+			# module_name = module_name[module_name.rfind("learnbot_dsl"):]
+			module_name = name
 			try:
 				func = getattr(import_module(module_name), name)
 				args = inspect.getargspec(func)
@@ -38,3 +41,4 @@ def getFuntions():
 				print("error", e, module_name, name)
 	return functions
 
+getFuntions()

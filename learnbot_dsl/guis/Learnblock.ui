@@ -702,7 +702,25 @@
     <addaction name="actionDownload_examples"/>
     <addaction name="actionDownload_libraries"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+   </widget>
+   <widget class="QMenu" name="menuProyect">
+    <property name="title">
+     <string>Proyect</string>
+    </property>
+    <addaction name="actionBlocks_to_text"/>
+    <addaction name="actionStart_simulated_robot"/>
+    <addaction name="actionStart_physical_robot"/>
+    <addaction name="actionStop"/>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuProyect"/>
    <addaction name="menuTools_robot"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -825,6 +843,54 @@
   <action name="actionDownload_libraries">
    <property name="text">
     <string>Download libraries</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+  <action name="actionBlocks_to_text">
+   <property name="text">
+    <string>Blocks to text</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
+   </property>
+  </action>
+  <action name="actionStart_simulated_robot">
+   <property name="text">
+    <string>Start (simulated robot)</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionStart_physical_robot">
+   <property name="text">
+    <string>Start (physical robot)</string>
+   </property>
+   <property name="shortcut">
+    <string>F6</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="text">
+    <string>Stop</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
    </property>
   </action>
  </widget>

@@ -4,7 +4,6 @@ from math import *
 from learnbot_dsl.learnbotCode.VisualBlock import *
 from learnbot_dsl.blocksConfig import pathImgBlocks
 
-
 class MyScene(QtGui.QGraphicsScene):
 
     def __init__(self, parent, view):
@@ -61,6 +60,7 @@ class MyScene(QtGui.QGraphicsScene):
         self.dicBlockItem[id] = blockItem
         self.dictVisualItem[id] = visualItem
         self.nextIdItem += 1
+        self.parent.savetmpProyect()
 
     def setBlockDict(self, dict):
         self.clean()
@@ -104,6 +104,7 @@ class MyScene(QtGui.QGraphicsScene):
         super(MyScene, self).removeItem(visualItem)
         del self.dicBlockItem[id]
         del self.dictVisualItem[id]
+        self.parent.savetmpProyect()
 
     def removeByName(self, name):
         for visualItem in [self.getVisualItem(id) for id in self.dicBlockItem if self.getVisualItem(id).parentBlock.name == name]:
@@ -260,6 +261,7 @@ class MyScene(QtGui.QGraphicsScene):
                                 True)
             elif c.getType() is BOTTOMIN:
                 itemS.moveToPos(c.getParent().pos + QtCore.QPointF(17, 33), True)
+        self.parent.savetmpProyect()
 
     def useEvents(self, used):
         for VBlock in self.dictVisualItem.values():
