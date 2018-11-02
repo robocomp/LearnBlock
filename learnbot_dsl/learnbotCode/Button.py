@@ -44,10 +44,12 @@ class Block_Button(QtGui.QPushButton):
         self.timer.start(5)
 
     def loadImg(self):
-
-        t = [type for _, type in self.__connections]
-        tmpFile = self.__text + str(self.__type) + str(self.__blockType) + str(len(self.__connections)) + "".join(map(str,t)) + getLanguage()
-        self.tmpFile = os.path.join(".", tempfile.gettempdir(), str2hex(tmpFile) + ".png")
+        try:
+            t = [type for _, type in self.__connections]
+        except:
+            t = [c.getType() for c in self.__connections]
+        tmpFile = self.__text + str(self.__type) + str(self.__blockType) + str(len(self.__connections)) + "".join(map(str, t)) + getLanguage()
+        self.tmpFile = os.path.join(tempfile.gettempdir(), "." + str2hex(tmpFile) + ".png")
         if len(self.__dicTrans) is not 0:
             self.showtext = self.__dicTrans[getLanguage()]
         else:

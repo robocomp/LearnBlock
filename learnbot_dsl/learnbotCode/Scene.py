@@ -28,6 +28,24 @@ class MyScene(QtGui.QGraphicsScene):
         self.dictVisualItem = {}
         self.nextIdItem = 0
         self.listNameVars = []
+        self.lastItemSelect = None
+
+    def duplicateBlock(self):
+        if self.lastItemSelect is not None:
+            self.lastItemSelect.on_clicked_menu_duplicate()
+
+    def exportBlock(self):
+        if self.lastItemSelect is not None:
+            self.lastItemSelect.on_clicked_menu_export_block()
+
+    def deleteBlock(self):
+        if self.lastItemSelect is not None:
+            self.lastItemSelect.on_clicked_menu_delete()
+            self.lastItemSelect = None
+
+    def editBlock(self):
+        if self.lastItemSelect is not None:
+            self.lastItemSelect.on_clicked_menu_edit()
 
     def setlistNameVars(self, listNameVars):
         self.listNameVars = listNameVars
@@ -48,7 +66,7 @@ class MyScene(QtGui.QGraphicsScene):
     def setTable(self, table):
         self.table = table
 
-    def addItem(self, blockItem, shouldstart = True):
+    def addItem(self, blockItem, shouldstart = True, saveTmp=True):
         id = str(self.nextIdItem)
         # poner ide del bloque
         blockItem.setId(id)
@@ -60,7 +78,8 @@ class MyScene(QtGui.QGraphicsScene):
         self.dicBlockItem[id] = blockItem
         self.dictVisualItem[id] = visualItem
         self.nextIdItem += 1
-        self.parent.savetmpProyect()
+        if saveTmp:
+            self.parent.savetmpProject()
 
     def setBlockDict(self, dict):
         self.clean()
@@ -105,7 +124,7 @@ class MyScene(QtGui.QGraphicsScene):
         del self.dicBlockItem[id]
         del self.dictVisualItem[id]
         if savetmp:
-            self.parent.savetmpProyect()
+            self.parent.savetmpProject()
 
     def removeByName(self, name, saveTmp=True):
         for visualItem in [self.getVisualItem(id) for id in self.dicBlockItem if self.getVisualItem(id).parentBlock.name == name]:
@@ -262,7 +281,8 @@ class MyScene(QtGui.QGraphicsScene):
                                 True)
             elif c.getType() is BOTTOMIN:
                 itemS.moveToPos(c.getParent().pos + QtCore.QPointF(17, 33), True)
-        self.parent.savetmpProyect()
+        self.parent.savetmpProject()
+        self.lastItemSelect = itemS
 
     def useEvents(self, used):
         for VBlock in self.dictVisualItem.values():

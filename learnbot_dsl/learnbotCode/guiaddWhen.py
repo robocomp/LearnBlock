@@ -46,13 +46,12 @@ class guiAddWhen(QtGui.QDialog):
         self.hue = HUE_WHEN
         self.__updateBlockType(0)
         self.__updateImage(0)
-        self.isOk = False
         for name in listNameBlocks:
             self.ui.comboBoxBlockImage.addItem(name)
         self.ui.comboBoxBlockImage.currentIndexChanged.connect(self.__updateImage)
 
-        self.ui.pushButtonOK.clicked.connect(lambda: self.__buttons(1))
-        self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
+        # self.ui.pushButtonOK.clicked.connect(lambda: self.__buttons(1))
+        # self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
         self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
         self.ui.Run_start.stateChanged.connect(self.__changeRunStart)
 
@@ -71,7 +70,7 @@ class guiAddWhen(QtGui.QDialog):
     def __updateImage(self, index):
 
         self.value = "when"
-        self.nameControl = self.ui.lineEditName.text()
+        self.nameControl = self.ui.lineEditName.text().replace(" ","_")
         self.img = listNameBlocks[index]
         self.imgName = listBlock[index]
         img = cv2.imread(listBlock[index], cv2.IMREAD_UNCHANGED)
@@ -134,29 +133,30 @@ class guiAddWhen(QtGui.QDialog):
         self.ui.comboBoxFuntionType.setCurrentIndex(0)
         self.ui.comboBoxBlockImage.setCurrentIndex(0)
 
-    def __buttons(self, ret):
-        if ret is 1:
-            ret = None
-            if self.ui.Run_start.isChecked() is False and self.ui.lineEditName.text() == "start":
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                ret = msgBox.exec_()
-            if self.ui.lineEditName.text() == "":
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error Name is empty."))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                ret = msgBox.exec_()
-            if ret is not None:
-                return
-        self.isOk = True
-        self.close()
+    # def __buttons(self, ret):
+    #     if ret is 1:
+    #         ret = None
+    #         name = self.ui.lineEditName.text()
+    #         if not self.ui.Run_start.isChecked() and name == "start":
+    #             msgBox = QtGui.QMessageBox()
+    #             msgBox.setWindowTitle(self.trUtf8("Warning"))
+    #             msgBox.setIcon(QtGui.QMessageBox.Warning)
+    #             msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
+    #             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+    #             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+    #             ret = msgBox.exec_()
+    #         if name == "":
+    #             msgBox = QtGui.QMessageBox()
+    #             msgBox.setWindowTitle(self.trUtf8("Warning"))
+    #             msgBox.setIcon(QtGui.QMessageBox.Warning)
+    #             msgBox.setText(self.trUtf8("Error Name is empty."))
+    #             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+    #             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+    #             ret = msgBox.exec_()
+    #         if ret is not None:
+    #             return
+    #     else:
+    #         self.close()
 
     def __repitNameVar(self):
         varlist = []

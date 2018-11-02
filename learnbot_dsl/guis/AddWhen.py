@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/AddWhen.ui'
+# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/AddWhen.ui'
 #
-# Created: Thu Oct 25 10:33:08 2018
+# Created: Fri Nov  2 16:23:20 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(465, 201)
+        Dialog.resize(465, 229)
         self.verticalLayout_4 = QtGui.QVBoxLayout(Dialog)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.Run_start = QtGui.QCheckBox(Dialog)
@@ -84,7 +84,7 @@ class Ui_Dialog(object):
         Dialog.setTabOrder(self.comboBoxBlockImage, self.pushButtonCancel)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Add When Block", None, QtGui.QApplication.UnicodeUTF8))
         self.Run_start.setText(QtGui.QApplication.translate("Dialog", "Run only at the start", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "Value", None, QtGui.QApplication.UnicodeUTF8))
         self.lineEditName.setPlaceholderText(QtGui.QApplication.translate("Dialog", "Name Block", None, QtGui.QApplication.UnicodeUTF8))

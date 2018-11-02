@@ -171,7 +171,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.addStringpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(2))
         self.ui.addWhenpushButton.clicked.connect(self.showGuiAddWhen)
         self.ui.zoompushButton.clicked.connect(self.setZoom)
-        self.ui.openpushButton.clicked.connect(self.openProyect)
+        self.ui.openpushButton.clicked.connect(self.openProject)
         self.ui.deleteVarPushButton.clicked.connect(self.deleteVar)
         self.ui.deleteWhenpushButton.clicked.connect(self.deleteWhen)
         self.ui.createFunctionsPushButton.clicked.connect(self.newUserFunctions)
@@ -183,7 +183,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
         self.ui.actionSave.triggered.connect(self.saveInstance)
         self.ui.actionSave_As.triggered.connect(self.saveAs)
-        self.ui.actionOpen_Proyect.triggered.connect(self.openProyect)
+        self.ui.actionOpen_Project.triggered.connect(self.openProject)
         self.ui.actionStart_components.triggered.connect(self.startRobot)
         self.ui.actionStart_Simulator.triggered.connect(self.startSimulatorRobot)
         self.ui.actionReboot.triggered.connect(self.rebootRobot)
@@ -227,6 +227,11 @@ class LearnBlock(QtGui.QMainWindow):
         self.view.setScene(self.scene)
         self.view.show()
         self.view.setZoom(False)
+        self.ui.actionDuplicate.triggered.connect(self.scene.duplicateBlock)
+        self.ui.actionEdit.triggered.connect(self.scene.editBlock)
+        self.ui.actionDelete.triggered.connect(self.scene.deleteBlock)
+        self.ui.actionExport_Block.triggered.connect(self.scene.exportBlock)
+
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.dicTables = {'control': self.ui.tableControl, 'motor': self.ui.tableMotor,
                           'perceptual': self.ui.tablePerceptual,
@@ -271,7 +276,7 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.client=None
         self.isOpen = True
-        self.savetmpProyect()
+        self.savetmpProject()
         # Execute the application
         subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
         subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
@@ -295,7 +300,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.scene.shouldSave = False
         if self.index<len(self.listBackUps)-1:
             self.index += 1
-            self.openProyect(self.listBackUps[self.index], False)
+            self.openProject(self.listBackUps[self.index], False)
         self.isOpen = True
 
     def undo(self):
@@ -303,10 +308,10 @@ class LearnBlock(QtGui.QMainWindow):
         self.scene.shouldSave = False
         if self.index is not 0:
             self.index -= 1
-            self.openProyect(self.listBackUps[self.index], False)
+            self.openProject(self.listBackUps[self.index], False)
         self.isOpen = True
 
-    def savetmpProyect(self):
+    def savetmpProject(self):
         if self.isOpen:
             aux = tempfile.gettempdir()
             tempfile.tempdir = tempfile._get_default_tempdir()
@@ -314,7 +319,7 @@ class LearnBlock(QtGui.QMainWindow):
                 for f in self.listBackUps[self.index+1:]:
                     os.remove(f)
                     self.listBackUps = self.listBackUps[:self.index+1]
-                self.savetmpProyect()
+                self.savetmpProject()
             elif len(self.listBackUps) < 30:
                 with tempfile.NamedTemporaryFile(delete=False, suffix="lb.bk") as f:
                     dic = copy.deepcopy(self.scene.dicBlockItem)
@@ -331,7 +336,7 @@ class LearnBlock(QtGui.QMainWindow):
                 os.remove(self.listBackUps[0])
                 self.listBackUps = self.listBackUps[1:]
                 self.index -= 1
-                self.savetmpProyect()
+                self.savetmpProject()
             tempfile.tempdir = aux
 
     def updateOpenRecent(self):
@@ -350,7 +355,7 @@ class LearnBlock(QtGui.QMainWindow):
             name = os.path.basename(name)
             qA =(QtGui.QAction(name, self.ui.actionOpen_Recent))
             qA.setShortcut("Ctrl+Shift+"+str(i+1))
-            qA.triggered.connect(lambda f=f: self.openProyect(f))
+            qA.triggered.connect(lambda f=f: self.openProject(f))
             self.menuOpenRecent.addAction(qA)
 
     def updateTextCodeStyle(self):
@@ -556,6 +561,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.saveConfigFile()
         if self.scene.shouldSave is False:
             self.stopthread()
+            self.newProject()
             self.disconnectCamera()
             del self.client
             event.accept()
@@ -835,7 +841,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.__fileProject = file
             self.saveInstance()
 
-    def openProyect(self, file=None, changeFileName=True ):
+    def openProject(self, file=None, changeFileName=True):
         if self.scene.shouldSave is False:
             if file is None:
                 self.scene.stopAllblocks()
@@ -890,7 +896,7 @@ class LearnBlock(QtGui.QMainWindow):
                 self.updateOpenRecent()
                 if self.scene.thereisMain():
                     self.mainButton.setEnabled(False)
-                self.savetmpProyect()
+                self.savetmpProject()
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -904,7 +910,7 @@ class LearnBlock(QtGui.QMainWindow):
                 self.saveInstance()
             elif ret == QtGui.QMessageBox.Discard:
                 self.scene.shouldSave = False
-                self.openProyect(file)
+                self.openProject(file)
 
     def showCreateBlock(self):
         self.createBlockGui = guiCreateBlock(self.load_blocks)
@@ -925,11 +931,41 @@ class LearnBlock(QtGui.QMainWindow):
 
     def showGuiAddWhen(self):
         self.addWhenGui = guiAddWhen()
-        self.addWhenGui.ui.pushButtonOK.clicked.connect(self.addBlockWhen)
+        self.addWhenGui.ui.pushButtonOK.clicked.connect(lambda : self.addBlockWhen(isOK=True))
+        self.addWhenGui.ui.pushButtonCancel.clicked.connect(lambda : self.addBlockWhen(isOK=False))
         self.addWhenGui.open()
 
-    def addBlockWhen(self):
-        if self.addWhenGui.isOk:
+    def addBlockWhen(self, isOK=True):
+        if isOK:
+
+            name = self.addWhenGui.nameControl.replace(" ", "_")
+            if not self.addWhenGui.ui.Run_start.isChecked() and name == "start":
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name == "":
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("Error Name is empty."))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("This name alredy exist"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
             text = self.addWhenGui.value
             imgPath = self.addWhenGui.imgName
             configImgPath = os.path.splitext(imgPath)[0]
@@ -940,6 +976,9 @@ class LearnBlock(QtGui.QMainWindow):
             if self.addWhenGui.nameControl != "start":
                 self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
             self.scene.addItem(block)
+            self.addWhenGui.close()
+        else:
+            self.addWhenGui.close()
 
     def addButtonsWhens(self, configImgPath, name):
         if os.path.basename(configImgPath) == 'block8':
@@ -1201,7 +1240,16 @@ class LearnBlock(QtGui.QMainWindow):
         if ret is 1:
             name = self.addVarGui.nameLineEdit.text()
             name = name.replace(" ", "_")
-            if name in self.listNameVars:
+            if name == 'start':
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
                 msgBox.setIcon(QtGui.QMessageBox.Warning)
@@ -1256,7 +1304,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listVars.append(button.getAbstracBlockItem())
-        self.savetmpProyect()
+        self.savetmpProject()
 
     def deleteVar(self):
         self.delVarGui = DelVar.Ui_Dialog()
@@ -1286,7 +1334,7 @@ class LearnBlock(QtGui.QMainWindow):
             item.removeTmpFile()
             self.listButtons.remove(item)
         self.listNameVars.remove(name)
-        self.savetmpProyect()
+        self.savetmpProject()
 
     def deleteWhen(self):
         self.delWhenGui = DelWhen.Ui_Dialog()
@@ -1335,7 +1383,16 @@ class LearnBlock(QtGui.QMainWindow):
         if ret is 1:
             name = self.userFunctionsGui.nameLineEdit.text()
             name = name.replace(" ", "_")
-            if name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
+            if name == 'start':
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
                 msgBox.setIcon(QtGui.QMessageBox.Warning)
@@ -1363,7 +1420,7 @@ class LearnBlock(QtGui.QMainWindow):
                 ret = msgBox.exec_()
                 return
             self.addUserFunction(name)
-            self.savetmpProyect()
+            self.savetmpProject()
 
         self.userFunctionsDialgo.close()
 
@@ -1411,4 +1468,4 @@ class LearnBlock(QtGui.QMainWindow):
             item.removeTmpFile()
             self.listButtons.remove(item)
         self.listNameUserFunctions.remove(name)
-        self.savetmpProyect()
+        self.savetmpProject()

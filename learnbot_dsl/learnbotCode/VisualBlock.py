@@ -165,61 +165,65 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.popMenu.addAction(action2)
 
     def on_clicked_menu_export_block(self):
-        self.scene.stopAllblocks()
-        path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Select Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
-        self.scene.startAllblocks()
-        ret = None
-        try:
-            os.mkdir(os.path.join(path, self.parentBlock.name))
-        except:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("This module already exists"))
-            msgBox.setInformativeText(self.trUtf8("Do you want to overwrite the changes?"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok| QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-            ret = msgBox.exec_()
-        if ret is None or ret == QtGui.QMessageBox.Ok:
-            path = os.path.join(path, self.parentBlock.name)
-            # Save blockProject
-            lBInstance = self.scene.parent
-            with open(os.path.join(path, self.parentBlock.name + ".blockProject"), 'wb') as fichero:
-                dic = copy.deepcopy(lBInstance.scene.dicBlockItem)
-                for id in dic:
-                    block = dic[id]
-                    block.file = os.path.basename(block.file)
-                pickle.dump(
-                    (dic, lBInstance.listNameWhens, lBInstance.listUserFunctions, lBInstance.listNameVars, lBInstance.listNameUserFunctions),
-                    fichero, 0)
-            # Save config block
-            with open(os.path.join(path, self.parentBlock.name + ".conf"),'wr') as f:
-                text ='''block{
-    type library
-    name ''' + self.parentBlock.name + '''
-    img block1
-    languages ES: "''' + self.parentBlock.name + '''", EN: "''' + self.parentBlock.name + '''"
-}'''
-                f.write(text)
-            # Save script learnCode
-            inst = self.getInstructions()
-            code = "def " + toLBotPy(inst) + "\nend\n\n"
-            with open(os.path.join(path, self.parentBlock.name + ".lb"), 'wr') as f:
-                f.write(code)
-            # Save script python
-            codePython = parserLearntBotCodeOnlyUserFuntion(code)
-            with open(os.path.join(path, self.parentBlock.name + ".py"), 'wr') as f:
-                f.write(codePython)
-            pass
+        if self.parentBlock.name not in ["main", "when"] and self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK:
+
+            self.scene.stopAllblocks()
+            path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Select Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
+            self.scene.startAllblocks()
+            ret = None
+            try:
+                os.mkdir(os.path.join(path, self.parentBlock.name))
+            except:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("This module already exists"))
+                msgBox.setInformativeText(self.trUtf8("Do you want to overwrite the changes?"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok| QtGui.QMessageBox.Cancel)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+            if ret is None or ret == QtGui.QMessageBox.Ok:
+                path = os.path.join(path, self.parentBlock.name)
+                # Save blockProject
+                lBInstance = self.scene.parent
+                with open(os.path.join(path, self.parentBlock.name + ".blockProject"), 'wb') as fichero:
+                    dic = copy.deepcopy(lBInstance.scene.dicBlockItem)
+                    for id in dic:
+                        block = dic[id]
+                        block.file = os.path.basename(block.file)
+                    pickle.dump(
+                        (dic, lBInstance.listNameWhens, lBInstance.listUserFunctions, lBInstance.listNameVars, lBInstance.listNameUserFunctions),
+                        fichero, 0)
+                # Save config block
+                with open(os.path.join(path, self.parentBlock.name + ".conf"),'wr') as f:
+                    text ='''block{
+        type library
+        name ''' + self.parentBlock.name + '''
+        img block1
+        languages ES: "''' + self.parentBlock.name + '''", EN: "''' + self.parentBlock.name + '''"
+    }'''
+                    f.write(text)
+                # Save script learnCode
+                inst = self.getInstructions()
+                code = "def " + toLBotPy(inst) + "\nend\n\n"
+                with open(os.path.join(path, self.parentBlock.name + ".lb"), 'wr') as f:
+                    f.write(code)
+                # Save script python
+                codePython = parserLearntBotCodeOnlyUserFuntion(code)
+                with open(os.path.join(path, self.parentBlock.name + ".py"), 'wr') as f:
+                    f.write(codePython)
+                pass
 
     def on_clicked_menu_duplicate(self):
-        self.duplicate()
-        self.scene.startAllblocks()
+        if self.parentBlock.name not in ["main", "when"] and not (self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK):
+            self.duplicate()
+            self.scene.startAllblocks()
+            self.scene.parent.savetmpProject()
 
     def duplicate(self, old_id=None, id=None, connection=None):
         blockDuplicate = self.parentBlock.copy()
         blockDuplicate.setPos(self.parentBlock.pos + QtCore.QPointF(50, 50))
-        self.scene.addItem(blockDuplicate, False)
+        self.scene.addItem(blockDuplicate, False, False)
         id_new = blockDuplicate.id
         new_connection = None
         for c in blockDuplicate.connections:

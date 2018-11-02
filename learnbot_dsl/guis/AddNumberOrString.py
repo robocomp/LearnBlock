@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/AddNumberOrString.ui'
 #
-# Created: Tue Oct 30 18:04:19 2018
+# Created: Fri Nov  2 16:23:19 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -81,7 +81,7 @@ class Ui_Dialog(object):
         Dialog.setTabOrder(self.comboBoxBlockImage, self.pushButtonCancel)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Add Number Or String", None, QtGui.QApplication.UnicodeUTF8))
         self.label_4.setText(QtGui.QApplication.translate("Dialog", "Value", None, QtGui.QApplication.UnicodeUTF8))
         self.lineEditName.setPlaceholderText(QtGui.QApplication.translate("Dialog", "Name Block", None, QtGui.QApplication.UnicodeUTF8))
         self.label_2.setText(QtGui.QApplication.translate("Dialog", "Block image:", None, QtGui.QApplication.UnicodeUTF8))
