@@ -98,11 +98,10 @@ class Block_Button(QtGui.QPushButton):
         return self.showtext
 
     def removeTmpFile(self):
-        pass
-        # try:
-        #     os.remove(self.tmpFile)
-        # except Exception as e:
-        #     print(e)
+        try:
+            os.remove(self.tmpFile)
+        except Exception as e:
+            print(e)
 
     def updateImg(self):
         if len(self.__dicTrans) is not 0 and self.showtext is not self.__dicTrans[getLanguage()]:

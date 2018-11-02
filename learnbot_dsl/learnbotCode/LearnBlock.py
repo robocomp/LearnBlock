@@ -34,23 +34,6 @@ from future.standard_library import install_aliases
 install_aliases()
 from urllib.request import urlopen
 from urllib.error import URLError
-HEADER = """
-#EXECUTION: python code_example.py config
-from __future__ import print_function, absolute_import
-from learnbot_dsl.functions import getFuntions
-functions = getFuntions()
-import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
-import sys
-import time,traceback
-try:
-    lbot = <LearnBotClient>.Client(sys.argv)
-except Exception as e:
-    print("hay un Error")
-    traceback.print_exc(file=sys.stdout)
-    print(e)
-    raise(e)
-
-"""
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -109,17 +92,9 @@ def internet_on():
     except URLError as err:
         return False
 
-def loadfile(file):
-    fh = open(file, "r")
-    code = fh.read()
-    fh.close()
-    return code
-
-
 # Create de streamer
 class MySignal(QtCore.QObject):
     signalUpdateStreamer = QtCore.Signal(QtGui.QImage)
-
 
 signal = None
 def on_message(client, userdata, message):
@@ -315,7 +290,6 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionStart_physical_robot.setEnabled(not disabled)
         self.ui.actionStop.setEnabled(disabled)
 
-
     def redo(self):
         self.isOpen = False
         self.scene.shouldSave = False
@@ -390,7 +364,6 @@ class LearnBlock(QtGui.QMainWindow):
         p = self.ui.textCode.palette()
         p.setColor(self.ui.textCode.viewport().backgroundRole(), QtGui.QColor(101, 101, 101, 255))
         self.ui.textCode.setPalette(p)
-
 
     def loadConfigFile(self):
         self.confFile = os.path.join(tempfile.gettempdir(), ".learnblock.conf")
@@ -803,6 +776,7 @@ class LearnBlock(QtGui.QMainWindow):
             print(e)
         finally:
             self.disablestartButtons(False)
+
     def stopExecTmp(self):
         robot = ""
         try:
@@ -1055,9 +1029,8 @@ class LearnBlock(QtGui.QMainWindow):
             else:
                 code = self.ui.textCode.toPlainText()
 
-            fh = open(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), "w+")
-            fh.writelines(text + code)
-            fh.close()
+            with open(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), "w+") as fh:
+                fh.writelines(text + code)
 
             try:
                 if not parserLearntBotCode(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), os.path.join(tempfile.gettempdir(), "main_tmp.py"), self.physicalRobot):
@@ -1314,7 +1287,6 @@ class LearnBlock(QtGui.QMainWindow):
             self.listButtons.remove(item)
         self.listNameVars.remove(name)
         self.savetmpProyect()
-
 
     def deleteWhen(self):
         self.delWhenGui = DelWhen.Ui_Dialog()
