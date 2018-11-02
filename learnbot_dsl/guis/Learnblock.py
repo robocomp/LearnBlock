@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui'
 #
-# Created: Thu Nov  1 16:32:40 2018
+# Created: Fri Nov  2 12:11:25 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -400,6 +400,10 @@ class Ui_MainWindow(object):
         self.actionStart_physical_robot.setObjectName("actionStart_physical_robot")
         self.actionStop = QtGui.QAction(MainWindow)
         self.actionStop.setObjectName("actionStop")
+        self.actionStop_Simulator = QtGui.QAction(MainWindow)
+        self.actionStop_Simulator.setObjectName("actionStop_Simulator")
+        self.actionStart_aprilTag = QtGui.QAction(MainWindow)
+        self.actionStart_aprilTag.setObjectName("actionStart_aprilTag")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_New_block)
@@ -528,4 +532,6 @@ class Ui_MainWindow(object):
         self.actionStart_physical_robot.setShortcut(QtGui.QApplication.translate("MainWindow", "F6", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStop.setText(QtGui.QApplication.translate("MainWindow", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.actionStop.setShortcut(QtGui.QApplication.translate("MainWindow", "F7", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStop_Simulator.setText(QtGui.QApplication.translate("MainWindow", "Stop Simulator", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionStart_aprilTag.setText(QtGui.QApplication.translate("MainWindow", "Start aprilTag", None, QtGui.QApplication.UnicodeUTF8))
 

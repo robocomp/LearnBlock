@@ -44,8 +44,10 @@ class Block_Button(QtGui.QPushButton):
         self.timer.start(5)
 
     def loadImg(self):
-        self.tmpFile = self.__text + str(self.__type) + str(self.__blockType) + str(len(self.__connections)) + getLanguage()
-        self.tmpFile = os.path.join(tempfile.gettempdir(), str2hex(self.tmpFile) + ".png")
+
+        t = [type for _, type in self.__connections]
+        tmpFile = self.__text + str(self.__type) + str(self.__blockType) + str(len(self.__connections)) + "".join(map(str,t)) + getLanguage()
+        self.tmpFile = os.path.join(".", tempfile.gettempdir(), str2hex(tmpFile) + ".png")
         if len(self.__dicTrans) is not 0:
             self.showtext = self.__dicTrans[getLanguage()]
         else:
@@ -121,7 +123,7 @@ class Block_Button(QtGui.QPushButton):
     def delete(self, row):
         self.__table.removeCellWidget(row, 0)
         self.__table.removeRow(row)
-        self.__scene.removeByName(self.__text)
+        self.__scene.removeByName(self.__text,False)
         del self
 
     def getText(self):

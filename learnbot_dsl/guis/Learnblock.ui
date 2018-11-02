@@ -893,6 +893,16 @@
     <string>F7</string>
    </property>
   </action>
+  <action name="actionStop_Simulator">
+   <property name="text">
+    <string>Stop Simulator</string>
+   </property>
+  </action>
+  <action name="actionStart_aprilTag">
+   <property name="text">
+    <string>Start aprilTag</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

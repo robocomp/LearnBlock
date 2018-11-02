@@ -96,7 +96,6 @@ class Highlighter(QtGui.QSyntaxHighlighter):
             startIndex = self.commentStartExpression.indexIn(text)
         while startIndex >= 0:
             endIndex = self.commentEndExpression.indexIn(text, startIndex+3)
-            print(startIndex, endIndex)
             if endIndex == -1:
                 self.setCurrentBlockState(1)
                 commentLength = len(text) - startIndex

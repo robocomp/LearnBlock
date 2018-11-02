@@ -99,16 +99,17 @@ class MyScene(QtGui.QGraphicsScene):
             block = self.dictVisualItem[id]
             block.stop()
 
-    def removeItem(self, id):
+    def removeItem(self, id, savetmp=True):
         visualItem = self.getVisualItem(id)
         super(MyScene, self).removeItem(visualItem)
         del self.dicBlockItem[id]
         del self.dictVisualItem[id]
-        self.parent.savetmpProyect()
+        if savetmp:
+            self.parent.savetmpProyect()
 
-    def removeByName(self, name):
+    def removeByName(self, name, saveTmp=True):
         for visualItem in [self.getVisualItem(id) for id in self.dicBlockItem if self.getVisualItem(id).parentBlock.name == name]:
-            visualItem.delete()
+            visualItem.delete(saveTmp)
             return
 
     def removeWhenByName(self, name):

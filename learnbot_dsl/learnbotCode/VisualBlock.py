@@ -487,9 +487,8 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 self.scene.setIdItemSelected(None)
                 pass
 
-    def delete(self):
+    def delete(self, savetmp=True):
         self.DialogVar.close()
-        self.scene.removeItem(self.id)
         del self.cvImg
         del self.img
         del self.foot
@@ -498,7 +497,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         del self.DialogVar
         for c in [conn for conn in self.connections if conn.getIdItem() is not None]:
             if c.getType() in [BOTTOM, BOTTOMIN, RIGHT]:
-                self.scene.getVisualItem(c.getIdItem()).delete()
+                self.scene.getVisualItem(c.getIdItem()).delete(savetmp=False)
             else:
                 c.getConnect().setConnect(None)
                 c.getConnect().setItem(None)
@@ -506,8 +505,8 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             self.scene.parent.delWhen(self.parentBlock.nameControl)
         if self.parentBlock.name == "main":
             self.scene.parent.mainButton.setEnabled(True)
+        self.scene.removeItem(self.id, savetmp)
         del self.parentBlock
-
         del self
 
     def isBlockDef(self):

@@ -9,8 +9,6 @@ from PIL import Image
 from pyunpack import Archive
 
 from multiprocessing import Process
-for p in sys.path:
-    print(p)
 
 from learnbot_dsl.learnbotCode.AbstractBlock import *
 from learnbot_dsl.learnbotCode.Button import *
@@ -168,7 +166,7 @@ class LearnBlock(QtGui.QMainWindow):
         pathLanguages = {'EN': "t_en.qm", "ES": "t_es.qm"}
         for k, v in iter(pathLanguages.items()):
             translator = QtCore.QTranslator()
-            print('Localization loaded: ', os.path.join(path , "languages"), translator.load(v, os.path.join(path , "languages")))
+            print('Localization loaded: ', os.path.join("languages", v), translator.load(v, os.path.join(path , "languages")))
             qttranslator = QtCore.QTranslator()
             qttranslator.load("q"+v,QtCore.QLibraryInfo.location( QtCore.QLibraryInfo.TranslationsPath))
             self.translators[k] = (translator, qttranslator)
@@ -280,7 +278,6 @@ class LearnBlock(QtGui.QMainWindow):
         if not os.path.exists(tempfile.gettempdir()):
             tempfile.tempdir = os.path.join(os.getenv('HOME'), ".learnblock")
             os.mkdir(tempfile.gettempdir())
-            print(os.path.join(tempfile.gettempdir(), "__init__.py"))
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                 f.write("")
         self.loadConfigFile()
@@ -301,6 +298,8 @@ class LearnBlock(QtGui.QMainWindow):
         self.isOpen = True
         self.savetmpProyect()
         # Execute the application
+        subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
+        subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
         r = self.app.exec_()
 
         sys.exit(r)
@@ -343,7 +342,7 @@ class LearnBlock(QtGui.QMainWindow):
                     self.listBackUps = self.listBackUps[:self.index+1]
                 self.savetmpProyect()
             elif len(self.listBackUps) < 30:
-                with tempfile.NamedTemporaryFile(delete=False) as f:
+                with tempfile.NamedTemporaryFile(delete=False, suffix="lb.bk") as f:
                     dic = copy.deepcopy(self.scene.dicBlockItem)
                     for id in dic:
                         block = dic[id]
@@ -352,7 +351,6 @@ class LearnBlock(QtGui.QMainWindow):
                         (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions,
                          [x[0] for x in self.listLibrary]),
                         f, protocol=0)
-
                     self.listBackUps.append(f.name)
                     self.index = self.listBackUps.index(f.name)
             else:
@@ -395,7 +393,7 @@ class LearnBlock(QtGui.QMainWindow):
 
 
     def loadConfigFile(self):
-        self.confFile = os.path.join(tempfile.gettempdir(), "learnblock.conf")
+        self.confFile = os.path.join(tempfile.gettempdir(), ".learnblock.conf")
         if not os.path.exists(self.confFile):
             with open(self.confFile,'wb') as confFile:
                 while True:
@@ -650,7 +648,7 @@ class LearnBlock(QtGui.QMainWindow):
                                                      self.trUtf8('Rcis file (*.xml)'))
         self.scene.startAllblocks()
         if fileName[0] != "":
-            print(configSSH["start_simulator"] + " " + fileName[0])
+            # print(configSSH["start_simulator"] + " " + fileName[0])
             subprocess.Popen(configSSH["start_simulator"] + " " + fileName[0], shell=True, stdout=subprocess.PIPE)
 
     def shutdownRobot(self):
@@ -689,13 +687,13 @@ class LearnBlock(QtGui.QMainWindow):
     def newProject(self, resetAll=True):
         if self.scene.shouldSave is False:
             # Delete all whens
-            for x in self.listNameWhens:
+            for x in copy.copy(self.listNameWhens):
                 self.delWhen(x[0])
             # Delete all variables
-            for name in self.listNameVars:
+            for name in copy.copy(self.listNameVars):
                 self.delVar(name)
             # Delete all user functions
-            for name in self.listNameUserFunctions:
+            for name in copy.copy(self.listNameUserFunctions):
                 self.delUserFunction(name)
             # Delete all library
             for l, w in zip(self.listLibrary, self.listLibraryWidget):
@@ -706,9 +704,9 @@ class LearnBlock(QtGui.QMainWindow):
 
             self.scene.setBlockDict({})
             self.scene.startAllblocks()
-            self.__fileProject = None
             if resetAll:
                 self.index = -1
+                self.__fileProject = None
             self.ui.deleteWhenpushButton.setEnabled(False)
             self.ui.deleteVarPushButton.setEnabled(False)
             self.ui.deleteFuntionsPushButton.setEnabled(False)
@@ -799,8 +797,12 @@ class LearnBlock(QtGui.QMainWindow):
 
     def execTmp(self):
         sys.path.insert(0, tempfile.gettempdir())
-        import main_tmp
-
+        try:
+            import main_tmp
+        except Exception as e:
+            print(e)
+        finally:
+            self.disablestartButtons(False)
     def stopExecTmp(self):
         robot = ""
         try:
@@ -812,7 +814,12 @@ class LearnBlock(QtGui.QMainWindow):
                 robot = "simulate"
 
             sys.path.insert(0, tempfile.gettempdir())
-            import stop_main_tmp
+            try:
+                import stop_main_tmp
+            except Exception as e:
+                print(e)
+            finally:
+                self.disablestartButtons(False)
         except Exception as e:
             print(e)
             raise e
@@ -867,11 +874,12 @@ class LearnBlock(QtGui.QMainWindow):
                     file = fileName[0]
                 if changeFileName:
                     self.__fileProject = file
-                    self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
                     for f in self.listBackUps:
                         os.remove(f)
                     self.listBackUps = []
                     self.index = -1
+                if self.__fileProject is not None:
+                    self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
                 with open(file, 'rb') as fichero:
                     d = pickle.load(fichero)
                     # Load Libraries
@@ -882,8 +890,8 @@ class LearnBlock(QtGui.QMainWindow):
                             if l.pathLibrary is not None:
                                 self.listLibraryWidget.append(l)
                                 self.listLibrary.append((l.pathLibrary, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
-                    except:
-                        pass
+                    except Exception as e:
+                        print(e)
 
                     dictBlock = d[0]
                     for id in dictBlock:
@@ -908,6 +916,7 @@ class LearnBlock(QtGui.QMainWindow):
                 self.updateOpenRecent()
                 if self.scene.thereisMain():
                     self.mainButton.setEnabled(False)
+                self.savetmpProyect()
         else:
             msgBox = QtGui.QMessageBox()
             msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -1274,6 +1283,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listVars.append(button.getAbstracBlockItem())
+        self.savetmpProyect()
 
     def deleteVar(self):
         self.delVarGui = DelVar.Ui_Dialog()
@@ -1303,6 +1313,8 @@ class LearnBlock(QtGui.QMainWindow):
             item.removeTmpFile()
             self.listButtons.remove(item)
         self.listNameVars.remove(name)
+        self.savetmpProyect()
+
 
     def deleteWhen(self):
         self.delWhenGui = DelWhen.Ui_Dialog()
@@ -1379,6 +1391,7 @@ class LearnBlock(QtGui.QMainWindow):
                 ret = msgBox.exec_()
                 return
             self.addUserFunction(name)
+            self.savetmpProyect()
 
         self.userFunctionsDialgo.close()
 
@@ -1426,3 +1439,4 @@ class LearnBlock(QtGui.QMainWindow):
             item.removeTmpFile()
             self.listButtons.remove(item)
         self.listNameUserFunctions.remove(name)
+        self.savetmpProyect()

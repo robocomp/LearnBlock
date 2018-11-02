@@ -40,5 +40,3 @@ def getFuntions():
 			except Exception as e:
 				print("error", e, module_name, name)
 	return functions
-
-getFuntions()

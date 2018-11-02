@@ -24,7 +24,7 @@ def __parserFromFile(file):
     with open(file) as f:
         text = f.read()
         ret = __parserFromString(text)
-        print(ret)
+        # print(ret)
         return ret
 
 
