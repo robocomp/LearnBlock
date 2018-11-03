@@ -212,7 +212,7 @@ def __generatePy(lines):
             imports += '"' + x[0] + '", '
     if imports is not None:
         imports = imports[:-2] + "]"
-        text += imports + """
+        text += "\n" + imports + """
 for f in imports:
     for subPath in [os.path.join(f, x) for x in os.listdir(f)]:
         if os.path.isdir(os.path.abspath(subPath)):
@@ -493,12 +493,12 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     except Exception as e:
         print(e)
         raise e
-    text = """"
+    text = """
 time_global_start = time.time()
 def elapsedTime(umbral):
     global time_global_start
     time_global = time.time()-time_global_start
-    return time_global > umbral"
+    return time_global > umbral
     """
     text += __generatePy(tree)
 
