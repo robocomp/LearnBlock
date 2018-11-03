@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
-import sys
-import pickle
-import tempfile
-import shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko
+import sys, os, pickle, tempfile, shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko
 from PIL import Image
 from pyunpack import Archive
 

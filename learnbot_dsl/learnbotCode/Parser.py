@@ -11,8 +11,7 @@ from __future__ import print_function, absolute_import
 from learnbot_dsl.functions import getFuntions
 functions = getFuntions()
 import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
-import sys
-import time
+import sys, time, os
 global lbot
 
 try:
@@ -219,7 +218,8 @@ for f in imports:
         if os.path.isdir(os.path.abspath(subPath)):
             for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
                 if os.path.basename(subsubPath) == os.path.basename(os.path.dirname(subsubPath)) + ".py":
-                    execfile(os.path.abspath(subsubPath), globals())
+                    # execfile(os.path.abspath(subsubPath), globals())
+                    exec(open(os.path.abspath(subsubPath)).read())
 """
     global ini
     for x in lines:
@@ -493,8 +493,13 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     except Exception as e:
         print(e)
         raise e
-    text = "\ntime_global_start = time.time()"
-    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\treturn time_global > umbral\n\n"
+    text = """"
+time_global_start = time.time()
+def elapsedTime(umbral):
+    global time_global_start
+    time_global = time.time()-time_global_start
+    return time_global > umbral"
+    """
     text += __generatePy(tree)
 
     if physicalRobot:
