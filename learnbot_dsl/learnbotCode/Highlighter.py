@@ -63,10 +63,10 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                 singleLineCommentFormat))
 
         self.multiLineCommentFormat = QtGui.QTextCharFormat()
-        self.multiLineCommentFormat.setForeground(QtCore.Qt.darkGreen)
+        self.multiLineCommentFormat.setForeground(QtCore.Qt.green)
 
         quotationFormat = QtGui.QTextCharFormat()
-        quotationFormat.setForeground(QtCore.Qt.darkGreen)
+        quotationFormat.setForeground(QtCore.Qt.green)
         self.highlightingRules.append((QtCore.QRegExp("\".*\""),
                 quotationFormat))
 

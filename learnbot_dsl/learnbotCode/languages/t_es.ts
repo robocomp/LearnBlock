@@ -207,12 +207,12 @@
     <message>
         <location filename="../LearnBlock.py" line="1037"/>
         <source>You should check connection the physical robot</source>
-        <translation>Debes chequear la conexsión al robot fisico</translation>
+        <translation>Debes chequear la conexión al robot físico</translation>
     </message>
     <message>
         <location filename="../LearnBlock.py" line="1083"/>
         <source>Your code is empty or is not correct</source>
-        <translation>tu codigo esta vacio o no es correcto</translation>
+        <translation>Tu código esta vacio o no es correcto</translation>
     </message>
     <message>
         <location filename="../LearnBlock.py" line="1091"/>
@@ -237,7 +237,7 @@
     <message>
         <location filename="../LearnBlock.py" line="1417"/>
         <source>The name can&apos;t start by number</source>
-        <translation>En nombre no puede comenzar por numero</translation>
+        <translation>En nombre no puede comenzar por número</translation>
     </message>
     <message>
         <location filename="../LearnBlock.py" line="1426"/>
@@ -257,7 +257,7 @@
     <message>
         <location filename="../LearnBlock.py" line="1145"/>
         <source>You should check connection to the robot</source>
-        <translation>Debes chequear la conexsión al robot</translation>
+        <translation>Debes chequear la conexión al robot</translation>
     </message>
     <message>
         <location filename="../LearnBlock.py" line="552"/>
@@ -383,7 +383,7 @@
     <message>
         <location filename="../../guis/Learnblock.py" line="466"/>
         <source>Add Number</source>
-        <translation>Añadir numero</translation>
+        <translation>Añadir número</translation>
     </message>
     <message>
         <location filename="../../guis/Learnblock.py" line="468"/>
@@ -413,7 +413,7 @@
     <message>
         <location filename="../../guis/Learnblock.py" line="481"/>
         <source>Text Code</source>
-        <translation>Codigo</translation>
+        <translation>Código</translation>
     </message>
     <message>
         <location filename="../../guis/Learnblock.py" line="483"/>
@@ -473,12 +473,12 @@
     <message>
         <location filename="../../guis/Learnblock.py" line="495"/>
         <source>Create Functions</source>
-        <translation>Crear Funcion</translation>
+        <translation>Crear Función</translation>
     </message>
     <message>
         <location filename="../../guis/Learnblock.py" line="496"/>
         <source>Delete Functions</source>
-        <translation>Eliminar función</translation>
+        <translation>Eliminar Función</translation>
     </message>
     <message>
         <location filename="../../guis/Learnblock.py" line="497"/>
@@ -498,7 +498,7 @@
     <message>
         <location filename="../../guis/Learnblock.py" line="545"/>
         <source>Start (physical robot)</source>
-        <translation>Iniciar (Robot fisico)</translation>
+        <translation>Iniciar (Robot físico)</translation>
     </message>
     <message>
         <location filename="../../guis/Learnblock.py" line="504"/>
@@ -603,7 +603,7 @@
     <message>
         <location filename="../../guis/Learnblock.py" line="475"/>
         <source>Connect Camera Robot</source>
-        <translation>Conectar camara (Robot)</translation>
+        <translation>Conectar cámara (Robot)</translation>
     </message>
     <message>
         <location filename="../../guis/Learnblock.py" line="526"/>
@@ -618,7 +618,7 @@
     <message>
         <location filename="../../guis/Learnblock.py" line="530"/>
         <source>Change Libraries path</source>
-        <translation>Seleccionar directorio de librerias</translation>
+        <translation>Seleccionar directorio de librerías</translation>
     </message>
     <message>
         <location filename="../../guis/Learnblock.py" line="532"/>
@@ -885,7 +885,7 @@ to load the updates close and reopen the program.</source>
     <message>
         <location filename="../VisualBlock.py" line="182"/>
         <source>This module already exists</source>
-        <translation>Este modulo ya existe</translation>
+        <translation>Este módulo ya existe</translation>
     </message>
     <message>
         <location filename="../VisualBlock.py" line="183"/>

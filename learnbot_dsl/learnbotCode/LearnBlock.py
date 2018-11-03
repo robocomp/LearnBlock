@@ -564,6 +564,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.newProject()
             self.disconnectCamera()
             del self.client
+            subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
             event.accept()
         else:
             self.scene.stopAllblocks()
@@ -580,12 +581,14 @@ class LearnBlock(QtGui.QMainWindow):
                 self.disconnectCamera()
                 del self.client
                 self.stopthread()
+                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 self.disconnectCamera()
                 del self.client
                 self.stopthread()
+                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 event.accept()
             else:
                 self.scene.startAllblocks()
@@ -675,11 +678,14 @@ class LearnBlock(QtGui.QMainWindow):
             for name in copy.copy(self.listNameUserFunctions):
                 self.delUserFunction(name)
             # Delete all library
-            for l, w in zip(self.listLibrary, self.listLibraryWidget):
+            for l in [self.listLibrary[i] for i in range(len(self.listLibrary)).__reversed__()]:
                 self.ui.functions.removeTab(l[1])
+                i = self.listLibrary.index(l)
                 self.listLibrary.remove(l)
-                w.delete()
-                del self.listLibraryWidget[self.listLibraryWidget.index(w)]
+                self.listLibraryWidget[i].delete()
+                del self.listLibraryWidget[i]
+            self.listNameLibraryFunctions = []
+            # self.listLibraryWidget = []
 
             self.scene.setBlockDict({})
             self.scene.startAllblocks()
@@ -722,6 +728,8 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.retranslateUi(self)
         for b in self.listButtons:
             b.updateImg()
+        if self.__fileProject is not None:
+            self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
 
     def load_blocks(self):
         functions = reload_functions()
