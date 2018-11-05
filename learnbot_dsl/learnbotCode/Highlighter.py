@@ -53,7 +53,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
 
         numberFormat = QtGui.QTextCharFormat()
         numberFormat.setForeground(QtGui.QBrush(QtGui.QColor(31, 166, 255, 255)))
-        self.highlightingRules.append((QtCore.QRegExp("\\b[0-9]+.*[0-9]+\\b"), numberFormat))
+        self.highlightingRules.append((QtCore.QRegExp("\\b[0-9]+.[0-9]+\\b"), numberFormat))
         self.highlightingRules.append((QtCore.QRegExp("\\b[0-9]+\\b"), numberFormat))
 
 

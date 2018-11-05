@@ -87,7 +87,7 @@ class Client(Ice.Application, threading.Thread):
 
             # Remote object connection for Lasers
 
-            for i in range(1, 8):
+            for i in range(2, 7):
                 try:
                     proxyString = ic.getProperties().getProperty('Laser' + str(i) + 'Proxy')
                     try:
@@ -101,7 +101,6 @@ class Client(Ice.Application, threading.Thread):
                     print(e)
                     print('Cannot get Laser', i, 'Proxy property.')
                     raise
-
             # Remote object connection for Display
             try:
                 proxyString = ic.getProperties().getProperty('DisplayProxy')

@@ -22,8 +22,23 @@ except Exception as e:
     raise(e)
 
 """
+elapsedTimeFunction = """
+time_global_start = time.time()
+def elapsedTime(umbral):
+    global time_global_start
+    time_global = time.time()-time_global_start
+    return time_global > umbral
 
-
+"""
+loadLibraryCode = """
+for f in imports:
+    for subPath in [os.path.join(f, x) for x in os.listdir(f)]:
+        if os.path.isdir(os.path.abspath(subPath)):
+            for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
+                if os.path.basename(subsubPath) == os.path.basename(os.path.dirname(subsubPath)) + ".py":
+                    # execfile(os.path.abspath(subsubPath), globals())
+                    exec(open(os.path.abspath(subsubPath)).read())
+"""
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -212,15 +227,7 @@ def __generatePy(lines):
             imports += '"' + x[0] + '", '
     if imports is not None:
         imports = imports[:-2] + "]"
-        text += "\n" + imports + """
-for f in imports:
-    for subPath in [os.path.join(f, x) for x in os.listdir(f)]:
-        if os.path.isdir(os.path.abspath(subPath)):
-            for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
-                if os.path.basename(subsubPath) == os.path.basename(os.path.dirname(subsubPath)) + ".py":
-                    # execfile(os.path.abspath(subsubPath), globals())
-                    exec(open(os.path.abspath(subsubPath)).read())
-"""
+        text += "\n" + imports + loadLibraryCode
     global ini
     for x in lines:
         x.getName()
@@ -493,13 +500,7 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     except Exception as e:
         print(e)
         raise e
-    text = """
-time_global_start = time.time()
-def elapsedTime(umbral):
-    global time_global_start
-    time_global = time.time()-time_global_start
-    return time_global > umbral
-    """
+    text = elapsedTimeFunction
     text += __generatePy(tree)
 
     if physicalRobot:
@@ -527,8 +528,7 @@ if __name__ == "__main__":
         print(bcolors.FAIL + "Imputfile must be different to outputfile" + bcolors.ENDC)
         exit(-1)
     print(bcolors.OKGREEN + "Generating file " + argv[1] + bcolors.ENDC)
-    text = "\ntime_global_start = time.time()"
-    text += "\ndef elapsedTime(umbral):\n\tglobal time_global_start\n\ttime_global = time.time()-time_global_start\n\treturn time_global > umbral\n\n"
+    text = elapsedTimeFunction
     text += __generatePy(__parserFromFile(argv[0]))
     print(bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC)
     if bool(argv[2]):

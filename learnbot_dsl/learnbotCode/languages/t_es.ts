@@ -9,17 +9,17 @@
         <translation>Valor</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="210"/>
+        <location filename="../../guis/CreateBlock.py" line="290"/>
         <source>Name Block</source>
         <translation>Nombre Bloque</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="211"/>
+        <location filename="../../guis/CreateBlock.py" line="291"/>
         <source>Block image:</source>
         <translation>Imagen Bloque:</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="230"/>
+        <location filename="../../guis/CreateBlock.py" line="318"/>
         <source>CANCEL</source>
         <translation>Cancelar</translation>
     </message>
@@ -39,62 +39,62 @@
         <translation>Aceptar</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="209"/>
+        <location filename="../../guis/CreateBlock.py" line="289"/>
         <source>Block name:</source>
         <translation>Imagen Bloque:</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="225"/>
+        <location filename="../../guis/CreateBlock.py" line="313"/>
         <source>Add</source>
         <translation>Añadir</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="226"/>
+        <location filename="../../guis/CreateBlock.py" line="314"/>
         <source>Remove</source>
         <translation>Borrar</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="214"/>
+        <location filename="../../guis/CreateBlock.py" line="294"/>
         <source>Block type:</source>
         <translation>Tipo Bloque:</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="217"/>
+        <location filename="../../guis/CreateBlock.py" line="297"/>
         <source>PERCEPTIVE</source>
         <translation>PERCEPTIVO</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="219"/>
+        <location filename="../../guis/CreateBlock.py" line="299"/>
         <source>OPERATOR</source>
         <translation>OPERADOR</translation>
     </message>
     <message>
         <location filename="../../guis/CreateBlock.py" line="221"/>
         <source>File:</source>
-        <translation>Archivo:</translation>
+        <translation type="obsolete">Archivo:</translation>
     </message>
     <message>
         <location filename="../../guis/CreateBlock.py" line="222"/>
         <source>None</source>
-        <translation>Nulo</translation>
+        <translation type="obsolete">Nulo</translation>
     </message>
     <message>
         <location filename="../../guis/CreateBlock.py" line="223"/>
         <source>Select File</source>
-        <translation>Seleccionar Archivo</translation>
+        <translation type="obsolete">Seleccionar Archivo</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="227"/>
+        <location filename="../../guis/CreateBlock.py" line="304"/>
         <source>Type</source>
         <translation>Tipo</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="228"/>
+        <location filename="../../guis/CreateBlock.py" line="311"/>
         <source>Name</source>
         <translation>Nombre</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="229"/>
+        <location filename="../../guis/CreateBlock.py" line="306"/>
         <source>Defaul value</source>
         <translation>Valor por defecto</translation>
     </message>
@@ -104,7 +104,7 @@
         <translation>Eliminar</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="208"/>
+        <location filename="../../guis/CreateBlock.py" line="288"/>
         <source>Dialog</source>
         <translation>Actualización completada</translation>
     </message>
@@ -114,7 +114,7 @@
         <translation>Ejecutar solo al iniciar</translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="218"/>
+        <location filename="../../guis/CreateBlock.py" line="298"/>
         <source>PROPIOPERCEPTIVE</source>
         <translation>PROPIOPERCEPTIVO</translation>
     </message>
@@ -124,22 +124,22 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="215"/>
+        <location filename="../../guis/CreateBlock.py" line="295"/>
         <source>CONTROL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="216"/>
+        <location filename="../../guis/CreateBlock.py" line="296"/>
         <source>MOTOR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="220"/>
+        <location filename="../../guis/CreateBlock.py" line="300"/>
         <source>VARIABLE</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../guis/CreateBlock.py" line="224"/>
+        <location filename="../../guis/CreateBlock.py" line="301"/>
         <source>Variables:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -178,6 +178,26 @@
         <source>Edit Variables</source>
         <translation>Editar variables</translation>
     </message>
+    <message>
+        <location filename="../../guis/CreateBlock.py" line="312"/>
+        <source>Languages:</source>
+        <translation>Idiomas:</translation>
+    </message>
+    <message>
+        <location filename="../../guis/CreateBlock.py" line="315"/>
+        <source>Language</source>
+        <translation>Idioma</translation>
+    </message>
+    <message>
+        <location filename="../../guis/CreateBlock.py" line="316"/>
+        <source>Tooltip</source>
+        <translation>Descripción</translation>
+    </message>
+    <message>
+        <location filename="../../guis/CreateBlock.py" line="317"/>
+        <source>Python Code</source>
+        <translation>Código Python</translation>
+    </message>
 </context>
 <context>
     <name>Form</name>
@@ -190,12 +210,12 @@
 <context>
     <name>LearnBlock</name>
     <message>
-        <location filename="../LearnBlock.py" line="906"/>
+        <location filename="../LearnBlock.py" line="902"/>
         <source>The document has been modified.</source>
         <translation>El documento ha sido modificado.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="907"/>
+        <location filename="../LearnBlock.py" line="903"/>
         <source>Do you want to save your changes?</source>
         <translation>¿Quieres guardar los cambios?</translation>
     </message>
@@ -205,157 +225,157 @@
         <translation type="obsolete">Debes chequear la conexsión al</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1037"/>
+        <location filename="../LearnBlock.py" line="1033"/>
         <source>You should check connection the physical robot</source>
         <translation>Debes chequear la conexión al robot físico</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1083"/>
+        <location filename="../LearnBlock.py" line="1079"/>
         <source>Your code is empty or is not correct</source>
         <translation>Tu código esta vacio o no es correcto</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1091"/>
+        <location filename="../LearnBlock.py" line="1087"/>
         <source>line: {}</source>
         <translation>linea: {}</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1108"/>
+        <location filename="../LearnBlock.py" line="1104"/>
         <source>You should check connection the </source>
         <translation>Debes chequear la conexsión al</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1117"/>
+        <location filename="../LearnBlock.py" line="1113"/>
         <source>Your code has an error. Check it out again</source>
         <translation>Tu código tiene un error. Verificalo de nuevo</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1408"/>
+        <location filename="../LearnBlock.py" line="1404"/>
         <source>This name alredy exist</source>
         <translation>Este nombre ya existe</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1417"/>
+        <location filename="../LearnBlock.py" line="1413"/>
         <source>The name can&apos;t start by number</source>
         <translation>En nombre no puede comenzar por número</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1426"/>
+        <location filename="../LearnBlock.py" line="1422"/>
         <source>Error Name is empty.</source>
         <translation>Error el nombre esta vacio.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="540"/>
+        <location filename="../LearnBlock.py" line="546"/>
         <source>Load Library</source>
         <translation>Cargar Librería</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1424"/>
+        <location filename="../LearnBlock.py" line="1420"/>
         <source>Warning</source>
         <translation>Peligro</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1145"/>
+        <location filename="../LearnBlock.py" line="1141"/>
         <source>You should check connection to the robot</source>
         <translation>Debes chequear la conexión al robot</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="552"/>
+        <location filename="../LearnBlock.py" line="558"/>
         <source>The library has already been imported.</source>
         <translation>La librería ya ha sido importada.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="553"/>
+        <location filename="../LearnBlock.py" line="559"/>
         <source>Do you want select another library?</source>
         <translation>¿Quiere seleccionar otra librería?</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="427"/>
+        <location filename="../LearnBlock.py" line="433"/>
         <source>Choose workspace directory</source>
         <translation>Seleccionar directorio de trabajo</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="403"/>
+        <location filename="../LearnBlock.py" line="409"/>
         <source>Workspace is empty</source>
         <translation>El directorio de trabajo esta vacio</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="385"/>
+        <location filename="../LearnBlock.py" line="391"/>
         <source>The working directory will be created in</source>
         <translation>El directorio va ha ser creado en</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="435"/>
+        <location filename="../LearnBlock.py" line="441"/>
         <source>Choose the libraries directory</source>
         <translation>Seleccionar directoryo de librerias</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="404"/>
+        <location filename="../LearnBlock.py" line="410"/>
         <source>The libraries directory will be </source>
         <translation>El directorio de librerias va ha ser creado en</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="469"/>
+        <location filename="../LearnBlock.py" line="475"/>
         <source>Donwloading Examples files please wait</source>
         <translation>Descargando Ejemplos por favor espere</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="469"/>
+        <location filename="../LearnBlock.py" line="475"/>
         <source>Donwloading Examples</source>
         <translation>Descargando Ejemplos</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="498"/>
+        <location filename="../LearnBlock.py" line="504"/>
         <source>Your computer does not have an internet connection.</source>
         <translation>Tu computador no tiene conexión a internet.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="488"/>
+        <location filename="../LearnBlock.py" line="494"/>
         <source>Donwloading XML&apos;s files please wait</source>
         <translation>Descargando los archivos XML&apos;s por favor espere</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="488"/>
+        <location filename="../LearnBlock.py" line="494"/>
         <source>Donwloading XML&apos;s</source>
         <translation>Descargando XML&apos;s</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="450"/>
+        <location filename="../LearnBlock.py" line="456"/>
         <source>Donwloading Libraries files please wait</source>
         <translation>Descargando Librerías por favor espere</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="450"/>
+        <location filename="../LearnBlock.py" line="456"/>
         <source>Donwloading Libraries</source>
         <translation>Descargando Librerías</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="627"/>
+        <location filename="../LearnBlock.py" line="636"/>
         <source>Open xml</source>
         <translation>Abrir xml</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="627"/>
+        <location filename="../LearnBlock.py" line="636"/>
         <source>Rcis file (*.xml)</source>
         <translation>Archivo Rcis (*.xml)</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="837"/>
+        <location filename="../LearnBlock.py" line="833"/>
         <source>Save Project</source>
         <translation>Guardar Proyecto</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="850"/>
+        <location filename="../LearnBlock.py" line="846"/>
         <source>Block Project file (*.blockProject)</source>
         <translation>Archivo Block Project (*.blockProject)</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="850"/>
+        <location filename="../LearnBlock.py" line="846"/>
         <source>Open Project</source>
         <translation>Abrir Proyecto</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1399"/>
+        <location filename="../LearnBlock.py" line="1395"/>
         <source>Error the name can not be &apos;start&apos;</source>
         <translation>Error el nombre no puede ser start</translation>
     </message>
@@ -853,42 +873,42 @@ to load the updates close and reopen the program.</source>
 <context>
     <name>VisualBlock</name>
     <message>
-        <location filename="../VisualBlock.py" line="153"/>
+        <location filename="../VisualBlock.py" line="161"/>
         <source>Export Block</source>
         <translation>Exportar Bloque</translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="157"/>
+        <location filename="../VisualBlock.py" line="166"/>
         <source>Duplicate</source>
         <translation>Duplicar</translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="161"/>
+        <location filename="../VisualBlock.py" line="171"/>
         <source>Edit</source>
         <translation>Editar</translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="165"/>
+        <location filename="../VisualBlock.py" line="176"/>
         <source>Delete</source>
         <translation>Eliminar</translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="173"/>
+        <location filename="../VisualBlock.py" line="185"/>
         <source>Select Library</source>
         <translation>Seleccionar Librería</translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="180"/>
+        <location filename="../VisualBlock.py" line="192"/>
         <source>Warning</source>
         <translation>Peligro</translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="182"/>
+        <location filename="../VisualBlock.py" line="194"/>
         <source>This module already exists</source>
         <translation>Este módulo ya existe</translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="183"/>
+        <location filename="../VisualBlock.py" line="195"/>
         <source>Do you want to overwrite the changes?</source>
         <translation>¿Quiere sobreescribir los cambios?</translation>
     </message>
@@ -932,17 +952,17 @@ to load the updates close and reopen the program.</source>
         <translation>Peligro</translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="157"/>
+        <location filename="../guiCreateBlock.py" line="150"/>
         <source>Error Name is empty.</source>
         <translation>Error el nombre esta vacio.</translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="165"/>
+        <location filename="../guiCreateBlock.py" line="158"/>
         <source>Error Images of block is empty.</source>
         <translation>Error las imagenes del bloques estan vacías.</translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="173"/>
+        <location filename="../guiCreateBlock.py" line="166"/>
         <source>Error name of vars is repit, name is empty or default value is empty.</source>
         <translation>Error el nombre de las variables esta repetido, el nombre esta vacío o el valor por defecto esta vacío.</translation>
     </message>

@@ -80,7 +80,10 @@ class Block_Button(QtGui.QPushButton):
         try:
             text = self.__dicToolTip[getLanguage()]
             sizeline = 0
-            textout = ""
+            if len(self.__dicTrans) is not 0:
+                textout = self.__dicTrans[getLanguage()] + ": "
+            else:
+                textout = self.__text + ": "
             for word in text.split(" "):
                 sizeline += len(word)
                 if sizeline < 50:
@@ -119,7 +122,7 @@ class Block_Button(QtGui.QPushButton):
 
     def getAbstracBlockItem(self):
         return AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.hue, "",
-                             self.__connections, self.__blockType, self.__type)
+                             self.__connections, self.__blockType, self.__type, dicToolTip=self.__dicToolTip)
 
     def delete(self, row):
         self.__table.removeCellWidget(row, 0)

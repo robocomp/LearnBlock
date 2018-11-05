@@ -33,7 +33,12 @@ class Connection:
         self.__type = type
 
     def __str__(self):
-        return "Connection: id : " + str(self.__idItem) + ", type : " + ["top", "bottom", "", "right", "left", "bottomin"][self.__type]
+        text = "Connection: \n" \
+               "\tid item : " + str(self.__parent.id) + "\n" \
+               "\tid item connected : " + str(self.__idItem) + "\n" \
+               "\ttype : " + ["top", "bottom", "", "right", "left", "bottomin"][self.__type] + "\n" \
+               "\tposition = " + str(self.__point)
+        return text
 
     def setType(self, type):
         self.__type = type
@@ -77,10 +82,15 @@ class Connection:
 
 class Variable():
 
-    def __init__(self, type, name, defaul):
-        self.type = type
-        self.name = name
-        self.defaul = defaul
+    def __init__(self, type=None, name=None, default=None, dict=None):
+        if dict is not None:
+            self.type = dict["type"]
+            self.name = dict["name"]
+            self.defaul = dict["default"]
+        else:
+            self.type = type
+            self.name = name
+            self.defaul = default
 
 def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=None, nameControl=""):
     im = None

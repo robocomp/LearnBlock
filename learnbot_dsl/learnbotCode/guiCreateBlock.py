@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-import os, cv2
+import os, tempfile, json
 from PySide import QtGui
 import learnbot_dsl.guis.CreateBlock as CreateBlock
 from learnbot_dsl.blocksConfig.blocks import pathBlocks
@@ -13,21 +13,23 @@ for base, dirs, files in os.walk(pathBlocks):
     for f in files:
         archivo, extension = os.path.splitext(base + "/" + f)
         if extension == ".png" and "block" in f and "azul" not in f:
-            listBlock.append(base + "/" + f)
+            listBlock.append(os.path.join(base,f))
             archivo, extension = os.path.splitext(f)
             listNameBlocks.append(archivo)
 
 listTypeBlock = ["control",
                  "motor",
-                 "perceptive",
-                 "propioperceptive",
-                 "operator"]
+                 "perceptual",
+                 "proprioceptive",
+                 "operator",
+                 "express",
+                 "others"]
 
-listconfig = ["configControl",
-              "configMotor",
-              "configOperators",
-              "configPerceptual"
-              "configPropriopercetive"]
+pythonCode = """from __future__ import print_function, absolute_import
+
+def <name>(lbot, <args>):
+    pass
+"""
 
 
 class guiCreateBlock(QtGui.QDialog):
@@ -48,9 +50,12 @@ class guiCreateBlock(QtGui.QDialog):
             self.ui.comboBoxBlockImage.addItem(name)
         self.ui.comboBoxBlockImage.currentIndexChanged.connect(self.__updateImage)
         self.ui.comboBoxBlockType.currentIndexChanged.connect(self.__updateBlockType)
-        self.ui.pushButtonSelectFile.clicked.connect(self.__clickedSelectFile)
         self.ui.pushButtonAddVar.clicked.connect(self.__addVar)
-        self.ui.pushButtonRemoveVar.clicked.connect(self.__delVar)
+        self.ui.pushButtonRemoveVar.clicked.connect(lambda : self.__delVar(self.ui.tableWidgetVars, self.ui.pushButtonAddVar))
+        self.ui.pushButtonAddlanguages.clicked.connect(self.__addlanguages)
+        self.ui.pushButtonRemovelanguages.clicked.connect(lambda : self.__delVar(self.ui.tableWidgetVars, self.ui.pushButtonAddVar))
+        self.ui.pushButtonAddTooltip.clicked.connect(self.__addTooltip)
+        self.ui.pushButtonRemoveTooltip.clicked.connect(lambda : self.__delVar(self.ui.tableWidgetVars, self.ui.pushButtonAddVar))
         self.ui.pushButtonAddBlockImage.clicked.connect(self.__addImage)
         self.ui.pushButtonRemoveBlockImage.clicked.connect(self.__removeImage)
         self.ui.pushButtonRemoveVar.setEnabled(False)
@@ -59,74 +64,61 @@ class guiCreateBlock(QtGui.QDialog):
         self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
         self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
 
-    def __clickedSelectFile(self):
-        file = QtGui.QFileDialog.getOpenFileName(self, "Open File",
-                                                 ".", "Python Files (*.py)")
-        self.ui.lineEditFile.setText(file[0])
-
     def __updateImage(self, index):
+        name = self.ui.lineEditName.text()
+        code = pythonCode.replace("<name>", name)
+        args = ""
+        vars = None
+        if self.ui.tableWidgetVars.rowCount() is not 0:
+            vars = []
+            for row in range(0, self.ui.tableWidgetVars.rowCount()):
+                args += self.ui.tableWidgetVars.cellWidget(row, 1).text() + "=" + self.ui.tableWidgetVars.cellWidget(row, 2).text() + ", "
+                vars.append(self.ui.tableWidgetVars.cellWidget(row, 1).text())
+            args = args[:-2]
+        code = code.replace("<args>",args)
+        self.ui.textEditPythonCode.setText(code)
         self.img = listNameBlocks[index]
         img = cv2.imread(listBlock[index], cv2.IMREAD_UNCHANGED)
         archivo, extension = os.path.splitext(listBlock[index])
-        blockType, connections = self.__loadConfigBlock(archivo)
-        img = generateBlock(img, 34, self.ui.lineEditName.text(), blockType, None,
-                            None)
+        blockType, connections = loadConfigBlock(archivo)
+        img = generateBlock(img, 34, name, blockType,vars_=vars,type_=FUNTION)
         qImage = toQImage(img)
         self.ui.BlockImage.setPixmap(QtGui.QPixmap(qImage))
 
-    def __loadConfigBlock(self, img):
-        fh = open(img, "r")
-        text = fh.readlines()
-        fh.close()
-        connections = []
-        blockType = None
-        for line in text:
-            if "type" in line:
-                line = line.replace("\n", "")
-                line = line.split(" ")
-                blockType = line[1]
-                if "simple" in blockType:
-                    blockType = SIMPLEBLOCK
-                elif "complex" in blockType:
-                    blockType = COMPLEXBLOCK
-            else:
-                line = line.replace("\n", "")
-                line = line.replace(" ", "")
-                c = line.split(",")
-                type = None
-                if "TOP" in c[2]:
-                    type = TOP
-                elif "BOTTOMIN" in c[2]:
-                    type = BOTTOMIN
-                elif "BOTTOM" in c[2]:
-                    type = BOTTOM
-                elif "RIGHT" in c[2]:
-                    type = RIGHT
-                elif "LEFT" in c[2]:
-                    type = LEFT
-                connections.append((QtCore.QPointF(int(c[0]), int(c[1])), type))
-        return blockType, connections
-
     def __updateBlockType(self, index):
         self.blockType = listTypeBlock[index]
-        self.config = listconfig[index]
+
+    def __addTooltip(self):
+        row = self.ui.tableWidgetToolTip.rowCount()
+        self.ui.tableWidgetToolTip.insertRow(row)
+        self.ui.tableWidgetToolTip.setCellWidget(row, 0, QtGui.QLineEdit())
+        self.ui.tableWidgetToolTip.setCellWidget(row, 1, QtGui.QLineEdit())
+        self.ui.pushButtonRemoveTooltip.setEnabled(True)
+
+    def __addlanguages(self):
+        row = self.ui.tableWidgetlanguages.rowCount()
+        self.ui.tableWidgetlanguages.insertRow(row)
+        self.ui.tableWidgetlanguages.setCellWidget(row, 0, QtGui.QLineEdit())
+        self.ui.tableWidgetlanguages.setCellWidget(row, 1, QtGui.QLineEdit())
+        self.ui.pushButtonRemovelanguages.setEnabled(True)
 
     def __addVar(self):
         row = self.ui.tableWidgetVars.rowCount()
         self.ui.tableWidgetVars.insertRow(row)
-        self.ui.tableWidgetVars.setCellWidget(row, 0, QtGui.QLabel("Float"))
-        self.ui.tableWidgetVars.setCellWidget(row, 1, QtGui.QLineEdit())
+        self.ui.tableWidgetVars.setCellWidget(row, 0, QtGui.QLabel("float"))
         edit = QtGui.QLineEdit()
+        edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
+        self.ui.tableWidgetVars.setCellWidget(row, 1, edit)
+        edit = QtGui.QLineEdit()
+        edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
         edit.setValidator(QtGui.QDoubleValidator())
         self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
         self.ui.pushButtonRemoveVar.setEnabled(True)
 
-    def __delVar(self):
-
-        self.ui.tableWidgetVars.removeRow(self.ui.tableWidgetVars.currentRow())
-        if self.ui.tableWidgetVars.rowCount() == 0:
-            self.ui.pushButtonRemoveVar.setEnabled(False)
-
+    def __delete(self,table, buton):
+        table.removeRow(table.currentRow())
+        if table.rowCount() == 0:
+            buton.setEnabled(False)
     def __clear(self):
         self.ui.lineEditFile.clear()
         self.ui.lineEditName.clear()
@@ -177,38 +169,47 @@ class guiCreateBlock(QtGui.QDialog):
             if ret is not None:
                 return
 
-            text = """
-block{\n"""
-            text += "\ttype " + self.blockType + "\n"
-            text += "\tname " + self.ui.lineEditName.text() + "\n"
-            file = self.ui.lineEditFile.text()
-            if file == "":
-                file = "None"
-            text += "\tfile " + file + "\n"
+            dictBlock = {}
+            dictBlock["type"] = self.blockType
+            dictBlock["name"] = self.ui.lineEditName.text()
             if self.ui.tableWidgetVars.rowCount() is not 0:
-                text += "\tvariables{\n"
+                listVariables = []
                 for row in range(0, self.ui.tableWidgetVars.rowCount()):
-                    text += "\t\t" + self.ui.tableWidgetVars.cellWidget(row, 0).text() + " " + \
-                            self.ui.tableWidgetVars.cellWidget(row,
-                                                               1).text() + " " + self.ui.tableWidgetVars.cellWidget(row,
-                                                                                                                    2).text() + "\n"
-                text += "\t}\n"
-            text += "\timg "
+                    v = {}
+                    v["type"] = self.ui.tableWidgetVars.cellWidget(row, 0).text()
+                    v["name"] = self.ui.tableWidgetVars.cellWidget(row, 1).text()
+                    v["default"] = self.ui.tableWidgetVars.cellWidget(row, 2).text()
+                    listVariables.append(v)
+                dictBlock["variables"] = listVariables
+            listImgs = []
             for img in self.listImg:
-                text += img + ", "
-            text = text[:-2] + "\n}"
+                listImgs.append(img)
+            dictBlock["img"] = listImgs
+            if self.ui.tableWidgetlanguages.rowCount() is not 0:
+                dictLanguages = {}
+                for row in range(0, self.ui.tableWidgetlanguages.rowCount()):
+                    dictLanguages[self.ui.tableWidgetlanguages.cellWidget(row, 0).text()] = self.ui.tableWidgetlanguages.cellWidget(row, 1).text()
+                dictBlock["languages"] = dictLanguages
+            if self.ui.tableWidgetToolTip.rowCount() is not 0:
+                dictToolTip = {}
+                for row in range(0, self.ui.tableWidgetToolTip.rowCount()):
+                    dictToolTip[self.ui.tableWidgetToolTip.cellWidget(row, 0).text()] = self.ui.tableWidgetToolTip.cellWidget(row, 1).text()
+                dictBlock["tooltip"] = dictToolTip
+
             msgBox = QtGui.QMessageBox()
             msgBox.setWindowTitle(self.trUtf8("Warning"))
             msgBox.setIcon(QtGui.QMessageBox.Warning)
             msgBox.setText(self.trUtf8("Are you sure you want to add this function?"))
-            msgBox.setInformativeText(text)
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.setInformativeText(str(dictBlock))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
             ret = msgBox.exec_()
             if ret == QtGui.QMessageBox.Ok:
-                with open(os.path.join(pathConfig, self.config), 'a') as file:
-                    file.write(text)
-                    file.close()
+                with open(os.path.join(tempfile.gettempdir(), "block", self.ui.lineEditName.text() + ".conf"), 'w') as file:
+                    json.dump([dictBlock], file)
+                with open(os.path.join(tempfile.gettempdir(), "functions", self.ui.lineEditName.text() + ".py"), 'w') as file:
+                    code = self.ui.textEditPythonCode.toPlainText()
+                    file.write(code)
             else:
                 return
         self.load_blocks()

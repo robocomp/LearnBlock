@@ -106,7 +106,14 @@ def on_message(client, userdata, message):
         signal.signalUpdateStreamer[QtGui.QImage].emit(image)
     except:
         pass
-
+type2Values = {"control": (CONTROL,HUE_CONTROL),
+                 "motor": (FUNTION, HUE_MOTOR),
+                 "perceptual": (FUNTION, HUE_PERCEPTUAL),
+                 "proprioceptive": (FUNTION, HUE_PROPIOPERCEPTIVE),
+                 "operador": (OPERATOR, HUE_OPERATOR),
+                 "express": (FUNTION, HUE_EXPRESS),
+                 "others": (FUNTION, HUE_OTHERS)
+                 }
 class LearnBlock(QtGui.QMainWindow):
 
     def __init__(self):
@@ -255,6 +262,8 @@ class LearnBlock(QtGui.QMainWindow):
         if not os.path.exists(tempfile.gettempdir()):
             tempfile.tempdir = os.path.join(os.getenv('HOME'), ".learnblock")
             os.mkdir(tempfile.gettempdir())
+            os.mkdir(os.path.join(tempfile.gettempdir(), "block"))
+            os.mkdir(os.path.join(tempfile.gettempdir(), "functions"))
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                 f.write("")
         self.loadConfigFile()
@@ -729,52 +738,34 @@ class LearnBlock(QtGui.QMainWindow):
             self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
 
     def load_blocks(self):
-        functions = reload_functions()
-        for f in functions:
-            if f.name in self.listNameBlock:
+        blocks = reload_functions()
+        for k, table in iter(self.dicTables.items()):
+            table.clear()
+            table.setRowCount(0)
+        self.listNameBlock.clear()
+        self.listButtons.clear()
+        for b in blocks:
+            if b["name"] in self.listNameBlock:
                 continue
-            self.listNameBlock.append(f.name)
+            self.listNameBlock.append(b["name"])
             variables = []
-            if f.variables:
-                for v in f.variables:
-                    variables.append(Variable(v[0], v[1], v[2]))
-            funtionType = None
-            HUE = None
-            if "control" == f.type[0]:
-                funtionType = CONTROL
-                HUE = HUE_CONTROL
-            elif "motor" == f.type[0]:
-                funtionType = FUNTION
-                HUE = HUE_MOTOR
-            elif "perceptual" == f.type[0]:
-                funtionType = FUNTION
-                HUE = HUE_PERCEPTUAL
-            elif "proprioceptive" == f.type[0]:
-                funtionType = FUNTION
-                HUE = HUE_PROPIOPERCEPTIVE
-            elif "operador" == f.type[0]:
-                funtionType = OPERATOR
-                HUE = HUE_OPERATOR
-            elif "express" == f.type[0]:
-                funtionType = FUNTION
-                HUE = HUE_EXPRESS
-            elif "others" == f.type[0]:
-                funtionType = FUNTION
-                HUE = HUE_OTHERS
-
-            for img in f.img:
+            if "variables" in b:
+                for v in b["variables"]:
+                    variables.append(Variable(dict=copy.copy(v)))
+            funtionType, HUE = type2Values[b["type"]]
+            for img in b["img"]:
                 blockType, connections = loadConfigBlock(img)
-                table = self.dicTables[f.type[0]]
+                table = self.dicTables[b["type"]]
                 table.insertRow(table.rowCount())
-                dicTrans = {}
-                for l in f.translations:
-                    dicTrans[l.language] = l.translation
-                dicToolTip = {}
-                for l in f.tooltip:
-                    dicToolTip[l.language] = l.translation
-                button = Block_Button((self, f.name[0], dicTrans, HUE, self.view, self.scene, img + ".png", connections,
-                                       variables, blockType, table, table.rowCount() - 1, funtionType, dicToolTip))
-                if f.name[0] == "main":
+                tooltip = {}
+                languages = {}
+                if "languages" in b:
+                    languages = b["languages"]
+                if "tooltip" in b:
+                    tooltip = b["tooltip"]
+                button = Block_Button((self, b["name"], languages, HUE, self.view, self.scene, img + ".png", connections,
+                                       variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
+                if b["name"] == "main":
                     self.mainButton = button
                 self.listButtons.append(button)
                 table.setCellWidget(table.rowCount() - 1, 0, button)

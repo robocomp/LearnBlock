@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function, absolute_import
-import os
+import os, json
 from pyparsing import *
 from learnbot_dsl.blocksConfig.blocks import pathBlocks as pathImgBlocks
 pathConfig = os.path.dirname(os.path.realpath(__file__))
@@ -74,17 +74,27 @@ def parserConfigBlock( file ):
         print("    "+" "*pe.col+"^")
     return r
 
+
 def reload_functions():
-    functions = None
-    pathsConfig = [pathConfig, os.path.join(os.getenv('HOME'), ".learnblock", "block")]
+    blocks = None
+    pathsConfig = [pathConfig,
+                   os.path.join(os.getenv('HOME'), ".learnblock", "block")
+                   ]
     for path in pathsConfig:
-        if os.path.exists(path):
-            for conffile in [p for p in os.listdir(path) if os.path.splitext(p)[-1] == ".conf"]:
-                if functions is None:
-                    functions = parserConfigBlock(os.path.join(path, conffile))
+        if not os.path.exists(path):
+            continue
+        for f in os.listdir(path):
+            if os.path.splitext(f)[-1] == ".conf":
+                f = os.path.join(path, f)
+                print(f)
+                with open(f, "rb") as f:
+                    text = f.read()
+                if blocks is None:
+                    blocks = json.loads(text)
                 else:
-                    functions += parserConfigBlock(os.path.join(path, conffile))
-    for f in functions:
-        for i in range(len(f.img)):
-            f.img[i] = os.path.join(pathImgBlocks, f.img[i])
-    return functions
+                    blocks += json.loads(text)
+    for b in blocks:
+        for i in range(len(b["img"])):
+            b["img"][i] = os.path.join(pathImgBlocks, b["img"][i])
+
+    return blocks

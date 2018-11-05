@@ -53,7 +53,8 @@ setup(name="learnbot_dsl",
           'Pillow==5.3.0',
           # 'PySide',
           'GitPython==2.1.11',
-          'paho_mqtt==1.4.0'],
+          'paho_mqtt==1.4.0',
+          'future'],
     )
 if os.path.exists("build.learnbot_dsl"):
     shutil.rmtree("build.learnbot_dsl")

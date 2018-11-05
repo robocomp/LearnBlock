@@ -9,6 +9,13 @@ from learnbot_dsl.learnbotCode.toQImage import *
 from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode, HEADER
 from learnbot_dsl.blocksConfig import pathImgBlocks
 
+# class KeyPressEater(QtCore.QObject):
+#     def eventFilter(self, obj, event):
+#         print("hola")
+#         if isinstance(event, QtCore.QMouseEvent) and event.buttons() & QtCore.Qt.RightButton:
+#             return True
+#         return False
+
 def toLBotPy(inst, ntab=1):
     text = inst[0]
     if inst[1]["TYPE"] is USERFUNCTION:
@@ -146,22 +153,27 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.sizeIn = 0
         self.shouldUpdateConnections = False
         self.popMenu = QtGui.QMenu(self)
+        # self.keyPressEater = KeyPressEater(self)
         if self.parentBlock.name not in ["main", "when"]:
             if self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK:
                 action3 = QtGui.QAction(self.trUtf8('Export Block'), self)
                 action3.triggered.connect(self.on_clicked_menu_export_block)
+                # action3.installEventFilter(self.keyPressEater)
                 self.popMenu.addAction(action3)
             else:
                 action0 = QtGui.QAction(self.trUtf8('Duplicate'), self)
                 action0.triggered.connect(self.on_clicked_menu_duplicate)
+                # action0.installEventFilter(self.keyPressEater)
                 self.popMenu.addAction(action0)
 
         action1 = QtGui.QAction(self.trUtf8('Edit'), self)
         action1.triggered.connect(self.on_clicked_menu_edit)
+        # action1.installEventFilter(self.keyPressEater)
         self.popMenu.addAction(action1)
         self.popMenu.addSeparator()
         action2 = QtGui.QAction(self.trUtf8('Delete'), self)
         action2.triggered.connect(self.on_clicked_menu_delete)
+        # action2.installEventFilter(self.keyPressEater)
         self.popMenu.addAction(action2)
 
     def on_clicked_menu_export_block(self):
@@ -374,7 +386,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         prev_vars = self.parentBlock.getVars()
         if vars is not None:
             for i in range(0, len(vars)):
-                if vars[i] != prev_vars:
+                if vars[i] != prev_vars[i].defaul:
                     self.shouldUpdate = True
                     self.parentBlock.updateVars(vars)
                     break
@@ -409,7 +421,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             self.updateConnections()
 
     def moveToPos(self, pos, connect=False):
-
         if connect is False and self.posmouseinItem is not None:
             pos = pos - self.posmouseinItem
         self.setPos(pos)

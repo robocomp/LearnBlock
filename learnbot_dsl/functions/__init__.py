@@ -10,6 +10,7 @@ ignore = [
 ]
 
 __path = os.path.dirname(os.path.realpath(__file__))
+
 def getFuntions():
 	functions = {}
 	params = {}
