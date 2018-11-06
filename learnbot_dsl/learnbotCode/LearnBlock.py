@@ -44,15 +44,8 @@ class DownloadThread(QtCore.QThread):
     def run(self):
         u = urlopen(self.url)
         with open(self.tmp_file_name, 'wb') as f:
-            downloaded_bytes = 0
-            block_size = 1024 * 8
-            while True:
-                buffer = u.read(block_size)
-                if not buffer:
-                    break
-
-                f.write(buffer)
-                downloaded_bytes += block_size
+            buffer = u.read()
+            f.write(buffer)
         self.downloading_window.finish = True
         return
 
