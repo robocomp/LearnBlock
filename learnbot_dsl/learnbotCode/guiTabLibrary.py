@@ -2,7 +2,7 @@ from __future__ import print_function, absolute_import
 import os, sys
 from PySide import QtGui
 import learnbot_dsl.guis.TabLibrary as TabLibrary
-from learnbot_dsl.blocksConfig.parserConfigBlock import parserConfigBlock
+from learnbot_dsl.blocksConfig.parserConfigBlock import reload_functions
 from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.blocksConfig.blocks import pathBlocks as imgPath
 from learnbot_dsl.learnbotCode.Block import *
@@ -42,36 +42,36 @@ class Library(QtGui.QWidget):
                 if os.path.isdir(os.path.abspath(subPath)):
                     for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
                         if os.path.splitext(subsubPath)[-1] == ".conf":
-                            self.load(parserConfigBlock(subsubPath))
+                            self.load(reload_functions(subsubPath))
 
-    def load(self, functions):
+    def load(self, blocks):
         listRepitFuntions = []
-        for f in functions:
-            if f.name[0] in self.parent.listNameUserFunctions or f.name[0] in self.parent.listNameLibraryFunctions:
-                listRepitFuntions.append(f.name[0])
+        for b in blocks:
+            if b["name"] in self.parent.listNameUserFunctions or b["name"] in self.parent.listNameLibraryFunctions:
+                listRepitFuntions.append(b["name"])
                 continue
-            self.namesFunctions.append(f.name[0])
-            self.parent.listNameLibraryFunctions.append(f.name[0])
+            self.namesFunctions.append(b["name"])
+            self.parent.listNameLibraryFunctions.append(b["name"])
             variables = []
             funtionType = LIBRARY
             HUE = HUE_LIBRARY
-            for img in f.img:
+            for img in b["img"]:
                 img = os.path.join(imgPath, img)
                 blockType, connections = loadConfigBlock(img)
                 table = self.ui.tableLibrary
                 table.insertRow(table.rowCount())
-                dicTrans = {}
-                for l in f.translations:
-                    dicTrans[l.language] = l.translation
-                dicToolTip = {}
-                for l in f.tooltip:
-                    dicToolTip[l.language] = l.translation
-                button = Block_Button((self.parent, f.name[0], dicTrans, HUE, self.parent.view, self.parent.scene,
+                tooltip = {}
+                languages = {}
+                if "languages" in b:
+                    languages = b["languages"]
+                if "tooltip" in b:
+                    tooltip = b["tooltip"]
+                button = Block_Button((self.parent, b["name"], languages, HUE, self.parent.view, self.parent.scene,
                                        img + ".png", connections,
                                        variables, blockType, table, table.rowCount() - 1,
-                                       funtionType, dicToolTip))
+                                       funtionType, tooltip))
                 self.parent.listButtons.append(button)
-                self.listButons.append((button,table.rowCount()- 1))
+                self.listButons.append((button,table.rowCount() - 1))
                 table.setCellWidget(table.rowCount() - 1, 0, button)
         if len(listRepitFuntions) is not 0:
             text = ""

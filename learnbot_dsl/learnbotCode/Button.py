@@ -78,7 +78,9 @@ class Block_Button(QtGui.QPushButton):
 
     def updateToolTip(self):
         try:
-            text = self.__dicToolTip[getLanguage()]
+            text = ""
+            if len(self.__dicToolTip) is not 0:
+                text = self.__dicToolTip[getLanguage()]
             sizeline = 0
             if len(self.__dicTrans) is not 0:
                 textout = self.__dicTrans[getLanguage()] + ": "

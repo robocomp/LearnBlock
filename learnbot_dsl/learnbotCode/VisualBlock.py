@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import
 from PySide import QtGui,QtCore
 from math import *
-import pickle, os
+import pickle, os, json
 import learnbot_dsl.guis.EditVar as EditVar
 from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.Language import getLanguage
@@ -9,12 +9,11 @@ from learnbot_dsl.learnbotCode.toQImage import *
 from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode, HEADER
 from learnbot_dsl.blocksConfig import pathImgBlocks
 
-# class KeyPressEater(QtCore.QObject):
-#     def eventFilter(self, obj, event):
-#         print("hola")
-#         if isinstance(event, QtCore.QMouseEvent) and event.buttons() & QtCore.Qt.RightButton:
-#             return True
-#         return False
+class KeyPressEater(QtCore.QObject):
+    def eventFilter(self, obj, event):
+        if isinstance(event, QtGui.QMouseEvent) and event.buttons() & QtCore.Qt.RightButton:
+            return True
+        return False
 
 def toLBotPy(inst, ntab=1):
     text = inst[0]
@@ -153,23 +152,22 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.sizeIn = 0
         self.shouldUpdateConnections = False
         self.popMenu = QtGui.QMenu(self)
-        # self.keyPressEater = KeyPressEater(self)
+
+        self.keyPressEater = KeyPressEater(self.popMenu)
+        self.popMenu.installEventFilter(self.keyPressEater)
+        action1 = QtGui.QAction(self.trUtf8('Edit'), self)
+        action1.triggered.connect(self.on_clicked_menu_edit)
+        self.popMenu.addAction(action1)
         if self.parentBlock.name not in ["main", "when"]:
             if self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK:
                 action3 = QtGui.QAction(self.trUtf8('Export Block'), self)
                 action3.triggered.connect(self.on_clicked_menu_export_block)
-                # action3.installEventFilter(self.keyPressEater)
                 self.popMenu.addAction(action3)
             else:
                 action0 = QtGui.QAction(self.trUtf8('Duplicate'), self)
                 action0.triggered.connect(self.on_clicked_menu_duplicate)
-                # action0.installEventFilter(self.keyPressEater)
                 self.popMenu.addAction(action0)
 
-        action1 = QtGui.QAction(self.trUtf8('Edit'), self)
-        action1.triggered.connect(self.on_clicked_menu_edit)
-        # action1.installEventFilter(self.keyPressEater)
-        self.popMenu.addAction(action1)
         self.popMenu.addSeparator()
         action2 = QtGui.QAction(self.trUtf8('Delete'), self)
         action2.triggered.connect(self.on_clicked_menu_delete)
@@ -180,7 +178,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         if self.parentBlock.name not in ["main", "when"] and self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK:
 
             self.scene.stopAllblocks()
-            path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Select Library'), '.', QtGui.QFileDialog.ShowDirsOnly)
+            path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Select Library'), self.scene.parent.libraryPath, QtGui.QFileDialog.ShowDirsOnly)
             self.scene.startAllblocks()
             ret = None
             try:
@@ -207,22 +205,20 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                         (dic, lBInstance.listNameWhens, lBInstance.listUserFunctions, lBInstance.listNameVars, lBInstance.listNameUserFunctions),
                         fichero, 0)
                 # Save config block
-                with open(os.path.join(path, self.parentBlock.name + ".conf"),'wr') as f:
-                    text ='''block{
-        type library
-        name ''' + self.parentBlock.name + '''
-        img block1
-        languages ES: "''' + self.parentBlock.name + '''", EN: "''' + self.parentBlock.name + '''"
-    }'''
-                    f.write(text)
+                dictBlock = {}
+                dictBlock["name"] = self.parentBlock.name
+                dictBlock["type"] = "library"
+                dictBlock["img"] = ["block1"]
+                with open(os.path.join(path, self.parentBlock.name + ".conf"),'w') as f:
+                    json.dump([dictBlock], f)
                 # Save script learnCode
                 inst = self.getInstructions()
                 code = "def " + toLBotPy(inst) + "\nend\n\n"
-                with open(os.path.join(path, self.parentBlock.name + ".lb"), 'wr') as f:
+                with open(os.path.join(path, self.parentBlock.name + ".lb"), 'w') as f:
                     f.write(code)
                 # Save script python
                 codePython = parserLearntBotCodeOnlyUserFuntion(code)
-                with open(os.path.join(path, self.parentBlock.name + ".py"), 'wr') as f:
+                with open(os.path.join(path, self.parentBlock.name + ".py"), 'w') as f:
                     f.write(codePython)
                 pass
 

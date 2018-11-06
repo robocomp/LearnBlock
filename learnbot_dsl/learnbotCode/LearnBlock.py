@@ -742,8 +742,11 @@ class LearnBlock(QtGui.QMainWindow):
         for k, table in iter(self.dicTables.items()):
             table.clear()
             table.setRowCount(0)
-        self.listNameBlock.clear()
-        self.listButtons.clear()
+        try:
+            self.listNameBlock.clear()
+            self.listButtons.clear()
+        except:
+            pass
         for b in blocks:
             if b["name"] in self.listNameBlock:
                 continue
