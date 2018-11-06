@@ -9,7 +9,7 @@ def readVersion(fname):
             if '__version__' in l:
                 return l.split("=")[-1].replace("'","").replace(" ","")
 setup(name="learnbot_components",
-    version=read('version'),
+    version=readVersion(os.path.join(os.path.dirname(__file__),"learnbot_components","__init__.py")),
     description="learnbot_components contains some components to install in learnbot robot.",
     author="Ivan Barbecho",
     author_email="ivanbd@unex.es",
@@ -42,8 +42,7 @@ setup(name="learnbot_components",
             'paho_mqtt==1.4.0',
             'picamera==1.13',
             'wiringpi==2.46.0',
-            'wiringpi2==2.32.3'
-    ],
+            'wiringpi2'],
     )
 if os.path.exists("build.learnbot_components"):
     shutil.rmtree("build.learnbot_components")
