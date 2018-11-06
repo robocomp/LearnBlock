@@ -58,7 +58,11 @@ class guiAddWhen(QtGui.QDialog):
     def __changeRunStart(self):
         if self.ui.Run_start.isChecked():
             self.ui.lineEditName.setEnabled(False)
-            self.ui.comboBoxBlockImage.setCurrentIndex(1)
+            if self.ui.comboBoxBlockImage.currentText() != "block8":
+                if self.ui.comboBoxBlockImage.currentIndex() == 0:
+                    self.ui.comboBoxBlockImage.setCurrentIndex(1)
+                else:
+                    self.ui.comboBoxBlockImage.setCurrentIndex(0)
             self.ui.comboBoxBlockImage.setEnabled(False)
             self.ui.lineEditName.setText("start")
             self.__updateImage(self.ui.comboBoxBlockImage.currentIndex())
@@ -67,6 +71,7 @@ class guiAddWhen(QtGui.QDialog):
             self.ui.lineEditName.setEnabled(True)
             self.ui.comboBoxBlockImage.setEnabled(True)
             self.__updateImage(self.ui.comboBoxBlockImage.currentIndex())
+
     def __updateImage(self, index):
 
         self.value = "when"
