@@ -41,7 +41,14 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 ic = None
 
-
+NoneEmotion = -1
+Fear = 0
+Surprise = 1
+Anger = 2
+Sadness = 3
+Disgust = 4
+Joy = 5
+Neutral = 7
 
 class Client(Ice.Application, threading.Thread):
 
@@ -56,6 +63,7 @@ class Client(Ice.Application, threading.Thread):
         self.lasers_proxys=[]
         self.angleCamera = 0
         self.emotion_current_exist = False
+        self.currentEmotion = NoneEmotion
         global ic
 
         params = copy.deepcopy(sys.argv)
@@ -245,47 +253,54 @@ class Client(Ice.Application, threading.Thread):
         x, y, alpha = self.differentialrobot_proxy.getBasePose()
         return x, y, alpha
 
-    def setRobotSpeed(self, vAdvance=0, vRotation=0):
-        try:
-            self.adv = vAdvance
-            self.rot = vRotation
-            self.differentialrobot_proxy.setSpeedBase(-self.adv*8, self.rot*15)
-        except Exception as e:
-            print("Error setRobotSpeed")
+    # def setRobotSpeed(self, vAdvance=0, vRotation=0):
+    #     try:
+    #         self.adv = vAdvance
+    #         self.rot = vRotation
+    #         self.differentialrobot_proxy.setSpeedBase(-self.adv*8, self.rot*15)
+    #     except Exception as e:
+    #         print("Error setRobotSpeed")
 
     def setRobotSpeed(self, vAdvance=0, vRotation=0):
-        if vAdvance!=0 or vRotation!=0:
-            self.adv = vAdvance
-            self.rot = vRotation
+        # if vAdvance!=0 or vRotation!=0:
+        self.adv = vAdvance
+        self.rot = vRotation
         self.differentialrobot_proxy.setSpeedBase(self.adv, self.rot)
 
     def expressFear(self):
         self.display_proxy.setImageFromFile(
             os.path.join(imgPaths,"miedo.png"))
+        self.currentEmotion = Fear
 
     def expressSurprise(self):
         self.display_proxy.setImageFromFile(
             os.path.join(imgPaths,"sorpresa.png"))
+        self.currentEmotion = Surprise
 
     def expressAnger(self):
         self.display_proxy.setImageFromFile(
             os.path.join(imgPaths,"ira.png"))
+        self.currentEmotion = Anger
 
     def expressSadness(self):
         self.display_proxy.setImageFromFile(
             os.path.join(imgPaths,"tristeza.png"))
+        self.currentEmotion = Sadness
 
     def expressDisgust(self):
         self.display_proxy.setImageFromFile(
             os.path.join(imgPaths,"asco.png"))
+        self.currentEmotion = Disgust
 
     def expressJoy(self):
         self.display_proxy.setImageFromFile(
             os.path.join(imgPaths,"alegria.png"))
+        self.currentEmotion = Joy
 
     def expressNeutral(self):
         self.display_proxy.setImageFromFile(
             os.path.join(imgPaths,"SinEmocion2.png"))
+        self.currentEmotion = Neutral
 
     def setJointAngle(self, angle):
         self.angleCamera = angle
@@ -293,6 +308,9 @@ class Client(Ice.Application, threading.Thread):
         goal.name = 'servo'
         goal.position = -angle
         self.jointmotor_proxy.setPosition(goal)
+
+    def getCurrentEmotion(self):
+        return self.currentEmotion
 
     def getEmotions(self):
         if not self.emotion_current_exist:

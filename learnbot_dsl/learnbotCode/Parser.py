@@ -10,12 +10,12 @@ HEADER = """
 from __future__ import print_function, absolute_import
 from learnbot_dsl.functions import getFuntions
 functions = getFuntions()
-import learnbot_dsl.<LearnBotClient> as <LearnBotClient>
+from learnbot_dsl.<LearnBotClient> import *
 import sys, time, os
 global lbot
 
 try:
-    lbot = <LearnBotClient>.Client(sys.argv)
+    lbot = Client(sys.argv)
 except Exception as e:
     print("hay un Error")
     print(e)

@@ -60,7 +60,10 @@ class MyScene(QtGui.QGraphicsScene):
 
     def getItemSelected(self):
         if self.idItemS is not None:
-            return self.dictVisualItem[self.idItemS]
+            if self.idItemS in self.dictVisualItem:
+                return self.dictVisualItem[self.idItemS]
+            else:
+                self.idItemS = None
         return None
 
     def setTable(self, table):

@@ -54,6 +54,15 @@ def on_message(client, userdata, message):
     open_cv_image = np.array(image)
     open_cv_image = cv2.flip(open_cv_image, 0)
 
+NoneEmotion = -1
+Fear = 0
+Surprise = 1
+Anger = 2
+Sadness = 3
+Disgust = 4
+Joy = 5
+Neutral = 7
+
 class Client(Ice.Application, threading.Thread):
 
     def __init__(self, argv):
@@ -71,6 +80,7 @@ class Client(Ice.Application, threading.Thread):
         self.angleCamera = 0
         self.emotion_current_exist = False
         self.currents_emotions = []
+        self.currentEmotion = NoneEmotion
         global ic
         params = copy.deepcopy(sys.argv)
         if len(params) > 1:
@@ -312,42 +322,49 @@ class Client(Ice.Application, threading.Thread):
     def expressJoy(self):
         try:
             self.emotionalmotor_proxy.expressJoy()
+            self.currentEmotion = Joy
         except Exception as e:
             print("Error expressJoy")
 
     def expressSadness(self):
         try:
             self.emotionalmotor_proxy.expressSadness()
+            self.currentEmotion = Sadness
         except Exception as e:
             print("Error expressSadness")
 
     def expressSurprise(self):
         try:
             self.emotionalmotor_proxy.expressSurprise()
+            self.currentEmotion = Surprise
         except Exception as e:
             print("Error expressSurprise")
 
     def expressFear(self):
         try:
             self.emotionalmotor_proxy.expressFear()
+            self.currentEmotion = Fear
         except Exception as e:
             print("Error expressFear")
 
     def expressAnger(self):
         try:
             self.emotionalmotor_proxy.expressAnger()
+            self.currentEmotion = Anger
         except Exception as e:
             print("Error expressAnger")
 
     def expressDisgust(self):
         try:
             self.emotionalmotor_proxy.expressDisgust()
+            self.currentEmotion = Disgust
         except Exception as e:
             print("Error expressDisgust")
 
     def expressNeutral(self):
         try:
             self.emotionalmotor_proxy.expressNeutral()
+            self.currentEmotion = Neutral
         except Exception as e:
             print(e)
             print("Error expressNeutral")
@@ -358,6 +375,9 @@ class Client(Ice.Application, threading.Thread):
         goal.name = 'servo'
         goal.position = angle
         self.jointmotor_proxy.setPosition(goal)
+
+    def getCurrentEmotion(self):
+        return self.currentEmotion
 
     def getEmotions(self):
         if not self.emotion_current_exist:

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui'
 #
-# Created: Fri Nov  2 16:58:54 2018
+# Created: Tue Nov  6 20:01:53 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -350,6 +350,8 @@ class Ui_MainWindow(object):
         self.menuEdit.setObjectName("menuEdit")
         self.menuProject = QtGui.QMenu(self.menubar)
         self.menuProject.setObjectName("menuProject")
+        self.menuHelp = QtGui.QMenu(self.menubar)
+        self.menuHelp.setObjectName("menuHelp")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -412,6 +414,8 @@ class Ui_MainWindow(object):
         self.actionDelete.setObjectName("actionDelete")
         self.actionExport_Block = QtGui.QAction(MainWindow)
         self.actionExport_Block.setObjectName("actionExport_Block")
+        self.actionHelp = QtGui.QAction(MainWindow)
+        self.actionHelp.setObjectName("actionHelp")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_New_block)
@@ -447,10 +451,12 @@ class Ui_MainWindow(object):
         self.menuProject.addAction(self.actionStart_simulated_robot)
         self.menuProject.addAction(self.actionStart_physical_robot)
         self.menuProject.addAction(self.actionStop)
+        self.menuHelp.addAction(self.actionHelp)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuProject.menuAction())
         self.menubar.addAction(self.menuTools_robot.menuAction())
+        self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
         self.Tabwi.setCurrentIndex(1)
@@ -505,6 +511,7 @@ class Ui_MainWindow(object):
         self.menuTools_robot.setTitle(QtGui.QApplication.translate("MainWindow", "tools robot", None, QtGui.QApplication.UnicodeUTF8))
         self.menuEdit.setTitle(QtGui.QApplication.translate("MainWindow", "Edit", None, QtGui.QApplication.UnicodeUTF8))
         self.menuProject.setTitle(QtGui.QApplication.translate("MainWindow", "Project", None, QtGui.QApplication.UnicodeUTF8))
+        self.menuHelp.setTitle(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExit.setText(QtGui.QApplication.translate("MainWindow", "Exit", None, QtGui.QApplication.UnicodeUTF8))
         self.actionCreate_New_block.setText(QtGui.QApplication.translate("MainWindow", "Create New block", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave.setText(QtGui.QApplication.translate("MainWindow", "Save Project", None, QtGui.QApplication.UnicodeUTF8))
@@ -556,4 +563,6 @@ class Ui_MainWindow(object):
         self.actionDelete.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+D", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExport_Block.setText(QtGui.QApplication.translate("MainWindow", "Export Block", None, QtGui.QApplication.UnicodeUTF8))
         self.actionExport_Block.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+Shift+E", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHelp.setText(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionHelp.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+H", None, QtGui.QApplication.UnicodeUTF8))
 

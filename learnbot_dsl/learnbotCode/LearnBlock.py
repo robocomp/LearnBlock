@@ -27,6 +27,7 @@ from learnbot_dsl.learnbotCode.parserConfig import configSSH
 from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.learnbotCode.guiTabLibrary import Library
 from learnbot_dsl.learnbotCode.Highlighter import *
+from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
 install_aliases()
 from urllib.request import urlopen
@@ -128,6 +129,8 @@ class LearnBlock(QtGui.QMainWindow):
         self.listNameLibraryFunctions = []
         self.__fileProject = None
         self.hilo = None
+        self.rcisthread = None
+        self.help = None
         self.physicalRobot = False
         self.index = -1
         # Create the application
@@ -202,6 +205,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.actionStart_physical_robot.triggered.connect(self.StartProgramPR)
         self.ui.actionStop.triggered.connect(self.stopthread)
         self.ui.actionBlocks_to_text.triggered.connect(self.blocksToText)
+        self.ui.actionHelp.triggered.connect(self.openHelp)
 
         # Load image buttons
         self.ui.savepushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"save.png")))
@@ -273,7 +277,7 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.connectCameraRobot()
 
-        self.client=None
+        self.client = None
         self.isOpen = True
         self.savetmpProject()
         # Execute the application
@@ -282,6 +286,11 @@ class LearnBlock(QtGui.QMainWindow):
         r = self.app.exec_()
 
         sys.exit(r)
+        
+    def openHelp(self):
+        if self.help is None:
+            self.help = helper(getLanguage())
+        self.help.show()
 
     def disablestartButtons(self, disabled):
         self.ui.stopPushButton.setEnabled(disabled)
@@ -563,6 +572,8 @@ class LearnBlock(QtGui.QMainWindow):
             self.newProject()
             self.disconnectCamera()
             del self.client
+            if self.rcisthread is not None:
+                self.rcisthread.terminate()
             subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
             event.accept()
         else:
@@ -580,6 +591,8 @@ class LearnBlock(QtGui.QMainWindow):
                 self.disconnectCamera()
                 del self.client
                 self.stopthread()
+                if self.rcisthread is not None:
+                    self.rcisthread.terminate()
                 subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 event.accept()
             elif ret == QtGui.QMessageBox.Discard:
@@ -587,6 +600,8 @@ class LearnBlock(QtGui.QMainWindow):
                 self.disconnectCamera()
                 del self.client
                 self.stopthread()
+                if self.rcisthread is not None:
+                    self.rcisthread.terminate()
                 subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 event.accept()
             else:
@@ -630,7 +645,12 @@ class LearnBlock(QtGui.QMainWindow):
         self.scene.startAllblocks()
         if fileName[0] != "":
             # print(configSSH["start_simulator"] + " " + fileName[0])
-            subprocess.Popen(configSSH["start_simulator"] + " " + fileName[0], shell=True, stdout=subprocess.PIPE)
+            # os.popen(configSSH["start_simulator"] + " " + fileName[0])
+            if self.rcisthread is not None:
+                self.rcisthread.terminate()
+            self.rcisthread = Process(target=lambda :os.popen(configSSH["start_simulator"] + " " + fileName[0]))
+            self.rcisthread.start()
+            # subprocess.Popen(configSSH["start_simulator"] + " " + fileName[0], shell=True, stdout=subprocess.PIPE)
 
     def shutdownRobot(self):
         client = paramiko.SSHClient()
@@ -994,8 +1014,23 @@ class LearnBlock(QtGui.QMainWindow):
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
+            table.insertRow(table.rowCount())
+
 
         table = self.dicTables['control']
+        for img in ["block3","block4"]:
+            table.insertRow(table.rowCount())
+            blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
+            button = Block_Button((self, name, {'ES': name, 'EN': name}, HUE_WHEN,
+                                   self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections, [],
+                                   blockType,
+                                   table, table.rowCount() - 1, VARIABLE,
+                                   {'ES': "Variable que dice si el evento " + name + " esta activo", 'EN': ""}))
+            self.listButtonsWhen.append(button)
+            self.listButtons.append(button)
+            table.setCellWidget(table.rowCount() - 1, 0, button)
+            print("añadido", img)
+
         for x in ["block2", "block3", "block4"]:
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, x))
 
@@ -1352,7 +1387,7 @@ class LearnBlock(QtGui.QMainWindow):
     def delWhen(self, name):
         table = self.dicTables['control']
         rango = reversed(range(0, table.rowCount()))
-        for item, row in [(table.cellWidget(r, 0), r) for r in rango if table.cellWidget(r, 0).getText() in ["activate " + name, "deactivate " + name, "time_" + name]]:
+        for item, row in [(table.cellWidget(r, 0), r) for r in rango if table.cellWidget(r, 0).getText() in [name, "activate " + name, "deactivate " + name, "time_" + name]]:
             item.delete(row)
             item.removeTmpFile()
             self.listButtons.remove(item)
