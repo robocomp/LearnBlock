@@ -37,7 +37,8 @@ class helper(Ui_Help,QtGui.QDialog):
         self.dictDocs = {}
         self.absModel = QtCore.QAbstractListModel
         self.hidePath = os.path.join(os.environ["HOME"], ".learnblock", "mdfiles")
-        for sharepath in os.environ["XDG_DATA_DIRS"].split(":"):
+        paths = "/home/robocomp/robocomp/components/learnbot:" + os.environ["XDG_DATA_DIRS"]
+        for sharepath in paths.split(":"):
             if os.path.exists(os.path.join(sharepath,"learnbot_dsl","mdfiles")):
                 # print(sharepath)
                 self.sharePath = os.path.join(sharepath, "learnbot_dsl", "mdfiles")

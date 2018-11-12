@@ -1,0 +1,20 @@
+DISPLAY=:0.0 ; export DISPLAY
+python3 display.py &
+sleep 3 
+
+
+python3 emotionalMotor.py &
+sleep 3
+
+
+sudo -E python3 baserobot.py &
+sleep 3
+
+
+sudo -E python3 jointMotor.py &
+sleep 3
+
+sudo -E python3 laser.py &
+sleep 3
+
+python camera.py &

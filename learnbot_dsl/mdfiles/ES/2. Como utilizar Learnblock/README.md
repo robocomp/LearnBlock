@@ -1,3 +1,5 @@
+<a name="Inicio"></a>
+
 # Como utilizar Learnblock
 
 En este capítulo aprenderás a localizar las diferentes utilidades disponibles en Learnblock, así como a utilizar dichas utilidades, desde la creación de un proyecto sencillo haciendo la utilización la programación con bloques.
@@ -27,3 +29,9 @@ A continuacón se muestra una tabla de contenido.
 > [4. Crear una librería](<hidepath>/ES/2.%20Como%20utilizar%20Learnblock/4.%20Crear%20una%20librer%C3%ADa.html)
 
 > [5. Utilizar una librería](<hidepath>/ES/2.%20Como%20utilizar%20Learnblock/5.%20Utilizar%20una%20librer%C3%ADa.html)
+
+
+[Inicio^](#Inicio)
+
+[<Anterior]()
+[Siguiente>]()

@@ -519,7 +519,8 @@ class LearnBlock(QtGui.QMainWindow):
     def connectCameraRobot(self):
         if self.checkConnectionToBot():
             try:
-                self.client = paho.mqtt.client.Client(client_id='pc', clean_session=False)
+                # self.client = paho.mqtt.client.Client(client_id='pc', clean_session=False)
+                self.client = paho.mqtt.client.Client()
                 self.client.on_message = on_message
                 self.client.connect(host='192.168.16.1', port=50000)
                 self.client.subscribe(topic='camara', qos=2)
@@ -949,7 +950,6 @@ class LearnBlock(QtGui.QMainWindow):
 
     def addBlockWhen(self, isOK=True):
         if isOK:
-
             name = self.addWhenGui.nameControl.replace(" ", "_")
             if not self.addWhenGui.ui.Run_start.isChecked() and name == "start":
                 msgBox = QtGui.QMessageBox()
@@ -1014,7 +1014,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
-            table.insertRow(table.rowCount())
+            # table.insertRow(table.rowCount())
 
 
         table = self.dicTables['control']
@@ -1029,7 +1029,6 @@ class LearnBlock(QtGui.QMainWindow):
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
-            print("añadido", img)
 
         for x in ["block2", "block3", "block4"]:
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, x))
@@ -1265,8 +1264,8 @@ class LearnBlock(QtGui.QMainWindow):
 
     def retaddVarGui(self, ret):
         if ret is 1:
-            name = self.addVarGui.nameLineEdit.text()
-            name = name.replace(" ", "_")
+            name = self.addVarGui.nameLineEdit.text().replace(" ", "_")
+            # name = name.
             if name == 'start':
                 msgBox = QtGui.QMessageBox()
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -1303,7 +1302,7 @@ class LearnBlock(QtGui.QMainWindow):
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            self.addVariable(name)
+            self.addVariable(self.addVarGui.nameLineEdit.text().replace(" ", "_"))
 
         self.addVarDialog.close()
 

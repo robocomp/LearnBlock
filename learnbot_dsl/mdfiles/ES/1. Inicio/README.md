@@ -1,3 +1,5 @@
+<a name="Inicio"></a>
+
 # Bienvenido a Learnblock
 
 ![Learnblock icono](<sharepath>/imgs/Learnbot_ico.png)
@@ -15,3 +17,8 @@ Con estos sensores y actuadores se puede crear numerosos problemas que resolver 
 
 En este manual se exponén los pasos a seguir para aprender a utilizar Learnblock.
 
+
+[Inicio^](#Inicio)
+
+[<Anterior]()
+[Siguiente>]()

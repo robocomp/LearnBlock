@@ -6,9 +6,10 @@ from learnbot_dsl.blocksConfig.blocks import pathBlocks
 from learnbot_dsl.blocksConfig.parserConfigBlock import pathConfig
 from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.toQImage import *
+from learnbot_dsl.functions import getFuntions
 listBlock = []
 listNameBlocks = []
-
+functions = getFuntions()
 for base, dirs, files in os.walk(pathBlocks):
     for f in files:
         archivo, extension = os.path.splitext(base + "/" + f)
@@ -65,17 +66,18 @@ class guiCreateBlock(QtGui.QDialog):
         self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
 
     def __updateImage(self, index):
-        name = self.ui.lineEditName.text()
+        name = self.ui.lineEditName.text().replace(" ","_")
         code = pythonCode.replace("<name>", name)
         args = ""
         vars = None
         if self.ui.tableWidgetVars.rowCount() is not 0:
             vars = []
+            args = ", "
             for row in range(0, self.ui.tableWidgetVars.rowCount()):
                 args += self.ui.tableWidgetVars.cellWidget(row, 1).text() + "=" + self.ui.tableWidgetVars.cellWidget(row, 2).text() + ", "
                 vars.append(self.ui.tableWidgetVars.cellWidget(row, 1).text())
             args = args[:-2]
-        code = code.replace("<args>",args)
+        code = code.replace(", <args>",args)
         self.ui.textEditPythonCode.setText(code)
         self.img = listNameBlocks[index]
         img = cv2.imread(listBlock[index], cv2.IMREAD_UNCHANGED)
@@ -142,11 +144,20 @@ class guiCreateBlock(QtGui.QDialog):
     def __buttons(self, ret):
         if ret is 1:
             ret = None
-            if self.ui.lineEditName.text() == "":
+            name = self.ui.lineEditName.text().replace(" ", "_")
+            if name == "":
                 msgBox = QtGui.QMessageBox()
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
                 msgBox.setIcon(QtGui.QMessageBox.Warning)
                 msgBox.setText(self.trUtf8("Error Name is empty."))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+            if name not in functions.keys():
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("This name alredy exist"))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
@@ -212,7 +223,7 @@ class guiCreateBlock(QtGui.QDialog):
                     file.write(code)
             else:
                 return
-        self.load_blocks()
+            self.load_blocks()
         self.close()
 
     def __repitNameVar(self):

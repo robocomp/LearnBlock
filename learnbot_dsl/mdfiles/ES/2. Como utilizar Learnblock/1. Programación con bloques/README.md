@@ -1,3 +1,4 @@
+<a name="Inicio"></a>
 
 # Programación con Bloques
 
@@ -13,3 +14,8 @@ A continuación se muestra una tabla de contenidos:
 
 > [3. Programación con Eventos.md](<hidepath>/ES/2.%20Como%20utilizar%20Learnblock/1.%20Programaci%C3%B3n%20con%20bloques/3.%20Programaci%C3%B3n%20con%20Eventos.html)
 
+
+[Inicio^](#Inicio)
+
+[<Anterior]()
+[Siguiente>]()

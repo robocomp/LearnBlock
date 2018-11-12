@@ -82,4 +82,5 @@ setup(name="learnbot_dsl",
       )
 if os.path.exists("build.learnbot_dsl"):
     shutil.rmtree("build.learnbot_dsl")
-shutil.move("build", 'build.learnbot_dsl')
+if os.path.exists("build"):
+    shutil.move("build", 'build.learnbot_dsl')

@@ -196,7 +196,8 @@ class Client(Ice.Application, threading.Thread):
                 print('Cannot get JointMotorPrx property.')
                 raise
             try:
-                self.client = paho.mqtt.client.Client(client_id='learnbotClient', clean_session=False)
+                # self.client = paho.mqtt.client.Client(client_id='learnbotClient', clean_session=False)
+                self.client = paho.mqtt.client.Client()
                 self.client.on_message = on_message
                 self.client.connect(host='192.168.16.1', port=50000)
                 self.client.subscribe(topic='camara', qos=2)
