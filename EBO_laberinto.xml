@@ -1,0 +1,67 @@
+<innerModel>
+
+	<transform id="world">
+		<transform id="robot2" tx="-900" ty="0" tz="-900" ry="3">
+			<include path="/home/robocomp/learnbot-xmls/EBO.xml"/>
+		</transform>
+		<plane id="ddG" ny="1"  px="0" py="0" pz="0" size="2000,2000,10" texture="#aaaaaa" />
+
+		<plane id="0" nx="1" px="-900" py="50" pz="800" size="10,100,200" texture="#555555" />
+		<plane id="1" nx="1" px="-900" py="50" pz="400" size="10,100,200" texture="#555555" />
+		<plane id="2" nx="1" px="-900" py="50" pz="-800" size="10,100,200" texture="#555555" />
+		<plane id="3" nx="1" px="-400" py="50" pz="800" size="10,100,400" texture="#555555" />
+		<plane id="4" nx="1" px="400" py="50" pz="800" size="10,100,800" texture="#555555" />
+		<plane id="5" nx="1" px="300" py="50" pz="600" size="10,100,600" texture="#555555" />
+		<plane id="6" nx="1" px="-600" py="50" pz="600" size="10,100,400" texture="#555555" />
+		<plane id="7" nx="1" px="-500" py="50" pz="400" size="10,100,200" texture="#555555" />
+		<plane id="8" nx="1" px="100" py="50" pz="400" size="10,100,600" texture="#555555" />
+		<plane id="9" nx="1" px="500" py="50" pz="400" size="10,100,200" texture="#555555" />
+		<plane id="10" nx="1" px="-600" py="50" pz="200" size="10,100,400" texture="#555555" />
+		<plane id="11" nx="1" px="300" py="50" pz="0" size="10,100,600" texture="#555555" />
+		<plane id="12" nx="1" px="0" py="50" pz="-200" size="10,100,400" texture="#555555" />
+		<plane id="13" nx="1" px="500" py="50" pz="-200" size="10,100,200" texture="#555555" />
+		<plane id="14" nx="1" px="900" py="50" pz="-200" size="10,100,200" texture="#555555" />
+		<plane id="15" nx="1" px="-700" py="50" pz="-400" size="10,100,200" texture="#555555" />
+		<plane id="16" nx="1" px="-300" py="50" pz="-600" size="10,100,600" texture="#555555" />
+		<plane id="17" nx="1" px="600" py="50" pz="-600" size="10,100,400" texture="#555555" />
+		<plane id="18" nx="1" px="-300" py="50" pz="-800" size="10,100,200" texture="#555555" />
+		<plane id="19" nx="1" px="100" py="50" pz="-800" size="10,100,200" texture="#555555" />
+		<plane id="20" nx="1" px="700" py="50" pz="-800" size="10,100,200" texture="#555555" />
+
+
+
+		<plane id="21" nx="1" px="-800" py="50" pz="-600" size="400,100,10" texture="#eeeeee" />
+		<plane id="22" nx="1" px="-800" py="50" pz="0" size="400,100,10" texture="#eeeeee" />
+		<plane id="23" nx="1" px="-600" py="50" pz="-200" size="400,100,10" texture="#eeeeee" />
+		<plane id="24" nx="1" px="-600" py="50" pz="-800" size="400,100,10" texture="#eeeeee" />
+		<plane id="25" nx="1" px="-600" py="50" pz="300" size="200,100,10" texture="#eeeeee" />
+		<plane id="26" nx="1" px="-600" py="50" pz="800" size="400,100,10" texture="#eeeeee" />
+		<plane id="27" nx="1" px="-400" py="50" pz="-200" size="800,100,10" texture="#eeeeee" />
+		<plane id="28" nx="1" px="-400" py="50" pz="-900" size="200,100,10" texture="#eeeeee" />
+		<plane id="29" nx="1" px="-200" py="50" pz="300" size="1400,100,10" texture="#eeeeee" />
+		<plane id="30" nx="1" px="0" py="50" pz="-500" size="200,100,10" texture="#eeeeee" />
+		<plane id="31" nx="1" px="0" py="50" pz="-900" size="200,100,10" texture="#eeeeee" />
+		<plane id="32" nx="1" px="0" py="50" pz="100" size="200,100,10" texture="#eeeeee" />
+		<plane id="33" nx="1" px="200" py="50" pz="-400" size="400,100,10" texture="#eeeeee" />
+		<plane id="34" nx="1" px="200" py="50" pz="300" size="200,100,10" texture="#eeeeee" />
+		<plane id="35" nx="1" px="400" py="50" pz="-600" size="800,100,10" texture="#eeeeee" />
+		<plane id="36" nx="1" px="400" py="50" pz="200" size="400,100,10" texture="#eeeeee" />
+
+		<plane id="37" nx="1" px="600" py="50" pz="-300" size="200,100,10" texture="#eeeeee" />
+		<plane id="38" nx="1" px="600" py="50" pz="100" size="200,100,10" texture="#eeeeee" />
+		<plane id="39" nx="1" px="600" py="50" pz="500" size="200,100,10" texture="#eeeeee" />
+		<plane id="40" nx="1" px="800" py="50" pz="0" size="800,100,10" texture="#eeeeee" />
+		<plane id="41" nx="1" px="800" py="50" pz="800" size="400,100,10" texture="#eeeeee" />
+	
+
+
+
+
+
+		<plane id="ddR" nx="1"  px="1000" py="50" pz="0" size="2000,100,10" texture="#eeeeee" />
+		<plane id="ddL" nx="1" px="-1000" py="50" pz="0" size="2000,100,10" texture="#eeeeee" />
+
+		<plane id="ddF" nz="1"  pz="1000" py="50" px="0" size="2000,100,10" texture="#555555" />
+		<plane id="ddB" nz="1" pz="-1000" py="50" px="0" size="2000,100,10" texture="#555555" />
+	</transform>
+</innerModel>
