@@ -156,6 +156,10 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 combobox = QtGui.QComboBox()
                 combobox.addItem("True")
                 combobox.addItem("False")
+                if var.defaul in ("0", "False"):
+                    combobox.setCurrentIndex(1)
+                else:
+                    combobox.setCurrentIndex(0)
                 self.tabVar.setCellWidget(i, 1, combobox)
 
             combobox = QtGui.QComboBox()
