@@ -126,7 +126,7 @@ PASS = Group(Literal("pass")).setResultsName("PASS")
 COMPOP = Group(OPERATION + COMP + OPERATION).setResultsName("COMPOP")
 OPTIONCONDITION = FUNCTION | SIMPLEFUNCTION | TRUE | FALSE | COMPOP | identifier
 SIMPLECONDITION = Group(Optional(NOT) + OPTIONCONDITION).setResultsName("SIMPLECONDITION")
-CONDITION = Group(SIMPLECONDITION + ZeroOrMore(( ORAND | SRMD ) + SIMPLECONDITION)).setResultsName("CONDITION")
+CONDITION = Group(SIMPLECONDITION + ZeroOrMore(( ORAND | SRMD | COMP ) + SIMPLECONDITION)).setResultsName("CONDITION")
 
 """-----------------asignacion-VARIABLES------------"""
 
@@ -446,6 +446,8 @@ def __processCONDITION(line, text="", index=0):
         elif field.getName() is 'ORAND':
             text += field[0] + " "
         elif field.getName() is 'SRMD':
+            text += field[0] + " "
+        elif field.getName() is 'COMP':
             text += field[0] + " "
     return text
 

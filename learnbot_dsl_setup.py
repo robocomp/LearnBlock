@@ -35,6 +35,8 @@ data_files += [
     ('share/applications', ['learnbot_dsl/Learnblock.desktop']),
     ('share/icons', ['learnbot_dsl/learnbotCode/Learnbot_ico.png']),
 ]
+# preinstall qmake
+# sudo apt install qt4-dev-tools
 
 setup(name="learnbot_dsl",
       version=readVersion(os.path.join(os.path.dirname(__file__), "learnbot_dsl", "__init__.py")),
@@ -62,7 +64,6 @@ setup(name="learnbot_dsl",
           "opencv-python-headless==3.4.3.18",
           # 'numpy==1.14.5',
           # 'matplotlib==2.2.2',
-          # 'pyparsing==2.0.3',
           'imutils==0.5.1',
           'six==1.10.0',
           # 'scipy==1.0.0',
@@ -73,12 +74,15 @@ setup(name="learnbot_dsl",
           # 'Keras==2.0.5',
           # 'h5py==2.7.0',
           # 'epitran==0.4',
-          # 'zeroc-ice==3.6.0',
           'Pillow==5.3.0',
-          # 'PySide',
           # 'GitPython==2.1.11',
           'paho_mqtt==1.4.0',
-          'future'],
+          # 'pyside',
+          # 'zeroc-ice==3.6.0',
+          # 'pyparsing==2.0.3',
+          # 'cmake',
+          'future'
+          ],
       )
 if os.path.exists("build.learnbot_dsl"):
     shutil.rmtree("build.learnbot_dsl")
