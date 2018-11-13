@@ -82,15 +82,25 @@ class Connection:
 
 class Variable():
 
-    def __init__(self, type=None, name=None, default=None, dict=None):
+    def __init__(self, type=None, name=None, default=None, translate={}, dict=None):
         if dict is not None:
             self.type = dict["type"]
             self.name = dict["name"]
             self.defaul = dict["default"]
+            if "translate" in dict:
+                self.translate = dict["translate"]
+            else:
+                self.translate = {}
         else:
             self.type = type
             self.name = name
             self.defaul = default
+            self.translate = translate
+    def __str__(self):
+        return "type      = " + self.type + "\n" \
+               "name      = " + self.name + "\n"\
+               "default   = " + self.defaul + "\n" \
+               "translate = " + str(self.translate) + "\n"
 
 def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=None, nameControl=""):
     im = None

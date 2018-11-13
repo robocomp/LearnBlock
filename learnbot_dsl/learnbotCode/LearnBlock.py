@@ -1315,7 +1315,7 @@ class LearnBlock(QtGui.QMainWindow):
         table = self.dicTables['variables']
         table.insertRow(table.rowCount())
         variables = []
-        variables.append(Variable("float", "set to ", "0"))
+        variables.append(Variable("float", "set to ", "0",{"ES":"poner a ", "EN": "set to "}))
         button = Block_Button((self, name, {}, HUE_WHEN, self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections,
                                variables, blockType, table, table.rowCount() - 1, VARIABLE, {}))
         self.listButtons.append(button)

@@ -135,20 +135,35 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         self.tabVar = self.DialogVar.getTable()
         self.tabVar.verticalHeader().setVisible(False)
         self.tabVar.horizontalHeader().setVisible(False)
-        self.tabVar.setColumnCount(3)
+        self.tabVar.setColumnCount(4)
         self.tabVar.setRowCount(len(vars))
 
-        i = 0
-        for var in vars:
-            self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
-            edit = QtGui.QLineEdit()
-            edit.setValidator(QtGui.QDoubleValidator())
-            edit.setText(var.defaul)
-            self.tabVar.setCellWidget(i, 1, edit)
+        # i = 0
+        for i, var in zip(range(len(vars)),vars):
+            if getLanguage() in var.translate:
+                self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
+            else:
+                self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
+            if var.type in ["float","int", "string"]:
+                edit = QtGui.QLineEdit()
+                if var.type == "float":
+                    edit.setValidator(QtGui.QDoubleValidator())
+                elif var.type == "int":
+                    edit.setValidator(QtGui.QIntValidator())
+                edit.setText(var.defaul)
+                self.tabVar.setCellWidget(i, 1, edit)
+            elif var.type == "boolean":
+                combobox = QtGui.QComboBox()
+                combobox.addItem("True")
+                combobox.addItem("False")
+                self.tabVar.setCellWidget(i, 1, combobox)
+
             combobox = QtGui.QComboBox()
             combobox.addItem("None")
             self.tabVar.setCellWidget(i, 2, combobox)
-            i += 1
+            self.tabVar.setCellWidget(i,3,QtGui.QLabel(var.type))
+            # i += 1
+
         self.sizeIn = 0
         self.shouldUpdateConnections = False
         self.popMenu = QtGui.QMenu(self)
@@ -316,7 +331,12 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         vars = []
         for cell in range(0, self.tabVar.rowCount()):
             if self.tabVar.cellWidget(cell, 2).currentText() == "None":
-                vars.append(self.tabVar.cellWidget(cell, 1).text())
+                if self.tabVar.cellWidget(cell, 3).text() == "boolean":
+                    vars.append(self.tabVar.cellWidget(cell, 1).currentText())
+                elif self.tabVar.cellWidget(cell, 3).text() == "string":
+                    vars.append('"'+self.tabVar.cellWidget(cell, 1).text()+'"')
+                else:
+                    vars.append(self.tabVar.cellWidget(cell, 1).text())
             else:
                 vars.append(self.tabVar.cellWidget(cell, 2).currentText())
         if len(vars) is 0:
@@ -398,16 +418,22 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         if len(self.dicTrans) is not 0 and self.showtext is not self.dicTrans[getLanguage()]:
             self.shouldUpdate = True
             self.showtext = self.dicTrans[getLanguage()]
+            vars = self.parentBlock.vars
+            for i, var in zip(range(len(vars)), vars):
+                if getLanguage() in var.translate:
+                    self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
+                else:
+                    self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
 
         for row in range(0, self.tabVar.rowCount()):
             combobox = self.tabVar.cellWidget(row, 2)
             items = []
             for i in reversed(range(1, combobox.count())):
                 items.append(combobox.itemText(i))
-                if combobox.itemText(i) not in self.scene.listNameVars:
+                if combobox.itemText(i) not in self.scene.parent.listNameVars:
                     combobox.removeItem(i)
                     combobox.setCurrentIndex(0)
-            for var in self.scene.listNameVars:
+            for var in self.scene.parent.listNameVars:
                 if var not in items:
                     combobox.addItem(var)
 
