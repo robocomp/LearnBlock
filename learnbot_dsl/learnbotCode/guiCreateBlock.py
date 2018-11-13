@@ -74,7 +74,12 @@ class guiCreateBlock(QtGui.QDialog):
             vars = []
             args = ", "
             for row in range(0, self.ui.tableWidgetVars.rowCount()):
-                args += self.ui.tableWidgetVars.cellWidget(row, 1).text() + "=" + self.ui.tableWidgetVars.cellWidget(row, 2).text() + ", "
+                args += self.ui.tableWidgetVars.cellWidget(row, 1).text() + "="
+                if self.ui.tableWidgetVars.cellWidget(row, 0).currentText() == "string":
+                    args += '"' + self.ui.tableWidgetVars.cellWidget(row, 2).text() + '", '
+                else:
+                    args += self.ui.tableWidgetVars.cellWidget(row, 2).text() + ', '
+
                 vars.append(self.ui.tableWidgetVars.cellWidget(row, 1).text())
             args = args[:-2]
         code = code.replace(", <args>",args)
@@ -107,7 +112,13 @@ class guiCreateBlock(QtGui.QDialog):
     def __addVar(self):
         row = self.ui.tableWidgetVars.rowCount()
         self.ui.tableWidgetVars.insertRow(row)
-        self.ui.tableWidgetVars.setCellWidget(row, 0, QtGui.QLabel("float"))
+        combobox = QtGui.QComboBox()
+        combobox.addItem("float")
+        combobox.addItem("string")
+        combobox.addItem("int")
+        combobox.addItem("boolean")
+        combobox.currentIndexChanged.connect(lambda : self.setdefaultWidget(row))
+        self.ui.tableWidgetVars.setCellWidget(row, 0, combobox)
         edit = QtGui.QLineEdit()
         edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
         self.ui.tableWidgetVars.setCellWidget(row, 1, edit)
@@ -116,6 +127,30 @@ class guiCreateBlock(QtGui.QDialog):
         edit.setValidator(QtGui.QDoubleValidator())
         self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
         self.ui.pushButtonRemoveVar.setEnabled(True)
+
+    def setdefaultWidget(self,row):
+        type = self.ui.tableWidgetVars.cellWidget(row, 0).currentText()
+        if type == "float":
+            edit = QtGui.QLineEdit()
+            edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
+            edit.setValidator(QtGui.QDoubleValidator())
+            self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
+        elif type == "string":
+            edit = QtGui.QLineEdit()
+            edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
+            self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
+        elif type == "int":
+            edit = QtGui.QLineEdit()
+            edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
+            edit.setValidator(QtGui.QIntValidator())
+            self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
+        elif type == "boolean":
+            combobox = QtGui.QComboBox()
+            combobox.addItem("True")
+            combobox.addItem("False")
+            combobox.currentIndexChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
+            self.ui.tableWidgetVars.setCellWidget(row, 2, combobox)
+
 
     def __delete(self,table, buton):
         table.removeRow(table.currentRow())
@@ -187,7 +222,7 @@ class guiCreateBlock(QtGui.QDialog):
                 listVariables = []
                 for row in range(0, self.ui.tableWidgetVars.rowCount()):
                     v = {}
-                    v["type"] = self.ui.tableWidgetVars.cellWidget(row, 0).text()
+                    v["type"] = self.ui.tableWidgetVars.cellWidget(row, 0).currentText()
                     v["name"] = self.ui.tableWidgetVars.cellWidget(row, 1).text()
                     v["default"] = self.ui.tableWidgetVars.cellWidget(row, 2).text()
                     listVariables.append(v)
