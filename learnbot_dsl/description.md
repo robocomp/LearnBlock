@@ -43,3 +43,11 @@ For install apriltag you should run the follow command:
 For install learnbot-dsl you should run the follow command:
 
     sudo pip install learnbot-dsl
+    
+__Note__: If your PC is previous at 2011 and you can't run:
+
+    emotionrecognition2.py
+    
+Yoy should change the version of **tensorflow** to 1.5 with:
+
+    sudo pip install tensorflow==1.5
