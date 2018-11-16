@@ -2,7 +2,7 @@
 
 	<transform id="world">
 		<transform id="robot2" tx="-900" ty="0" tz="-900" ry="3">
-			<include path="/home/robocomp/learnbot-xmls/EBO.xml"/>
+			<include path="./EBO.xml"/>
 		</transform>
 		<plane id="ddG" ny="1"  px="0" py="0" pz="0" size="2000,2000,10" texture="#aaaaaa" />
 

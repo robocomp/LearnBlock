@@ -1,34 +1,34 @@
 <innerModel>
 
 	<transform id="caja1" tx="0" tz="500" ty="50" >
-			<plane id="cajaMesh1" nx="1" size="100,100,100"  texture="/home/robocomp/learnbot-xmls/textures/Metal20.jpg" />
+			<plane id="cajaMesh1" nx="1" size="100,100,100"  texture="./textures/Metal20.jpg" />
 	</transform>
 
 	<transform id="caja2" tx="500" tz="700" ty="50" >
-			<plane id="cajaMesh2" nx="1" size="100,100,100"  texture="/home/robocomp/learnbot-xmls/textures/Metal21.jpg" />
+			<plane id="cajaMesh2" nx="1" size="100,100,100"  texture="./textures/Metal21.jpg" />
 	</transform>
 
 	<transform id="caja3" tx="-500" tz="-500" ty="50" >
-			<plane id="cajaMesh3" nx="1" size="100,100,100"  texture="/home/robocomp/learnbot-xmls/textures/Metal22.jpg" />
+			<plane id="cajaMesh3" nx="1" size="100,100,100"  texture="./textures/Metal22.jpg" />
 	</transform>
 
 	<transform id="caja4" tx="-500" tz="100" ty="50" >
-			<plane id="cajaMesh4" nx="1" size="100,100,100"  texture="/home/robocomp/learnbot-xmls/textures/Metal23.jpg" />
+			<plane id="cajaMesh4" nx="1" size="100,100,100"  texture="./textures/Metal23.jpg" />
 	</transform>
 
 	<transform id="caja5" tx="400" tz="-400" ty="50" >
-			<plane id="cajaMesh5" nx="1" size="100,100,100"  texture="/home/robocomp/learnbot-xmls/textures/Metal24.jpg" />
+			<plane id="cajaMesh5" nx="1" size="100,100,100"  texture="./textures/Metal24.jpg" />
 	</transform>
 
 	<transform id="caja6" tx="500" tz="100" ty="50" >
-			<plane id="cajaMesh6" nx="1" size="100,100,100"  texture="/home/robocomp/learnbot-xmls/textures/Metal25.jpg" />
+			<plane id="cajaMesh6" nx="1" size="100,100,100"  texture="./textures/Metal25.jpg" />
 	</transform>
 
 
 
 	<transform id="world">
-			<include path="/home/robocomp/learnbot-xmls/EBO.xml"/>
-			<plane id="ddG" ny="1"  px="-0" py="0" pz="0" size="2000,2000,10" texture="/home/robocomp/learnbot-xmls/textures/wood.jpg" />
+			<include path="./EBO.xml"/>
+			<plane id="ddG" ny="1"  px="-0" py="0" pz="0" size="2000,2000,10" texture="./textures/wood.jpg" />
 
 			<plane id="ddR" nx="1"  px="1000" py="50" pz="0" size="2000,100,10" texture="#eeeeee" />
 			<plane id="ddL" nx="1" px="-1000" py="50" pz="0" size="2000,100,10" texture="#eeeeee" />

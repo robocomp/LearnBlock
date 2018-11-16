@@ -1,8 +1,8 @@
 <innerModel>
 
 	<transform id="world">
-			<include path="/home/robocomp/learnbot-xmls/EBO.xml"/>
-			<plane id="ddG" ny="1"  px="-0" py="0" pz="0" size="2000,2000,10" texture="/home/robocomp/learnbot-xmls/textures/wood.jpg" />
+			<include path="./EBO.xml"/>
+			<plane id="ddG" ny="1"  px="-0" py="0" pz="0" size="2000,2000,10" texture="./textures/wood.jpg" />
 
 			<plane id="ddR" nx="1"  px="1000" py="50" pz="0" size="2000,100,10" texture="#eeeeee" />
 			<plane id="ddL" nx="1" px="-1000" py="50" pz="0" size="2000,100,10" texture="#eeeeee" />
