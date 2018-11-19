@@ -5,21 +5,22 @@ reserved_words = ['def', '=', 'function', '>=', '<=',
     'False', 'or', 'and', 'main', 'if', 'else',
     'elif', 'when', 'while', 'end']
 
-darkOrange = ["\\bdef\\b",
-              "\\bmain\\b",
-              "\\bactivate\\b",
-              "\\bdeactivate\\b",
-              "\\bnot\\b",
-              "\\bTrue\\b",
-              "\\bFalse\\b",
-              "\\bor\\b",
-              "\\band\\b",
-              "\\bif\\b",
-              "\\belif\\b",
-              "\\belse\\b",
-              "\\bwhen\\b",
-              "\\bwhile\\b"
-              ]
+# darkOrange = ["\\bdef\\b",
+#               "\\bmain\\b",
+#
+#               "\\bactivate\\b",
+#               "\\bdeactivate\\b",
+#               "\\bnot\\b",
+#               "\\bTrue\\b",
+#               "\\bFalse\\b",
+#               "\\bor\\b",
+#               "\\band\\b",
+#               "\\bif\\b",
+#               "\\belif\\b",
+#               "\\belse\\b",
+#               "\\bwhen\\b",
+#               "\\bwhile\\b"
+#               ]
 class Highlighter(QtGui.QSyntaxHighlighter):
     def __init__(self, parent=None):
         super(Highlighter, self).__init__(parent)
@@ -28,6 +29,12 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         keywordFormat.setForeground(QtGui.QBrush(QtGui.QColor(220, 140, 0, 255)))
         keywordsOrange = ["\\bdef\\b",
                       "\\bmain\\b",
+                      "\\btry\\b",
+                      "\\bexcept\\b",
+                      "\\bas\\b",
+                      "\\bfrom\\b",
+                      "\\bimport\\b",
+                      "\\bglobal\\b",
                       "\\bactivate\\b",
                       "\\bdeactivate\\b",
                       "\\bif\\b",
@@ -41,7 +48,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.highlightingRules = [(QtCore.QRegExp(pattern), keywordFormat) for pattern in keywordsOrange]
 
         keywordFormatMagenta = QtGui.QTextCharFormat()
-        keywordFormatMagenta.setForeground(QtCore.Qt.darkMagenta)
+        keywordFormatMagenta.setForeground(QtGui.QBrush(QtGui.QColor(154, 0, 162, 255)))
         keywordsMagenta = [
                       "\\bnot\\b",
                       "\\bTrue\\b",
@@ -72,8 +79,8 @@ class Highlighter(QtGui.QSyntaxHighlighter):
 
         functionFormat = QtGui.QTextCharFormat()
         functionFormat.setFontItalic(False)
-        functionFormat.setForeground(QtGui.QBrush(QtGui.QColor(242, 185, 0, 255)))
-        functionFormat.setForeground(QtCore.Qt.darkMagenta)
+        # functionFormat.setForeground(QtGui.QBrush(QtGui.QColor(242, 185, 0, 255)))
+        functionFormat.setForeground(QtGui.QBrush(QtGui.QColor(230, 190, 71, 255)))
         self.highlightingRules.append((QtCore.QRegExp("\\b[A-Za-z0-9_]+(?=\\()"),
                 functionFormat))
 

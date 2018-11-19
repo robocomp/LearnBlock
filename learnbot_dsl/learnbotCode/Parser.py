@@ -83,6 +83,11 @@ number = Word(nums)
 integer = Combine(Optional(plusorminus) + number)
 NUMS = Group(Combine(integer + Optional(point + Optional(number)) + Optional(e + integer))).setResultsName("NUMBER")
 
+PLUE = Literal("+=")
+MINE = Literal("-=")
+DIVE = Literal("/=")
+MULE = Literal("*=")
+
 L = Literal("<")
 NL = Literal(">")
 LE = Literal("<=")
@@ -99,14 +104,16 @@ COMP = Group(L | NL | LE | NLE | E | NE).setResultsName("COMP")
 """-----------------OPERADORES----------------------"""
 SRMD = Group(plus | minus | mult | div).setResultsName("SRMD")
 
+FUNCTION_FIELDS = Group(Optional(NOT) + (NUMS | TRUE | FALSE | identifier | CHAINBETTENQUOTE)).setResultsName("FIELD")
+
 """-----------------FUNCTION-------------------------"""
 FUNCTION = Group(
     Suppress(Literal("function")) + Suppress(point) + identifier.setResultsName('name') + Suppress(lpar) + Group(
-        Optional(NUMS | identifier) + ZeroOrMore(Suppress(coma) + (NUMS | identifier))).setResultsName(
+        Optional(FUNCTION_FIELDS) + ZeroOrMore(Suppress(coma) + (FUNCTION_FIELDS))).setResultsName(
         "args") + Suppress(rpar)).setResultsName("FUNCTION")
 
 """-----------------FIELDS---------------------------"""
-FIELDS = Optional(NOT) + NUMS | FUNCTION | TRUE | FALSE | identifier | CHAINBETTENQUOTE
+FIELDS = Group(Optional(NOT) + (NUMS | TRUE | FALSE | FUNCTION | identifier | CHAINBETTENQUOTE)).setResultsName("FIELD")
 
 """-----------------OPERACIONES---------------------"""
 ORAND = Group(OR | AND).setResultsName('ORAND')
@@ -116,7 +123,7 @@ OPERATION = Group(FIELDS + ZeroOrMore( (SRMD | ORAND) + FIELDS)).setResultsName(
 
 """-----------------SIMPLEFUNCTION-------------------------"""
 SIMPLEFUNCTION = Group(identifier.setResultsName('name') + Suppress(lpar) + Group(
-    Optional(NUMS | identifier) + ZeroOrMore(Suppress(coma) + (NUMS | identifier))).setResultsName("args") + Suppress(
+    Optional(FIELDS) + ZeroOrMore(Suppress(coma) + (FIELDS))).setResultsName("args") + Suppress(
     rpar)).setResultsName("SIMPLEFUNCTION")
 
 """-----------------PASS-------------------------"""
@@ -134,9 +141,7 @@ ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQU
     'ASSIGSTRING')
 
 NONEVAR = NONE.setResultsName("NONEVAR")
-VAR = Group(SECTAB + identifier.setResultsName("name") + Suppress(eq) + ( NONEVAR | OPERATION )).setResultsName("VAR")
-# TODO +=
-# Solved error var =  0
+VAR = Group(SECTAB + identifier.setResultsName("name") + (eq | PLUE | MINE | DIVE | MULE) + ( NONEVAR | OPERATION )).setResultsName("VAR")
 
 """-----------------LINEA---------------------------"""
 LINE = Forward()
@@ -235,13 +240,11 @@ def __generatePy(lines):
             continue
         if x.getName() is "LINES":
             for y in x:
-                print(y.getName())
                 text = __process(y, list_var, text)
         else:
             text = __process(x, list_var, text)
 
     if thereareWhens is True:
-        print(thereareWhens)
         for x in lines:
             if x.getName() is 'WHEN':
                 if x.name[0] == "start":
@@ -263,6 +266,8 @@ def __process(line, list_var=[], text="", index=0):
     if TYPE is 'MAIN':
         for cLine in line.content:
             text += __process(cLine, [], "", 0) + "\n"
+    elif TYPE is 'FIELD':
+        text += __processFIELD(line, "")
     elif TYPE is 'DEF':
         text = __processDEF(line, list_var, text, 1)
     elif TYPE is 'WHEN':
@@ -299,10 +304,15 @@ def __process(line, list_var=[], text="", index=0):
         text += "None"
     elif TYPE is 'STRING':
         text += '"' + line[0] + '"'
-    elif TYPE in ['FALSE', 'TRUE', 'IDENTIFIER', 'SRMD', 'ORAND', "NUMBER"]:
+    elif TYPE in ['FALSE', 'TRUE', 'IDENTIFIER', 'SRMD', 'ORAND', "NUMBER","NOT"]:
         text = line[0]
     else:
         print("The type is ", TYPE , line)
+    return text
+
+def __processFIELD(line, text="", index=0):
+    for field in line:
+        text+=__process(field)
     return text
 
 def __processDEF(line, list_var, text="", index=0):
@@ -319,7 +329,8 @@ def __processFUNCTION(line, text="", index=0):
         text += "\t" * index
     text += "functions.get(\"" + line.name[0] + "\")(lbot"
     for x in line.args:
-        text += ", " + x[0]
+        # text += ", " + x[0]
+        text += ", " + __process(x)
     text += ")"
     return text
 
@@ -330,7 +341,7 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
     text += line.name[0] + "("
     if len(line.args) is not 0:
         for x in line.args:
-            text += x[0] + ","
+            text += __process(x) + ","
         text = text[:-1] + ")"
     else:
         text += ")"
@@ -342,7 +353,7 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 # ---------------------------------------
 
 def __processASSIG(line, text="", index=0):
-    text += "\t" * index + line.name[0] + " = " + __process(line[1]) + "\n"
+    text += "\t" * index + line.name[0] + " " + line[1] + " " + __process(line[2]) + "\n"
     return text
 
 
@@ -517,8 +528,41 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     else:
         return False
 
+def parserLearntBotCodeFromCode(code, physicalRobot=False):
+    try:
+        tree = __parserFromString(code)
+    except Exception as e:
+        print(e)
+        raise e
+    text = elapsedTimeFunction
+    text += __generatePy(tree)
 
+    if physicalRobot:
+        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
+    else:
+        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
+    if text is not "":
+        return header + text
+    else:
+        return False
 if __name__ == "__main__":
+    textprueba = """
+    main:
+    	while not elapsedTime(0):
+    		function.move_straight()
+    	end
+    	function.stop_bot()
+    end
+    """
+    try:
+        print(__generatePy(__parserFromString(textprueba)))
+    except ParseException as pe:
+        print(pe.line)
+        print(' ' * (pe.col - 1) + '^')
+        print(pe)
+
+
+
     argv = sys.argv[1:]
     if len(argv) is not 3:
         print(bcolors.FAIL + "You must give 2 arguments")

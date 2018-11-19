@@ -6,7 +6,7 @@ import learnbot_dsl.guis.EditVar as EditVar
 from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.Language import getLanguage
 from learnbot_dsl.learnbotCode.toQImage import *
-from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode, HEADER
+from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode, HEADER, parserLearntBotCodeFromCode
 from learnbot_dsl.blocksConfig import pathImgBlocks
 
 class KeyPressEater(QtCore.QObject):
@@ -140,9 +140,12 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
         # i = 0
         for i, var in zip(range(len(vars)),vars):
-            if getLanguage() in var.translate:
-                self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
-            else:
+            try:
+                if getLanguage() in var.translate:
+                    self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
+                else:
+                    self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
+            except:
                 self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
             if var.type in ["float","int", "string"]:
                 edit = QtGui.QLineEdit()
@@ -374,7 +377,6 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
         if size is 0:
             size = 34
-
         if self.sizeIn != size or self.shouldUpdate:
             self.sizeIn = size
             im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
@@ -424,9 +426,12 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             self.showtext = self.dicTrans[getLanguage()]
             vars = self.parentBlock.vars
             for i, var in zip(range(len(vars)), vars):
-                if getLanguage() in var.translate:
-                    self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
-                else:
+                try:
+                    if getLanguage() in var.translate:
+                        self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
+                    else:
+                        self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
+                except:
                     self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
 
         for row in range(0, self.tabVar.rowCount()):

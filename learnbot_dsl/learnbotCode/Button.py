@@ -68,9 +68,12 @@ class Block_Button(QtGui.QPushButton):
             im = cv2.merge((r, g, b, a))
             var = []
             for x in self.__vars:
-                if getLanguage() in x.translate:
-                    var.append(x.translate[getLanguage()])
-                else:
+                try:
+                    if getLanguage() in x.translate:
+                        var.append(x.translate[getLanguage()])
+                    else:
+                        var.append(x.name)
+                except:
                     var.append(x.name)
             img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, var, self.__type)
             cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
