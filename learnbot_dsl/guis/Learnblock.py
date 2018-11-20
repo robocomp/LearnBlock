@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui'
 #
-# Created: Mon Nov 19 11:57:17 2018
+# Created: Mon Nov 19 13:39:37 2018
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,15 +23,18 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.openpushButton = QtGui.QPushButton(self.centralwidget)
         self.openpushButton.setText("")
+        self.openpushButton.setFlat(True)
         self.openpushButton.setObjectName("openpushButton")
         self.horizontalLayout_2.addWidget(self.openpushButton)
         self.savepushButton = QtGui.QPushButton(self.centralwidget)
         self.savepushButton.setText("")
+        self.savepushButton.setFlat(True)
         self.savepushButton.setObjectName("savepushButton")
         self.horizontalLayout_2.addWidget(self.savepushButton)
         self.zoompushButton = QtGui.QPushButton(self.centralwidget)
         self.zoompushButton.setText("")
         self.zoompushButton.setCheckable(True)
+        self.zoompushButton.setFlat(True)
         self.zoompushButton.setObjectName("zoompushButton")
         self.horizontalLayout_2.addWidget(self.zoompushButton)
         self.addNumberpushButton = QtGui.QPushButton(self.centralwidget)
@@ -181,12 +184,22 @@ class Ui_MainWindow(object):
         self.gridLayout = QtGui.QGridLayout(self.program_visual)
         self.gridLayout.setObjectName("gridLayout")
         self.splitter = QtGui.QSplitter(self.program_visual)
-        self.splitter.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
+        self.splitter.setSizePolicy(sizePolicy)
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
         self.splitter.setObjectName("splitter")
         self.functions = QtGui.QTabWidget(self.splitter)
         self.functions.setEnabled(True)
-        self.functions.setMaximumSize(QtCore.QSize(500, 16777215))
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.functions.sizePolicy().hasHeightForWidth())
+        self.functions.setSizePolicy(sizePolicy)
+        self.functions.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.functions.setBaseSize(QtCore.QSize(229, 0))
         font = QtGui.QFont()
         font.setPointSize(9)
         font.setWeight(50)

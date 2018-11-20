@@ -224,9 +224,11 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.zoompushButton.setIconSize(QtCore.QSize(30, 30))
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30, 30))
 
-        self.disablestartButtons(False)
-        self.ui.functions.setFixedWidth(221)
 
+
+        self.disablestartButtons(False)
+        # self.ui.functions.setFixedWidth(221)
+        self.ui.splitter.splitterMoved.connect(self.resizeFunctionTab)
         self.view = MyView(self, self.ui.frame)
         self.view.setObjectName("view")
         self.ui.verticalLayout_3.addWidget(self.view)
@@ -289,12 +291,46 @@ class LearnBlock(QtGui.QMainWindow):
         self.client = None
         self.isOpen = True
         self.savetmpProject()
+
+        new_sizes = self.ui.splitter.sizes()
+        size = sum(new_sizes)
+        self.ui.splitter.setSizes([233, size-233])
+        self.pre_sizes = self.ui.splitter.sizes()
+
         # Execute the application
         subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
         subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
-        r = self.app.exec_()
 
+        r = self.app.exec_()
         sys.exit(r)
+
+    def resizeEvent(self, event):
+        QtGui.QMainWindow.resizeEvent(self, event)
+        new_sizes = self.ui.splitter.sizes()
+        size = sum(new_sizes)
+        self.pre_sizes[1] = size-self.pre_sizes[0]
+        self.ui.splitter.setSizes(self.pre_sizes)
+        self.resizeFunctionTab(None, None)
+
+    def resizeFunctionTab(self, pos, event):
+        # print(self.ui.splitter.sizes())
+        self.pre_sizes = self.ui.splitter.sizes()
+        width = self.ui.functions.width()-51
+        tables = [library.ui.tableLibrary for library in self.listLibraryWidget] + list(self.dicTables.values()) + [self.ui.tableSearch]
+        for v in tables:
+            v.setColumnWidth(0, width-20)
+            for item in [v.cellWidget(r, 0) for r in range(v.rowCount())]:
+                item.updateIconSize(width-20)
+        # for k, v in iter(self.dicTables.items()):
+        #     v.setColumnWidth(0, width-20)
+        #     for item in [v.cellWidget(r, 0) for r in range(v.rowCount())]:
+        #         item.updateIconSize(width-20)
+        # for library in self.listLibraryWidget:
+        #     v = library.ui.tableLibrary
+        #     v.setColumnWidth(0, width - 20)
+        #     for item in [v.cellWidget(r, 0) for r in range(v.rowCount())]:
+        #         item.updateIconSize(width - 20)
+
     def onClickedActionStart(self, simulated=False):
         currenTab = self.ui.Tabwi.currentIndex()
         if currenTab == 0:

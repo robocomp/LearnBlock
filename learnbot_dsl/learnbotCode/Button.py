@@ -42,6 +42,7 @@ class Block_Button(QtGui.QPushButton):
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.updateImg)
         self.timer.start(5)
+        self.setFlat(True)
 
     def loadImg(self):
         try:
@@ -79,10 +80,22 @@ class Block_Button(QtGui.QPushButton):
             cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
         else:
             img = cv2.imread(self.tmpFile, cv2.IMREAD_UNCHANGED)
-        self.setIconSize(QtCore.QSize(135, img.shape[0]))
-        self.setFixedSize(QtCore.QSize(150, img.shape[0]))
+        width = self.__parent.ui.functions.width()-51
+        self.__table.setColumnWidth(0, width - 20)
+        self.setIconSize(QtCore.QSize(width - 20, img.shape[0]))
+        # self.setFixedSize(QtCore.QSize(150, img.shape[0]))
         self.__table.setRowHeight(self.__row, img.shape[0])
         self.setIcon(QtGui.QIcon(self.tmpFile))
+        self.setStyleSheet("QPushButton { text-align: left; }")
+        self.icon
+
+    def updateIconSize(self, width):
+        size = self.iconSize()
+        size.setWidth(width)
+        # print(self.__row)
+        # print(self.__table.row(self.__row))
+        size.setHeight(self.__table.rowHeight(self.__row))
+        self.setIconSize(size)
 
     def updateToolTip(self):
         try:
