@@ -1,8 +1,7 @@
 import cv2, numpy as np
 from copy import copy,deepcopy
 from random import randint
-
-
+from PIL import Image, ImageDraw
 #
 # img=np.zeros((100,100))
 #
@@ -59,7 +58,7 @@ def getPointsBezier(points):
                 newPoints.append(bezier(p1,p2,t))
                 p1=p2
             points=newPoints
-        bezierPoints.append(points[0])
+        bezierPoints.append(tuple(points[0]))
         points=pointsCopy
     return bezierPoints
 
@@ -75,6 +74,26 @@ class emotion:
         self.irisD = irisD
         self.boca1 = boca1
         self.boca2 = boca2
+
+    def render2(self):
+        boca1 = randint(-5, 5)
+        boca2 = randint(-5, 5)
+        img= Image.new('RGB', (480,320), 'white')
+        draw = ImageDraw.Draw(img)
+        draw.polygon(getPointsBezier(self.cejaI1) + getPointsBezier(self.cejaI2),fill=1)
+        draw.polygon(getPointsBezier(self.cejaD1) + getPointsBezier(self.cejaD2),fill=1)
+
+        draw.ellipse([((91,92)),((171,184))],fill=1)
+
+
+        copyboca1 = deepcopy(self.boca1)
+        copyboca2 = deepcopy(self.boca2)
+        for p in copyboca1[1:-1]:
+            p[1] += boca1
+        for p in copyboca2[1:-1]:
+            p[1] += boca2
+        draw.polygon(getPointsBezier(copyboca1) + getPointsBezier(copyboca2), fill=1)
+        img.show()
 
     def render(self):
         boca1=randint(-5, 5)
@@ -105,7 +124,8 @@ class emotion:
         # cv2.polylines(img, np.int32([np.array(getPointsBezier(copyboca1)+getPointsBezier(copyboca2))]), 1, (255, 255, 255),5)
         cv2.fillPoly(img, np.int32([np.array(getPointsBezier(copyboca1)+getPointsBezier(copyboca2))]), (0, 0, 0))
         # cv2.polylines(img, np.int32([np.array(getPointsBezier(copyboca2))]), 0, (255, 255, 255))
-        cv2.imshow("emotion", img)
+        im= Image.fromarray(img)
+        im.show("prueba")
         pass
 
 
@@ -113,8 +133,8 @@ class emotion:
 
 import time
 e = emotion(CEJAI1,CEJAI2,CEJAD1,CEJAD2, OJOD,OJOI,None,None,BOCA1,BOCA2 )
+e.render2()
+exit(0)
 while True:
     e.render()
     time.sleep(0.05)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break

@@ -744,11 +744,14 @@ class LearnBlock(QtGui.QMainWindow):
         return r is 0
 
     def startRobot(self):
-        client = paramiko.SSHClient()
-        client.load_system_host_keys()
-        client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
-        stdin, stdout, stderr = client.exec_command(configSSH["start"])
+        if self.checkConnectionToBot():
+            client = paramiko.SSHClient()
+            client.load_system_host_keys()
+            client.set_missing_host_key_policy(paramiko.WarningPolicy)
+            print(configSSH["ip"], configSSH["user"], configSSH["pass"])
+            client.connect(hostname=configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
+            _, stdout, _ = client.exec_command(configSSH["start"])
+
 
     def startSimulatorRobot(self):
         self.scene.stopAllblocks()
@@ -768,18 +771,20 @@ class LearnBlock(QtGui.QMainWindow):
             # subprocess.Popen(configSSH["start_simulator"] + " " + fileName[0], shell=True, stdout=subprocess.PIPE)
 
     def shutdownRobot(self):
-        client = paramiko.SSHClient()
-        client.load_system_host_keys()
-        client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
-        stdin, stdout, stderr = client.exec_command("sudo shutdown 0")
+        if self.checkConnectionToBot():
+            client = paramiko.SSHClient()
+            client.load_system_host_keys()
+            client.set_missing_host_key_policy(paramiko.WarningPolicy)
+            client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
+            stdin, stdout, stderr = client.exec_command("sudo shutdown 0")
 
     def rebootRobot(self):
-        client = paramiko.SSHClient()
-        client.load_system_host_keys()
-        client.set_missing_host_key_policy(paramiko.WarningPolicy)
-        client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
-        stdin, stdout, stderr = client.exec_command("sudo reboot 0")
+        if self.checkConnectionToBot():
+            client = paramiko.SSHClient()
+            client.load_system_host_keys()
+            client.set_missing_host_key_policy(paramiko.WarningPolicy)
+            client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
+            stdin, stdout, stderr = client.exec_command("sudo reboot 0")
 
     def avtiveEvents(self, isChecked):
         self.scene.useEvents(isChecked)
