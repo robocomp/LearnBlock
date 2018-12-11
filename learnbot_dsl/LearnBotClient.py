@@ -41,7 +41,7 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 from PIL import Image, ImageDraw, ImageQt
 import copy, json, tempfile, os
 
-DEFAULTCONFIGNEUTRAL = {"cejaD": {"P2": {"y": 73, "x": 314}, "P3": {"y": 99, "x": 355}, "P1": {"y": 99, "x": 278}, "P4": {"y": 94, "x": 313}}, "parpadoI": {"P2": {"y": 80, "x": 160}, "P3": {"y": 151, "x": 214}, "P1": {"y": 151, "x": 112}, "P4": {"y": 80, "x": 160}}, "ojoI": {"Radio1": {"Value": 34}, "Center": {"y": 151, "x": 161}, "Radio2": {"Value": 34}}, "cejaI": {"P2": {"y": 73, "x": 160}, "P3": {"y": 99, "x": 201}, "P1": {"y": 99, "x": 122}, "P4": {"y": 94, "x": 160}}, "ojoD": {"Radio1": {"Value": 34}, "Center": {"y": 151, "x": 316}, "Radio2": {"Value": 34}}, "boca": {"P2": {"y": 231, "x": 239}, "P3": {"y": 234, "x": 309}, "P1": {"y": 234, "x": 170}, "P6": {"y": 242, "x": 170}, "P4": {"y": 242, "x": 309}, "P5": {"y": 241, "x": 239}}, "pupilaD": {"Radio": {"Value": 5}, "Center": {"y": 151, "x": 316}}, "mejillaI": {"P2": {"y": 188, "x": 160}, "P3": {"y": 187, "x": 201}, "P1": {"y": 187, "x": 122}, "P4": {"y": 187, "x": 160}}, "parpadoD": {"P2": {"y": 80, "x": 314}, "P3": {"y": 151, "x": 369}, "P1": {"y": 151, "x": 266}, "P4": {"y": 80, "x": 313}}, "pupilaI": {"Radio": {"Value": 5}, "Center": {"y": 151, "x": 161}}, "mejillaD": {"P2": {"y": 188, "x": 314}, "P3": {"y": 187, "x": 355}, "P1": {"y": 187, "x": 278}, "P4": {"y": 187, "x": 313}}}
+DEFAULTCONFIGNEUTRAL = {"cejaD": {"P2": {"y": 73, "x": 314}, "P3": {"y": 99, "x": 355}, "P1": {"y": 99, "x": 278}, "P4": {"y": 94, "x": 313}}, "parpadoI": {"P2": {"y": 80, "x": 160}, "P3": {"y": 151, "x": 214}, "P1": {"y": 151, "x": 112}, "P4": {"y": 80, "x": 160}}, "ojoI": {"Radio1": {"Value": 34}, "Center": {"y": 151, "x": 161}, "Radio2": {"Value": 34}}, "cejaI": {"P2": {"y": 73, "x": 160}, "P3": {"y": 99, "x": 201}, "P1": {"y": 99, "x": 122}, "P4": {"y": 94, "x": 160}}, "ojoD": {"Radio1": {"Value": 34}, "Center": {"y": 151, "x": 316}, "Radio2": {"Value": 34}}, "boca": {"P2": {"y": 231, "x": 239}, "P3": {"y": 234, "x": 309}, "P1": {"y": 234, "x": 170}, "P6": {"y": 242, "x": 170}, "P4": {"y": 242, "x": 309}, "P5": {"y": 241, "x": 239}}, "pupilaD": {"Radio": {"Value": 5}, "Center": {"y": 151, "x": 316}}, "lengua": {"P2": {"y": 238, "x": 239}, "P3": {"y": 238, "x": 309}, "P1": {"y": 238, "x": 199}, "P4": {"y": 238, "x": 273}}, "mejillaI": {"P2": {"y": 188, "x": 160}, "P3": {"y": 187, "x": 201}, "P1": {"y": 187, "x": 122}, "P4": {"y": 187, "x": 160}}, "parpadoD": {"P2": {"y": 80, "x": 314}, "P3": {"y": 151, "x": 369}, "P1": {"y": 151, "x": 266}, "P4": {"y": 80, "x": 313}}, "pupilaI": {"Radio": {"Value": 5}, "Center": {"y": 151, "x": 161}}, "mejillaD": {"P2": {"y": 188, "x": 314}, "P3": {"y": 187, "x": 355}, "P1": {"y": 187, "x": 278}, "P4": {"y": 187, "x": 313}}}
 
 OFFSET = 0.06666666666666667
 
@@ -127,12 +127,14 @@ class Face(threading.Thread):
             self.renderPupila(config["pupilaD"])
             self.renderMejilla(config["mejillaI"])
             self.renderMejilla(config["mejillaD"])
+            self.renderLengua(config["lengua"])
             # path = "/dev/fb0"
             # with open(path, "wb") as f:
             #     f.write(self.img.tobytes())
 
-            np.array(self.img)
-            cv2.imwrite("/tmp/ebofaceimg.png",np.array(self.img))
+            img = np.array(self.img)
+            img = cv2.flip(img, 1)
+            cv2.imwrite("/tmp/ebofaceimg.png",img)
             return "/tmp/ebofaceimg.png"
         elif self.config_target is not None:
             # with self.mutex:
@@ -146,6 +148,13 @@ class Face(threading.Thread):
         self.draw.ellipse((P1, P2), fill=(255, 255, 255), outline=(255, 255, 255))
 
     # self.draw.ellipse((P1, P2), fill=1)
+
+    def renderLengua(self, points):
+        P1 = (points["P1"]["x"], points["P1"]["y"])
+        P2 = (points["P2"]["x"], points["P2"]["y"])
+        P3 = (points["P3"]["x"], points["P3"]["y"])
+        P4 = (points["P4"]["x"], points["P4"]["y"])
+        self.draw.polygon(getPointsBezier([P1, P2, P3, P4]), fill=(131,131,255), outline=(0,0,0))
 
     def renderParpado(self, points):
         P1 = (points["P1"]["x"], points["P1"]["y"])
