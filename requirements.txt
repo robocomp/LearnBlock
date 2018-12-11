@@ -1,0 +1,17 @@
+pyparsing==2.0.3
+opencv_python_headless==3.4.3.18
+imutils==0.5.1
+future==0.16.0
+learnbot_dsl==0.2.41
+dlib==19.13.1
+pyunpack==0.1.2
+requests==2.18.4
+Markdown==3.0.1
+paramiko==2.4.1
+six==1.11.0
+tensorflow==1.10.1
+numpy==1.13.3
+Ice==0.0.2
+Pillow==5.3.0
+PySide==1.2.4
+paho_mqtt==1.4.0
