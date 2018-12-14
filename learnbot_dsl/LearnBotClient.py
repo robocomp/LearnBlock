@@ -5,6 +5,7 @@ from __future__ import print_function, absolute_import
 import sys, traceback, Ice, os, math, time, json, ast, copy, threading, json, cv2, urllib
 from collections import namedtuple
 import numpy as np
+from random import randint
 
 ROBOCOMP = ''
 try:
@@ -41,7 +42,50 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 from PIL import Image, ImageDraw, ImageQt
 import copy, json, tempfile, os
 
-DEFAULTCONFIGNEUTRAL = {"cejaD": {"P2": {"y": 73, "x": 314}, "P3": {"y": 99, "x": 355}, "P1": {"y": 99, "x": 278}, "P4": {"y": 94, "x": 313}}, "parpadoI": {"P2": {"y": 80, "x": 160}, "P3": {"y": 151, "x": 214}, "P1": {"y": 151, "x": 112}, "P4": {"y": 80, "x": 160}}, "ojoI": {"Radio1": {"Value": 34}, "Center": {"y": 151, "x": 161}, "Radio2": {"Value": 34}}, "cejaI": {"P2": {"y": 73, "x": 160}, "P3": {"y": 99, "x": 201}, "P1": {"y": 99, "x": 122}, "P4": {"y": 94, "x": 160}}, "ojoD": {"Radio1": {"Value": 34}, "Center": {"y": 151, "x": 316}, "Radio2": {"Value": 34}}, "boca": {"P2": {"y": 231, "x": 239}, "P3": {"y": 234, "x": 309}, "P1": {"y": 234, "x": 170}, "P6": {"y": 242, "x": 170}, "P4": {"y": 242, "x": 309}, "P5": {"y": 241, "x": 239}}, "pupilaD": {"Radio": {"Value": 5}, "Center": {"y": 151, "x": 316}}, "lengua": {"P2": {"y": 238, "x": 239}, "P3": {"y": 238, "x": 309}, "P1": {"y": 238, "x": 199}, "P4": {"y": 238, "x": 273}}, "mejillaI": {"P2": {"y": 188, "x": 160}, "P3": {"y": 187, "x": 201}, "P1": {"y": 187, "x": 122}, "P4": {"y": 187, "x": 160}}, "parpadoD": {"P2": {"y": 80, "x": 314}, "P3": {"y": 151, "x": 369}, "P1": {"y": 151, "x": 266}, "P4": {"y": 80, "x": 313}}, "pupilaI": {"Radio": {"Value": 5}, "Center": {"y": 151, "x": 161}}, "mejillaD": {"P2": {"y": 188, "x": 314}, "P3": {"y": 187, "x": 355}, "P1": {"y": 187, "x": 278}, "P4": {"y": 187, "x": 313}}}
+DEFAULTCONFIGNEUTRAL = {"cejaD": {"P2": {"y": 73, "x": 314},
+                                  "P3": {"y": 99, "x": 355},
+                                  "P1": {"y": 99, "x": 278},
+                                  "P4": {"y": 94, "x": 313}},
+                        "parpadoI": {"P2": {"y": 80, "x": 160},
+                                     "P3": {"y": 151, "x": 214},
+                                     "P1": {"y": 151, "x": 112},
+                                     "P4": {"y": 80, "x": 160}},
+                        "ojoI": {"Radio1": {"Value": 34},
+                                 "Center": {"y": 151, "x": 161},
+                                 "Radio2": {"Value": 34}},
+                        "cejaI": {"P2": {"y": 73, "x": 160},
+                                  "P3": {"y": 99, "x": 201},
+                                  "P1": {"y": 99, "x": 122},
+                                  "P4": {"y": 94, "x": 160}},
+                        "ojoD": {"Radio1": {"Value": 34},
+                                 "Center": {"y": 151, "x": 316},
+                                 "Radio2": {"Value": 34}},
+                        "boca": {"P2": {"y": 231, "x": 239},
+                                 "P3": {"y": 234, "x": 309},
+                                 "P1": {"y": 234, "x": 170},
+                                 "P6": {"y": 242, "x": 170},
+                                 "P4": {"y": 242, "x": 309},
+                                 "P5": {"y": 241, "x": 239}},
+                        "pupilaD": {"Radio": {"Value": 5},
+                                    "Center": {"y": 151, "x": 316}},
+                        "lengua": {"P2": {"y": 238, "x": 239},
+                                   "P3": {"y": 238, "x": 309},
+                                   "P1": {"y": 238, "x": 199},
+                                   "P4": {"y": 238, "x": 273}},
+                        "mejillaI": {"P2": {"y": 188, "x": 160},
+                                     "P3": {"y": 187, "x": 201},
+                                     "P1": {"y": 187, "x": 122},
+                                     "P4": {"y": 187, "x": 160}},
+                        "parpadoD": {"P2": {"y": 80, "x": 314},
+                                     "P3": {"y": 151, "x": 369},
+                                     "P1": {"y": 151, "x": 266},
+                                     "P4": {"y": 80, "x": 313}},
+                        "pupilaI": {"Radio": {"Value": 5},
+                                    "Center": {"y": 151, "x": 161}},
+                        "mejillaD": {"P2": {"y": 188, "x": 314},
+                                     "P3": {"y": 187, "x": 355},
+                                     "P1": {"y": 187, "x": 278},
+                                     "P4": {"y": 187, "x": 313}}}
 
 OFFSET = 0.06666666666666667
 
@@ -71,7 +115,7 @@ def getBecierConfig(old_config, config_target, t):
     config = copy.copy(old_config)
     for parte in old_config:
         for point in old_config[parte]:
-            if "Radio" in point:
+            if point in ["Radio", "Radio1", "Radio2"]:
                 radio = bezier((old_config[parte][point]["Value"], 0), (config_target[parte][point]["Value"], 0), t)
                 config[parte][point]["Value"] = radio[0]
             else:
@@ -98,40 +142,56 @@ class Face(threading.Thread):
         # self.display_proxy.setImageFromFile(path)
 
     def run(self):
+        start = time.time()
+        sec = randint(2,6)
         while True:
+            print(time.time() - start, sec)
+            if time.time() - start > sec:
+                self.pestaneo()
+                sec = randint(2, 6)
+                start = time.time()
+                # print("entro")
             path = self.render()
             if path is not None:
                 self.display_proxy.setImageFromFile(path)
 
+    def pestaneo(self):
+        configaux = copy.copy(self.config)
+        value1 = copy.copy((configaux["ojoD"]["Radio2"]["Value"]))
+        value2 = copy.copy((configaux["ojoI"]["Radio2"]["Value"]))
+
+        for t in [(x+1)/5. for x in range(5)] + sorted([(x)/5. for x in range(5)], reverse=True):
+            configaux["ojoD"]["Radio2"]["Value"] = bezier((value1,0), (0,0), t)[0]
+            configaux["ojoI"]["Radio2"]["Value"] = bezier((value2, 0), (0, 0), t)[0]
+            # config1 = getBecierConfig(configaux, configPestaneo, t)
+            self.drawConfig(configaux)
+            img = np.array(self.img)
+            img = cv2.flip(img, 1)
+            cv2.imwrite("/tmp/ebofaceimg.png", img)
+            self.display_proxy.setImageFromFile("/tmp/ebofaceimg.png")
+            # time.sleep(0.01)
+
+
+    def drawConfig(self, config):
+        self.draw.rectangle(((0, 0), (479, 319)), fill=(255, 255, 255), outline=(255, 255, 255))
+        self.renderOjo(config["ojoI"])
+        self.renderOjo(config["ojoD"])
+        self.renderParpado(config["parpadoI"])
+        self.renderParpado(config["parpadoD"])
+        self.renderCeja(config["cejaI"])
+        self.renderCeja(config["cejaD"])
+        self.renderBoca(config["boca"])
+        self.renderPupila(config["pupilaI"])
+        self.renderPupila(config["pupilaD"])
+        self.renderMejilla(config["mejillaI"])
+        self.renderMejilla(config["mejillaD"])
+        self.renderLengua(config["lengua"])
+
     def render(self):
         if self.t <= 1 and self.config_target is not None:
-            # with self.mutex:
-            #     old_config = copy.copy(self.old_config)
-            #     config_target = copy.copy(self.config_target)
-            #     t = copy.copy(self.t)
-            #     self.t += OFFSET
-            # config = getBecierConfig(old_config, config_target, t)
-            # with self.mutex:
-            #     self.config = copy.copy(config)
             config = self.config = getBecierConfig(self.old_config, self.config_target, self.t)
             self.t += OFFSET
-            self.draw.rectangle(((0, 0), (479, 319)), fill=(255, 255, 255), outline=(255, 255, 255))
-            self.renderOjo(config["ojoI"])
-            self.renderOjo(config["ojoD"])
-            self.renderParpado(config["parpadoI"])
-            self.renderParpado(config["parpadoD"])
-            self.renderCeja(config["cejaI"])
-            self.renderCeja(config["cejaD"])
-            self.renderBoca(config["boca"])
-            self.renderPupila(config["pupilaI"])
-            self.renderPupila(config["pupilaD"])
-            self.renderMejilla(config["mejillaI"])
-            self.renderMejilla(config["mejillaD"])
-            self.renderLengua(config["lengua"])
-            # path = "/dev/fb0"
-            # with open(path, "wb") as f:
-            #     f.write(self.img.tobytes())
-
+            self.drawConfig(config)
             img = np.array(self.img)
             img = cv2.flip(img, 1)
             cv2.imwrite("/tmp/ebofaceimg.png",img)
