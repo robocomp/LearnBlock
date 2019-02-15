@@ -68,14 +68,15 @@ class Block_Button(QtGui.QPushButton):
             r, g, b = cv2.split(im)
             im = cv2.merge((r, g, b, a))
             var = []
-            for x in self.__vars:
-                try:
-                    if getLanguage() in x.translate:
-                        var.append(x.translate[getLanguage()])
-                    else:
+            if self.__type is not VARIABLE:
+                for x in self.__vars:
+                    try:
+                        if getLanguage() in x.translate:
+                            var.append(x.translate[getLanguage()])
+                        else:
+                            var.append(x.name)
+                    except:
                         var.append(x.name)
-                except:
-                    var.append(x.name)
             img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, var, self.__type)
             cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
         else:
@@ -87,7 +88,7 @@ class Block_Button(QtGui.QPushButton):
         self.__table.setRowHeight(self.__row, img.shape[0])
         self.setIcon(QtGui.QIcon(self.tmpFile))
         self.setStyleSheet("QPushButton { text-align: left; }")
-        self.icon
+        # self.icon
 
     def updateIconSize(self, width):
         size = self.iconSize()

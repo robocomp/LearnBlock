@@ -3,11 +3,11 @@
 from __future__ import print_function, absolute_import
 from threading import Thread, Lock, Event
 import numpy as np, copy, sys, time, Ice, os, subprocess
-from enum import Enum
+from learnbot_dsl.Clients.Devices import *
 
 __ICEs = ["EmotionRecognition.ice", "Apriltag.ice" ]
 __icePaths = []
-__icePaths.append(os.path.join(os.path.dirname(__file__), "interfaces"))
+__icePaths.append("/home/ivan/robocomp/components/learnbot/learnbot_dsl/interfaces")
 for ice in __ICEs:
     for p in __icePaths:
         if os.path.isfile(os.path.join(p, ice)):
@@ -18,124 +18,7 @@ for ice in __ICEs:
 import RoboCompEmotionRecognition
 import RoboCompApriltag
 
-class Emotions(Enum):
-    NoneEmotion = -1
-    Fear = 0
-    Surprise = 1
-    Anger = 2
-    Sadness = 3
-    Disgust = 4
-    Joy = 5
-    Neutral = 7
 
-class Device():
-    __available = False
-    __readDevice = None
-    __callDevice = None
-    def setAvailable(self, _available):
-        self.__available = _available
-
-    def isAvailable(self):
-        return self.__available
-
-class Acelerometer(Device):
-    '''
-    Acelerometer is a class that contain the values rx, ry, rz of a Acelerometer in rad.
-    '''
-    x = None
-    y = None
-    z = None
-    def __init__(self, _readFunction):
-        self.__readDevice = _readFunction
-        
-    def set(self, _x, _y, _z):
-        self.x = _x
-        self.y = _y
-        self.z = _z
-        
-    def read(self):
-        _x, _y, _z = self.__readDevice()
-        self.set(_x, _y, _z)
-        
-class Gyroscope(Device):
-    '''
-    Gyroscope is a class that contain the values rx, ry, rz of a Gyroscope in rad.
-    '''
-    rx = None
-    ry = None
-    rz = None
-    def __init__(self, _readFunction):
-        self.__readDevice = _readFunction
-        
-    def set(self, _rx, _ry, _rz):
-        self.rx = _rx
-        self.ry = _ry
-        self.rz = _rz
-        
-    def read(self):
-        _rx, _ry, _rz = self.__readDevice()
-        self.set(_rx, _ry, _rz)
-
-class Camera(Device):
-    '''
-    Camera devices.
-    '''
-    __image = np.zeros((240, 320, 3), np.uint8)     # RGB image
-    __newImageAvailable = False
-    __mutexRead = Lock()
-    def __init__(self, _readFunction):
-        self.__readDevice = _readFunction
-
-    def read(self):
-        self.__mutexRead.acquire()
-        img, new = self.__readDevice()
-        if new is True:
-            self.__image = img
-            self.__newImageAvailable = True
-        self.__mutexRead.release()
-
-    def getImage(self):
-        self.__mutexRead.acquire()
-        simage = copy.copy(self.__image)
-        self.__mutexRead.release()
-        return simage
-
-class DistanceSensors(Device):
-    __distanceSensor = {"front": [1000, 1000, 1000],  # The values must be in mm
-                        "left": [1000, 1000],
-                        "right": [1000, 1000],
-                        "back": None,
-                        "bottom": None}
-    def __init__(self, _readFunction):
-        self.__readDevice = _readFunction
-    
-    def set(self, key, values):
-        self.__distanceSensor[key] = values
-    
-    def read(self):
-        dictValues = self.__readDevice()
-        for key in dictValues:
-            self.set(key, dictValues[key])
-    def get(self):
-        return self.__distanceSensor
-        
-class Base(Device):
-    __adv = 0       # in mm
-    __rot = 0       # in rad
-    __max_rot = 0   # in rad
-
-    def __init__(self, _callFunction, _max_rot):
-        self.__callDevice = _callFunction
-        self.__max_rot = _max_rot
-    
-    def move(self, _adv, _rot):
-        self.__callDevice(_adv, _rot)
-    
-    def adv(self):
-        return self.__adv
-    
-    def rot(self):
-        return self.__rot
 
 def connectComponent(stringProxy, _class):
     ic = Ice.initialize(sys.argv)
@@ -176,14 +59,13 @@ class Client(Thread):
     camera = None
     base = None
     distanceSensors = None
+    display = None
+    __JointMotors = {}
+    __Leds = {}
+    speaker = None
+
     def __init__(self):
         Thread.__init__(self)
-        # self.__acelerometer = Acelerometer(_readFunction=f)
-        # self.__gyroscope = Gyroscope(_readFunction=f)
-        # self.__camera = Camera(_readFunction=f)
-        # self.__base = Base(_callFunction=f)
-        # self.__distanceSensors = DistanceSensors(_readFunction=f)
-
         subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
         subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
         # Remote object connection for EmotionRecognition
@@ -192,6 +74,22 @@ class Client(Thread):
         self.__apriltagProxy = connectComponent("apriltag:tcp -h localhost -p 25000", RoboCompApriltag.ApriltagPrx)
         # self.start()
         self.active = True
+
+    def addJointMotor(self, _key, _JointMotor):
+        if _key in self.__JointMotors:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_JointMotor, JointMotor):
+            raise Exception("_JointMotor is of type "+ type(_JointMotor) + " and must be of type JointMotor")
+        else:
+            self.__JointMotors[_key] = _JointMotor
+
+    def addLed(self, _key, _Led):
+        if _key in self.__Leds:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Led, Led):
+            raise Exception("_JointMotor is of type "+ type(_Led) + " and must be of type Led")
+        else:
+            self.__Leds[_key] = _Led
 
     def __detectAprilTags(self):
         if not self.__apriltag_current_exist:
@@ -231,43 +129,71 @@ class Client(Thread):
         return self.__stop_event.is_set()
 
     def getSonars(self):
-        return self.distanceSensors.get()
+        if isinstance(self.distanceSensors, DistanceSensors):
+            return self.distanceSensors.get()
 
     def getImage(self):
-        return self.camera.getImage()
+        if isinstance(self.camera, Camera):
+            return self.camera.getImage()
 
     def getPose(self):
         raise NotImplementedError("To do")
 
-    def setRobotSpeed(self, vAdvance=0, vRotation=0):
-        self.base.move(vAdvance, vRotation)
+    def setBaseSpeed(self, vAdvance, vRotation):
+        if isinstance(self.base, Base):
+            self.base.move(vAdvance, vRotation)
 
-    def expressJoy(self):
-        raise NotImplementedError("To be implemented")
+    def getAdv(self):
+        if isinstance(self.base, Base):
+            return self.base.adv()
 
-    def expressSadness(self):
-        raise NotImplementedError("To be implemented")
+    def getRot(self):
+        if isinstance(self.base, Base):
+            return self.base.rot()
 
-    def expressSurprise(self):
-        raise NotImplementedError("To be implemented")
+    def express(self, _key):
+        if isinstance(self.display, Display):
+            self.__currentEmotion = _key
+            self.display.setEmotion(_key)
 
-    def expressFear(self):
-        raise NotImplementedError("To be implemented")
+    def showImage(self, _img):
+        if isinstance(self.display, Display):
+            self.display.setImage(_img)
 
-    def expressAnger(self):
-        raise NotImplementedError("To be implemented")
+    def setJointAngle(self, _key, _angle):
+        if _key in self.__JointMotors:
+            self.__JointMotors.get(_key).sendAngle(_angle)
+        # else:
+        #     raise Exception("The key don't exist JointMotors")
 
-    def expressDisgust(self):
-        raise NotImplementedError("To be implemented")
-
-    def expressNeutral(self):
-        raise NotImplementedError("To be implemented")
-
-    def setJointAngle(self, angle):
-        raise NotImplementedError("To be implemented")
+    def setLedState(self, _key, _status):
+        if _key in self.__Leds:
+            self.__Leds.get(_key).setState(_status)
+        # else:
+        #     raise Exception("The key don't exist Leds")
 
     def getCurrentEmotion(self):
         return self.__currentEmotion
+
+    def getAcelerometer(self):
+        if isinstance(self.acelerometer, Acelerometer):
+            return self.acelerometer.get()
+        else:
+            return None
+
+    def getGyroscope(self):
+        if isinstance(self.gyroscope, Gyroscope):
+            return self.gyroscope.get()
+        else:
+            return None
+
+    def speakText(self,_text):
+        if isinstance(self.speaker, Speaker):
+            self.speaker.sendText(_text)
+
+    def sendAudio(self, _audioData):
+        if isinstance(self.speaker, Speaker):
+            self.speaker.sendAudio(_audioData)
 
     def getEmotions(self):
         if not self.emotion_current_exist:
@@ -283,3 +209,7 @@ class Client(Thread):
 
     def __del__(self):
             self.active = False
+
+def addFunctions(_dictFuntions):
+    for k, v in iter(_dictFuntions.item()):
+        exec("Client.%s = v" % (k))

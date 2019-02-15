@@ -104,6 +104,8 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         r, g, b = cv2.split(im)
         self.cvImg = cv2.merge((r, g, b, a))
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
+        if self.parentBlock.type is VARIABLE:
+            self.showtext = self.parentBlock.name + " "+ self.showtext
         img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
                             self.parentBlock.nameControl)
         qImage = toQImage(img)
@@ -163,6 +165,11 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                     combobox.setCurrentIndex(1)
                 else:
                     combobox.setCurrentIndex(0)
+                self.tabVar.setCellWidget(i, 1, combobox)
+            elif var.type == "list":
+                values = var.translateValues[getLanguage()]
+                combobox = QtGui.QComboBox()
+                combobox.addItems(values)
                 self.tabVar.setCellWidget(i, 1, combobox)
 
             combobox = QtGui.QComboBox()
@@ -336,10 +343,15 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
     def getVars(self):
         vars = []
-        for cell in range(0, self.tabVar.rowCount()):
+        varS = self.parentBlock.getVars()
+        # for cell in range(0, self.tabVar.rowCount()):
+        for cell, var in zip(range(len(varS)), varS):
+
             if self.tabVar.cellWidget(cell, 2).currentText() == "None":
                 if self.tabVar.cellWidget(cell, 3).text() == "boolean":
                     vars.append(self.tabVar.cellWidget(cell, 1).currentText())
+                elif self.tabVar.cellWidget(cell, 3).text() == "list":
+                    vars.append('"' + var.values[self.tabVar.cellWidget(cell, 1).currentIndex()] + '"')
                 elif self.tabVar.cellWidget(cell, 3).text() == "string":
                     vars.append('"'+self.tabVar.cellWidget(cell, 1).text()+'"')
                 else:
@@ -431,6 +443,13 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                         self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
                     else:
                         self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
+                    if var.type == "list":
+                        values = var.translateValues[getLanguage()]
+                        val = self.tabVar.cellWidget(i, 1).currentIndex()
+                        combobox = QtGui.QComboBox()
+                        combobox.addItems(values)
+                        self.tabVar.setCellWidget(i, 1, combobox)
+                        combobox.setCurrentIndex(val)
                 except:
                     self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
 

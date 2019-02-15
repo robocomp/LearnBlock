@@ -81,16 +81,20 @@ class Connection:
 
 
 class Variable():
-
+    translate = {}
+    values = []
+    translateValues = {}
     def __init__(self, type=None, name=None, default=None, translate={}, dict=None):
         if dict is not None:
             self.type = dict["type"]
             self.name = dict["name"]
             self.defaul = dict["default"]
+            if self.type == "list":
+                print("entro")
+                self.values = dict["values"]
+                self.translateValues = dict["translateValues"]
             if "translate" in dict:
                 self.translate = dict["translate"]
-            else:
-                self.translate = {}
         else:
             self.type = type
             self.name = name
@@ -106,38 +110,31 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
     im = None
     sizeleter = 15
     varText = ""
-    if type_ in [FUNTION, USERFUNCTION,LIBRARY]:
-        if vars_ is not None and len(vars_) is not 0:
-            varText = "("
-            for var in vars_:
-                varText += var + ","
-            varText = varText[:-1] + ")"
-        else:
-            varText = "()"
-    elif type_ is CONTROL and vars_ is not None and len(vars_) is not 0:
-        varText = "("
-        for var in vars_:
-            varText += var + ","
-        varText = varText[:-1] + ")"
+    if not isinstance(vars_, list):
+        vars_ = []
+    if type_ in [FUNTION, USERFUNCTION, LIBRARY] or (type_ is CONTROL and len(vars_) is not 0):
+        varText = "(" + ", ".join(vars_) + ")"
     elif type_ is VARIABLE:
-        if vars_ is not None and len(vars_) is not 0:
+        if len(vars_) is not 0:
             for var in vars_:
-                varText = " set to " + var
+                varText = str(var)
+                break
+    text = name + varText
+
+    textSize = (len(text) * sizeleter)
+    if textSize is 0:
+        textSize = 22
+    nameControlSize = (len(nameControl) * sizeleter)
+
 
     if typeBlock is COMPLEXBLOCK:
-        if vars_ is None:
-            varText = ""
         left = img[0:img.shape[0], 0:60]
         right = img[0:img.shape[0], img.shape[1] - 10:img.shape[1]]
         line = img[0:img.shape[0], 72:73]
         h = left.shape[0]
-        textSize = ((len(name) + len(varText)) * sizeleter)
-        nameControlSize = (len(nameControl) * sizeleter)
-        if textSize is 0:
-            textSize = 22
-        if nameControlSize > textSize:
-            textSize = nameControlSize
+        textSize = max([textSize, nameControlSize])
         w = left.shape[1] + right.shape[1] + textSize - 22
+
         im = np.ones((h, w, 4), dtype=np.uint8)
         im[0:h, 0:left.shape[1]] = copy.copy(left)
         im[0:right.shape[0], im.shape[1] - right.shape[1]:im.shape[1]] = copy.copy(right)
@@ -156,14 +153,15 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
         left = img[0:img.shape[0], 0:43]
         right = img[0:img.shape[0], img.shape[1] - 10:img.shape[1]]
         line = img[0:img.shape[0], 43:44]
-        im = np.ones((left.shape[0], left.shape[1] + right.shape[1] + ((len(name) + len(varText)) * sizeleter), 4),
+        im = np.ones((left.shape[0], left.shape[1] + right.shape[1] + textSize, 4),
                      dtype=np.uint8)
         im[0:left.shape[0], 0:left.shape[1]] = copy.copy(left)
         im[0:right.shape[0], im.shape[1] - right.shape[1]:im.shape[1]] = copy.copy(right)
         for i in range(left.shape[1], im.shape[1] - right.shape[1]):
             im[0:line.shape[0], i:i + 1] = copy.copy(line)
 
-    cv2.putText(im, name + varText, (10, 27), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 2, 25)
+
+    cv2.putText(im, text, (10, 27), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 2, 25)
     cv2.putText(im, nameControl, (10, im.shape[0] - 10), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 2, 25)
 
     if connections is not None and len(connections) > 0:

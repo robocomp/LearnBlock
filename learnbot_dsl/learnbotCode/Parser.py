@@ -10,34 +10,34 @@ HEADER = """
 from __future__ import print_function, absolute_import
 from learnbot_dsl.functions import getFuntions
 functions = getFuntions()
-from learnbot_dsl.<LearnBotClient> import *
+from learnbot_dsl.Clients.<Client> import Robot
 import sys, time, os
 global lbot
 
 try:
-    lbot = Client(sys.argv)
+<TABHERE>lbot = Robot()
 except Exception as e:
-    print("hay un Error")
-    print(e)
-    raise(e)
+<TABHERE>print("hay un Error")
+<TABHERE>print(e)
+<TABHERE>raise(e)
 
 """
 elapsedTimeFunction = """
 time_global_start = time.time()
 def elapsedTime(umbral):
-    global time_global_start
-    time_global = time.time()-time_global_start
-    return time_global > umbral
+<TABHERE>global time_global_start
+<TABHERE>time_global = time.time()-time_global_start
+<TABHERE>return time_global > umbral
 
 """
 loadLibraryCode = """
 for f in imports:
-    for subPath in [os.path.join(f, x) for x in os.listdir(f)]:
-        if os.path.isdir(os.path.abspath(subPath)):
-            for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
-                if os.path.basename(subsubPath) == os.path.basename(os.path.dirname(subsubPath)) + ".py":
-                    # execfile(os.path.abspath(subsubPath), globals())
-                    exec(open(os.path.abspath(subsubPath)).read())
+<TABHERE>for subPath in [os.path.join(f, x) for x in os.listdir(f)]:
+<TABHERE><TABHERE>if os.path.isdir(os.path.abspath(subPath)):
+<TABHERE><TABHERE><TABHERE>for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
+<TABHERE><TABHERE><TABHERE><TABHERE>if os.path.basename(subsubPath) == os.path.basename(os.path.dirname(subsubPath)) + ".py":
+<TABHERE><TABHERE><TABHERE><TABHERE><TABHERE># execfile(os.path.abspath(subsubPath), globals())
+<TABHERE><TABHERE><TABHERE><TABHERE><TABHERE>exec(open(os.path.abspath(subsubPath)).read())
 """
 class bcolors:
     HEADER = '\033[95m'
@@ -56,7 +56,7 @@ reserved_words = (Keyword('def') | Keyword('=') | Keyword('function') | Keyword(
     '<') | Keyword('>') | Keyword('deactivate') | Keyword('activate') | Keyword('not') | Keyword('True') | Keyword(
     'False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword(
     'elif') | Keyword('when') | Keyword('while') | Keyword('end'))
-iden = Word(alphanums + "_")
+iden = Word(initChars=alphas, bodyChars=alphanums + "_")
 identifier = Group(~reserved_words + iden).setResultsName("IDENTIFIER")
 
 QUOTE = Literal("\"")
@@ -100,6 +100,7 @@ CHAINBETTENQUOTE = Group(QuotedString('"')).setResultsName("STRING")
 
 """-----------------COMPARACIONES-------------------"""
 COMP = Group(L | NL | LE | NLE | E | NE).setResultsName("COMP")
+ORAND = Group(OR | AND).setResultsName('ORAND')
 
 """-----------------OPERADORES----------------------"""
 SRMD = Group(plus | minus | mult | div).setResultsName("SRMD")
@@ -108,29 +109,26 @@ FUNCTION_FIELDS = Group(Optional(NOT) + (NUMS | TRUE | FALSE | identifier | CHAI
 
 """-----------------FUNCTION-------------------------"""
 FUNCTION = Group(
-    Suppress(Literal("function")) + Suppress(point) + identifier.setResultsName('name') + Suppress(lpar) + Group(
+    Suppress(Literal("function")) + Suppress(point) + identifier.setResultsName('nameFUNCTION') + Suppress(lpar) + Group(
         Optional(FUNCTION_FIELDS) + ZeroOrMore(Suppress(coma) + (FUNCTION_FIELDS))).setResultsName(
         "args") + Suppress(rpar)).setResultsName("FUNCTION")
 
 """-----------------FIELDS---------------------------"""
 FIELDS = Group(Optional(NOT) + (NUMS | TRUE | FALSE | FUNCTION | identifier | CHAINBETTENQUOTE)).setResultsName("FIELD")
 
-"""-----------------OPERACIONES---------------------"""
-ORAND = Group(OR | AND).setResultsName('ORAND')
-
-"""-----------------OPERACIONES---------------------"""
-OPERATION = Group(FIELDS + ZeroOrMore( (SRMD | ORAND) + FIELDS)).setResultsName("OPERATION")
-
 """-----------------SIMPLEFUNCTION-------------------------"""
-SIMPLEFUNCTION = Group(identifier.setResultsName('name') + Suppress(lpar) + Group(
+SIMPLEFUNCTION = Group(identifier.setResultsName('nameDEFFUNCTION') + Suppress(lpar) + Group(
     Optional(FIELDS) + ZeroOrMore(Suppress(coma) + (FIELDS))).setResultsName("args") + Suppress(
     rpar)).setResultsName("SIMPLEFUNCTION")
 
 """-----------------PASS-------------------------"""
 PASS = Group(Literal("pass")).setResultsName("PASS")
 
+"""-----------------OPERACIONES---------------------"""
+OPERATION = Group(FIELDS + OneOrMore( (SRMD | ORAND) + FIELDS)).setResultsName("OPERATION")
+
 """-----------------CONDICIONES---------------------"""
-COMPOP = Group(OPERATION + COMP + OPERATION).setResultsName("COMPOP")
+COMPOP = Group(( OPERATION | FIELDS ) + COMP + ( OPERATION | FIELDS )).setResultsName("COMPOP")
 OPTIONCONDITION = FUNCTION | SIMPLEFUNCTION | TRUE | FALSE | COMPOP | identifier
 SIMPLECONDITION = Group(Optional(NOT) + OPTIONCONDITION).setResultsName("SIMPLECONDITION")
 CONDITION = Group(SIMPLECONDITION + ZeroOrMore(( ORAND | SRMD | COMP ) + SIMPLECONDITION)).setResultsName("CONDITION")
@@ -141,7 +139,7 @@ ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQU
     'ASSIGSTRING')
 
 NONEVAR = NONE.setResultsName("NONEVAR")
-VAR = Group(SECTAB + identifier.setResultsName("name") + (eq | PLUE | MINE | DIVE | MULE) + ( NONEVAR | OPERATION )).setResultsName("VAR")
+VAR = Group(SECTAB + identifier.setResultsName("nameVAR") + (eq | PLUE | MINE | DIVE | MULE) + ( NONEVAR | OPERATION )).setResultsName("VAR")
 
 """-----------------LINEA---------------------------"""
 LINE = Forward()
@@ -150,7 +148,6 @@ LINES = Group(LINE + ZeroOrMore(LINE)).setResultsName('LINES')
 """-----------------bloque-IF-----------------------"""
 ELSE = Forward()
 ELSEIF = Forward()
-INIF = LINES & (ZeroOrMore(ELSEIF) + Optional(ELSE))
 
 ELSEIF << Group(
     SECTAB + Suppress(Literal("elif")) + Group(CONDITION).setResultsName('condition') + COLONS + LINES.setResultsName(
@@ -167,19 +164,19 @@ BLOQUEWHILE = Group(
         'content') + Suppress(Literal("end"))).setResultsName("WHILE")
 
 """-----------------WHEN+CONDICION------------------"""
-BLOQUEWHENCOND = Group(SECTAB + Suppress(Literal("when")) + identifier.setResultsName("name") + Optional(
+BLOQUEWHENCOND = Group(SECTAB + Suppress(Literal("when")) + identifier.setResultsName("nameWHEN") + Optional(
     Suppress(eq) + Group(CONDITION).setResultsName('condition')) + COLONS + LINES.setResultsName('content') + Literal(
     "end")).setResultsName("WHEN")
 
 """-----------------ACTIVATE-CONDITION----------------"""
-ACTIVATE = Group(Suppress(Literal("activate")) + identifier.setResultsName("name")).setResultsName("ACTIVATE")
-DEACTIVATE = Group(Suppress(Literal("deactivate")) + identifier.setResultsName("name")).setResultsName("DEACTIVATE")
+ACTIVATE = Group(Suppress(Literal("activate")) + identifier.setResultsName("nameWHEN")).setResultsName("ACTIVATE")
+DEACTIVATE = Group(Suppress(Literal("deactivate")) + identifier.setResultsName("nameWHEN")).setResultsName("DEACTIVATE")
 
 """-----------------LINEA---------------------------"""
 LINE << (SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | VAR | ACTIVATE | DEACTIVATE | PASS)
 
 """-----------------DEF----------------------------"""
-DEF = Group(Suppress(Literal("def ")) + identifier.setResultsName("name") + Suppress(lpar) + Suppress(
+DEF = Group(Suppress(Literal("def ")) + identifier.setResultsName("nameDEFFUNCTION") + Suppress(lpar) + Suppress(
     rpar) + COLONS + LINES.setResultsName('content') + Suppress(Literal("end"))).setResultsName("DEF")
 
 """-----------------IMPORT----------------------------"""
@@ -192,6 +189,15 @@ LB = ZeroOrMore(IMPORT) + ZeroOrMore(LINES) + ZeroOrMore(DEF) + (MAIN | ZeroOrMo
 LB.ignore(pythonStyleComment)
 
 ini = []
+
+def __listVariables(tree):
+    l = []
+    for k in tree:
+        if isinstance(k, ParseResults):
+            l += __listVariables(k)
+            if len(k) > 0 and isinstance(k[0], str) and k.getName() in ["IDENTIFIER", "nameWHEN", "nameVAR"]:
+                l.append(k[0])
+    return l
 
 def __parserFromFile(file):
     with open(file) as f:
@@ -214,58 +220,43 @@ def __parserFromString(text):
 
 
 def __generatePy(lines):
-    list_var = []
     text = ""
-    imports = None
-    thereareWhens = False
-    for x in lines:
-        if x.getName() is 'WHEN':
-            thereareWhens = True
-            list_var.append("time_" + str(x.name[0]))
-            list_var.append(str(x.name[0]) + "_start")
-            list_var.append(x.name[0])
-        elif x.getName() is 'VAR':
-            list_var.append(x.name[0])
-        elif x.getName() is 'IMPORT':
-            if imports is None:
-                imports = "imports = ["
-            imports += '"' + x[0] + '", '
-    if imports is not None:
-        imports = imports[:-2] + "]"
-        text += "\n" + imports + loadLibraryCode
+    imports = ['"' + x[0] + '"' for x in lines if x.getName() is 'IMPORT']
+    if len(imports)>0:
+        imports = "imports = [" + ", ".join(imports) + "]"
+        text = "\n" + imports + loadLibraryCode
+    list_when = [x.nameWHEN[0] for x in lines if x.getName() is "WHEN"]
+    list_var=[x.nameVAR[0] for x in lines if x.getName() is 'VAR']
+    for x in list_when:
+        list_var.append("time_" + str(x))
+        list_var.append(str(x) + "_start")
+        list_var.append(x)
     global ini
     for x in lines:
-        x.getName()
-        if x.getName() is "MAIN" and thereareWhens:
+        if x.getName() is "MAIN" and len(list_when)>0 or x.getName() is "IMPORT":
             continue
         if x.getName() is "LINES":
             for y in x:
                 text = __process(y, list_var, text)
         else:
             text = __process(x, list_var, text)
-
-    if thereareWhens is True:
-        for x in lines:
-            if x.getName() is 'WHEN':
-                if x.name[0] == "start":
-                    text += "when_" + str(x.name[0]) + "()\n"
+    if len(list_when) > 0:
+        if 'start' in list_when:
+            text += "\nwhen_start()\n"
         text += "\n\nwhile True:\n"
-        for line in ini:
-            text += "\t" + line
-        for x in lines:
-            if x.getName() is 'WHEN':
-                if x.name[0] != "start":
-                    text += "\twhen_" + str(x.name[0]) + "()\n"
-        text += "\tpass"
+        text += "".join(["<TABHERE>" + line for line in ini])
+        whens = ["<TABHERE>when_" + str(x.nameWHEN[0]) + "()\n" for x in lines if x.getName() is 'WHEN' and x.nameWHEN[0] != "start"]
+        if len(whens)>0:
+            text += "".join(whens)
+        else:
+            text += "<TABHERE>pass"
     return text
 
 
 def __process(line, list_var=[], text="", index=0):
     TYPE = line.getName()
-
     if TYPE is 'MAIN':
-        for cLine in line.content:
-            text += __process(cLine, [], "", 0) + "\n"
+        text += "\n".join([__process(cLine, [], "", 0) for cLine in line.content])
     elif TYPE is 'FIELD':
         text += __processFIELD(line, "")
     elif TYPE is 'DEF':
@@ -299,7 +290,7 @@ def __process(line, list_var=[], text="", index=0):
     elif TYPE is 'SIMPLECONDITION':
         text = __processSIMPLECONDITION(line, text, index)
     elif TYPE is 'PASS':
-        text += "\t" * index + "pass\n"
+        text += "<TABHERE>" * index + "pass\n"
     elif TYPE is 'NONEVAR':
         text += "None"
     elif TYPE is 'STRING':
@@ -316,9 +307,9 @@ def __processFIELD(line, text="", index=0):
     return text
 
 def __processDEF(line, list_var, text="", index=0):
-    text += "\ndef " + line.name[0] + "():\n"
+    text += "\ndef " + line.nameDEFFUNCTION[0] + "():\n"
     for x in list_var:
-        text += "\t" * index + "global " + x + "\n"
+        text += "<TABHERE>" * index + "global " + x + "\n"
     for field in line.content:
         text = __process(field, [], text, index) + "\n\n"
     return text
@@ -326,8 +317,8 @@ def __processDEF(line, list_var, text="", index=0):
 
 def __processFUNCTION(line, text="", index=0):
     if text is not "":
-        text += "\t" * index
-    text += "functions.get(\"" + line.name[0] + "\")(lbot"
+        text += "<TABHERE>" * index
+    text += "functions.get(\"" + line.nameFUNCTION[0] + "\")(lbot"
     for x in line.args:
         # text += ", " + x[0]
         text += ", " + __process(x)
@@ -337,8 +328,8 @@ def __processFUNCTION(line, text="", index=0):
 
 def __processSIMPLEFUNCTION(line, text="", index=0):
     if text is not "":
-        text += "\t" * index
-    text += line.name[0] + "("
+        text += "<TABHERE>" * index
+    text += line.nameDEFFUNCTION[0] + "("
     if len(line.args) is not 0:
         for x in line.args:
             text += __process(x) + ","
@@ -353,7 +344,7 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 # ---------------------------------------
 
 def __processASSIG(line, text="", index=0):
-    text += "\t" * index + line.name[0] + " " + line[1] + " " + __process(line[2]) + "\n"
+    text += "<TABHERE>" * index + line.nameVAR[0] + " " + line[1] + " " + __process(line[2]) + "\n"
     return text
 
 
@@ -369,17 +360,17 @@ def __processASSIGSTRING(line, text="", index=0):
 
 
 def __processACTIVATE(line, text="", index=0):
-    text += "\t" * index + line.name[0] + " = True\n"
+    text += "<TABHERE>" * index + line.nameWHEN[0] + " = True\n"
     return text
 
 
 def __processDEACTIVATE(line, text="", index=0):
-    text += "\t" * index + line.name[0] + " = False\n"
+    text += "<TABHERE>" * index + line.nameWHEN[0] + " = False\n"
     return text
 
 
 def __processWHILE(line, text="", index=0):
-    text += "\n" + "\t" * index + "while "
+    text += "\n" + "<TABHERE>" * index + "while "
     for c in line.condition:
         text += __process(line.condition[0])
     text += ":\n"
@@ -394,37 +385,40 @@ def __processWHILE(line, text="", index=0):
 
 def __processWHEN(line, list_var, text="", index=0):
     global ini
-    text += "\ndef when_" + str(line.name[0]) + "():\n"
-    index += 1
-    for x in list_var:
-        text += "\t" * index + "global " + x + "\n"
-    if str(line.name[0]) != "start":
-        text += "\t" * index + "if time_" + str(line.name[0]) + " is 0:\n\t\t" + str(
-        line.name[0]) + "_start = time.time()\n"
-
-        text += "\t" * index + "if " + str(line.name[0]) + ":\n"
+    name = str(line.nameWHEN[0])
+    whenText = """
+def when_<NAME>():
+<TABHERE>global <GLOBALSVARIABLES>
+"""
+    if name != "start":
+        whenText += """<TABHERE>if time_<NAME> is 0:
+<TABHERE><TABHERE><NAME>_start = time.time()
+<TABHERE>if <NAME>:"""
+        index += 2
+    else:
         index += 1
+    text += whenText.replace("<NAME>", name).replace("<GLOBALSVARIABLES>", ", ".join(__listVariables(line)))
     for cline in line.content:
         text = __process(cline, [], text, index) + "\n"
 
-    text += "\t" * index + "time_" + str(line.name[0]) + " = time.time() -" + str(
-        line.name[0]) + "_start\n"
-    if str(line.name[0]) != "start":
-        text += "\telse:\n\t\ttime_" + str(line.name[0]) + " = 0\n"
+    if name != "start":
+        text = """<NAME>_start = time.time()\n""".replace("<NAME>", name) + text \
+               + """<TABHERE><TABHERE>time_<NAME> = time.time() - <NAME>_start
+<TABHERE>else:
+<TABHERE><TABHERE>time_<NAME> = 0
+""".replace("<NAME>", name)
     index -= 1
     if line.condition is not "":
-        ini.append(line.name[0] + " = " + __process(line.condition[0]) + "\n")
-
-    text = "\ntime_" + str(line.name[0]) + " = 0\n" + str(line.name[0]) + "_start = time.time()\n" + text
-
-    if line.condition is "":
-        text = '\n' + line.name[0] + " =  None\n" + text
+        ini.append(name + " = " + __process(line.condition[0]) + "\n")
+    # else:
+    #     text = '\n' + name + " =  None\n" + text
     return text
 
 
 def __processOP(line, text="", index=0):
-    for field in line:
-        text += __process(field) + " "
+    text += " ".join([__process(field) for field in line])
+    # for field in line:
+    #     text += __process(field) + " "
     return text
 
 
@@ -435,6 +429,10 @@ def __processCOMPOP(line, text="", index=0):
             text += __process(field)
         elif TYPE is 'COMP':
             text += field[0] + " "
+        elif TYPE is "FIELD":
+            text += __process(field[0]) + " "
+        else:
+            print("__processCOMPOP", TYPE)
     return text
 
 
@@ -464,7 +462,7 @@ def __processCONDITION(line, text="", index=0):
 
 
 def __processELIF(line, text="", index=0):
-    text += "\t" * index + "elif "
+    text += "<TABHERE>" * index + "elif "
     for c in line.condition:
         text += __process(line.condition[0])
     text += ":\n"
@@ -475,7 +473,7 @@ def __processELIF(line, text="", index=0):
 
 
 def __processELSE(line, text="", index=0):
-    text += "\t" * index + "else:\n"
+    text += "<TABHERE>" * index + "else:\n"
     index += 1
     for field in line.content:
         text = __process(field, [], text, index) + "\n"
@@ -483,7 +481,7 @@ def __processELSE(line, text="", index=0):
 
 
 def __processIF(line, text="", index=0):
-    text += "\n"+"\t" * index + "if "
+    text += "\n"+"<TABHERE>" * index + "if "
     for c in line.condition:
         text += __process(line.condition[0])
     text += ":\n"
@@ -494,7 +492,7 @@ def __processIF(line, text="", index=0):
 
     index -= 1
     for field in line.OPTIONAL:
-        text = "\t" * index + __process(field, [], text, index)
+        text = "<TABHERE>" * index + __process(field, [], text, index)
     return text
 
 def parserLearntBotCodeOnlyUserFuntion(code):
@@ -503,6 +501,7 @@ def parserLearntBotCodeOnlyUserFuntion(code):
         tree = __parserFromString(code)
 
         text = __generatePy(tree)
+        text = cleanCode(_code=text)
     except Exception as e:
         print(e)
     return text
@@ -515,11 +514,13 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
         raise e
     text = elapsedTimeFunction
     text += __generatePy(tree)
+    text = cleanCode(_code=text)
 
     if physicalRobot:
-        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
+        header = HEADER.replace('<Client>', 'LearnBotClient_PhysicalRobot')
     else:
-        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
+        header = HEADER.replace('<Client>', 'LearnBotClient')
+    header = cleanCode(_code=header)
     if text is not "":
         with open(outputFile, 'w') as f:
             f.write(header)
@@ -536,32 +537,74 @@ def parserLearntBotCodeFromCode(code, physicalRobot=False):
         raise e
     text = elapsedTimeFunction
     text += __generatePy(tree)
-
+    text = cleanCode(_code=text)
     if physicalRobot:
-        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
+        header = HEADER.replace('<Client>', 'LearnBotClient_PhysicalRobot')
     else:
-        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
+        header = HEADER.replace('<Client>', 'Cozmo')
+    header = cleanCode(_code=header)
     if text is not "":
         return header + text
     else:
         return False
+
+def cleanCode(_code):
+    newcode = _code.replace(" :", ":").replace("  ", " ").replace("\n\n\n", "\n\n").replace("<TABHERE>","\t")
+    while _code != newcode:
+        _code = newcode
+        newcode = _code.replace(" :", ":").replace("  ", " ").replace("\n\n\n", "\n\n")
+    return _code
+
+
 if __name__ == "__main__":
     textprueba = """
-    main:
-    	while not elapsedTime(0):
-    		function.move_straight()
-    	end
-    	function.stop_bot()
-    end
-    """
+
+
+when hay_alguien_triste = function.is_there_somebody_sad():
+	if 1 < time_hay_alguien_triste:
+		function.expressSadness()
+	end
+end
+
+when start:
+	function.look_up()
+	function.expressNeutral()
+end
+
+when hay_alguien_sorprendido = function.is_there_somebody_surprised():
+	if 1 < time_hay_alguien_sorprendido:
+		function.expressSurprise()
+	end
+end
+
+when hay_alguien_enfadado = function.is_there_somebody_angry():
+	if 1 < time_hay_alguien_enfadado:
+		function.expressAnger()
+	end
+end
+
+when hay_alguien_neutral = function.is_there_somebody_neutral():
+	if 1 < time_hay_alguien_neutral:
+		function.expressNeutral()
+	end
+end
+
+when hay_alguien_alegre = function.is_there_somebody_happy():
+	if 1 < time_hay_alguien_alegre:
+		function.expressJoy()
+	end
+end
+
+"""
     try:
-        print(__generatePy(__parserFromString(textprueba)))
+        print(__parserFromString(textprueba))
+        text = __generatePy(__parserFromString(textprueba))
+        text = cleanCode(_code=text)
+        print("----------------\n\n", text)
     except ParseException as pe:
         print(pe.line)
         print(' ' * (pe.col - 1) + '^')
         print(pe)
-
-
 
     argv = sys.argv[1:]
     if len(argv) is not 3:
@@ -574,13 +617,15 @@ if __name__ == "__main__":
         print(bcolors.FAIL + "Imputfile must be different to outputfile" + bcolors.ENDC)
         exit(-1)
     print(bcolors.OKGREEN + "Generating file " + argv[1] + bcolors.ENDC)
-    text = elapsedTimeFunction
-    text += __generatePy(__parserFromFile(argv[0]))
-    print(bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC)
     if bool(argv[2]):
-        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient_PhysicalRobot')
+        header = HEADER.replace('<Client>', 'LearnBotClient_PhysicalRobot')
     else:
-        header = HEADER.replace('<LearnBotClient>', 'LearnBotClient')
+        header = HEADER.replace('<Client>', 'LearnBotClient')
+    text = header
+    text += elapsedTimeFunction
+    text += __generatePy(__parserFromFile(argv[0]))
+    text = cleanCode(_code=text)
+    print(bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC)
+
     with open(argv[1], 'w') as f:
-        f.write(header)
         f.write(text)
