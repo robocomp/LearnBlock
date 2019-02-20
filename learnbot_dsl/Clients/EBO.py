@@ -4,6 +4,7 @@ from learnbot_dsl.Clients.Client import *
 from learnbot_dsl.Clients.Devices import *
 import os, Ice, numpy as np, PIL.Image as Image, io, cv2, paho.mqtt.client
 import learnbot_dsl.Clients.Devices as Devices
+from learnbot_dsl.functions import getFuntions
 
 ROBOCOMP = ''
 try:
@@ -80,6 +81,8 @@ def sendAngleHead(_angle):
     goal.position = _angle
     jointmotor_proxy.setPosition(goal)
 
+addFunctions(getFuntions())
+
 class Robot(Client):
 
     def __init__(self):
@@ -100,6 +103,7 @@ class Robot(Client):
         self.base = Devices.Base(_callFunction=move)
         self.display = Devices.Display(_setEmotion=sendEmotion, _setImage=None)
         self.addJointMotor("CAMERA", _JointMotor=Devices.JointMotor(_callDevice= sendAngleHead, _readDevice=None))
+        self.start()
 
 
 if __name__ == '__main__':

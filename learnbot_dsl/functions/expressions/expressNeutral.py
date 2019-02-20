@@ -1,3 +1,4 @@
+from learnbot_dsl.Clients.Devices import Emotions
 
 def expressNeutral(lbot):
-    lbot.expressNeutral()
+    lbot.express(Emotions.Neutral)

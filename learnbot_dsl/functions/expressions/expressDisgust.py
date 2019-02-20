@@ -1,4 +1,5 @@
+from learnbot_dsl.Clients.Devices import Emotions
 
 
 def expressDisgust(lbot):
-    lbot.expressDisgust()
+    lbot.express(Emotions.Disgust)

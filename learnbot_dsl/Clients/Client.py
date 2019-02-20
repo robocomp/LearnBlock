@@ -66,8 +66,14 @@ class Client(Thread):
 
     def __init__(self):
         Thread.__init__(self)
-        subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
-        subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+        try:
+            subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
+        except Exception as e:
+            print("Error aprilTag.py", e)
+        try:
+            subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+        except Exception as e:
+            print("Error aprilTag.py", e)
         # Remote object connection for EmotionRecognition
         self.__emotionrecognition_proxy = connectComponent("emotionrecognition:tcp -h localhost -p 10006", RoboCompEmotionRecognition.EmotionRecognitionPrx)
         # Remote object connection for AprilTag
@@ -211,5 +217,5 @@ class Client(Thread):
             self.active = False
 
 def addFunctions(_dictFuntions):
-    for k, v in iter(_dictFuntions.item()):
+    for k, v in iter(_dictFuntions.items()):
         exec("Client.%s = v" % (k))

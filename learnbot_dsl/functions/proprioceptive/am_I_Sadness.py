@@ -1,6 +1,6 @@
-from learnbot_dsl.LearnBotClient import *
+from learnbot_dsl.Clients.Devices import Emotions
 
 def am_I_Sadness(lbot):
-    if lbot.getCurrentEmotion() == Sadness:
+    if lbot.getCurrentEmotion() == Emotions.Sadness:
         return True
     return False

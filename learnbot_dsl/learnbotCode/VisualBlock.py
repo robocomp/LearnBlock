@@ -6,7 +6,7 @@ import learnbot_dsl.guis.EditVar as EditVar
 from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.Language import getLanguage
 from learnbot_dsl.learnbotCode.toQImage import *
-from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion, parserLearntBotCode, HEADER, parserLearntBotCodeFromCode
+from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion
 from learnbot_dsl.blocksConfig import pathImgBlocks
 
 class KeyPressEater(QtCore.QObject):

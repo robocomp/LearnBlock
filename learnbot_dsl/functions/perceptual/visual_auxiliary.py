@@ -12,14 +12,27 @@ LL_blue = (100, 50, 50)
 LU_blue = (130, 255, 255)
 
 
+# def detect_black_line(frame):
+#     rgb = cv2.split(frame)
+#     maxrgb = np.zeros((240, 320), np.uint8)
+#     for channel in rgb:
+#         maxrgb = cv2.max(maxrgb, channel)
+#
+#     err, binary = cv2.threshold(maxrgb, 50, 255, cv2.THRESH_BINARY_INV)
+#
+#     rois = [0, 0, 0]
+#     rois[0] = cv2.countNonZero(binary[15:240, 0:120])
+#     rois[1] = cv2.countNonZero(binary[15:240, 120:200])
+#     rois[2] = cv2.countNonZero(binary[15:240, 200:320])
+#     return rois
 def detect_black_line(frame):
-    rgb = cv2.split(frame)
-    maxrgb = np.zeros((240, 320), np.uint8)
-    for channel in rgb:
-        maxrgb = cv2.max(maxrgb, channel)
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 
-    err, binary = cv2.threshold(maxrgb, 50, 255, cv2.THRESH_BINARY_INV)
-
+    err, binary = cv2.threshold(gray, 30, 255, cv2.THRESH_BINARY_INV)
+    cv2.imwrite("binary.jpg", binary)
+    cv2.imwrite("gray.jpg", gray)
+    cv2.imwrite("frame.jpg", frame)
+    print("detect_black_line")
     rois = [0, 0, 0]
     rois[0] = cv2.countNonZero(binary[15:240, 0:120])
     rois[1] = cv2.countNonZero(binary[15:240, 120:200])

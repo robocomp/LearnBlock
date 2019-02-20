@@ -93,6 +93,22 @@
        </widget>
       </item>
       <item>
+       <widget class="QComboBox" name="clientscomboBox">
+        <item>
+         <property name="text">
+          <string>EBO</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="addClientPushButton">
+        <property name="text">
+         <string>Add Client</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -227,29 +243,19 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_19">
             <item>
+             <widget class="QPushButton" name="startPythonPushButton">
+              <property name="text">
+               <string>Start</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="stopPythonPushButton">
               <property name="enabled">
                <bool>true</bool>
               </property>
               <property name="text">
                <string>Stop</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="startPRPythonPushButton">
-              <property name="text">
-               <string>Start (physical robot)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="startSRPythonPushButton">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="text">
-               <string>Start (simulated robot)</string>
               </property>
              </widget>
             </item>
@@ -371,29 +377,19 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_17">
             <item>
+             <widget class="QPushButton" name="starttextPushButton">
+              <property name="text">
+               <string>Start</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="stoptextPushButton">
               <property name="enabled">
                <bool>true</bool>
               </property>
               <property name="text">
                <string>Stop</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="startPRTextPushButton">
-              <property name="text">
-               <string>Start (physical robot)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="startSRTextPushButton">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="text">
-               <string>Start (simulated robot)</string>
               </property>
              </widget>
             </item>
@@ -746,22 +742,9 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="startPushButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>27</height>
-                 </size>
-                </property>
+               <widget class="QPushButton" name="startpushButton">
                 <property name="text">
-                 <string>Start (simulated robot)</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="startPRPushButton">
-                <property name="text">
-                 <string>Start (physical robot)</string>
+                 <string>Start</string>
                 </property>
                </widget>
               </item>
@@ -833,6 +816,7 @@
     <addaction name="actionDownload_xmls"/>
     <addaction name="actionDownload_examples"/>
     <addaction name="actionDownload_libraries"/>
+    <addaction name="actionAdd_client_robot"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -850,8 +834,7 @@
      <string>Project</string>
     </property>
     <addaction name="actionBlocks_to_text"/>
-    <addaction name="actionStart_simulated_robot"/>
-    <addaction name="actionStart_physical_robot"/>
+    <addaction name="actionStart"/>
     <addaction name="actionStop"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -1084,6 +1067,16 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="actionAdd_client_robot">
+   <property name="text">
+    <string>Add client robot</string>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="text">
+    <string>Start</string>
    </property>
   </action>
  </widget>

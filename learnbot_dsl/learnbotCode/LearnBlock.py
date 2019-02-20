@@ -29,6 +29,8 @@ from learnbot_dsl.learnbotCode.guiTabLibrary import Library
 from learnbot_dsl.learnbotCode.Highlighter import *
 from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
+from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode, cleanCode
+
 install_aliases()
 from urllib.request import urlopen
 from urllib.error import URLError
@@ -109,30 +111,32 @@ type2Values = {"control": (CONTROL,HUE_CONTROL),
                  "others": (FUNTION, HUE_OTHERS)
                  }
 class LearnBlock(QtGui.QMainWindow):
+    listNameUserFunctions = []
+    listNameVars = []
+    listNameBlock = []
+    listNameWhens = []
+    listButtonsWhen = []
+    listVars = []
+    listUserFunctions = []
+    listButtons = []
+    listBlock = []
+    listLibrary = []
+    listLibraryWidget = []
+    listNameLibraryFunctions = []
+    __fileProject = None
+    hilo = None
+    rcisthread = None
+    help = None
+    index = -1
+    pre_sizes = [0,0]
+    dicTables = {}
 
     def __init__(self):
         global signal
         self.signal = MySignal()
         self.signal.signalUpdateStreamer[QtGui.QImage].connect(self.readCamera)
         signal = self.signal
-        self.listNameUserFunctions = []
-        self.listNameVars = []
-        self.listNameBlock = []
-        self.listNameWhens = []
-        self.listButtonsWhen = []
-        self.listVars = []
-        self.listUserFunctions = []
-        self.listButtons = []
-        self.listBlock = []
-        self.listLibrary =[]
-        self.listLibraryWidget = []
-        self.listNameLibraryFunctions = []
-        self.__fileProject = None
-        self.hilo = None
-        self.rcisthread = None
-        self.help = None
-        self.physicalRobot = False
-        self.index = -1
+
         # Create the application
         self.app = QtGui.QApplication(sys.argv)
 
@@ -158,16 +162,17 @@ class LearnBlock(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self)
         self.ui = Learnblock.Ui_MainWindow()
         self.ui.setupUi(self)
+
         self.showMaximized()
 
-        self.ui.startPushButton.clicked.connect(lambda : self.startFromBlocks(True))
-        self.ui.startPRPushButton.clicked.connect(lambda : self.startFromBlocks(False))
-        self.ui.startPRTextPushButton.clicked.connect(lambda: self.startFromText(False))
-        self.ui.startSRTextPushButton.clicked.connect(lambda: self.startFromText(True))
-        self.ui.startPRPythonPushButton.clicked.connect(lambda: self.startFromPython(False))
-        self.ui.startSRPythonPushButton.clicked.connect(lambda: self.startFromPython(True))
         self.ui.stopPushButton.clicked.connect(self.stopthread)
         self.ui.stoptextPushButton.clicked.connect(self.stopthread)
+        self.ui.stopPythonPushButton.clicked.connect(self.stopthread)
+
+        self.ui.startpushButton.clicked.connect(lambda : self.startProgram(2))
+        self.ui.starttextPushButton.clicked.connect(lambda : self.startProgram(1))
+        self.ui.startPythonPushButton.clicked.connect(lambda : self.startProgram(0))
+
         self.ui.addVarPushButton.clicked.connect(self.newVariable)
         self.ui.addNumberpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(1))
         self.ui.addStringpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(2))
@@ -182,11 +187,14 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.useEventscheckBox.stateChanged.connect(lambda: self.avtiveEvents(self.ui.useEventscheckBox.isChecked()))
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
         self.ui.SearchlineEdit.textChanged.connect(lambda: self.searchUpdate(self.ui.SearchlineEdit.text()))
+        self.ui.addClientPushButton.clicked.connect(self.addClient)
+        # Actions
         self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
         self.ui.actionSave.triggered.connect(self.saveInstance)
         self.ui.actionSave_As.triggered.connect(self.saveAs)
         self.ui.actionOpen_Project.triggered.connect(self.openProject)
         self.ui.actionStart_components.triggered.connect(self.startRobot)
+        self.ui.actionStart.triggered.connect(lambda : self.startProgram(self.ui.Tabwi.currentIndex()))
         self.ui.actionStart_Simulator.triggered.connect(self.startSimulatorRobot)
         self.ui.actionReboot.triggered.connect(self.rebootRobot)
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
@@ -202,16 +210,14 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.spinBoxLeterSize.valueChanged.connect(self.updateTextCodeStyle)
         self.ui.textCode.textChanged.connect(self.updateTextCodeStyle)
 
-        self.ui.spinBoxPythonSize.valueChanged.connect(self.updatePythonCodeStyle)
-        self.ui.pythonCode.textChanged.connect(self.updatePythonCodeStyle)
 
         self.ui.actionRedo.triggered.connect(self.redo)
         self.ui.actionUndo.triggered.connect(self.undo)
-        self.ui.actionStart_simulated_robot.triggered.connect(lambda : self.onClickedActionStart(True))
-        self.ui.actionStart_physical_robot.triggered.connect(lambda : self.onClickedActionStart(False))
         self.ui.actionStop.triggered.connect(self.stopthread)
         self.ui.actionBlocks_to_text.triggered.connect(self.blocksToText)
         self.ui.actionHelp.triggered.connect(self.openHelp)
+
+
 
         # Load image buttons
         self.ui.savepushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"save.png")))
@@ -224,10 +230,11 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.zoompushButton.setIconSize(QtCore.QSize(30, 30))
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30, 30))
 
-
+        self.ui.spinBoxPythonSize.valueChanged.connect(self.updatePythonCodeStyle)
+        self.ui.pythonCode.textChanged.connect(self.updatePythonCodeStyle)
 
         self.disablestartButtons(False)
-        # self.ui.functions.setFixedWidth(221)
+
         self.ui.splitter.splitterMoved.connect(self.resizeFunctionTab)
         self.view = MyView(self, self.ui.frame)
         self.view.setObjectName("view")
@@ -236,6 +243,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.view.setScene(self.scene)
         self.view.show()
         self.view.setZoom(False)
+
         self.ui.actionDuplicate.triggered.connect(self.scene.duplicateBlock)
         self.ui.actionEdit.triggered.connect(self.scene.editBlock)
         self.ui.actionDelete.triggered.connect(self.scene.deleteBlock)
@@ -254,6 +262,7 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.highlighter2 = Highlighter(self.ui.pythonCode.document())
         self.updatePythonCodeStyle()
+
         self.listBackUps = []
         for t in self.dicTables:
             table = self.dicTables[t]
@@ -271,15 +280,17 @@ class LearnBlock(QtGui.QMainWindow):
             tempfile.tempdir = os.path.join(os.getenv('HOME'), ".learnblock")
             os.mkdir(tempfile.gettempdir())
             os.mkdir(os.path.join(tempfile.gettempdir(), "block"))
+            os.mkdir(os.path.join(tempfile.gettempdir(), "clients"))
             os.mkdir(os.path.join(tempfile.gettempdir(), "functions"))
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                 f.write("")
+
         self.loadConfigFile()
         self.menuOpenRecent = QtGui.QMenu()
         self.ui.actionOpen_Recent.setMenu(self.menuOpenRecent)
 
         self.updateOpenRecent()
-
+        self.updateClients()
         self.load_blocks()
         self.avtiveEvents(False)
         self.pmlast = None
@@ -294,7 +305,7 @@ class LearnBlock(QtGui.QMainWindow):
 
         new_sizes = self.ui.splitter.sizes()
         size = sum(new_sizes)
-        self.ui.splitter.setSizes([233, size-233])
+        self.ui.splitter.setSizes([233, size - 233])
         self.pre_sizes = self.ui.splitter.sizes()
 
         # Execute the application
@@ -321,15 +332,6 @@ class LearnBlock(QtGui.QMainWindow):
             v.setColumnWidth(0, width-20)
             for item in [v.cellWidget(r, 0) for r in range(v.rowCount())]:
                 item.updateIconSize(width-20)
-        # for k, v in iter(self.dicTables.items()):
-        #     v.setColumnWidth(0, width-20)
-        #     for item in [v.cellWidget(r, 0) for r in range(v.rowCount())]:
-        #         item.updateIconSize(width-20)
-        # for library in self.listLibraryWidget:
-        #     v = library.ui.tableLibrary
-        #     v.setColumnWidth(0, width - 20)
-        #     for item in [v.cellWidget(r, 0) for r in range(v.rowCount())]:
-        #         item.updateIconSize(width - 20)
 
     def onClickedActionStart(self, simulated=False):
         currenTab = self.ui.Tabwi.currentIndex()
@@ -346,17 +348,14 @@ class LearnBlock(QtGui.QMainWindow):
         self.help.show()
 
     def disablestartButtons(self, disabled):
+        self.ui.startpushButton.setEnabled(not disabled)
+        self.ui.starttextPushButton.setEnabled(not disabled)
+        self.ui.startPythonPushButton.setEnabled(not disabled)
+        self.ui.actionStart.setEnabled(not disabled)
+
         self.ui.stopPushButton.setEnabled(disabled)
-        self.ui.startPushButton.setEnabled(not disabled)
-        self.ui.startPRPushButton.setEnabled(not disabled)
         self.ui.stoptextPushButton.setEnabled(disabled)
         self.ui.stopPythonPushButton.setEnabled(disabled)
-        self.ui.startSRTextPushButton.setEnabled(not disabled)
-        self.ui.startPRTextPushButton.setEnabled(not disabled)
-        self.ui.startSRPythonPushButton.setEnabled(not disabled)
-        self.ui.startPRPythonPushButton.setEnabled(not disabled)
-        self.ui.actionStart_simulated_robot.setEnabled(not disabled)
-        self.ui.actionStart_physical_robot.setEnabled(not disabled)
         self.ui.actionStop.setEnabled(disabled)
 
     def redo(self):
@@ -402,6 +401,19 @@ class LearnBlock(QtGui.QMainWindow):
                 self.index -= 1
                 self.savetmpProject()
             tempfile.tempdir = aux
+
+    def addClient(self):
+        file, ext = QtGui.QFileDialog.getOpenFileName(self, self.trUtf8('Add Client'), os.getenv('HOME'),
+                                          self.trUtf8('Python File(*.py)'))
+        if file != "":
+            shutil.copyfile(file, os.path.join(os.getenv('HOME'), ".learnblock", "clients", os.path.basename(file)))
+            self.updateClients()
+
+    def updateClients(self):
+        self.ui.clientscomboBox.clear()
+        for file in os.listdir(os.path.join(os.getenv('HOME'), ".learnblock", "clients")):
+            if os.path.isfile(os.path.join(os.getenv('HOME'), ".learnblock", "clients",file)) and os.path.splitext(file)[-1].lower() == ".py":
+                self.ui.clientscomboBox.addItem(os.path.splitext(file)[0])
 
     def updateOpenRecent(self):
         if self.__fileProject is not None:
@@ -681,11 +693,12 @@ class LearnBlock(QtGui.QMainWindow):
         if self.client is not None:
             self.client.disconnect()
 
-    def blocksToText(self, physicalRobot=False):
-        self.blocksToTextCode(physicalRobot)
-        self.textCodeToPython(physicalRobot)
+    def blocksToText(self):
+        name_Client = self.ui.clientscomboBox.currentText()
+        self.blocksToTextCode()
+        self.textCodeToPython(name_Client)
 
-    def blocksToTextCode(self, physicalRobot=False):
+    def blocksToTextCode(self):
         text = ""
         for library in self.listLibrary:
             text = 'import "' + library[0] + '"\n'
@@ -697,10 +710,68 @@ class LearnBlock(QtGui.QMainWindow):
         self.ui.textCode.clear()
         self.ui.textCode.setText(text + code)
 
-    def textCodeToPython(self, physicalRobot=False):
+    def checkConnectionToBot(self, showWarning=False):
+        r = os.system("ping -c 1 -W 1 " + configSSH["ip"])
+        if showWarning and r is not 0:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setWindowTitle(self.trUtf8("Warning"))
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setText(self.trUtf8("You should check connection the physical robot"))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.exec_()
+        return r is 0
+
+    def startRobot(self):
+        if self.checkConnectionToBot():
+            client = paramiko.SSHClient()
+            client.load_system_host_keys()
+            client.set_missing_host_key_policy(paramiko.WarningPolicy)
+            print(configSSH["ip"], configSSH["user"], configSSH["pass"])
+            client.connect(hostname=configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
+            _, stdout, _ = client.exec_command(configSSH["start"])
+
+    def startProgram(self, _from=2):
+        selected_Client = self.ui.clientscomboBox.currentIndex()
+        name_Client = self.ui.clientscomboBox.currentText()
+        if _from == 2:  # from blocks
+            self.blocksToTextCode()
+        if _from >= 1:  # from textCode
+            self.textCodeToPython(name_Client)
+
+        with open(os.path.join(tempfile.gettempdir(), "main_tmp.py"), "w+") as fh:
+            fh.writelines(self.ui.pythonCode.toPlainText())
+        if compile(os.path.join(tempfile.gettempdir(), "main_tmp.py")):
+            try:
+                if self.hilo is not None:
+                    self.hilo.terminate()
+                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                self.hilo = Process(target=self.execTmp)
+                self.hilo.start()
+                self.disablestartButtons(True)
+            except:
+                self.disablestartButtons(False)
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("You should check connection the " + name_Client + " robot"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox.exec_()
+
+        else:
+            msgBox = QtGui.QMessageBox()
+            msgBox.setWindowTitle(self.trUtf8("Warning"))
+            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox.setText(self.trUtf8("Your code has an error. Check it out again"))
+            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.exec_()
+
+    def textCodeToPython(self, name_Client):
         textCode = self.ui.textCode.toPlainText()
         try:
-            code = parserLearntBotCodeFromCode(textCode, physicalRobot)
+            code = parserLearntBotCodeFromCode(textCode, name_Client)
             if not code:
                     msgBox = QtGui.QMessageBox()
                     msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -731,28 +802,6 @@ class LearnBlock(QtGui.QMainWindow):
             msgBox.exec_()
         return False
 
-    def checkConnectionToBot(self, showWarning=False):
-        r = os.system("ping -c 1 -W 1 " + configSSH["ip"])
-        if showWarning and r is not 0:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("You should check connection the physical robot"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-            msgBox.exec_()
-        return r is 0
-
-    def startRobot(self):
-        if self.checkConnectionToBot():
-            client = paramiko.SSHClient()
-            client.load_system_host_keys()
-            client.set_missing_host_key_policy(paramiko.WarningPolicy)
-            print(configSSH["ip"], configSSH["user"], configSSH["pass"])
-            client.connect(hostname=configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
-            _, stdout, _ = client.exec_command(configSSH["start"])
-
-
     def startSimulatorRobot(self):
         self.scene.stopAllblocks()
         path = os.environ.get('HOME')
@@ -762,13 +811,10 @@ class LearnBlock(QtGui.QMainWindow):
                                                      self.trUtf8('Rcis file (*.xml)'))
         self.scene.startAllblocks()
         if fileName[0] != "":
-            # print(configSSH["start_simulator"] + " " + fileName[0])
-            # os.popen(configSSH["start_simulator"] + " " + fileName[0])
             if self.rcisthread is not None:
                 self.rcisthread.terminate()
             self.rcisthread = Process(target=lambda :os.popen("cd "+ os.path.dirname(fileName[0]) + " && " + configSSH["start_simulator"] + " " + fileName[0]))
             self.rcisthread.start()
-            # subprocess.Popen(configSSH["start_simulator"] + " " + fileName[0], shell=True, stdout=subprocess.PIPE)
 
     def shutdownRobot(self):
         if self.checkConnectionToBot():
@@ -918,13 +964,6 @@ class LearnBlock(QtGui.QMainWindow):
     def stopExecTmp(self):
         robot = ""
         try:
-            if self.physicalRobot:
-                sys.argv = [' ', os.path.join(path,"etc", "configPhysical")]
-                robot = "physical"
-            else:
-                sys.argv = [' ', os.path.join(path,"etc", "configSimulate")]
-                robot = "simulate"
-
             sys.path.insert(0, tempfile.gettempdir())
             try:
                 import stop_main_tmp
@@ -1166,154 +1205,18 @@ class LearnBlock(QtGui.QMainWindow):
         self.listNameWhens.append((name, configImgPath))
         self.ui.deleteWhenpushButton.setEnabled(True)
 
-    def startFromBlocks(self, simulated):
-        if simulated or self.checkConnectionToBot(showWarning=True):
-            self.physicalRobot = not simulated
-            self.generateTmpFile(0)
-
-    def startFromText(self, simulated):
-        if simulated or self.checkConnectionToBot(showWarning=True):
-            self.physicalRobot = not simulated
-            self.generateTmpFile(1)
-
-    def startFromPython(self, simulated):
-        if simulated or self.checkConnectionToBot(showWarning=True):
-            self.physicalRobot = not simulated
-            self.generateTmpFile(2)
-
-    def generateTmpFile(self, from_=0):
-        robot = ""
-        if self.physicalRobot:
-            sys.argv = [' ', os.path.join(path,"etc","configPhysical")]
-            robot = "physical"
-        else:
-            sys.argv = [' ', os.path.join(path,"etc","configSimulate")]
-            robot = "simulate"
-
-        if from_ == 0: # from Blocks
-            self.blocksToTextCode(self.physicalRobot)
-        if from_ <= 1: # from TexCode
-            with open(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), "w+") as fh:
-                fh.writelines(self.ui.textCode.toPlainText())
-            self.textCodeToPython(self.physicalRobot)
-        if from_ <= 2: # from PythonCode
-            with open(os.path.join(tempfile.gettempdir(), "main_tmp.py"), "w+") as fh:
-                fh.writelines(self.ui.pythonCode.toPlainText())
-            if compile(os.path.join(tempfile.gettempdir(), "main_tmp.py")):
-                try:
-                    if self.hilo is not None:
-                        self.hilo.terminate()
-                    self.hilo = Process(target=self.execTmp)
-                    self.hilo.start()
-                    self.disablestartButtons(True)
-                except:
-                    self.disablestartButtons(False)
-                    msgBox = QtGui.QMessageBox()
-                    msgBox.setWindowTitle(self.trUtf8("Warning"))
-                    msgBox.setIcon(QtGui.QMessageBox.Warning)
-                    msgBox.setText(self.trUtf8("You should check connection the " + robot + " robot"))
-                    msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                    msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                    msgBox.exec_()
-
-            else:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Your code has an error. Check it out again"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                msgBox.exec_()
-
-    # def generateTmpFile(self, fromBlocks = True):
-    #     text = ""
-    #     for library in self.listLibrary:
-    #         text = 'import "' + library[0] +'"\n'
-    #     if fromBlocks:
-    #         blocks = self.scene.getListInstructions()
-    #         if len(self.listNameVars) > 0:
-    #             for name in self.listNameVars:
-    #                 text += name + " = None\n"
-    #     robot = ""
-    #     if self.physicalRobot:
-    #         sys.argv = [' ', os.path.join(path,"etc","configPhysical")]
-    #         robot = "physical"
-    #     else:
-    #         sys.argv = [' ', os.path.join(path,"etc","configSimulate")]
-    #         robot = "simulate"
-    #
-    #
-    #     if not fromBlocks or blocks is not None:
-    #         if fromBlocks:
-    #             code = self.parserBlocks(blocks, self.toLBotPy)
-    #             self.ui.textCode.clear()
-    #             self.ui.textCode.setText(text + code)
-    #             self.blocksToTextCode()
-    #         else:
-    #             code = self.ui.textCode.toPlainText()
-    #
-    #         with open(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), "w+") as fh:
-    #             fh.writelines(text + code)
-    #
-    #         try:
-    #             if not parserLearntBotCode(os.path.join(tempfile.gettempdir(), "main_tmp.lb"), os.path.join(tempfile.gettempdir(), "main_tmp.py"), self.physicalRobot):
-    #                 msgBox = QtGui.QMessageBox()
-    #                 msgBox.setWindowTitle(self.trUtf8("Warning"))
-    #                 msgBox.setIcon(QtGui.QMessageBox.Warning)
-    #                 msgBox.setText(self.trUtf8("Your code is empty or is not correct"))
-    #                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-    #                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-    #                 msgBox.exec_()
-    #         except Exception as e:
-    #             print(e)
-    #             msgBox = QtGui.QMessageBox()
-    #             msgBox.setWindowTitle(self.trUtf8("Warning"))
-    #             msgBox.setIcon(QtGui.QMessageBox.Warning)
-    #             msgBox.setText(self.trUtf8("line: {}".format(e.line) + "\n    " + " " * e.col + "^"))
-    #             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-    #             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-    #             msgBox.exec_()
-    #             return
-    #         if compile(os.path.join(tempfile.gettempdir(), "main_tmp.py")):
-    #             try:
-    #                 if self.hilo is not None:
-    #                     self.hilo.terminate()
-    #                 self.hilo = Process(target=self.execTmp)
-    #                 self.hilo.start()
-    #                 self.disablestartButtons(True)
-    #             except:
-    #                 self.disablestartButtons(False)
-    #                 msgBox = QtGui.QMessageBox()
-    #                 msgBox.setWindowTitle(self.trUtf8("Warning"))
-    #                 msgBox.setIcon(QtGui.QMessageBox.Warning)
-    #                 msgBox.setText(self.trUtf8("You should check connection the " + robot + " robot"))
-    #                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-    #                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-    #                 msgBox.exec_()
-    #
-    #         else:
-    #             msgBox = QtGui.QMessageBox()
-    #             msgBox.setWindowTitle(self.trUtf8("Warning"))
-    #             msgBox.setIcon(QtGui.QMessageBox.Warning)
-    #             msgBox.setText(self.trUtf8("Your code has an error. Check it out again"))
-    #             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-    #             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-    #             msgBox.exec_()
-
     def generateStopTmpFile(self):
-        if self.physicalRobot:
-            text = HEADER.replace('<Client>', 'LearnBotClient_PhysicalRobot')
-            sys.argv = [' ', 'configPhysical']
-        else:
-            text = HEADER.replace('<Client>', 'Cozmo')
-            sys.argv = [' ', 'config']
-        text += '\nfunctions.get("stop_bot")(lbot)'
+        name_client = self.ui.clientscomboBox.currentText()
+        text = HEADER.replace('<Client>', name_client)
+        text += '\nrobot.stop_bot()'
+        text = cleanCode(text)
         with open(os.path.join(tempfile.gettempdir(), "stop_main_tmp.py"), "w+") as fh:
             fh.writelines(text)
 
     def stopthread(self):
         if self.hilo is not None:
             try:
+                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 self.hilo.terminate()
                 self.generateStopTmpFile()
                 self.hilo = Process(target=self.stopExecTmp)

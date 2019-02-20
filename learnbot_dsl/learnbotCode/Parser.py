@@ -8,14 +8,12 @@ from pyparsing import *
 HEADER = """
 #EXECUTION: python code_example.py config
 from __future__ import print_function, absolute_import
-from learnbot_dsl.functions import getFuntions
-functions = getFuntions()
-from learnbot_dsl.Clients.<Client> import Robot
-import sys, time, os
-global lbot
+import sys, os, time
+sys.path.insert(0, os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
+from <Client> import Robot
 
 try:
-<TABHERE>lbot = Robot()
+<TABHERE>robot = Robot()
 except Exception as e:
 <TABHERE>print("hay un Error")
 <TABHERE>print(e)
@@ -318,10 +316,10 @@ def __processDEF(line, list_var, text="", index=0):
 def __processFUNCTION(line, text="", index=0):
     if text is not "":
         text += "<TABHERE>" * index
-    text += "functions.get(\"" + line.nameFUNCTION[0] + "\")(lbot"
-    for x in line.args:
-        # text += ", " + x[0]
-        text += ", " + __process(x)
+    text += "robot." + line.nameFUNCTION[0] + "("
+    text += ",".join([__process(x) for x in line.args])
+    # for x in line.args:
+    #     text += ", " + __process(x)
     text += ")"
     return text
 
@@ -506,7 +504,7 @@ def parserLearntBotCodeOnlyUserFuntion(code):
         print(e)
     return text
 
-def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
+def parserLearntBotCode(inputFile, outputFile, client_name):
     try:
         tree = __parserFromFile(inputFile)
     except Exception as e:
@@ -516,10 +514,7 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     text += __generatePy(tree)
     text = cleanCode(_code=text)
 
-    if physicalRobot:
-        header = HEADER.replace('<Client>', 'LearnBotClient_PhysicalRobot')
-    else:
-        header = HEADER.replace('<Client>', 'LearnBotClient')
+    header = HEADER.replace('<Client>', client_name)
     header = cleanCode(_code=header)
     if text is not "":
         with open(outputFile, 'w') as f:
@@ -529,7 +524,7 @@ def parserLearntBotCode(inputFile, outputFile, physicalRobot=False):
     else:
         return False
 
-def parserLearntBotCodeFromCode(code, physicalRobot=False):
+def parserLearntBotCodeFromCode(code, name_client):
     try:
         tree = __parserFromString(code)
     except Exception as e:
@@ -538,10 +533,7 @@ def parserLearntBotCodeFromCode(code, physicalRobot=False):
     text = elapsedTimeFunction
     text += __generatePy(tree)
     text = cleanCode(_code=text)
-    if physicalRobot:
-        header = HEADER.replace('<Client>', 'LearnBotClient_PhysicalRobot')
-    else:
-        header = HEADER.replace('<Client>', 'Cozmo')
+    header = HEADER.replace('<Client>', name_client)
     header = cleanCode(_code=header)
     if text is not "":
         return header + text

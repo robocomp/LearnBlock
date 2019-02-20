@@ -4,7 +4,6 @@ import time
 
 
 def slow_down(lbot, duration=0.15, decAdv=-2, decRot=-0.02):
-	print("slow_down")
 	adv = lbot.getAdv() + decAdv
 	if adv<0:
 		adv=0

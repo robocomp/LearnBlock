@@ -1,4 +1,4 @@
 
 
 def look_floor(lbot):
-    lbot.setJointAngle(-0.6000000238)
+    lbot.setJointAngle("CAMERA",-0.6000000238)
