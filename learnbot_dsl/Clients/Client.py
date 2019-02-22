@@ -106,6 +106,7 @@ class Client(Thread):
             frame.depth = img.shape[2]
             frame.image = np.fromstring(img, np.uint8)
             aprils = self.__apriltagProxy.processimage(frame)
+            print(aprils)
             self.__apriltag_current_exist = True
             self.__listAprilIDs = [a.id for a in aprils]
 
@@ -159,6 +160,7 @@ class Client(Thread):
 
     def express(self, _key):
         if isinstance(self.display, Display):
+            print("express", _key)
             self.__currentEmotion = _key
             self.display.setEmotion(_key)
 

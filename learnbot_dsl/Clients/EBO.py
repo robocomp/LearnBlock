@@ -35,7 +35,7 @@ def on_message(client, userdata, message):
     image_stream.write(data)
     image = Image.open(image_stream)
     open_cv_image = np.array(image)
-    open_cv_image = cv2.flip(open_cv_image, 0)
+    # open_cv_image = cv2.flip(open_cv_image, 0)
 
 laser_proxy = connectComponent("laser:tcp -h 192.168.16.1 -p 10104", RoboCompLaser.LaserPrx)
 differentialrobot_proxy = connectComponent("differentialrobot:tcp -h 192.168.16.1 -p 10004", RoboCompDifferentialRobot.DifferentialRobotPrx)

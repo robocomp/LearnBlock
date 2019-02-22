@@ -47,7 +47,7 @@ class SpecificWorker(GenericWorker):
 			arr = np.fromstring(frame.image, np.uint8)
 			frame = np.reshape(arr, (frame.width, frame.height, frame.depth))
 			frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-			frame = cv2.flip(frame, 0)
+			# frame = cv2.flip(frame, 0)
 			frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 			aprils = self.detector.detect(frame)
 			for a in aprils:

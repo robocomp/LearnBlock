@@ -34,10 +34,10 @@ def getFuntions():
 			module_name = name
 			try:
 				func = getattr(import_module(module_name), name)
-				args = inspect.getargspec(func)
+				# args = inspect.getargspec(func)
 				functions[name] = func
-				params[name] = args.args[1:]
-				paramsDefaults[name] = args.defaults
+				# params[name] = args.args[1:]
+				# paramsDefaults[name] = args.defaults
 			except Exception as e:
 				print("error", e, module_name, name)
 	return functions
