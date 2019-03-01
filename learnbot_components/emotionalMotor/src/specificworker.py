@@ -181,7 +181,7 @@ class SpecificWorker(GenericWorker):
 		try:
 			self.display_proxy.setImage(im)
 		except Exception as e:
-			print(e)
+			traceback.print_exc()
 
 	#
 	# expressFear

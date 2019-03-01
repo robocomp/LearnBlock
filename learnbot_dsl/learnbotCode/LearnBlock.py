@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
-import sys, os, pickle, tempfile, shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko
+import sys, os, pickle, tempfile, shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko, traceback
 from PIL import Image
 from pyunpack import Archive
 from pyparsing import ParseException
@@ -30,7 +30,7 @@ from learnbot_dsl.learnbotCode.Highlighter import *
 from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
 from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode, cleanCode
-
+import keyword
 install_aliases()
 from urllib.request import urlopen
 from urllib.error import URLError
@@ -622,6 +622,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.pmlast = self.cameraScene.addPixmap(pm)
             self.cameraScene.update()
         except Exception as e:
+            traceback.print_exc()
             print(e)
 
     def addLibrary(self):
@@ -744,12 +745,17 @@ class LearnBlock(QtGui.QMainWindow):
         if compile(os.path.join(tempfile.gettempdir(), "main_tmp.py")):
             try:
                 if self.hilo is not None:
-                    self.hilo.terminate()
+                    try:
+                        self.hilo.terminate()
+                    except Exception as e:
+                        print(e.with_traceback())
                 subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
-                self.hilo = Process(target=self.execTmp)
-                self.hilo.start()
+                self.hilo = subprocess.Popen(["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "main_tmp.py")], stdout=subprocess.PIPE)
+                # self.hilo = Process(target=self.execTmp)
+                # self.hilo.start()
                 self.disablestartButtons(True)
-            except:
+            except Exception as e:
+                print(e.with_traceback())
                 self.disablestartButtons(False)
                 msgBox = QtGui.QMessageBox()
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -784,7 +790,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.ui.pythonCode.setText(code)
             return code
         except ParseException as e:
-            print(e)
+            traceback.print_exc()
             msgBox = QtGui.QMessageBox()
             msgBox.setWindowTitle(self.trUtf8("Warning"))
             msgBox.setIcon(QtGui.QMessageBox.Warning)
@@ -957,7 +963,7 @@ class LearnBlock(QtGui.QMainWindow):
         try:
             import main_tmp
         except Exception as e:
-            print(e)
+            traceback.print_exc()
         finally:
             self.disablestartButtons(False)
 
@@ -968,11 +974,11 @@ class LearnBlock(QtGui.QMainWindow):
             try:
                 import stop_main_tmp
             except Exception as e:
-                print(e)
+                traceback.print_exc()
             finally:
                 self.disablestartButtons(False)
         except Exception as e:
-            print(e)
+            traceback.print_exc()
             raise e
 
     def saveInstance(self):
@@ -1042,7 +1048,7 @@ class LearnBlock(QtGui.QMainWindow):
                                 self.listLibraryWidget.append(l)
                                 self.listLibrary.append((l.pathLibrary, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
                     except Exception as e:
-                        print(e)
+                        traceback.print_exc()
 
                     dictBlock = d[0]
                     for id in dictBlock:
@@ -1128,6 +1134,15 @@ class LearnBlock(QtGui.QMainWindow):
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
+            if name in keyword.kwlist:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("This name is reserved"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
             if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
                 msgBox = QtGui.QMessageBox()
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
@@ -1150,7 +1165,6 @@ class LearnBlock(QtGui.QMainWindow):
             self.addWhenGui.close()
         else:
             self.addWhenGui.close()
-
     def addButtonsWhens(self, configImgPath, name):
         if os.path.basename(configImgPath) == 'block8':
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, "block1"))
@@ -1180,7 +1194,7 @@ class LearnBlock(QtGui.QMainWindow):
         for img in ["block3","block4"]:
             table.insertRow(table.rowCount())
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
-            button = Block_Button((self, name, {'ES': name, 'EN': name}, HUE_WHEN,
+            button = Block_Button((self, "state_" + name, {'ES': "Estado_" + name, 'EN': "State_" +name}, HUE_WHEN,
                                    self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections, [],
                                    blockType,
                                    table, table.rowCount() - 1, VARIABLE,
@@ -1189,7 +1203,7 @@ class LearnBlock(QtGui.QMainWindow):
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
-        for x in ["block2", "block3", "block4"]:
+        for x in ["block3", "block4"]:
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, x))
 
             table.insertRow(table.rowCount())
@@ -1217,21 +1231,14 @@ class LearnBlock(QtGui.QMainWindow):
         if self.hilo is not None:
             try:
                 subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
-                self.hilo.terminate()
-                self.generateStopTmpFile()
-                self.hilo = Process(target=self.stopExecTmp)
                 try:
-                    self.hilo.start()
-                except:
-                    msgBox = QtGui.QMessageBox()
-                    msgBox.setWindowTitle(self.trUtf8("Warning"))
-                    msgBox.setIcon(QtGui.QMessageBox.Warning)
-                    msgBox.setText(self.trUtf8("You should check connection to the robot"))
-                    msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                    msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
-                    msgBox.exec_()
+                    self.hilo.terminate()
+                except Exception as e:
+                    print(e.with_traceback())
+                self.generateStopTmpFile()
+                self.hilo = subprocess.Popen(["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "stop_main_tmp.py")], stdout=subprocess.PIPE)
             except Exception as e:
-                print(e)
+                print(e.with_traceback())
                 pass
             finally:
                 self.disablestartButtons(False)
@@ -1327,12 +1334,20 @@ class LearnBlock(QtGui.QMainWindow):
     def retaddVarGui(self, ret):
         if ret is 1:
             name = self.addVarGui.nameLineEdit.text().replace(" ", "_")
-            # name = name.
             if name == 'start':
                 msgBox = QtGui.QMessageBox()
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
                 msgBox.setIcon(QtGui.QMessageBox.Warning)
                 msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name in keyword.kwlist:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("This name is reserved"))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
@@ -1364,7 +1379,7 @@ class LearnBlock(QtGui.QMainWindow):
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            self.addVariable(self.addVarGui.nameLineEdit.text().replace(" ", "_"))
+            self.addVariable(name)
 
         self.addVarDialog.close()
 
@@ -1476,6 +1491,15 @@ class LearnBlock(QtGui.QMainWindow):
                 msgBox.setWindowTitle(self.trUtf8("Warning"))
                 msgBox.setIcon(QtGui.QMessageBox.Warning)
                 msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
+                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                ret = msgBox.exec_()
+                return
+            if name in keyword.kwlist:
+                msgBox = QtGui.QMessageBox()
+                msgBox.setWindowTitle(self.trUtf8("Warning"))
+                msgBox.setIcon(QtGui.QMessageBox.Warning)
+                msgBox.setText(self.trUtf8("This name is reserved"))
                 msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
                 ret = msgBox.exec_()

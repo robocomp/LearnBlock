@@ -6,7 +6,7 @@ from PySide import QtGui
 
 from learnbot_dsl.learnbotCode.AbstractBlock import *
 from learnbot_dsl.learnbotCode.Language import getLanguage
-import tempfile, uuid, sys
+import tempfile, uuid, sys, traceback
 
 def str2hex(text):
     if sys.version_info[0]>=3:
@@ -130,7 +130,7 @@ class Block_Button(QtGui.QPushButton):
         try:
             os.remove(self.tmpFile)
         except Exception as e:
-            print(e)
+            traceback.print_exc()
 
     def updateImg(self):
         if len(self.__dicTrans) is not 0 and self.showtext is not self.__dicTrans[getLanguage()]:

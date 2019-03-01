@@ -121,7 +121,7 @@ if __name__ == '__main__':
 			#traceback.print_exc()
 			status = 1
 	except Ice.Exception as e:
-		print(e)
+		traceback.print_exc()
 		print('Cannot get DisplayProxy property.')
 		status = 1
 

@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-import os, sys
+import os, sys, traceback
 from pyparsing import *
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -33,7 +33,7 @@ def __parserFromString(text):
         PARSERCONFIG.ignore(pythonStyleComment)
         return PARSERCONFIG.parseString(text)
     except Exception as e:
-        print(e)
+        traceback.print_exc()
         print("line: {}".format(e.line))
         print("    " + " " * e.col + "^")
         raise e

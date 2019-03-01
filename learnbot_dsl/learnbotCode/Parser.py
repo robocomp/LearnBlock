@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 
-import sys
+import sys, traceback
 from pyparsing import *
 
 HEADER = """
 #EXECUTION: python code_example.py config
 from __future__ import print_function, absolute_import
-import sys, os, time
+import sys, os, time, traceback
 sys.path.insert(0, os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
 from <Client> import Robot
 
@@ -16,7 +16,7 @@ try:
 <TABHERE>robot = Robot()
 except Exception as e:
 <TABHERE>print("hay un Error")
-<TABHERE>print(e)
+<TABHERE>traceback.print_exc()
 <TABHERE>raise(e)
 
 """
@@ -137,7 +137,7 @@ ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQU
     'ASSIGSTRING')
 
 NONEVAR = NONE.setResultsName("NONEVAR")
-VAR = Group(SECTAB + identifier.setResultsName("nameVAR") + (eq | PLUE | MINE | DIVE | MULE) + ( NONEVAR | OPERATION )).setResultsName("VAR")
+VAR = Group(SECTAB + identifier.setResultsName("nameVAR") + (eq | PLUE | MINE | DIVE | MULE) + ( FIELDS | NONEVAR | OPERATION )).setResultsName("VAR")
 
 """-----------------LINEA---------------------------"""
 LINE = Forward()
@@ -193,8 +193,9 @@ def __listVariables(tree):
     for k in tree:
         if isinstance(k, ParseResults):
             l += __listVariables(k)
-            if len(k) > 0 and isinstance(k[0], str) and k.getName() in ["IDENTIFIER", "nameWHEN", "nameVAR"]:
+            if len(k) > 0 and not isinstance(k[0], ParseResults) and k.getName() in ["IDENTIFIER", "nameVAR"]:
                 l.append(k[0])
+    l = [x for x in l if not x.startswith("time_")]
     return l
 
 def __parserFromFile(file):
@@ -385,29 +386,36 @@ def __processWHEN(line, list_var, text="", index=0):
     global ini
     name = str(line.nameWHEN[0])
     whenText = """
+<INIVARIABLES>
 def when_<NAME>():
 <TABHERE>global <GLOBALSVARIABLES>
 """
     if name != "start":
         whenText += """<TABHERE>if time_<NAME> is 0:
 <TABHERE><TABHERE><NAME>_start = time.time()
-<TABHERE>if <NAME>:"""
+<TABHERE>if state_<NAME>:"""
         index += 2
     else:
         index += 1
-    text += whenText.replace("<NAME>", name).replace("<GLOBALSVARIABLES>", ", ".join(__listVariables(line)))
+    variables = list(set([name + "_start", "time_" + name] + __listVariables(line)))
+    text += whenText.replace("<GLOBALSVARIABLES>", ", ".join(variables))
     for cline in line.content:
         text = __process(cline, [], text, index) + "\n"
 
     if name != "start":
-        text = """<NAME>_start = time.time()\n""".replace("<NAME>", name) + text \
-               + """<TABHERE><TABHERE>time_<NAME> = time.time() - <NAME>_start
-<TABHERE>else:
-<TABHERE><TABHERE>time_<NAME> = 0
-""".replace("<NAME>", name)
+        text = text.replace("<INIVARIABLES>", "<NAME>_start = time.time()\nstate_<NAME> = False\n")
+        text += "<TABHERE><TABHERE>time_<NAME> = time.time() - <NAME>_start\n" \
+                "<TABHERE>else:\n" \
+                "<TABHERE><TABHERE>time_<NAME> = 0\n"
+            #    "<NAME>_start = time.time()\n" \
+            #    "state_<NAME> = False\n" +\
+            #    text +\
+    else:
+        text = text.replace("<INIVARIABLES>", "")
+    text = text.replace("<NAME>", name)
     index -= 1
     if line.condition is not "":
-        ini.append(name + " = " + __process(line.condition[0]) + "\n")
+        ini.append("state_" + name + " = " + __process(line.condition[0]) + "\n")
     # else:
     #     text = '\n' + name + " =  None\n" + text
     return text
@@ -501,14 +509,14 @@ def parserLearntBotCodeOnlyUserFuntion(code):
         text = __generatePy(tree)
         text = cleanCode(_code=text)
     except Exception as e:
-        print(e)
+        traceback.print_exc()
     return text
 
 def parserLearntBotCode(inputFile, outputFile, client_name):
     try:
         tree = __parserFromFile(inputFile)
     except Exception as e:
-        print(e)
+        traceback.print_exc()
         raise e
     text = elapsedTimeFunction
     text += __generatePy(tree)
@@ -528,7 +536,7 @@ def parserLearntBotCodeFromCode(code, name_client):
     try:
         tree = __parserFromString(code)
     except Exception as e:
-        print(e)
+        traceback.print_exc()
         raise e
     text = elapsedTimeFunction
     text += __generatePy(tree)
@@ -541,11 +549,11 @@ def parserLearntBotCodeFromCode(code, name_client):
         return False
 
 def cleanCode(_code):
-    newcode = _code.replace(" :", ":").replace("  ", " ").replace("\n\n\n", "\n\n").replace("<TABHERE>","\t")
+    newcode = _code.replace(" :", ":").replace("  ", " ").replace("\n\n\n", "\n\n")
     while _code != newcode:
         _code = newcode
         newcode = _code.replace(" :", ":").replace("  ", " ").replace("\n\n\n", "\n\n")
-    return _code
+    return _code.replace("<TABHERE>","    ")
 
 
 if __name__ == "__main__":

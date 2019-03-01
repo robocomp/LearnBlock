@@ -1,5 +1,5 @@
-def left_obstacle(lbot, threshold= 200, verbose=False):
-	sonarsValue = lbot.getSonars()[:2]
+def left_obstacle(lbot, threshold = 200, verbose=False):
+	sonarsValue = lbot.getSonars()["left"]
 	if min(sonarsValue) < threshold:
 		if verbose:
 			print('Obstacle left of Learnbot')

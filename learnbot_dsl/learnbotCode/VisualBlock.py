@@ -104,8 +104,8 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         r, g, b = cv2.split(im)
         self.cvImg = cv2.merge((r, g, b, a))
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
-        if self.parentBlock.type is VARIABLE:
-            self.showtext = self.parentBlock.name + " "+ self.showtext
+        # if self.parentBlock.type is VARIABLE:
+        #     self.showtext = self.parentBlock.name + " "+ self.showtext
         img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
                             self.parentBlock.nameControl)
         qImage = toQImage(img)

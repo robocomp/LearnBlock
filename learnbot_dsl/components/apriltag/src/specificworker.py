@@ -61,7 +61,7 @@ class SpecificWorker(GenericWorker):
 				# rz =
 				ret.append(Tag)
 		except Exception as e:
-			print(e)
+			traceback.print_exc()
 			print("Error Tag")
 		return ret
 

@@ -4,10 +4,15 @@ from __future__ import print_function, absolute_import
 from threading import Thread, Lock, Event
 import numpy as np, copy, sys, time, Ice, os, subprocess
 from learnbot_dsl.Clients.Devices import *
+from learnbot_dsl import PATHINTERFACES
+from datetime import timedelta
+from learnbot_dsl.functions import getFuntions
 
 __ICEs = ["EmotionRecognition.ice", "Apriltag.ice" ]
 __icePaths = []
-__icePaths.append("/home/ivan/robocomp/components/learnbot/learnbot_dsl/interfaces")
+path = os.path.dirname(os.path.realpath(__file__))
+__icePaths.append(os.path.join(os.path.dirname(path), "interfaces"))
+__icePaths.append(PATHINTERFACES)
 for ice in __ICEs:
     for p in __icePaths:
         if os.path.isfile(os.path.join(p, ice)):
@@ -19,8 +24,7 @@ import RoboCompEmotionRecognition
 import RoboCompApriltag
 
 
-
-def connectComponent(stringProxy, _class):
+def connectComponent(stringProxy, _class, tries=4):
     ic = Ice.initialize(sys.argv)
     i = 0
     while (True):
@@ -31,7 +35,7 @@ def connectComponent(stringProxy, _class):
             print("Connection Successful: ", stringProxy)
             break
         except Ice.Exception as e:
-            if i is 4:
+            if i is tries:
                 print("Cannot connect to the proxy: ", stringProxy)
                 return None
             else:
@@ -39,33 +43,31 @@ def connectComponent(stringProxy, _class):
     return proxy
 
 class Client(Thread):
-    __cameraMoveAvailable = False
-    __angleCamera = 0                               # The values must be in rad
 
-    # Variables of Emotion Recognition
-    __emotion_current_exist = False
-    __currents_emotions = []
-    __currentEmotion = Emotions.NoneEmotion
+    requiementFunctions = []
 
-    # Variables of AprilTag
-    __apriltag_current_exist = False
-    __listAprilIDs = []
+    def __new__(cls, *args, **kwargs):
+        if len(cls.requiementFunctions) is not 0:
+            functions = getFuntions()
+            map(lambda x: setattr(Client, x, functions[x]),cls.requiementFunctions)
+        instance = super(Client, cls).__new__(cls, *args, **kwargs)
+        return instance
 
-    __stop_event = Event()
-    active = False
-
-    acelerometer = None
-    gyroscope = None
-    camera = None
-    base = None
-    distanceSensors = None
-    display = None
-    __JointMotors = {}
-    __Leds = {}
-    speaker = None
-
-    def __init__(self):
+    def __init__(self,_miliseconds=100):
         Thread.__init__(self)
+        self.__stop_event = Event()
+
+        # Variables of Emotion Recognition
+        self.__emotion_current_exist = False
+        self.__currents_emotions = []
+        self.__currentEmotion = Emotions.NoneEmotion
+        self.__JointMotors = {}
+        self.__Leds = {}
+        # Variables of AprilTag
+        self.__apriltag_current_exist = False
+        self.__listAprilIDs = []
+
+        self.__period = timedelta(milliseconds=_miliseconds)
         try:
             subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
         except Exception as e:
@@ -79,9 +81,10 @@ class Client(Thread):
         # Remote object connection for AprilTag
         self.__apriltagProxy = connectComponent("apriltag:tcp -h localhost -p 25000", RoboCompApriltag.ApriltagPrx)
         # self.start()
-        self.active = True
+
 
     def addJointMotor(self, _key, _JointMotor):
+
         if _key in self.__JointMotors:
             raise Exception("The key " + _key + "already exist")
         elif not isinstance(_JointMotor, JointMotor):
@@ -98,7 +101,7 @@ class Client(Thread):
             self.__Leds[_key] = _Led
 
     def __detectAprilTags(self):
-        if not self.__apriltag_current_exist:
+        if not self.__apriltag_current_exist and hasattr(self, "camera"):
             img = self.camera.getImage()
             frame = RoboCompApriltag.TImage()
             frame.width = img.shape[0]
@@ -106,105 +109,120 @@ class Client(Thread):
             frame.depth = img.shape[2]
             frame.image = np.fromstring(img, np.uint8)
             aprils = self.__apriltagProxy.processimage(frame)
-            print(aprils)
             self.__apriltag_current_exist = True
             self.__listAprilIDs = [a.id for a in aprils]
 
+    def __readDevices(self):
+        if hasattr(self, "acelerometer"):
+            self.acelerometer.read()
+        if hasattr(self, "gyroscope"):
+            self.gyroscope.read()
+        if hasattr(self, "camera"):
+            self.camera.read()
+            self.__apriltag_current_exist = False
+            self.__emotion_current_exist = False
+        if hasattr(self, "distanceSensors"):
+            self.distanceSensors.read()
+
     def run(self):
-        while self.active:
-            if self.acelerometer is not None:
-                self.acelerometer.read()
-            if self.gyroscope is not None:
-                self.gyroscope.read()
-            if self.camera is not None:
-                self.camera.read()
-                self.__apriltag_current_exist = False
-                self.__emotion_current_exist = False
-            if self.distanceSensors is not None:
-                self.distanceSensors.read()
-            time.sleep(0.002)
+        self.__readDevices()
+        while not self.__stop_event.wait(self.__period.total_seconds()):
+            self.__readDevices()
 
     def lookingLabel(self, id):
+        time.sleep(0)
         self.__detectAprilTags()
         return id in self.__listAprilIDs
 
     def stop(self):
         self.__stop_event.set()
         subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+        self.join()
 
     def stopped(self):
         return self.__stop_event.is_set()
 
     def getSonars(self):
-        if isinstance(self.distanceSensors, DistanceSensors):
+        if hasattr(self, "distanceSensors"):
+            time.sleep(0)
             return self.distanceSensors.get()
 
     def getImage(self):
-        if isinstance(self.camera, Camera):
+        if hasattr(self, "camera"):
+            time.sleep(0)
             return self.camera.getImage()
 
     def getPose(self):
+        time.sleep(0)
         raise NotImplementedError("To do")
 
     def setBaseSpeed(self, vAdvance, vRotation):
-        if isinstance(self.base, Base):
+        if hasattr(self, "base"):
+            time.sleep(0)
             self.base.move(vAdvance, vRotation)
 
     def getAdv(self):
-        if isinstance(self.base, Base):
+        if hasattr(self, "base"):
+            time.sleep(0)
             return self.base.adv()
 
     def getRot(self):
-        if isinstance(self.base, Base):
+        if hasattr(self, "base"):
+            time.sleep(0)
             return self.base.rot()
 
     def express(self, _key):
-        if isinstance(self.display, Display):
-            print("express", _key)
+        if hasattr(self, "display"):
+            time.sleep(0)
             self.__currentEmotion = _key
             self.display.setEmotion(_key)
 
     def showImage(self, _img):
-        if isinstance(self.display, Display):
+        if hasattr(self, "display"):
+            time.sleep(0)
             self.display.setImage(_img)
 
     def setJointAngle(self, _key, _angle):
         if _key in self.__JointMotors:
+            time.sleep(0)
             self.__JointMotors.get(_key).sendAngle(_angle)
         # else:
         #     raise Exception("The key don't exist JointMotors")
 
     def setLedState(self, _key, _status):
         if _key in self.__Leds:
+            time.sleep(0)
             self.__Leds.get(_key).setState(_status)
         # else:
         #     raise Exception("The key don't exist Leds")
 
     def getCurrentEmotion(self):
+        time.sleep(0)
         return self.__currentEmotion
 
     def getAcelerometer(self):
-        if isinstance(self.acelerometer, Acelerometer):
+        if hasattr(self, "acelerometer"):
+            time.sleep(0)
             return self.acelerometer.get()
-        else:
-            return None
 
     def getGyroscope(self):
-        if isinstance(self.gyroscope, Gyroscope):
+        if hasattr(self, "gyroscope"):
+            time.sleep(0)
             return self.gyroscope.get()
-        else:
-            return None
 
     def speakText(self,_text):
-        if isinstance(self.speaker, Speaker):
+        if hasattr(self, "speaker"):
+            time.sleep(0)
             self.speaker.sendText(_text)
 
     def sendAudio(self, _audioData):
-        if isinstance(self.speaker, Speaker):
+        if hasattr(self, "speaker"):
+            time.sleep(0)
             self.speaker.sendAudio(_audioData)
 
     def getEmotions(self):
-        if not self.emotion_current_exist:
+        if not self.emotion_current_exist and hasattr(self, "camera"):
+            time.sleep(0)
             img = self.camera.getImage()
             frame = RoboCompEmotionRecognition.TImage()
             frame.width = img.shape[0]
@@ -218,6 +236,3 @@ class Client(Thread):
     def __del__(self):
             self.active = False
 
-def addFunctions(_dictFuntions):
-    for k, v in iter(_dictFuntions.items()):
-        exec("Client.%s = v" % (k))

@@ -1,11 +1,10 @@
 
 class JointMotor():
 
-    _angle = 0
-
     def __init__(self, _callDevice, _readDevice):
         self._callDevice = _callDevice
         self._readDevice = _readDevice
+        self._angle = 0
 
     def sendAngle(self, _angle):
         self._callDevice(_angle)
