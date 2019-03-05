@@ -75,7 +75,7 @@ class Robot(Client):
                 "right": usList[3:]}
 
     def deviceMove(self, _adv, _rot):
-        self.differentialrobot_proxy.setSpeedBase(-_adv * 8, _rot * 15)
+        self.differentialrobot_proxy.setSpeedBase(_adv , _rot)
 
     def deviceReadCamera(self, ):
         return self.open_cv_image, self.newImage

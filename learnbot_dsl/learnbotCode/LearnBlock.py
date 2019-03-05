@@ -30,6 +30,8 @@ from learnbot_dsl.learnbotCode.Highlighter import *
 from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
 from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode, cleanCode
+from learnbot_dsl import PATHCLIENT
+
 import keyword
 install_aliases()
 from urllib.request import urlopen
@@ -281,6 +283,7 @@ class LearnBlock(QtGui.QMainWindow):
             os.mkdir(tempfile.gettempdir())
             os.mkdir(os.path.join(tempfile.gettempdir(), "block"))
             os.mkdir(os.path.join(tempfile.gettempdir(), "clients"))
+            shutil.copyfile(os.path.join(PATHCLIENT,"EBO.py"), os.path.join(os.getenv('HOME'), ".learnblock", "clients", os.path.basename(file)))
             os.mkdir(os.path.join(tempfile.gettempdir(), "functions"))
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                 f.write("")

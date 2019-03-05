@@ -1,0 +1,288 @@
+from learnbot_dsl.Clients.Client import *
+from learnbot_dsl.Clients.Devices import *
+from learnbot_dsl.functions import getFuntions
+import dbus, dbus.mainloop.glib, gobject
+import math, traceback, sys, tempfile, os
+from threading import Event
+
+K = 6
+L = 95
+
+def valmap(value, istart, istop, ostart, ostop):
+    return ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
+
+thymiohandlers = """
+<!DOCTYPE aesl-source>
+<network>
+
+
+<!--list of global events-->
+<event size="3" name="SetLEDsTop"/>
+<event size="8" name="SetLEDsCircle"/>
+<event size="4" name="SetLEDsButtons"/>
+<event size="8" name="SetLEDsProxH"/>
+<event size="2" name="SetLEDsProxV"/>
+<event size="1" name="SetLEDsRC"/>
+<event size="3" name="SetLEDsBottomLeft"/>
+<event size="3" name="SetLEDsBottomRight"/>
+<event size="2" name="SetLEDsTemperature"/>
+<event size="1" name="SetLEDsSound"/>
+<event size="1" name="SetSoundSystem"/>
+<event size="2" name="SetSoundFreq"/>
+<event size="1" name="SetSoundPlay"/>
+<event size="1" name="SetSoundReplay"/>
+
+
+<!--list of constants-->
+
+
+<!--show keywords state-->
+<keywords flag="true"/>
+
+
+<!--node thymio-II-->
+<node nodeId="65082" name="thymio-II">
+
+onevent SetLEDsTop
+call leds.top(event.args[0], event.args[1], event.args[2])
+
+onevent SetLEDsCircle
+call leds.circle(event.args[0], event.args[1], event.args[2], event.args[3], event.args[4], event.args[5], event.args[6], event.args[7])
+
+onevent SetLEDsButtons
+call leds.buttons(event.args[0], event.args[1], event.args[2], event.args[3])
+
+onevent SetLEDsProxH
+call leds.prox.h(event.args[0], event.args[1], event.args[2], event.args[3], event.args[4], event.args[5], event.args[6], event.args[7])
+
+onevent SetLEDsProxV
+call leds.prox.v(event.args[0], event.args[1])
+
+onevent SetLEDsRC
+call leds.rc(event.args[0])
+
+onevent SetLEDsBottomLeft
+call leds.bottom.left(event.args[0], event.args[1], event.args[2])
+
+onevent SetLEDsBottomRight
+call leds.bottom.right(event.args[0], event.args[1], event.args[2])
+
+onevent SetLEDsTemperature
+call leds.temperature(event.args[0], event.args[1])
+
+onevent SetLEDsSound
+call leds.sound(event.args[0])
+
+onevent SetSoundSystem
+call sound.system(event.args[0])
+
+onevent SetSoundFreq
+call sound.system(event.args[0])
+
+onevent SetSoundPlay
+call sound.play(event.args[0])
+
+onevent SetSoundReplay
+call sound.replay(event.args[0])
+
+
+</node>
+
+
+</network>"""
+listfile = [f for f in os.listdir(tempfile.gettempdir()) if f.endswith("_thymiohandlers.aesl")]
+if len(listfile) == 0:
+
+    with tempfile.NamedTemporaryFile(suffix="_thymiohandlers.aesl", delete=False) as temp:
+        name_thymiohandlers = temp.name
+        temp.write(thymiohandlers)
+else:
+    name_thymiohandlers = os.path.join(tempfile.gettempdir(), listfile[0])
+
+print("Name of the file is:", name_thymiohandlers)
+
+# addFunctions(getFuntions())
+
+class Robot(Client):
+    requiementFunctions = ['is_there_blue_line', 'center_face', 'left_black_line', 'am_I_moving_right', 'left_blue_line', 'is_there_face', 'is_there_somebody_happy', 'move_right', 'expressNeutral', 'am_I_Surprise', 'up_face', 'sleep', 'turn_90_right', 'am_I_Sadness', 'am_I_Joy', 'is_there_black_line', 'expressJoy', 'obstacle_free', 'is_there_red_line', 'near_to_target', 'am_I_Angry', 'back_obstacle', 'right_black_line', 'am_I_moving_left', 'is_there_somebody_angry', 'move_left', 'look_floor', 'look_front', 'front_obstacle', 'right_blue_line', 'am_I_turning_right', 'turn_left', 'turn_right', 'target_at_left', 'expressSurprise', 'center_red_line', 'look_up', 'target_at_front', 'am_I_moving_straight', 'get_distance', 'turn_back', 'am_I_turning', 'center_black_line', 'left_face', 'set_move', 'setAngleCamera', 'line_crossing', 'right_red_line', 'down_camera', 'slow_down', 'is_there_somebody_neutral', 'seeing_the_tag', 'expressDisgust', 'setAngleMotor', 'right_face', 'target_at_right', 'stop_bot', 'get_image', 'expressAnger', 'center_blue_line', 'expressFear', 'get_pose', 'sayText', 'move_straight', 'am_I_Disgust', 'am_I_Neutral', 'expressSadness', 'turn', 'is_there_somebody_surprised', 'left_obstacle', 'is_there_somebody_sad', 'turn_90_left', 'down_face', 'am_I_Scared', 'up_camera', 'right_obstacle', 'left_red_line', 'am_I_turning_left']
+    def __init__(self):
+        Client.__init__(self, _miliseconds=100)
+        self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
+        self.base = Base(_callFunction=self.deviceBaseMove)
+        self.acelerometer = Acelerometer(_readFunction=self.deviceReadAcelerometer)
+        self.display = Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
+        self.motorSpeed = [0, 0]
+        self.prox = [0, 0, 0, 0, 0, 0, 0]
+        self.acc = [0, 0, 0]
+        self.currentMotorSpeed = [-1, -1]
+        self.event = Event()
+        self.t = Thread(target=self.connectToRobot).start()
+        self.event.wait()
+        self.currentEmotion = Emotions.NoneEmotion
+        self.newEmotion = Emotions.NoneEmotion
+        self.start()
+
+    def connectToRobot(self):
+        t = dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        bus = dbus.SessionBus()
+        try:
+            self.network = dbus.Interface(bus.get_object('ch.epfl.mobots.Aseba', '/'),
+                                 dbus_interface='ch.epfl.mobots.AsebaNetwork')
+        except Exception as e:
+            raise Exception("Connection to thymio failed")
+        node = self.network.GetNodesList()
+        self.network.LoadScripts(name_thymiohandlers)
+        loop = gobject.MainLoop()
+        handle = gobject.timeout_add(100, self.comunicateRobot)
+        self.event.set()
+        loop.run()
+
+    def comunicateRobot(self):
+        try:
+            self.network.GetVariable("thymio-II", "prox.horizontal", reply_handler=self.get_prox_horizontal_reply,
+                                     error_handler=self.get_variables_error)
+            self.network.GetVariable("thymio-II", "acc", reply_handler=self.get_acelerometer_reply,
+                                     error_handler=self.get_variables_error)
+            if self.currentMotorSpeed[0] != self.motorSpeed[0]:
+                self.network.SetVariable("thymio-II", "motor.left.target", [self.motorSpeed[0]])
+                self.currentMotorSpeed[0] = self.motorSpeed[0]
+            if self.currentMotorSpeed[1] != self.motorSpeed[1]:
+                self.network.SetVariable("thymio-II", "motor.right.target", [self.motorSpeed[1]])
+                self.currentMotorSpeed[1] = self.motorSpeed[1]
+            if self.currentEmotion is not self.newEmotion:
+                if self.newEmotion is Emotions.Joy:
+                    self.send_event_name('SetLEDsTop', [255, 0, 0])
+                    self.send_event_name('SetLEDsBottomLeft', [255, 0, 0])
+                    self.send_event_name('SetLEDsBottomRight', [255, 0, 0])
+                elif self.newEmotion is Emotions.Sadness:
+                    self.network.SetVariable("thymio-II", "leds.top", [0,255,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0,255,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0,255,0])
+                elif self.newEmotion is Emotions.Surprise:
+                    self.network.SetVariable("thymio-II", "leds.top", [0,0,255])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0,0,255])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0,0,255])
+                elif self.newEmotion is Emotions.Disgust:
+                    self.network.SetVariable("thymio-II", "leds.top", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255,0,0])
+                elif self.newEmotion is Emotions.Anger:
+                    self.network.SetVariable("thymio-II", "leds.top", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255,0,0])
+                elif self.newEmotion is Emotions.Fear:
+                    self.network.SetVariable("thymio-II", "leds.top", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255,0,0])
+                elif self.newEmotion is Emotions.Neutral:
+                    self.network.SetVariable("thymio-II", "leds.top", [0,0,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0,0,0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0,0,0])
+        except Exception as e:
+            traceback.print_exc()
+        return True
+
+    def send_event_name(self, event_name, event_args):
+        self.network.SendEventName(event_name, event_args,
+                                   reply_handler=self.dbus_reply,
+                                   error_handler=self.dbus_error)
+
+    def dbus_reply(self):
+        pass
+
+    def dbus_error(self, e):
+        print('error:')
+        print(str(e))
+
+    def get_prox_horizontal_reply(self, r):
+        self.prox = r
+
+    def get_acelerometer_reply(self, r):
+        self.acc = r
+
+    def get_variables_error(self, e):
+        print('error:')
+        print(str(e))
+
+    def deviceReadAcelerometer(self):
+        return self.acc
+
+    def deviceBaseMove(self, SAdv, SRot):
+        if SRot != 0.:
+            Rrot = SAdv / math.tan(SRot)
+
+            Rl = Rrot - (L / 2)
+            r_wheel_speed = SRot * Rl * K
+
+            Rr = Rrot + (L / 2)
+            l_wheel_speed = SRot * Rr * K
+        else:
+            l_wheel_speed = SAdv * K
+            r_wheel_speed = SAdv * K
+        self.motorSpeed = [l_wheel_speed, r_wheel_speed]
+
+    def deviceReadLaser(self):
+        p = [valmap(x, 0., 4230., 100., 0.) for x in self.prox]
+        return {"front": p[1:4],  # The values must be in mm
+                "left": p[:2],
+                "right": p[3:5],
+                "back": p[5:7]}
+
+    def deviceSendEmotion(self, _emotion):
+        if _emotion is Emotions.Joy:
+            self.send_event_name('SetLEDsTop', [255, 255, 0])
+            self.send_event_name('SetLEDsBottomLeft', [255, 255, 0])
+            self.send_event_name('SetLEDsBottomRight', [255, 255, 0])
+        elif _emotion is Emotions.Sadness:
+            self.send_event_name('SetLEDsTop', [0, 0, 255])
+            self.send_event_name('SetLEDsBottomLeft', [0, 0, 255])
+            self.send_event_name('SetLEDsBottomRight', [0, 0, 255])
+        elif _emotion is Emotions.Surprise:
+            self.send_event_name('SetLEDsTop', [255, 166, 0])
+            self.send_event_name('SetLEDsBottomLeft', [255, 166, 0])
+            self.send_event_name('SetLEDsBottomRight', [255, 166, 0])
+        elif _emotion is Emotions.Disgust:
+            self.send_event_name('SetLEDsTop', [0, 162, 0])
+            self.send_event_name('SetLEDsBottomLeft', [0, 162, 0])
+            self.send_event_name('SetLEDsBottomRight', [0, 162, 0])
+        elif _emotion is Emotions.Anger:
+            self.send_event_name('SetLEDsTop', [255, 0, 0])
+            self.send_event_name('SetLEDsBottomLeft', [255, 0, 0])
+            self.send_event_name('SetLEDsBottomRight', [255, 0, 0])
+        elif _emotion is Emotions.Fear:
+            self.send_event_name('SetLEDsTop', [124, 0, 255])
+            self.send_event_name('SetLEDsBottomLeft', [124, 0, 255])
+            self.send_event_name('SetLEDsBottomRight', [124, 0, 255])
+        elif _emotion is Emotions.Neutral:
+            self.send_event_name('SetLEDsTop', [0, 0, 0])
+            self.send_event_name('SetLEDsBottomLeft', [0, 0, 0])
+            self.send_event_name('SetLEDsBottomRight', [0, 0, 0])
+
+if __name__ == '__main__':
+    try:
+        robot = Robot()
+    except Exception as e:
+        print("hay un Error")
+        traceback.print_exc()
+        raise (e)
+    print(dir(robot))
+    time_global_start = time.time()
+
+    robot.stop_bot()
+
+
+    def elapsedTime(umbral):
+        global time_global_start
+        time_global = time.time() - time_global_start
+        return time_global > umbral
+
+    # try:
+    #     while True:
+    #
+    #         if robot.front_obstacle(50):
+    #             robot.stop_bot()
+    #         else:
+    #             robot.move_straight()
+    #         print("bucle")
+    # finally:
+    #     print("quit")
