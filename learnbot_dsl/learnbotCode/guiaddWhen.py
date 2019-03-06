@@ -31,10 +31,10 @@ listconfig = ["configControl",
               "configPropriopercetive"]
 
 
-class guiAddWhen(QtGui.QDialog):
+class guiAddWhen(QtWidgets.QDialog):
 
     def __init__(self):
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.blockType = None
         self.nameControl = ""
         self.FuntionType = None
@@ -143,20 +143,20 @@ class guiAddWhen(QtGui.QDialog):
     #         ret = None
     #         name = self.ui.lineEditName.text()
     #         if not self.ui.Run_start.isChecked() and name == "start":
-    #             msgBox = QtGui.QMessageBox()
-    #             msgBox.setWindowTitle(self.trUtf8("Warning"))
-    #             msgBox.setIcon(QtGui.QMessageBox.Warning)
-    #             msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
-    #             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-    #             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+    #             msgBox = QtWidgets.QMessageBox()
+    #             msgBox.setWindowTitle(self.tr("Warning"))
+    #             msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+    #             msgBox.setText(self.tr("Error the name can not be 'start'"))
+    #             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    #             msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
     #             ret = msgBox.exec_()
     #         if name == "":
-    #             msgBox = QtGui.QMessageBox()
-    #             msgBox.setWindowTitle(self.trUtf8("Warning"))
-    #             msgBox.setIcon(QtGui.QMessageBox.Warning)
-    #             msgBox.setText(self.trUtf8("Error Name is empty."))
-    #             msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-    #             msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+    #             msgBox = QtWidgets.QMessageBox()
+    #             msgBox.setWindowTitle(self.tr("Warning"))
+    #             msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+    #             msgBox.setText(self.tr("Error Name is empty."))
+    #             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    #             msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
     #             ret = msgBox.exec_()
     #         if ret is not None:
     #             return

@@ -4,13 +4,13 @@ from math import *
 from learnbot_dsl.learnbotCode.VisualBlock import *
 from learnbot_dsl.blocksConfig import pathImgBlocks
 
-class MyScene(QtGui.QGraphicsScene):
+class MyScene(QtWidgets.QGraphicsScene):
 
     def __init__(self, parent, view):
         self.parent = parent
         self.shouldSave = False
         self.view = view
-        QtGui.QGraphicsScene.__init__(self, self.parent)
+        QtWidgets.QGraphicsScene.__init__(self, self.parent)
         self.setBackgroundBrush(QtCore.Qt.gray)
         self.idItemS = None
         self.timer = QtCore.QTimer()
@@ -18,10 +18,10 @@ class MyScene(QtGui.QGraphicsScene):
         self.timer.start(5)
         self.table = None
         self.posibleConnect = []
-        self.imgPosibleConnectH = QtGui.QGraphicsPixmapItem(os.path.join(pathImgBlocks, "ConnectH.png"))
+        self.imgPosibleConnectH = QtWidgets.QGraphicsPixmapItem(os.path.join(pathImgBlocks, "ConnectH.png"))
         super(MyScene, self).addItem(self.imgPosibleConnectH)
         self.imgPosibleConnectH.setVisible(False)
-        self.imgPosibleConnectV = QtGui.QGraphicsPixmapItem(os.path.join(pathImgBlocks, "ConnectV.png"))
+        self.imgPosibleConnectV = QtWidgets.QGraphicsPixmapItem(os.path.join(pathImgBlocks, "ConnectV.png"))
         super(MyScene, self).addItem(self.imgPosibleConnectV)
         self.imgPosibleConnectV.setVisible(False)
         self.dicBlockItem = {}
@@ -222,7 +222,7 @@ class MyScene(QtGui.QGraphicsScene):
             itemS.moveToPos(event.scenePos())
 
     def mousePressEvent(self, event):
-        item = self.itemAt(event.scenePos())
+        item = self.itemAt(event.scenePos(), self.view.transform())
         if self.table is not None and item is not self.table:
             self.table.close()
             self.table = None
@@ -230,7 +230,7 @@ class MyScene(QtGui.QGraphicsScene):
             item.mousePressEvent(event)
 
     def mouseDoubleClickEvent(self, event):
-        item = self.itemAt(event.scenePos())
+        item = self.itemAt(event.scenePos(), self.view.transform())
         if self.table is not None and item is not self.table:
             self.table.close()
             self.table = None
@@ -241,7 +241,7 @@ class MyScene(QtGui.QGraphicsScene):
         itemS = self.getItemSelected()
         self.idItemS = None
         pos = event.scenePos()
-        item = self.itemAt(pos)
+        item = self.itemAt(pos, self.view.transform())
         if isinstance(item, VisualBlock):
             item.mouseReleaseEvent(event)
 

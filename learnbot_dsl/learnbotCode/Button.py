@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 import os, binascii
-from PySide import QtGui
+from PySide2 import QtGui, QtWidgets
 
 from learnbot_dsl.learnbotCode.AbstractBlock import *
 from learnbot_dsl.learnbotCode.Language import getLanguage
@@ -14,7 +14,7 @@ def str2hex(text):
     else:
         return str(binascii.hexlify(bytes(text)))
 
-class Block_Button(QtGui.QPushButton):
+class Block_Button(QtWidgets.QPushButton):
 
     def __init__(self, args):
         if len(args) is 14:
@@ -31,7 +31,7 @@ class Block_Button(QtGui.QPushButton):
             self.__type = abstracBlock.type
             self.hue = abstracBlock.hue
 
-        QtGui.QPushButton.__init__(self)
+        QtWidgets.QPushButton.__init__(self)
         #change color block
 
         self.loadImg()

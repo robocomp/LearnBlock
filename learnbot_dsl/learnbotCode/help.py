@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 from learnbot_dsl.guis.help import *
-from PySide import QtCore, QtGui, QtWebKit
+from PySide2 import QtCore, QtGui, QtWebEngineWidgets, QtWidgets
 import sys, os, markdown
 # path = os.path.dirname(os.path.realpath(__file__))
 from builtins import str
 from io import open
-class MarkdownView(QtWebKit.QWebView):
+class MarkdownView(QtWebEngineWidgets.QWebEngineView):
 
     def __init__(self):
-        QtWebKit.QWebView.__init__(self)
+        QtWebEngineWidgets.QWebEngineView.__init__(self)
 
 def decode(string, encoding):
     try:
@@ -23,12 +23,12 @@ def encode(string, encoding):
     except:
         return string
 
-class helper(Ui_Help,QtGui.QDialog):
+class helper(Ui_Help,QtWidgets.QDialog):
 
     def __init__(self, Lang):
         Ui_Help.__init__(self)
-        QtGui.QDialog.__init__(self)
-        # self.dialog = QtGui.QDialog()
+        QtWidgets.QDialog.__init__(self)
+        # self.dialog = QtWidgets.QDialog()
         self.setupUi(self)
         self.webView = MarkdownView()
         self.webView.setUrl(QtCore.QUrl("about:blank"))
@@ -55,14 +55,14 @@ class helper(Ui_Help,QtGui.QDialog):
             # name = u"".join(name.decode("utf-8"))
             name = decode(name, "utf-8")
             if os.path.isdir(absPath):
-                item = QtGui.QTreeWidgetItem()
+                item = QtWidgets.QTreeWidgetItem()
                 item.setText(0, name)
                 if os.path.exists(os.path.join(absPath, "README.md")):
                     self.dictDocs[item] = self.generateHTMLFile(os.path.join(absPath, "README.md"))
                 listItems.append(item)
                 item.addChildren(self.getItems(absPath))
             elif os.path.splitext(absPath)[-1] == ".md" and name != "README.md":
-                item = QtGui.QTreeWidgetItem()
+                item = QtWidgets.QTreeWidgetItem()
                 self.dictDocs[item] = self.generateHTMLFile(absPath)
                 item.setText(0, os.path.splitext(name)[0])
                 listItems.append(item)
@@ -112,7 +112,7 @@ class helper(Ui_Help,QtGui.QDialog):
             self.webView.load(QtCore.QUrl("file://"+path))
 
 if __name__ == '__main__':
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     h =helper("ES")
     h.show()

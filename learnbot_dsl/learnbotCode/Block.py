@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 import copy
-from PySide import QtCore
+from PySide2 import QtCore
 
 import cv2
 import numpy as np

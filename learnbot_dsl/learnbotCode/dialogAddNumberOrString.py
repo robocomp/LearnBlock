@@ -31,11 +31,11 @@ listconfig = ["configControl",
               "configPropriopercetive"]
 
 
-class guiAddNumberOrString(QtGui.QDialog):
+class guiAddNumberOrString(QtWidgets.QDialog):
 
     def __init__(self, type):
         self.type = type
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.blockType = None
         self.FuntionType = None
         self.img = None
@@ -129,12 +129,12 @@ class guiAddNumberOrString(QtGui.QDialog):
         if ret is 1:
             ret = None
             if self.ui.lineEditName.text() == "":
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error Name is empty."))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error Name is empty."))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
             if ret is not None:
                 return

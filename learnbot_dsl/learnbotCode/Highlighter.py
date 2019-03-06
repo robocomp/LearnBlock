@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-from PySide import QtGui, QtCore
+from PySide2 import QtGui, QtCore
 reserved_words = ['def', '=', 'function', '>=', '<=',
     '<', '>', 'deactivate', 'activate', 'not', 'True',
     'False', 'or', 'and', 'main', 'if', 'else',

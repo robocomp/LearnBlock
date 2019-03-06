@@ -64,7 +64,7 @@ else:
 # Ctrl+c handling
 import signal
 
-from PySide import QtGui, QtCore
+from PySide2 import QtGui, QtCore
 
 from learnbot_dsl.components.apriltag.src.specificworker import *
 

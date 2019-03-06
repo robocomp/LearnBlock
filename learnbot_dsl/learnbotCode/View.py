@@ -2,11 +2,11 @@ from __future__ import print_function, absolute_import
 from learnbot_dsl.learnbotCode.VisualBlock import *
 
 
-class MyView(QtGui.QGraphicsView):
+class MyView(QtWidgets.QGraphicsView):
 
     def __init__(self, scene, parent, arg=None):
         self.zoom = None
-        QtGui.QGraphicsView.__init__(self, scene, parent)
+        QtWidgets.QGraphicsView.__init__(self, scene, parent)
 
     def setZoom(self, zoom):
         self.zoom = zoom
@@ -18,8 +18,8 @@ class MyView(QtGui.QGraphicsView):
             zoomOutFactor = 1 / zoomInFactor
 
             # Set Anchors
-            self.setTransformationAnchor(QtGui.QGraphicsView.NoAnchor)
-            self.setResizeAnchor(QtGui.QGraphicsView.NoAnchor)
+            self.setTransformationAnchor(QtWidgets.QGraphicsView.NoAnchor)
+            self.setResizeAnchor(QtWidgets.QGraphicsView.NoAnchor)
 
             # Save the scene pos
             oldPos = self.mapToScene(event.pos())

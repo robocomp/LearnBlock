@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/learnbotCode/guis/UpdatedSuccessfully.ui'
+# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/UpdatedSuccessfully.ui',
+# licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/UpdatedSuccessfully.ui' applies.
 #
-# Created: Thu Oct 25 10:33:07 2018
-#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+# Created: Wed Mar  6 16:48:17 2019
+#      by: pyside2-uic  running on PySide2 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtGui, QtWidgets
 
 class Ui_Updated(object):
     def setupUi(self, Updated):
         Updated.setObjectName("Updated")
         Updated.resize(378, 81)
-        self.horizontalLayout = QtGui.QHBoxLayout(Updated)
+        self.horizontalLayout = QtWidgets.QHBoxLayout(Updated)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.label = QtGui.QLabel(Updated)
+        self.label = QtWidgets.QLabel(Updated)
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label.setFont(font)
@@ -28,7 +29,7 @@ class Ui_Updated(object):
         QtCore.QMetaObject.connectSlotsByName(Updated)
 
     def retranslateUi(self, Updated):
-        Updated.setWindowTitle(QtGui.QApplication.translate("Updated", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("Updated", "Learnblock has been successfully updated,\n"
-"to load the updates close and reopen the program.", None, QtGui.QApplication.UnicodeUTF8))
+        Updated.setWindowTitle(QtWidgets.QApplication.translate("Updated", "Dialog", None, -1))
+        self.label.setText(QtWidgets.QApplication.translate("Updated", "Learnblock has been successfully updated,\n"
+"to load the updates close and reopen the program.", None, -1))
 

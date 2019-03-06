@@ -54,17 +54,17 @@ class DownloadThread(QtCore.QThread):
         self.downloading_window.finish = True
         return
 
-class DownloadingWindow(QtGui.QWidget):
+class DownloadingWindow(QtWidgets.QWidget):
     def __init__(self, parent, text, titel ):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.parent = parent
         vbox = QtGui.QVBoxLayout()
         self.setWindowTitle(titel)
-        label = QtGui.QLabel(text)
+        label = QtWidgets.QLabel(text)
         label.setAlignment(QtCore.Qt.AlignCenter)
         vbox.addWidget(label)
 
-        self.progress_bar = QtGui.QProgressBar()
+        self.progress_bar = QtWidgets.QProgressBar()
         self.progress_bar.setAlignment(QtCore.Qt.AlignCenter)
         vbox.addWidget(self.progress_bar)
         self.setLayout(vbox)
@@ -112,7 +112,7 @@ type2Values = {"control": (CONTROL,HUE_CONTROL),
                  "express": (FUNTION, HUE_EXPRESS),
                  "others": (FUNTION, HUE_OTHERS)
                  }
-class LearnBlock(QtGui.QMainWindow):
+class LearnBlock(QtWidgets.QMainWindow):
     listNameUserFunctions = []
     listNameVars = []
     listNameBlock = []
@@ -140,7 +140,7 @@ class LearnBlock(QtGui.QMainWindow):
         signal = self.signal
 
         # Create the application
-        self.app = QtGui.QApplication(sys.argv)
+        self.app = QtWidgets.QApplication(sys.argv)
 
         # Load tranlators
         self.translators = {}
@@ -160,8 +160,8 @@ class LearnBlock(QtGui.QMainWindow):
 
         self.app.setWindowIcon(QtGui.QIcon(os.path.join(path, 'Learnbot_ico.png')))
 
-        self.Dialog = QtGui.QMainWindow()
-        QtGui.QMainWindow.__init__(self)
+        self.Dialog = QtWidgets.QMainWindow()
+        QtWidgets.QMainWindow.__init__(self)
         self.ui = Learnblock.Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -289,7 +289,7 @@ class LearnBlock(QtGui.QMainWindow):
                 f.write("")
 
         self.loadConfigFile()
-        self.menuOpenRecent = QtGui.QMenu()
+        self.menuOpenRecent = QtWidgets.QMenu()
         self.ui.actionOpen_Recent.setMenu(self.menuOpenRecent)
 
         self.updateOpenRecent()
@@ -297,7 +297,7 @@ class LearnBlock(QtGui.QMainWindow):
         self.load_blocks()
         self.avtiveEvents(False)
         self.pmlast = None
-        self.cameraScene = QtGui.QGraphicsScene()
+        self.cameraScene = QtWidgets.QGraphicsScene()
         self.ui.cameragraphicsView.setScene(self.cameraScene)
 
         self.connectCameraRobot()
@@ -319,7 +319,7 @@ class LearnBlock(QtGui.QMainWindow):
         sys.exit(r)
 
     def resizeEvent(self, event):
-        QtGui.QMainWindow.resizeEvent(self, event)
+        QtWidgets.QMainWindow.resizeEvent(self, event)
         new_sizes = self.ui.splitter.sizes()
         size = sum(new_sizes)
         self.pre_sizes[1] = size-self.pre_sizes[0]
@@ -406,8 +406,8 @@ class LearnBlock(QtGui.QMainWindow):
             tempfile.tempdir = aux
 
     def addClient(self):
-        file, ext = QtGui.QFileDialog.getOpenFileName(self, self.trUtf8('Add Client'), os.getenv('HOME'),
-                                          self.trUtf8('Python File(*.py)'))
+        file, ext = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Add Client'), os.getenv('HOME'),
+                                          self.tr('Python File(*.py)'))
         if file != "":
             shutil.copyfile(file, os.path.join(os.getenv('HOME'), ".learnblock", "clients", os.path.basename(file)))
             self.updateClients()
@@ -418,7 +418,7 @@ class LearnBlock(QtGui.QMainWindow):
             if os.path.isfile(os.path.join(os.getenv('HOME'), ".learnblock", "clients",file)) and os.path.splitext(file)[-1].lower() == ".py":
                 self.ui.clientscomboBox.addItem(os.path.splitext(file)[0])
 
-    def updateOpenRecent(self):
+    def updateOpenRecent(self):                                             # TODO Fixed line lambda
         if self.__fileProject is not None:
             if self.__fileProject not in self.lopenRecent:
                 self.lopenRecent.insert(0, self.__fileProject)
@@ -427,14 +427,15 @@ class LearnBlock(QtGui.QMainWindow):
         self.menuOpenRecent.clear()
         lqA = []
         self.lopenRecent = [p for p in self.lopenRecent if os.path.exists(p)]
-        for f,i in zip(self.lopenRecent, range(len(self.lopenRecent))):
+        for f, i in zip(self.lopenRecent, range(len(self.lopenRecent))):
             if i == 9:
                 break
             name, ext = os.path.splitext(f)
             name = os.path.basename(name)
-            qA =(QtGui.QAction(name, self.ui.actionOpen_Recent))
+            qA =(QtWidgets.QAction(name, self.ui.actionOpen_Recent))
             qA.setShortcut("Ctrl+Shift+"+str(i+1))
-            qA.triggered.connect(lambda f=f: self.openProject(f))
+            print(i, f)
+            qA.triggered.connect(lambda filename=f: self.openProject(filename))
             self.menuOpenRecent.addAction(qA)
 
     def updatePythonCodeStyle(self):
@@ -466,18 +467,18 @@ class LearnBlock(QtGui.QMainWindow):
         if not os.path.exists(self.confFile):
             with open(self.confFile,'wb') as confFile:
                 while True:
-                    self.workSpace = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose workspace directory'), os.environ.get('HOME'),
-                                                                  QtGui.QFileDialog.ShowDirsOnly)
+                    self.workSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose workspace directory'), os.environ.get('HOME'),
+                                                                  QtWidgets.QFileDialog.ShowDirsOnly)
                     if self.workSpace is "":
-                        msgBox = QtGui.QMessageBox()
-                        msgBox.setWindowTitle(self.trUtf8("Warning"))
-                        msgBox.setIcon(QtGui.QMessageBox.Warning)
-                        msgBox.setText(self.trUtf8("Workspace is empty"))
-                        msgBox.setInformativeText(self.trUtf8("The working directory will be created in") + os.path.join(os.environ.get('HOME'), "learnbotWorkSpace"))
-                        msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-                        msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+                        msgBox = QtWidgets.QMessageBox()
+                        msgBox.setWindowTitle(self.tr("Warning"))
+                        msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                        msgBox.setText(self.tr("Workspace is empty"))
+                        msgBox.setInformativeText(self.tr("The working directory will be created in") + os.path.join(os.environ.get('HOME'), "learnbotWorkSpace"))
+                        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+                        msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
                         ret = msgBox.exec_()
-                        if ret == QtGui.QMessageBox.Ok:
+                        if ret == QtWidgets.QMessageBox.Ok:
                             self.workSpace = os.path.join(os.environ.get('HOME'), "learnbotWorkSpace")
                             os.mkdir(self.workSpace)
                             break
@@ -485,18 +486,18 @@ class LearnBlock(QtGui.QMainWindow):
                         self.workSpace = os.path.join(self.workSpace)
                         break
                 while True:
-                    self.libraryPath = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose the libraries directory'), os.environ.get('HOME'),
-                                                                  QtGui.QFileDialog.ShowDirsOnly)
+                    self.libraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose the libraries directory'), os.environ.get('HOME'),
+                                                                  QtWidgets.QFileDialog.ShowDirsOnly)
                     if self.libraryPath is "":
-                        msgBox = QtGui.QMessageBox()
-                        msgBox.setWindowTitle(self.trUtf8("Warning"))
-                        msgBox.setIcon(QtGui.QMessageBox.Warning)
-                        msgBox.setText(self.trUtf8("Workspace is empty"))
-                        msgBox.setInformativeText(self.trUtf8("The libraries directory will be ") + os.environ.get('HOME'))
-                        msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-                        msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+                        msgBox = QtWidgets.QMessageBox()
+                        msgBox.setWindowTitle(self.tr("Warning"))
+                        msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                        msgBox.setText(self.tr("Workspace is empty"))
+                        msgBox.setInformativeText(self.tr("The libraries directory will be ") + os.environ.get('HOME'))
+                        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+                        msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
                         ret = msgBox.exec_()
-                        if ret == QtGui.QMessageBox.Ok:
+                        if ret == QtWidgets.QMessageBox.Ok:
                             self.libraryPath = os.environ.get('HOME')
                             break
                     else:
@@ -515,17 +516,17 @@ class LearnBlock(QtGui.QMainWindow):
                     pass
 
     def changeWorkSpace(self):
-        newworkSpace = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose workspace directory'),
+        newworkSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose workspace directory'),
                                                                 self.workSpace,
-                                                                QtGui.QFileDialog.ShowDirsOnly)
+                                                                QtWidgets.QFileDialog.ShowDirsOnly)
         if newworkSpace is "":
             return
         self.workSpace = newworkSpace
 
     def changeLibraryPath(self):
-        newlibraryPath = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Choose the libraries directory'),
+        newlibraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose the libraries directory'),
                                                                   self.libraryPath,
-                                                                  QtGui.QFileDialog.ShowDirsOnly)
+                                                                  QtWidgets.QFileDialog.ShowDirsOnly)
         if newlibraryPath is "":
             return
         self.libraryPath = newlibraryPath
@@ -538,57 +539,57 @@ class LearnBlock(QtGui.QMainWindow):
         if internet_on():
             tempLibraries = tempfile.mkdtemp("Libraries-ebo")
             pathzip = os.path.join(tempLibraries, "Libraries.zip")
-            self.dw = DownloadingWindow(self, self.trUtf8("Donwloading Libraries files please wait"), self.trUtf8("Donwloading Libraries"))
+            self.dw = DownloadingWindow(self, self.tr("Donwloading Libraries files please wait"), self.tr("Donwloading Libraries"))
             self.dw.show()
             self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/Libraries.zip", pathzip, self.dw)
             self.dwTh.start()
             self.dwTh.finished.connect(lambda : self.unzip(pathzip, tempLibraries, self.libraryPath))
 
         else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("Your computer does not have an internet connection."))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("Your computer does not have an internet connection."))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
 
     def downloadExamples(self):
         if internet_on():
             tempExamples = tempfile.mkdtemp("examples-ebo")
             pathzip = os.path.join(tempExamples, "examples.zip")
-            self.dw = DownloadingWindow(self, self.trUtf8("Donwloading Examples files please wait"), self.trUtf8("Donwloading Examples"))
+            self.dw = DownloadingWindow(self, self.tr("Donwloading Examples files please wait"), self.tr("Donwloading Examples"))
             self.dw.show()
             self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/examples.zip", pathzip, self.dw)
             self.dwTh.start()
             self.dwTh.finished.connect(lambda : self.unzip(pathzip,tempExamples,self.workSpace))
 
         else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("Your computer does not have an internet connection."))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("Your computer does not have an internet connection."))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
 
     def downloadXMLs(self):
         if internet_on():
             tempXMLs = tempfile.mkdtemp("xmls-ebo")
             pathzip = os.path.join(tempXMLs, "xmls.zip")
-            self.dw = DownloadingWindow(self, self.trUtf8("Donwloading XML's files please wait"), self.trUtf8("Donwloading XML's"))
+            self.dw = DownloadingWindow(self, self.tr("Donwloading XML's files please wait"), self.tr("Donwloading XML's"))
             self.dw.show()
             self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/xmls.zip", pathzip, self.dw)
             self.dwTh.start()
             self.dwTh.finished.connect(lambda : self.unzip(pathzip,tempXMLs,os.environ.get('HOME')))
 
         else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("Your computer does not have an internet connection."))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("Your computer does not have an internet connection."))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
 
     def unzip(self, pathzip, tempXMLs, outputPath):
@@ -630,7 +631,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def addLibrary(self):
         self.scene.stopAllblocks()
-        path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Load Library'), self.libraryPath, QtGui.QFileDialog.ShowDirsOnly)
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Load Library'), self.libraryPath, QtWidgets.QFileDialog.ShowDirsOnly)
         nameLibrary = os.path.basename(path)
         self.scene.startAllblocks()
         if path is "":
@@ -639,15 +640,15 @@ class LearnBlock(QtGui.QMainWindow):
             self.listLibraryWidget.append(Library(self, path))
             self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1],nameLibrary)))
         else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("The library has already been imported."))
-            msgBox.setInformativeText(self.trUtf8("Do you want select another library?"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("The library has already been imported."))
+            msgBox.setInformativeText(self.tr("Do you want select another library?"))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             ret = msgBox.exec_()
-            if ret ==QtGui.QMessageBox.Ok:
+            if ret ==QtWidgets.QMessageBox.Ok:
                 self.addLibrary()
 
     def closeEvent(self, event):
@@ -663,15 +664,15 @@ class LearnBlock(QtGui.QMainWindow):
             event.accept()
         else:
             self.scene.stopAllblocks()
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("The document has been modified."))
-            msgBox.setInformativeText(self.trUtf8("Do you want to save your changes?"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Save)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("The document has been modified."))
+            msgBox.setInformativeText(self.tr("Do you want to save your changes?"))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
             ret = msgBox.exec_()
-            if ret == QtGui.QMessageBox.Save:
+            if ret == QtWidgets.QMessageBox.Save:
                 self.saveInstance()
                 self.disconnectCamera()
                 del self.client
@@ -680,7 +681,7 @@ class LearnBlock(QtGui.QMainWindow):
                     self.rcisthread.terminate()
                 subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 event.accept()
-            elif ret == QtGui.QMessageBox.Discard:
+            elif ret == QtWidgets.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 self.disconnectCamera()
                 del self.client
@@ -717,12 +718,12 @@ class LearnBlock(QtGui.QMainWindow):
     def checkConnectionToBot(self, showWarning=False):
         r = os.system("ping -c 1 -W 1 " + configSSH["ip"])
         if showWarning and r is not 0:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("You should check connection the physical robot"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("You should check connection the physical robot"))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
         return r is 0
 
@@ -760,21 +761,21 @@ class LearnBlock(QtGui.QMainWindow):
             except Exception as e:
                 print(e.with_traceback())
                 self.disablestartButtons(False)
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("You should check connection the " + name_Client + " robot"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("You should check connection the " + name_Client + " robot"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
 
         else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("Your code has an error. Check it out again"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("Your code has an error. Check it out again"))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
 
     def textCodeToPython(self, name_Client):
@@ -782,32 +783,32 @@ class LearnBlock(QtGui.QMainWindow):
         try:
             code = parserLearntBotCodeFromCode(textCode, name_Client)
             if not code:
-                    msgBox = QtGui.QMessageBox()
-                    msgBox.setWindowTitle(self.trUtf8("Warning"))
-                    msgBox.setIcon(QtGui.QMessageBox.Warning)
-                    msgBox.setText(self.trUtf8("Your code is empty or is not correct"))
-                    msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                    msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                    msgBox = QtWidgets.QMessageBox()
+                    msgBox.setWindowTitle(self.tr("Warning"))
+                    msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                    msgBox.setText(self.tr("Your code is empty or is not correct"))
+                    msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                    msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                     msgBox.exec_()
             self.ui.pythonCode.clear()
             self.ui.pythonCode.setText(code)
             return code
         except ParseException as e:
             traceback.print_exc()
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("line: {}".format(e.line) + "\n    " + " " * e.col + "^"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("line: {}".format(e.line) + "\n    " + " " * e.col + "^"))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
         except Exception as e:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
             msgBox.setText(e)
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
         return False
 
@@ -816,8 +817,8 @@ class LearnBlock(QtGui.QMainWindow):
         path = os.environ.get('HOME')
         if os.path.exists(os.path.join(os.environ.get('HOME'), "learnbot-xmls")):
             path = os.path.join(os.environ.get('HOME'), "learnbot-xmls")
-        fileName = QtGui.QFileDialog.getOpenFileName(self, self.trUtf8('Open xml'), path,
-                                                     self.trUtf8('Rcis file (*.xml)'))
+        fileName = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open xml'), path,
+                                                     self.tr('Rcis file (*.xml)'))
         self.scene.startAllblocks()
         if fileName[0] != "":
             if self.rcisthread is not None:
@@ -891,18 +892,18 @@ class LearnBlock(QtGui.QMainWindow):
             self.ui.deleteFuntionsPushButton.setEnabled(False)
             self.setWindowTitle("Learnblock2.0")
         else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("The document has been modified."))
-            msgBox.setInformativeText(self.trUtf8("Do you want to save your changes?"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Save)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("The document has been modified."))
+            msgBox.setInformativeText(self.tr("Do you want to save your changes?"))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
             ret = msgBox.exec_()
-            if ret == QtGui.QMessageBox.Save:
+            if ret == QtWidgets.QMessageBox.Save:
                 self.saveInstance()
                 self.newProject()
-            elif ret == QtGui.QMessageBox.Discard:
+            elif ret == QtWidgets.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 self.newProject()
 
@@ -987,8 +988,8 @@ class LearnBlock(QtGui.QMainWindow):
     def saveInstance(self):
         if self.__fileProject is None:
             self.scene.stopAllblocks()
-            fileName = QtGui.QFileDialog.getSaveFileName(self, self.trUtf8('Save Project'), self.workSpace,
-                                                         self.trUtf8('Block Project file (*.blockProject)'))
+            fileName = QtWidgets.QFileDialog.getSaveFileName(self, self.tr('Save Project'), self.workSpace,
+                                                         self.tr('Block Project file (*.blockProject)'))
             self.scene.startAllblocks()
             if fileName[0] != "":
                 file = fileName[0]
@@ -1012,9 +1013,9 @@ class LearnBlock(QtGui.QMainWindow):
 
     def saveAs(self):
         self.scene.stopAllblocks()
-        fileName = QtGui.QFileDialog.getSaveFileName(self, self.trUtf8('Save Project'), self.workSpace, self.trUtf8('Block Project file (*.blockProject)'))
+        fileName = QtWidgets.QFileDialog.getSaveFileName(self, self.tr('Save Project'), self.workSpace, self.tr('Block Project file (*.blockProject)'))
         self.scene.startAllblocks()
-        if fileName[0] != "" and fileName[1] == self.trUtf8("Block Project file (*.blockProject)"):
+        if fileName[0] != "" and fileName[1] == self.tr("Block Project file (*.blockProject)"):
             file = fileName[0]
             if os.path.splitext(file)[-1] != ".blockProject":
                 file = file + ".blockProject"
@@ -1025,8 +1026,8 @@ class LearnBlock(QtGui.QMainWindow):
         if self.scene.shouldSave is False:
             if file is None:
                 self.scene.stopAllblocks()
-                fileName = QtGui.QFileDialog.getOpenFileName(self, self.trUtf8('Open Project'), self.workSpace,
-                                                         self.trUtf8('Block Project file (*.blockProject)'))
+                fileName = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open Project'), self.workSpace,
+                                                         self.tr('Block Project file (*.blockProject)'))
                 self.scene.startAllblocks()
             if file is not None or fileName[0] != "":
                 self.newProject(resetAll=False)
@@ -1079,17 +1080,17 @@ class LearnBlock(QtGui.QMainWindow):
                 self.savetmpProject()
 
         else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("The document has been modified."))
-            msgBox.setInformativeText(self.trUtf8("Do you want to save your changes?"))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Save | QtGui.QMessageBox.Discard | QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Save)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("The document has been modified."))
+            msgBox.setInformativeText(self.tr("Do you want to save your changes?"))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
             ret = msgBox.exec_()
-            if ret == QtGui.QMessageBox.Save:
+            if ret == QtWidgets.QMessageBox.Save:
                 self.saveInstance()
-            elif ret == QtGui.QMessageBox.Discard:
+            elif ret == QtWidgets.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 self.openProject(file)
 
@@ -1120,39 +1121,39 @@ class LearnBlock(QtGui.QMainWindow):
         if isOK:
             name = self.addWhenGui.nameControl.replace(" ", "_")
             if not self.addWhenGui.ui.Run_start.isChecked() and name == "start":
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error the name can not be 'start'"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if name == "":
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error Name is empty."))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error Name is empty."))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if name in keyword.kwlist:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("This name is reserved"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("This name is reserved"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("This name alredy exist"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("This name alredy exist"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             text = self.addWhenGui.value
@@ -1328,7 +1329,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def newVariable(self):
         self.addVarGui = AddVar.Ui_Dialog()
-        self.addVarDialog = QtGui.QDialog()
+        self.addVarDialog = QtWidgets.QDialog()
         self.addVarGui.setupUi(self.addVarDialog)
         self.addVarDialog.open()
         self.addVarGui.cancelPushButton.clicked.connect(lambda: self.retaddVarGui(0))
@@ -1338,48 +1339,48 @@ class LearnBlock(QtGui.QMainWindow):
         if ret is 1:
             name = self.addVarGui.nameLineEdit.text().replace(" ", "_")
             if name == 'start':
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error the name can not be 'start'"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if name in keyword.kwlist:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("This name is reserved"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("This name is reserved"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("This name alredy exist"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("This name alredy exist"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if len(name) != 0 and name[0].isdigit():
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("The name can't start by number"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("The name can't start by number"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if len(name) == 0:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error Name is empty."))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error Name is empty."))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             self.addVariable(name)
@@ -1414,7 +1415,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def deleteVar(self):
         self.delVarGui = DelVar.Ui_Dialog()
-        self.delVarDialgo = QtGui.QDialog()
+        self.delVarDialgo = QtWidgets.QDialog()
         self.delVarGui.setupUi(self.delVarDialgo)
         self.delVarDialgo.open()
         self.delVarGui.listVarcomboBox.clear()
@@ -1444,7 +1445,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def deleteWhen(self):
         self.delWhenGui = DelWhen.Ui_Dialog()
-        self.delWhenDialgo = QtGui.QDialog()
+        self.delWhenDialgo = QtWidgets.QDialog()
         self.delWhenGui.setupUi(self.delWhenDialgo)
         self.delWhenDialgo.open()
         self.delWhenGui.listWhencomboBox.clear()
@@ -1479,7 +1480,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def newUserFunctions(self):
         self.userFunctionsGui = CreateFunctions.Ui_Dialog()
-        self.userFunctionsDialgo = QtGui.QDialog()
+        self.userFunctionsDialgo = QtWidgets.QDialog()
         self.userFunctionsGui.setupUi(self.userFunctionsDialgo)
         self.userFunctionsDialgo.open()
         self.userFunctionsGui.cancelPushButton.clicked.connect(lambda: self.retUserFunctions(0))
@@ -1490,48 +1491,48 @@ class LearnBlock(QtGui.QMainWindow):
             name = self.userFunctionsGui.nameLineEdit.text()
             name = name.replace(" ", "_")
             if name == 'start':
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error the name can not be 'start'"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error the name can not be 'start'"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if name in keyword.kwlist:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("This name is reserved"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("This name is reserved"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("This name alredy exist"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("This name alredy exist"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if len(name) != 0 and name[0].isdigit():
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("The name can't start by number"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("The name can't start by number"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             if len(name) == 0:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error Name is empty."))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error Name is empty."))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
             self.addUserFunction(name)
@@ -1557,7 +1558,7 @@ class LearnBlock(QtGui.QMainWindow):
 
     def deleteUserFunctions(self):
         self.delUserFunctionsGui = DelVar.Ui_Dialog()
-        self.delUserFunctionsDialgo = QtGui.QDialog()
+        self.delUserFunctionsDialgo = QtWidgets.QDialog()
         self.delUserFunctionsGui.setupUi(self.delUserFunctionsDialgo)
         self.delUserFunctionsDialgo.open()
         self.delUserFunctionsGui.listVarcomboBox.clear()

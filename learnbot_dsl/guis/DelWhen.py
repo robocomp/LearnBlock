@@ -1,30 +1,31 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/DelWhen.ui'
+# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/DelWhen.ui',
+# licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/DelWhen.ui' applies.
 #
-# Created: Fri Nov  2 16:23:19 2018
-#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+# Created: Wed Mar  6 16:48:17 2019
+#      by: pyside2-uic  running on PySide2 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PySide2 import QtCore, QtGui, QtWidgets
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(224, 109)
-        self.verticalLayout = QtGui.QVBoxLayout(Dialog)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.listWhencomboBox = QtGui.QComboBox(Dialog)
+        self.listWhencomboBox = QtWidgets.QComboBox(Dialog)
         self.listWhencomboBox.setObjectName("listWhencomboBox")
         self.verticalLayout.addWidget(self.listWhencomboBox)
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.cancelPushButton = QtGui.QPushButton(Dialog)
+        self.cancelPushButton = QtWidgets.QPushButton(Dialog)
         self.cancelPushButton.setAutoDefault(False)
         self.cancelPushButton.setObjectName("cancelPushButton")
         self.horizontalLayout.addWidget(self.cancelPushButton)
-        self.okPushButton = QtGui.QPushButton(Dialog)
+        self.okPushButton = QtWidgets.QPushButton(Dialog)
         self.okPushButton.setObjectName("okPushButton")
         self.horizontalLayout.addWidget(self.okPushButton)
         self.verticalLayout.addLayout(self.horizontalLayout)
@@ -33,7 +34,7 @@ class Ui_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Delete When block", None, QtGui.QApplication.UnicodeUTF8))
-        self.cancelPushButton.setText(QtGui.QApplication.translate("Dialog", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
-        self.okPushButton.setText(QtGui.QApplication.translate("Dialog", "Ok", None, QtGui.QApplication.UnicodeUTF8))
+        Dialog.setWindowTitle(QtWidgets.QApplication.translate("Dialog", "Delete When block", None, -1))
+        self.cancelPushButton.setText(QtWidgets.QApplication.translate("Dialog", "Cancel", None, -1))
+        self.okPushButton.setText(QtWidgets.QApplication.translate("Dialog", "Ok", None, -1))
 

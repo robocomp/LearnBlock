@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-from PySide import QtGui,QtCore
+from PySide2 import QtGui,QtCore,QtWidgets
 from math import *
 import pickle, os, json
 import learnbot_dsl.guis.EditVar as EditVar
@@ -58,7 +58,7 @@ def EuclideanDist(p1, p2):
     return sqrt(pow(p.x(), 2) + pow(p.y(), 2))
 
 
-class VarGui(QtGui.QDialog, EditVar.Ui_Dialog):
+class VarGui(QtWidgets.QDialog, EditVar.Ui_Dialog):
 
     def init(self):
         self.setupUi(self)
@@ -71,7 +71,7 @@ class VarGui(QtGui.QDialog, EditVar.Ui_Dialog):
         self.okButton.clicked.connect(self.close)
 
 
-class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
+class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
     def __init__(self, parentBlock, parent=None, scene=None):
         self.parentBlock = parentBlock
@@ -88,8 +88,8 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             self.showtext = self.parentBlock.name
         else:
             self.showtext = self.dicTrans[getLanguage()]
-        QtGui.QGraphicsPixmapItem.__init__(self)
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QGraphicsPixmapItem.__init__(self)
+        QtWidgets.QWidget.__init__(self)
 
         # Load Image of block
         im = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
@@ -119,7 +119,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
 
         self.scene = scene
 
-        self.setFlags(QtGui.QGraphicsItem.ItemIsMovable)
+        self.setFlags(QtWidgets.QGraphicsItem.ItemIsMovable)
         self.setZValue(1)
         self.setPos(self.parentBlock.pos)
         self.scene.activeShouldSave()
@@ -144,13 +144,13 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         for i, var in zip(range(len(vars)),vars):
             try:
                 if getLanguage() in var.translate:
-                    self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
+                    self.tabVar.setCellWidget(i, 0, QtWidgets.QLabel(var.translate[getLanguage()]))
                 else:
-                    self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
+                    self.tabVar.setCellWidget(i, 0, QtWidgets.QLabel(var.name))
             except:
-                self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
+                self.tabVar.setCellWidget(i, 0, QtWidgets.QLabel(var.name))
             if var.type in ["float","int", "string"]:
-                edit = QtGui.QLineEdit()
+                edit = QtWidgets.QLineEdit()
                 if var.type == "float":
                     edit.setValidator(QtGui.QDoubleValidator())
                 elif var.type == "int":
@@ -158,7 +158,7 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 edit.setText(var.defaul)
                 self.tabVar.setCellWidget(i, 1, edit)
             elif var.type == "boolean":
-                combobox = QtGui.QComboBox()
+                combobox = QtWidgets.QComboBox()
                 combobox.addItem("True")
                 combobox.addItem("False")
                 if var.defaul in ("0", "False"):
@@ -168,37 +168,38 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
                 self.tabVar.setCellWidget(i, 1, combobox)
             elif var.type == "list":
                 values = var.translateValues[getLanguage()]
-                combobox = QtGui.QComboBox()
+                combobox = QtWidgets.QComboBox()
                 combobox.addItems(values)
                 self.tabVar.setCellWidget(i, 1, combobox)
 
-            combobox = QtGui.QComboBox()
+            combobox = QtWidgets.QComboBox()
             combobox.addItem("None")
             self.tabVar.setCellWidget(i, 2, combobox)
-            self.tabVar.setCellWidget(i,3,QtGui.QLabel(var.type))
+            self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(var.type))
             # i += 1
 
         self.sizeIn = 0
         self.shouldUpdateConnections = False
-        self.popMenu = QtGui.QMenu(self)
+        self.popMenu = QtWidgets.QMenu(self)
 
         self.keyPressEater = KeyPressEater(self.popMenu)
         self.popMenu.installEventFilter(self.keyPressEater)
-        action1 = QtGui.QAction(self.trUtf8('Edit'), self)
+
+        action1 = QtWidgets.QAction(self.tr('Edit'), self)
         action1.triggered.connect(self.on_clicked_menu_edit)
         self.popMenu.addAction(action1)
         if self.parentBlock.name not in ["main", "when"]:
             if self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK:
-                action3 = QtGui.QAction(self.trUtf8('Export Block'), self)
+                action3 = QtWidgets.QAction(self.tr('Export Block'), self)
                 action3.triggered.connect(self.on_clicked_menu_export_block)
                 self.popMenu.addAction(action3)
             else:
-                action0 = QtGui.QAction(self.trUtf8('Duplicate'), self)
+                action0 = QtWidgets.QAction(self.tr('Duplicate'), self)
                 action0.triggered.connect(self.on_clicked_menu_duplicate)
                 self.popMenu.addAction(action0)
 
         self.popMenu.addSeparator()
-        action2 = QtGui.QAction(self.trUtf8('Delete'), self)
+        action2 = QtWidgets.QAction(self.tr('Delete'), self)
         action2.triggered.connect(self.on_clicked_menu_delete)
         # action2.installEventFilter(self.keyPressEater)
         self.popMenu.addAction(action2)
@@ -207,21 +208,21 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
         if self.parentBlock.name not in ["main", "when"] and self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK:
 
             self.scene.stopAllblocks()
-            path = QtGui.QFileDialog.getExistingDirectory(self, self.trUtf8('Select Library'), self.scene.parent.libraryPath, QtGui.QFileDialog.ShowDirsOnly)
+            path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Select Library'), self.scene.parent.libraryPath, QtWidgets.QFileDialog.ShowDirsOnly)
             self.scene.startAllblocks()
             ret = None
             try:
                 os.mkdir(os.path.join(path, self.parentBlock.name))
             except:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("This module already exists"))
-                msgBox.setInformativeText(self.trUtf8("Do you want to overwrite the changes?"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok| QtGui.QMessageBox.Cancel)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("This module already exists"))
+                msgBox.setInformativeText(self.tr("Do you want to overwrite the changes?"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok| QtWidgets.QMessageBox.Cancel)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
-            if ret is None or ret == QtGui.QMessageBox.Ok:
+            if ret is None or ret == QtWidgets.QMessageBox.Ok:
                 path = os.path.join(path, self.parentBlock.name)
                 # Save blockProject
                 lBInstance = self.scene.parent
@@ -440,18 +441,18 @@ class VisualBlock(QtGui.QGraphicsPixmapItem, QtGui.QWidget):
             for i, var in zip(range(len(vars)), vars):
                 try:
                     if getLanguage() in var.translate:
-                        self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.translate[getLanguage()]))
+                        self.tabVar.setCellWidget(i, 0, QtWidgets.QLabel(var.translate[getLanguage()]))
                     else:
-                        self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
+                        self.tabVar.setCellWidget(i, 0, QtWidgets.QLabel(var.name))
                     if var.type == "list":
                         values = var.translateValues[getLanguage()]
                         val = self.tabVar.cellWidget(i, 1).currentIndex()
-                        combobox = QtGui.QComboBox()
+                        combobox = QtWidgets.QComboBox()
                         combobox.addItems(values)
                         self.tabVar.setCellWidget(i, 1, combobox)
                         combobox.setCurrentIndex(val)
                 except:
-                    self.tabVar.setCellWidget(i, 0, QtGui.QLabel(var.name))
+                    self.tabVar.setCellWidget(i, 0, QtWidgets.QLabel(var.name))
 
         for row in range(0, self.tabVar.rowCount()):
             combobox = self.tabVar.cellWidget(row, 2)

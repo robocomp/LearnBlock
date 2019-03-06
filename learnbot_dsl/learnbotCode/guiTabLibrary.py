@@ -1,16 +1,16 @@
 from __future__ import print_function, absolute_import
 import os, sys
-from PySide import QtGui
+from PySide2 import QtGui, QtWidgets
 import learnbot_dsl.guis.TabLibrary as TabLibrary
 from learnbot_dsl.blocksConfig.parserConfigBlock import reload_functions
 from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.blocksConfig.blocks import pathBlocks as imgPath
 from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.Button import Block_Button
-class Library(QtGui.QWidget):
+class Library(QtWidgets.QWidget):
 
     def __init__(self, parent, path):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         self.ui = TabLibrary.Ui_Form()
         self.parent = parent
         self.ui.setupUi(self)
@@ -77,13 +77,13 @@ class Library(QtGui.QWidget):
             text = ""
             for name in listRepitFuntions:
                 text += "\t * " + name + "\n"
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("The following functions have not been imported because there are others with the same name:"))
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("The following functions have not been imported because there are others with the same name:"))
             msgBox.setInformativeText(text)
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             ret = msgBox.exec_()
 
     def delete(self):

@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 import os, tempfile, json
-from PySide import QtGui
+from PySide2 import QtGui, QtWidgets
 import learnbot_dsl.guis.CreateBlock as CreateBlock
 from learnbot_dsl.blocksConfig.blocks import pathBlocks
 from learnbot_dsl.blocksConfig.parserConfigBlock import pathConfig
@@ -33,10 +33,10 @@ def <name>(lbot, <args>):
 """
 
 
-class guiCreateBlock(QtGui.QDialog):
+class guiCreateBlock(QtWidgets.QDialog):
 
     def __init__(self, load_block):
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.load_blocks = load_block
         self.blockType = None
         self.FuntionType = None
@@ -98,31 +98,31 @@ class guiCreateBlock(QtGui.QDialog):
     def __addTooltip(self):
         row = self.ui.tableWidgetToolTip.rowCount()
         self.ui.tableWidgetToolTip.insertRow(row)
-        self.ui.tableWidgetToolTip.setCellWidget(row, 0, QtGui.QLineEdit())
-        self.ui.tableWidgetToolTip.setCellWidget(row, 1, QtGui.QLineEdit())
+        self.ui.tableWidgetToolTip.setCellWidget(row, 0, QtWidgets.QLineEdit())
+        self.ui.tableWidgetToolTip.setCellWidget(row, 1, QtWidgets.QLineEdit())
         self.ui.pushButtonRemoveTooltip.setEnabled(True)
 
     def __addlanguages(self):
         row = self.ui.tableWidgetlanguages.rowCount()
         self.ui.tableWidgetlanguages.insertRow(row)
-        self.ui.tableWidgetlanguages.setCellWidget(row, 0, QtGui.QLineEdit())
-        self.ui.tableWidgetlanguages.setCellWidget(row, 1, QtGui.QLineEdit())
+        self.ui.tableWidgetlanguages.setCellWidget(row, 0, QtWidgets.QLineEdit())
+        self.ui.tableWidgetlanguages.setCellWidget(row, 1, QtWidgets.QLineEdit())
         self.ui.pushButtonRemovelanguages.setEnabled(True)
 
     def __addVar(self):
         row = self.ui.tableWidgetVars.rowCount()
         self.ui.tableWidgetVars.insertRow(row)
-        combobox = QtGui.QComboBox()
+        combobox = QtWidgets.QComboBox()
         combobox.addItem("float")
         combobox.addItem("string")
         combobox.addItem("int")
         combobox.addItem("boolean")
         combobox.currentIndexChanged.connect(lambda : self.setdefaultWidget(row))
         self.ui.tableWidgetVars.setCellWidget(row, 0, combobox)
-        edit = QtGui.QLineEdit()
+        edit = QtWidgets.QLineEdit()
         edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
         self.ui.tableWidgetVars.setCellWidget(row, 1, edit)
-        edit = QtGui.QLineEdit()
+        edit = QtWidgets.QLineEdit()
         edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
         edit.setValidator(QtGui.QDoubleValidator())
         self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
@@ -131,21 +131,21 @@ class guiCreateBlock(QtGui.QDialog):
     def setdefaultWidget(self,row):
         type = self.ui.tableWidgetVars.cellWidget(row, 0).currentText()
         if type == "float":
-            edit = QtGui.QLineEdit()
+            edit = QtWidgets.QLineEdit()
             edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
             edit.setValidator(QtGui.QDoubleValidator())
             self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
         elif type == "string":
-            edit = QtGui.QLineEdit()
+            edit = QtWidgets.QLineEdit()
             edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
             self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
         elif type == "int":
-            edit = QtGui.QLineEdit()
+            edit = QtWidgets.QLineEdit()
             edit.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
             edit.setValidator(QtGui.QIntValidator())
             self.ui.tableWidgetVars.setCellWidget(row, 2, edit)
         elif type == "boolean":
-            combobox = QtGui.QComboBox()
+            combobox = QtWidgets.QComboBox()
             combobox.addItem("True")
             combobox.addItem("False")
             combobox.currentIndexChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
@@ -164,7 +164,7 @@ class guiCreateBlock(QtGui.QDialog):
 
     def __addImage(self):
         if self.img not in self.listImg:
-            self.ui.listWidgetBlockImage.addItem(QtGui.QListWidgetItem(self.img))
+            self.ui.listWidgetBlockImage.addItem(QtWidgets.QListWidgetItem(self.img))
             self.listImg.append(self.img)
             self.ui.pushButtonRemoveBlockImage.setEnabled(True)
 
@@ -181,36 +181,36 @@ class guiCreateBlock(QtGui.QDialog):
             ret = None
             name = self.ui.lineEditName.text().replace(" ", "_")
             if name == "":
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error Name is empty."))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error Name is empty."))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
             if name not in functions.keys():
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("This name alredy exist"))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("This name alredy exist"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
             elif len(self.listImg) is 0:
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error Images of block is empty."))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error Images of block is empty."))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
             elif self.__repitNameVar():
-                msgBox = QtGui.QMessageBox()
-                msgBox.setWindowTitle(self.trUtf8("Warning"))
-                msgBox.setIcon(QtGui.QMessageBox.Warning)
-                msgBox.setText(self.trUtf8("Error name of vars is repit, name is empty or default value is empty."))
-                msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Error name of vars is repit, name is empty or default value is empty."))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
             if ret is not None:
                 return
@@ -242,15 +242,15 @@ class guiCreateBlock(QtGui.QDialog):
                     dictToolTip[self.ui.tableWidgetToolTip.cellWidget(row, 0).text()] = self.ui.tableWidgetToolTip.cellWidget(row, 1).text()
                 dictBlock["tooltip"] = dictToolTip
 
-            msgBox = QtGui.QMessageBox()
-            msgBox.setWindowTitle(self.trUtf8("Warning"))
-            msgBox.setIcon(QtGui.QMessageBox.Warning)
-            msgBox.setText(self.trUtf8("Are you sure you want to add this function?"))
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Warning"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+            msgBox.setText(self.tr("Are you sure you want to add this function?"))
             msgBox.setInformativeText(str(dictBlock))
-            msgBox.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
             ret = msgBox.exec_()
-            if ret == QtGui.QMessageBox.Ok:
+            if ret == QtWidgets.QMessageBox.Ok:
                 with open(os.path.join(tempfile.gettempdir(), "block", self.ui.lineEditName.text() + ".conf"), 'w') as file:
                     json.dump([dictBlock], file)
                 with open(os.path.join(tempfile.gettempdir(), "functions", self.ui.lineEditName.text() + ".py"), 'w') as file:
