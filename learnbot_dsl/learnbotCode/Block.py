@@ -110,8 +110,6 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
     im = None
     sizeleter = 15
     varText = ""
-    print(name)
-
     if not isinstance(vars_, list):
         vars_ = []
     if type_ in [FUNTION, USERFUNCTION, LIBRARY] or (type_ is CONTROL and len(vars_) is not 0):
@@ -121,7 +119,6 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
             for var in vars_:
                 varText = str(var)
                 break
-    print(varText)
     text = name + varText
 
     textSize = (len(text) * sizeleter)

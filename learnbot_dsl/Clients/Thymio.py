@@ -8,8 +8,10 @@ from threading import Event
 K = 6
 L = 95
 
+
 def valmap(value, istart, istop, ostart, ostop):
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
+
 
 thymiohandlers = """
 <!DOCTYPE aesl-source>
@@ -101,10 +103,27 @@ else:
 
 print("Name of the file is:", name_thymiohandlers)
 
+
 # addFunctions(getFuntions())
 
 class Robot(Client):
-    requiementFunctions = ['is_there_blue_line', 'center_face', 'left_black_line', 'am_I_moving_right', 'left_blue_line', 'is_there_face', 'is_there_somebody_happy', 'move_right', 'expressNeutral', 'am_I_Surprise', 'up_face', 'sleep', 'turn_90_right', 'am_I_Sadness', 'am_I_Joy', 'is_there_black_line', 'expressJoy', 'obstacle_free', 'is_there_red_line', 'near_to_target', 'am_I_Angry', 'back_obstacle', 'right_black_line', 'am_I_moving_left', 'is_there_somebody_angry', 'move_left', 'look_floor', 'look_front', 'front_obstacle', 'right_blue_line', 'am_I_turning_right', 'turn_left', 'turn_right', 'target_at_left', 'expressSurprise', 'center_red_line', 'look_up', 'target_at_front', 'am_I_moving_straight', 'get_distance', 'turn_back', 'am_I_turning', 'center_black_line', 'left_face', 'set_move', 'setAngleCamera', 'line_crossing', 'right_red_line', 'down_camera', 'slow_down', 'is_there_somebody_neutral', 'seeing_the_tag', 'expressDisgust', 'setAngleMotor', 'right_face', 'target_at_right', 'stop_bot', 'get_image', 'expressAnger', 'center_blue_line', 'expressFear', 'get_pose', 'sayText', 'move_straight', 'am_I_Disgust', 'am_I_Neutral', 'expressSadness', 'turn', 'is_there_somebody_surprised', 'left_obstacle', 'is_there_somebody_sad', 'turn_90_left', 'down_face', 'am_I_Scared', 'up_camera', 'right_obstacle', 'left_red_line', 'am_I_turning_left']
+    requiementFunctions = ['is_there_blue_line', 'center_face', 'left_black_line', 'am_I_moving_right',
+                           'left_blue_line', 'is_there_face', 'is_there_somebody_happy', 'move_right', 'expressNeutral',
+                           'am_I_Surprise', 'up_face', 'sleep', 'turn_90_right', 'am_I_Sadness', 'am_I_Joy',
+                           'is_there_black_line', 'expressJoy', 'obstacle_free', 'is_there_red_line', 'near_to_target',
+                           'am_I_Angry', 'back_obstacle', 'right_black_line', 'am_I_moving_left',
+                           'is_there_somebody_angry', 'move_left', 'look_floor', 'look_front', 'front_obstacle',
+                           'right_blue_line', 'am_I_turning_right', 'turn_left', 'turn_right', 'target_at_left',
+                           'expressSurprise', 'center_red_line', 'look_up', 'target_at_front', 'am_I_moving_straight',
+                           'get_distance', 'turn_back', 'am_I_turning', 'center_black_line', 'left_face', 'set_move',
+                           'setAngleCamera', 'line_crossing', 'right_red_line', 'down_camera', 'slow_down',
+                           'is_there_somebody_neutral', 'seeing_the_tag', 'expressDisgust', 'setAngleMotor',
+                           'right_face', 'target_at_right', 'stop_bot', 'get_image', 'expressAnger', 'center_blue_line',
+                           'expressFear', 'get_pose', 'sayText', 'move_straight', 'am_I_Disgust', 'am_I_Neutral',
+                           'expressSadness', 'turn', 'is_there_somebody_surprised', 'left_obstacle',
+                           'is_there_somebody_sad', 'turn_90_left', 'down_face', 'am_I_Scared', 'up_camera',
+                           'right_obstacle', 'left_red_line', 'am_I_turning_left']
+
     def __init__(self):
         Client.__init__(self, _miliseconds=100)
         self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
@@ -127,7 +146,7 @@ class Robot(Client):
         bus = dbus.SessionBus()
         try:
             self.network = dbus.Interface(bus.get_object('ch.epfl.mobots.Aseba', '/'),
-                                 dbus_interface='ch.epfl.mobots.AsebaNetwork')
+                                          dbus_interface='ch.epfl.mobots.AsebaNetwork')
         except Exception as e:
             raise Exception("Connection to thymio failed")
         node = self.network.GetNodesList()
@@ -155,29 +174,29 @@ class Robot(Client):
                     self.send_event_name('SetLEDsBottomLeft', [255, 0, 0])
                     self.send_event_name('SetLEDsBottomRight', [255, 0, 0])
                 elif self.newEmotion is Emotions.Sadness:
-                    self.network.SetVariable("thymio-II", "leds.top", [0,255,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0,255,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0,255,0])
+                    self.network.SetVariable("thymio-II", "leds.top", [0, 255, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0, 255, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0, 255, 0])
                 elif self.newEmotion is Emotions.Surprise:
-                    self.network.SetVariable("thymio-II", "leds.top", [0,0,255])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0,0,255])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0,0,255])
+                    self.network.SetVariable("thymio-II", "leds.top", [0, 0, 255])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0, 0, 255])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0, 0, 255])
                 elif self.newEmotion is Emotions.Disgust:
-                    self.network.SetVariable("thymio-II", "leds.top", [255,0,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255,0,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.top", [255, 0, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255, 0, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255, 0, 0])
                 elif self.newEmotion is Emotions.Anger:
-                    self.network.SetVariable("thymio-II", "leds.top", [255,0,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255,0,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.top", [255, 0, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255, 0, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255, 0, 0])
                 elif self.newEmotion is Emotions.Fear:
-                    self.network.SetVariable("thymio-II", "leds.top", [255,0,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255,0,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255,0,0])
+                    self.network.SetVariable("thymio-II", "leds.top", [255, 0, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255, 0, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255, 0, 0])
                 elif self.newEmotion is Emotions.Neutral:
-                    self.network.SetVariable("thymio-II", "leds.top", [0,0,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0,0,0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0,0,0])
+                    self.network.SetVariable("thymio-II", "leds.top", [0, 0, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0, 0, 0])
+                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0, 0, 0])
         except Exception as e:
             traceback.print_exc()
         return True
@@ -257,6 +276,7 @@ class Robot(Client):
             self.send_event_name('SetLEDsTop', [0, 0, 0])
             self.send_event_name('SetLEDsBottomLeft', [0, 0, 0])
             self.send_event_name('SetLEDsBottomRight', [0, 0, 0])
+
 
 if __name__ == '__main__':
     try:

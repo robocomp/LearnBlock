@@ -134,6 +134,9 @@ class Client(Thread):
         self.__detectAprilTags()
         return id in self.__listAprilIDs
 
+    def listTags(self):
+        return self.__listAprilIDs
+
     def stop(self):
         self.__stop_event.set()
         subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)

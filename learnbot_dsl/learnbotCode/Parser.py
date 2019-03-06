@@ -393,7 +393,7 @@ def when_<NAME>():
     if name != "start":
         whenText += """<TABHERE>if time_<NAME> is 0:
 <TABHERE><TABHERE><NAME>_start = time.time()
-<TABHERE>if state_<NAME>:"""
+<TABHERE>if state_<NAME>:\n"""
         index += 2
     else:
         index += 1
@@ -403,7 +403,7 @@ def when_<NAME>():
         text = __process(cline, [], text, index) + "\n"
 
     if name != "start":
-        text = text.replace("<INIVARIABLES>", "<NAME>_start = time.time()\nstate_<NAME> = False\n")
+        text = text.replace("<INIVARIABLES>", "<NAME>_start = time.time()\nstate_<NAME> = False\ntime_<NAME> = 0\n")
         text += "<TABHERE><TABHERE>time_<NAME> = time.time() - <NAME>_start\n" \
                 "<TABHERE>else:\n" \
                 "<TABHERE><TABHERE>time_<NAME> = 0\n"
