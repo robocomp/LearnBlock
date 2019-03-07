@@ -30,8 +30,8 @@ if len(ROBOCOMP) < 1:
 
 from learnbot_components import pathInterfaces
 ice_Laser = False
-if os.path.isfile(os.path.join(pathInterfaces,+'Laser.ice')):
-	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'Laser.ice')
+if os.path.isfile(os.path.join(pathInterfaces, 'Laser.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'Laser.ice')
 	Ice.loadSlice(wholeStr)
 	ice_Laser = True
 

@@ -31,8 +31,8 @@ if len(ROBOCOMP)<1:
 
 from learnbot_components import pathInterfaces
 ice_DifferentialRobot = False
-if os.path.isfile(os.path.join(pathInterfaces,+'DifferentialRobot.ice')):
-	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'DifferentialRobot.ice')
+if os.path.isfile(os.path.join(pathInterfaces, 'DifferentialRobot.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'DifferentialRobot.ice')
 	Ice.loadSlice(wholeStr)
 	ice_DifferentialRobot = True
 

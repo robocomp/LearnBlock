@@ -31,8 +31,8 @@ if len(ROBOCOMP)<1:
 
 from learnbot_components import pathInterfaces
 ice_EmotionalMotor = False
-if os.path.isfile(os.path.join(pathInterfaces,+'EmotionalMotor.ice')):
-	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'EmotionalMotor.ice')
+if os.path.isfile(os.path.join(pathInterfaces, 'EmotionalMotor.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'EmotionalMotor.ice')
 	Ice.loadSlice(wholeStr)
 	ice_EmotionalMotor = True
 

@@ -31,8 +31,8 @@ if len(ROBOCOMP)<1:
 
 from learnbot_components import pathInterfaces
 ice_JointMotor = False
-if os.path.isfile(os.path.join(pathInterfaces,+'JointMotor.ice')):
-	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'JointMotor.ice')
+if os.path.isfile(os.path.join(pathInterfaces, 'JointMotor.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'JointMotor.ice')
 	Ice.loadSlice(wholeStr)
 	ice_JointMotor = True
 

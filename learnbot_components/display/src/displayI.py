@@ -31,8 +31,8 @@ if len(ROBOCOMP)<1:
 
 from learnbot_components import pathInterfaces
 ice_Display = False
-if os.path.isfile(os.path.join(pathInterfaces,+'Display.ice')):
-	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'Display.ice')
+if os.path.isfile(os.path.join(pathInterfaces, 'Display.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'Display.ice')
 	Ice.loadSlice(wholeStr)
 	ice_Display = True
 

@@ -36,7 +36,6 @@ import keyword
 install_aliases()
 from urllib.request import urlopen
 from urllib.error import URLError
-
 path = os.path.dirname(os.path.realpath(__file__))
 
 class DownloadThread(QtCore.QThread):
@@ -425,17 +424,16 @@ class LearnBlock(QtWidgets.QMainWindow):
             else:
                 self.lopenRecent.insert(0, self.lopenRecent.pop(self.lopenRecent.index(self.__fileProject)))
         self.menuOpenRecent.clear()
-        lqA = []
         self.lopenRecent = [p for p in self.lopenRecent if os.path.exists(p)]
         for f, i in zip(self.lopenRecent, range(len(self.lopenRecent))):
             if i == 9:
                 break
-            name, ext = os.path.splitext(f)
+            name, _ = os.path.splitext(f)
             name = os.path.basename(name)
             qA =(QtWidgets.QAction(name, self.ui.actionOpen_Recent))
-            qA.setShortcut("Ctrl+Shift+"+str(i+1))
-            print(i, f)
-            qA.triggered.connect(lambda filename=f: self.openProject(filename))
+            qA.setShortcut("Ctrl+Shift+" + str(i + 1))
+            qA.setData(f)
+            qA.triggered.connect(self.openProject)
             self.menuOpenRecent.addAction(qA)
 
     def updatePythonCodeStyle(self):
@@ -923,7 +921,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.retranslateUi(self)
         for b in self.listButtons:
             b.updateImg()
-        if self.__fileProject is not None:
+        if isinstance(self.__fileProject, str):
             self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
 
     def load_blocks(self):
@@ -1023,6 +1021,10 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.saveInstance()
 
     def openProject(self, file=None, changeFileName=True):
+        sender = self.sender()
+        data = sender.data()
+        if data is not None:
+            file = data
         if self.scene.shouldSave is False:
             if file is None:
                 self.scene.stopAllblocks()
