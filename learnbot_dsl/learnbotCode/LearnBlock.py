@@ -36,6 +36,8 @@ import keyword
 install_aliases()
 from urllib.request import urlopen
 from urllib.error import URLError
+import qdarkstyle
+
 path = os.path.dirname(os.path.realpath(__file__))
 
 class DownloadThread(QtCore.QThread):
@@ -210,7 +212,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
         self.ui.spinBoxLeterSize.valueChanged.connect(self.updateTextCodeStyle)
         self.ui.textCode.textChanged.connect(self.updateTextCodeStyle)
-
+        self.ui.actionDark.changed.connect(self.enbleDarkTheme)
 
         self.ui.actionRedo.triggered.connect(self.redo)
         self.ui.actionUndo.triggered.connect(self.undo)
@@ -316,6 +318,15 @@ class LearnBlock(QtWidgets.QMainWindow):
 
         r = self.app.exec_()
         sys.exit(r)
+
+    def enbleDarkTheme(self):
+        sender = self.sender()
+        if sender.isChecked():
+            self.app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+        else:
+            self.app.setStyleSheet(None)
+
+
 
     def resizeEvent(self, event):
         QtWidgets.QMainWindow.resizeEvent(self, event)
@@ -500,7 +511,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                             break
                     else:
                         break
-                pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), confFile, protocol=0)
+                self.saveConfigFile()
+                # pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), confFile, protocol=0)
 
         else:
             with open(self.confFile, 'rb') as fichero:
@@ -512,6 +524,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                     self.lopenRecent = d[3]
                 except Exception as e:
                     pass
+                self.ui.actionDark.setChecked(d[4])
+                # self.ui.actionDark.changed.emit()
 
     def changeWorkSpace(self):
         newworkSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose workspace directory'),
@@ -531,7 +545,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def saveConfigFile(self):
         with open(self.confFile, 'wb') as fichero:
-            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), fichero, protocol=0)
+            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent, self.ui.actionDark.isChecked()), fichero, protocol=0)
 
     def downloadLibraries(self):
         if internet_on():

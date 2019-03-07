@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui',
 # licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui' applies.
 #
-# Created: Wed Mar  6 16:48:17 2019
+# Created: Thu Mar  7 12:42:46 2019
 #      by: pyside2-uic  running on PySide2 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -407,6 +407,8 @@ class Ui_MainWindow(object):
         self.menuTools_robot.setObjectName("menuTools_robot")
         self.menuEdit = QtWidgets.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
+        self.menuTheme = QtWidgets.QMenu(self.menuEdit)
+        self.menuTheme.setObjectName("menuTheme")
         self.menuProject = QtWidgets.QMenu(self.menubar)
         self.menuProject.setObjectName("menuProject")
         self.menuHelp = QtWidgets.QMenu(self.menubar)
@@ -479,6 +481,10 @@ class Ui_MainWindow(object):
         self.actionAdd_client_robot.setObjectName("actionAdd_client_robot")
         self.actionStart = QtWidgets.QAction(MainWindow)
         self.actionStart.setObjectName("actionStart")
+        self.actionDark = QtWidgets.QAction(MainWindow)
+        self.actionDark.setCheckable(True)
+        self.actionDark.setChecked(False)
+        self.actionDark.setObjectName("actionDark")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_New_block)
@@ -505,12 +511,14 @@ class Ui_MainWindow(object):
         self.menuTools_robot.addAction(self.actionDownload_examples)
         self.menuTools_robot.addAction(self.actionDownload_libraries)
         self.menuTools_robot.addAction(self.actionAdd_client_robot)
+        self.menuTheme.addAction(self.actionDark)
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addAction(self.actionDuplicate)
         self.menuEdit.addAction(self.actionEdit)
         self.menuEdit.addAction(self.actionDelete)
         self.menuEdit.addAction(self.actionExport_Block)
+        self.menuEdit.addAction(self.menuTheme.menuAction())
         self.menuProject.addAction(self.actionBlocks_to_text)
         self.menuProject.addAction(self.actionStart)
         self.menuProject.addAction(self.actionStop)
@@ -579,6 +587,7 @@ class Ui_MainWindow(object):
         self.menuFile.setTitle(QtWidgets.QApplication.translate("MainWindow", "File", None, -1))
         self.menuTools_robot.setTitle(QtWidgets.QApplication.translate("MainWindow", "tools robot", None, -1))
         self.menuEdit.setTitle(QtWidgets.QApplication.translate("MainWindow", "Edit", None, -1))
+        self.menuTheme.setTitle(QtWidgets.QApplication.translate("MainWindow", "Theme", None, -1))
         self.menuProject.setTitle(QtWidgets.QApplication.translate("MainWindow", "Project", None, -1))
         self.menuHelp.setTitle(QtWidgets.QApplication.translate("MainWindow", "Help", None, -1))
         self.actionExit.setText(QtWidgets.QApplication.translate("MainWindow", "Exit", None, -1))
@@ -636,4 +645,5 @@ class Ui_MainWindow(object):
         self.actionHelp.setShortcut(QtWidgets.QApplication.translate("MainWindow", "Ctrl+H", None, -1))
         self.actionAdd_client_robot.setText(QtWidgets.QApplication.translate("MainWindow", "Add client robot", None, -1))
         self.actionStart.setText(QtWidgets.QApplication.translate("MainWindow", "Start", None, -1))
+        self.actionDark.setText(QtWidgets.QApplication.translate("MainWindow", "Dark", None, -1))
 

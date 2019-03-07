@@ -9,7 +9,7 @@ for x in os.listdir(path):
     name, extension = os.path.splitext(os.path.abspath(out))
     absPath = os.path.abspath(x)
     if os.path.isfile(absPath) and extension == ".ui":
-        # if not os.path.exists(name + ".py") or os.path.getmtime(absPath) > os.path.getmtime(name + ".py"):
+        if not os.path.exists(name + ".py") or os.path.getmtime(absPath) > os.path.getmtime(name + ".py"):
             if call(["pyside2-uic", "-o", name + ".py", absPath]) is 1:
                 print("Error al generar ", name)
                 exit(-1)

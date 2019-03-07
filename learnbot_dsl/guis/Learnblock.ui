@@ -822,12 +822,19 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <widget class="QMenu" name="menuTheme">
+     <property name="title">
+      <string>Theme</string>
+     </property>
+     <addaction name="actionDark"/>
+    </widget>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
     <addaction name="actionDuplicate"/>
     <addaction name="actionEdit"/>
     <addaction name="actionDelete"/>
     <addaction name="actionExport_Block"/>
+    <addaction name="menuTheme"/>
    </widget>
    <widget class="QMenu" name="menuProject">
     <property name="title">
@@ -1077,6 +1084,17 @@
   <action name="actionStart">
    <property name="text">
     <string>Start</string>
+   </property>
+  </action>
+  <action name="actionDark">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Dark</string>
    </property>
   </action>
  </widget>

@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/TabLibrary.ui',
 # licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/TabLibrary.ui' applies.
 #
-# Created: Wed Mar  6 16:48:17 2019
+# Created: Thu Mar  7 12:39:25 2019
 #      by: pyside2-uic  running on PySide2 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
