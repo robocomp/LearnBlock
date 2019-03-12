@@ -7,6 +7,8 @@ from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.blocksConfig.blocks import pathBlocks as imgPath
 from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.Button import Block_Button
+
+
 class Library(QtWidgets.QWidget):
 
     def __init__(self, parent, path):
@@ -71,7 +73,7 @@ class Library(QtWidgets.QWidget):
                                        variables, blockType, table, table.rowCount() - 1,
                                        funtionType, tooltip))
                 self.parent.listButtons.append(button)
-                self.listButons.append((button,table.rowCount() - 1))
+                self.listButons.append((button, table.rowCount() - 1))
                 table.setCellWidget(table.rowCount() - 1, 0, button)
         if len(listRepitFuntions) is not 0:
             text = ""
@@ -80,14 +82,15 @@ class Library(QtWidgets.QWidget):
             msgBox = QtWidgets.QMessageBox()
             msgBox.setWindowTitle(self.tr("Warning"))
             msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-            msgBox.setText(self.tr("The following functions have not been imported because there are others with the same name:"))
+            msgBox.setText(
+                self.tr("The following functions have not been imported because there are others with the same name:"))
             msgBox.setInformativeText(text)
             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             ret = msgBox.exec_()
 
     def delete(self):
-        for button,row in self.listButons:
+        for button, row in self.listButons:
             self.parent.listButtons.remove(button)
             button.delete(row)
         for name in self.namesFunctions:

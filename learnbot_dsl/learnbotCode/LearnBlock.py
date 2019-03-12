@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
-import sys, os, pickle, tempfile, shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, requests, paramiko, traceback
+import sys, os, pickle, tempfile, shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, \
+    requests, paramiko, traceback
 from PIL import Image
 from pyunpack import Archive
 from pyparsing import ParseException
@@ -33,12 +34,14 @@ from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode
 from learnbot_dsl import PATHCLIENT
 
 import keyword
+
 install_aliases()
 from urllib.request import urlopen
 from urllib.error import URLError
 import qdarkstyle
 
 path = os.path.dirname(os.path.realpath(__file__))
+
 
 class DownloadThread(QtCore.QThread):
     def __init__(self, url, tmp_file_name, downloading_window):
@@ -55,11 +58,12 @@ class DownloadThread(QtCore.QThread):
         self.downloading_window.finish = True
         return
 
+
 class DownloadingWindow(QtWidgets.QWidget):
-    def __init__(self, parent, text, titel ):
+    def __init__(self, parent, text, titel):
         QtWidgets.QWidget.__init__(self)
         self.parent = parent
-        vbox = QtGui.QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         self.setWindowTitle(titel)
         label = QtWidgets.QLabel(text)
         label.setAlignment(QtCore.Qt.AlignCenter)
@@ -70,7 +74,7 @@ class DownloadingWindow(QtWidgets.QWidget):
         vbox.addWidget(self.progress_bar)
         self.setLayout(vbox)
         self.setGeometry(300, 300, 300, 50)
-        self.progress_bar.setRange(0,0)
+        self.progress_bar.setRange(0, 0)
         self.move(self.parent.pos() + self.parent.rect().center() - self.rect().center())
         self.finish = False
         self.timer = QtCore.QTimer()
@@ -81,6 +85,7 @@ class DownloadingWindow(QtWidgets.QWidget):
         if self.finish:
             self.close()
 
+
 def internet_on():
     try:
         urlopen('http://216.58.192.142', timeout=1)
@@ -88,11 +93,15 @@ def internet_on():
     except URLError as err:
         return False
 
+
 # Create de streamer
 class MySignal(QtCore.QObject):
     signalUpdateStreamer = QtCore.Signal(QtGui.QImage)
 
+
 signal = None
+
+
 def on_message(client, userdata, message):
     global signal
     data = message.payload
@@ -105,14 +114,18 @@ def on_message(client, userdata, message):
         signal.signalUpdateStreamer[QtGui.QImage].emit(image)
     except:
         pass
-type2Values = {"control": (CONTROL,HUE_CONTROL),
-                 "motor": (FUNTION, HUE_MOTOR),
-                 "perceptual": (FUNTION, HUE_PERCEPTUAL),
-                 "proprioceptive": (FUNTION, HUE_PROPIOPERCEPTIVE),
-                 "operador": (OPERATOR, HUE_OPERATOR),
-                 "express": (FUNTION, HUE_EXPRESS),
-                 "others": (FUNTION, HUE_OTHERS)
-                 }
+
+
+type2Values = {"control": (CONTROL, HUE_CONTROL),
+               "motor": (FUNTION, HUE_MOTOR),
+               "perceptual": (FUNTION, HUE_PERCEPTUAL),
+               "proprioceptive": (FUNTION, HUE_PROPIOPERCEPTIVE),
+               "operador": (OPERATOR, HUE_OPERATOR),
+               "express": (FUNTION, HUE_EXPRESS),
+               "others": (FUNTION, HUE_OTHERS)
+               }
+
+
 class LearnBlock(QtWidgets.QMainWindow):
     listNameUserFunctions = []
     listNameVars = []
@@ -131,7 +144,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     rcisthread = None
     help = None
     index = -1
-    pre_sizes = [0,0]
+    pre_sizes = [0, 0]
     dicTables = {}
 
     def __init__(self):
@@ -148,9 +161,10 @@ class LearnBlock(QtWidgets.QMainWindow):
         pathLanguages = {'EN': "t_en.qm", "ES": "t_es.qm"}
         for k, v in iter(pathLanguages.items()):
             translator = QtCore.QTranslator()
-            print('Localization loaded: ', os.path.join("languages", v), translator.load(v, os.path.join(path , "languages")))
+            print('Localization loaded: ', os.path.join("languages", v),
+                  translator.load(v, os.path.join(path, "languages")))
             qttranslator = QtCore.QTranslator()
-            qttranslator.load("q"+v,QtCore.QLibraryInfo.location( QtCore.QLibraryInfo.TranslationsPath))
+            qttranslator.load("q" + v, QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath))
             self.translators[k] = (translator, qttranslator)
         self.currentTranslator = self.translators[getLanguage()]
 
@@ -172,9 +186,9 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.stoptextPushButton.clicked.connect(self.stopthread)
         self.ui.stopPythonPushButton.clicked.connect(self.stopthread)
 
-        self.ui.startpushButton.clicked.connect(lambda : self.startProgram(2))
-        self.ui.starttextPushButton.clicked.connect(lambda : self.startProgram(1))
-        self.ui.startPythonPushButton.clicked.connect(lambda : self.startProgram(0))
+        self.ui.startpushButton.clicked.connect(lambda: self.startProgram(2))
+        self.ui.starttextPushButton.clicked.connect(lambda: self.startProgram(1))
+        self.ui.startPythonPushButton.clicked.connect(lambda: self.startProgram(0))
 
         self.ui.addVarPushButton.clicked.connect(self.newVariable)
         self.ui.addNumberpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(1))
@@ -197,7 +211,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionSave_As.triggered.connect(self.saveAs)
         self.ui.actionOpen_Project.triggered.connect(self.openProject)
         self.ui.actionStart_components.triggered.connect(self.startRobot)
-        self.ui.actionStart.triggered.connect(lambda : self.startProgram(self.ui.Tabwi.currentIndex()))
+        self.ui.actionStart.triggered.connect(lambda: self.startProgram(self.ui.Tabwi.currentIndex()))
         self.ui.actionStart_Simulator.triggered.connect(self.startSimulatorRobot)
         self.ui.actionReboot.triggered.connect(self.rebootRobot)
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
@@ -220,16 +234,14 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionBlocks_to_text.triggered.connect(self.blocksToText)
         self.ui.actionHelp.triggered.connect(self.openHelp)
 
-
-
         # Load image buttons
-        self.ui.savepushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"save.png")))
-        self.ui.openpushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"open.png")))
+        self.ui.savepushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis, "save.png")))
+        self.ui.openpushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis, "open.png")))
         self.ui.openpushButton.setFixedSize(QtCore.QSize(24, 22))
         self.ui.savepushButton.setFixedSize(QtCore.QSize(24, 22))
         self.ui.openpushButton.setIconSize(QtCore.QSize(24, 22))
         self.ui.savepushButton.setIconSize(QtCore.QSize(24, 22))
-        self.ui.zoompushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis,"zoom.png")))
+        self.ui.zoompushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis, "zoom.png")))
         self.ui.zoompushButton.setIconSize(QtCore.QSize(30, 30))
         self.ui.zoompushButton.setFixedSize(QtCore.QSize(30, 30))
 
@@ -284,7 +296,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             os.mkdir(tempfile.gettempdir())
             os.mkdir(os.path.join(tempfile.gettempdir(), "block"))
             os.mkdir(os.path.join(tempfile.gettempdir(), "clients"))
-            shutil.copyfile(os.path.join(PATHCLIENT,"EBO.py"), os.path.join(os.getenv('HOME'), ".learnblock", "clients", os.path.basename(file)))
+            shutil.copyfile(os.path.join(PATHCLIENT, "EBO.py"),
+                            os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
             os.mkdir(os.path.join(tempfile.gettempdir(), "functions"))
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                 f.write("")
@@ -313,8 +326,8 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.pre_sizes = self.ui.splitter.sizes()
 
         # Execute the application
-        subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
-        subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+        # subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
+        # subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
 
         r = self.app.exec_()
         sys.exit(r)
@@ -322,29 +335,28 @@ class LearnBlock(QtWidgets.QMainWindow):
     def enbleDarkTheme(self):
         sender = self.sender()
         if sender.isChecked():
-            self.app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+            self.app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
         else:
             self.app.setStyleSheet(None)
-
-
 
     def resizeEvent(self, event):
         QtWidgets.QMainWindow.resizeEvent(self, event)
         new_sizes = self.ui.splitter.sizes()
         size = sum(new_sizes)
-        self.pre_sizes[1] = size-self.pre_sizes[0]
+        self.pre_sizes[1] = size - self.pre_sizes[0]
         self.ui.splitter.setSizes(self.pre_sizes)
         self.resizeFunctionTab(None, None)
 
     def resizeFunctionTab(self, pos, event):
         # print(self.ui.splitter.sizes())
         self.pre_sizes = self.ui.splitter.sizes()
-        width = self.ui.functions.width()-51
-        tables = [library.ui.tableLibrary for library in self.listLibraryWidget] + list(self.dicTables.values()) + [self.ui.tableSearch]
+        width = self.ui.functions.width() - 51
+        tables = [library.ui.tableLibrary for library in self.listLibraryWidget] + list(self.dicTables.values()) + [
+            self.ui.tableSearch]
         for v in tables:
-            v.setColumnWidth(0, width-20)
+            v.setColumnWidth(0, width - 20)
             for item in [v.cellWidget(r, 0) for r in range(v.rowCount())]:
-                item.updateIconSize(width-20)
+                item.updateIconSize(width - 20)
 
     def onClickedActionStart(self, simulated=False):
         currenTab = self.ui.Tabwi.currentIndex()
@@ -374,7 +386,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     def redo(self):
         self.isOpen = False
         self.scene.shouldSave = False
-        if self.index<len(self.listBackUps)-1:
+        if self.index < len(self.listBackUps) - 1:
             self.index += 1
             self.openProject(self.listBackUps[self.index], False)
         self.isOpen = True
@@ -392,9 +404,9 @@ class LearnBlock(QtWidgets.QMainWindow):
             aux = tempfile.gettempdir()
             tempfile.tempdir = tempfile._get_default_tempdir()
             if self.index + 1 != len(self.listBackUps):
-                for f in self.listBackUps[self.index+1:]:
+                for f in self.listBackUps[self.index + 1:]:
                     os.remove(f)
-                    self.listBackUps = self.listBackUps[:self.index+1]
+                    self.listBackUps = self.listBackUps[:self.index + 1]
                 self.savetmpProject()
             elif len(self.listBackUps) < 30:
                 with tempfile.NamedTemporaryFile(delete=False, suffix="lb.bk") as f:
@@ -417,7 +429,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def addClient(self):
         file, ext = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Add Client'), os.getenv('HOME'),
-                                          self.tr('Python File(*.py)'))
+                                                          self.tr('Python File(*.py)'))
         if file != "":
             shutil.copyfile(file, os.path.join(os.getenv('HOME'), ".learnblock", "clients", os.path.basename(file)))
             self.updateClients()
@@ -425,10 +437,11 @@ class LearnBlock(QtWidgets.QMainWindow):
     def updateClients(self):
         self.ui.clientscomboBox.clear()
         for file in os.listdir(os.path.join(os.getenv('HOME'), ".learnblock", "clients")):
-            if os.path.isfile(os.path.join(os.getenv('HOME'), ".learnblock", "clients",file)) and os.path.splitext(file)[-1].lower() == ".py":
+            if os.path.isfile(os.path.join(os.getenv('HOME'), ".learnblock", "clients", file)) and \
+                    os.path.splitext(file)[-1].lower() == ".py":
                 self.ui.clientscomboBox.addItem(os.path.splitext(file)[0])
 
-    def updateOpenRecent(self):                                             # TODO Fixed line lambda
+    def updateOpenRecent(self):  # TODO Fixed line lambda
         if self.__fileProject is not None:
             if self.__fileProject not in self.lopenRecent:
                 self.lopenRecent.insert(0, self.__fileProject)
@@ -441,7 +454,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 break
             name, _ = os.path.splitext(f)
             name = os.path.basename(name)
-            qA =(QtWidgets.QAction(name, self.ui.actionOpen_Recent))
+            qA = (QtWidgets.QAction(name, self.ui.actionOpen_Recent))
             qA.setShortcut("Ctrl+Shift+" + str(i + 1))
             qA.setData(f)
             qA.triggered.connect(self.openProject)
@@ -474,16 +487,20 @@ class LearnBlock(QtWidgets.QMainWindow):
     def loadConfigFile(self):
         self.confFile = os.path.join(tempfile.gettempdir(), ".learnblock.conf")
         if not os.path.exists(self.confFile):
-            with open(self.confFile,'wb') as confFile:
+            with open(self.confFile, 'wb') as confFile:
                 while True:
-                    self.workSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose workspace directory'), os.environ.get('HOME'),
-                                                                  QtWidgets.QFileDialog.ShowDirsOnly)
+                    self.workSpace = QtWidgets.QFileDialog.getExistingDirectory(self,
+                                                                                self.tr('Choose workspace directory'),
+                                                                                os.environ.get('HOME'),
+                                                                                QtWidgets.QFileDialog.ShowDirsOnly)
                     if self.workSpace is "":
                         msgBox = QtWidgets.QMessageBox()
                         msgBox.setWindowTitle(self.tr("Warning"))
                         msgBox.setIcon(QtWidgets.QMessageBox.Warning)
                         msgBox.setText(self.tr("Workspace is empty"))
-                        msgBox.setInformativeText(self.tr("The working directory will be created in") + os.path.join(os.environ.get('HOME'), "learnbotWorkSpace"))
+                        msgBox.setInformativeText(
+                            self.tr("The working directory will be created in") + os.path.join(os.environ.get('HOME'),
+                                                                                               "learnbotWorkSpace"))
                         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
                         msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
                         ret = msgBox.exec_()
@@ -495,8 +512,9 @@ class LearnBlock(QtWidgets.QMainWindow):
                         self.workSpace = os.path.join(self.workSpace)
                         break
                 while True:
-                    self.libraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose the libraries directory'), os.environ.get('HOME'),
-                                                                  QtWidgets.QFileDialog.ShowDirsOnly)
+                    self.libraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr(
+                        'Choose the libraries directory'), os.environ.get('HOME'),
+                                                                                  QtWidgets.QFileDialog.ShowDirsOnly)
                     if self.libraryPath is "":
                         msgBox = QtWidgets.QMessageBox()
                         msgBox.setWindowTitle(self.tr("Warning"))
@@ -524,38 +542,43 @@ class LearnBlock(QtWidgets.QMainWindow):
                     self.lopenRecent = d[3]
                 except Exception as e:
                     pass
-                self.ui.actionDark.setChecked(d[4])
+                try:
+                    self.ui.actionDark.setChecked(d[4])
+                except:
+                    pass
                 # self.ui.actionDark.changed.emit()
 
     def changeWorkSpace(self):
         newworkSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose workspace directory'),
-                                                                self.workSpace,
-                                                                QtWidgets.QFileDialog.ShowDirsOnly)
+                                                                  self.workSpace,
+                                                                  QtWidgets.QFileDialog.ShowDirsOnly)
         if newworkSpace is "":
             return
         self.workSpace = newworkSpace
 
     def changeLibraryPath(self):
         newlibraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose the libraries directory'),
-                                                                  self.libraryPath,
-                                                                  QtWidgets.QFileDialog.ShowDirsOnly)
+                                                                    self.libraryPath,
+                                                                    QtWidgets.QFileDialog.ShowDirsOnly)
         if newlibraryPath is "":
             return
         self.libraryPath = newlibraryPath
 
     def saveConfigFile(self):
         with open(self.confFile, 'wb') as fichero:
-            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent, self.ui.actionDark.isChecked()), fichero, protocol=0)
+            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent,
+                         self.ui.actionDark.isChecked()), fichero, protocol=0)
 
     def downloadLibraries(self):
         if internet_on():
             tempLibraries = tempfile.mkdtemp("Libraries-ebo")
             pathzip = os.path.join(tempLibraries, "Libraries.zip")
-            self.dw = DownloadingWindow(self, self.tr("Donwloading Libraries files please wait"), self.tr("Donwloading Libraries"))
+            self.dw = DownloadingWindow(self, self.tr("Donwloading Libraries files please wait"),
+                                        self.tr("Donwloading Libraries"))
             self.dw.show()
             self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/Libraries.zip", pathzip, self.dw)
             self.dwTh.start()
-            self.dwTh.finished.connect(lambda : self.unzip(pathzip, tempLibraries, self.libraryPath))
+            self.dwTh.finished.connect(lambda: self.unzip(pathzip, tempLibraries, self.libraryPath))
 
         else:
             msgBox = QtWidgets.QMessageBox()
@@ -570,11 +593,12 @@ class LearnBlock(QtWidgets.QMainWindow):
         if internet_on():
             tempExamples = tempfile.mkdtemp("examples-ebo")
             pathzip = os.path.join(tempExamples, "examples.zip")
-            self.dw = DownloadingWindow(self, self.tr("Donwloading Examples files please wait"), self.tr("Donwloading Examples"))
+            self.dw = DownloadingWindow(self, self.tr("Donwloading Examples files please wait"),
+                                        self.tr("Donwloading Examples"))
             self.dw.show()
             self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/examples.zip", pathzip, self.dw)
             self.dwTh.start()
-            self.dwTh.finished.connect(lambda : self.unzip(pathzip,tempExamples,self.workSpace))
+            self.dwTh.finished.connect(lambda: self.unzip(pathzip, tempExamples, self.workSpace))
 
         else:
             msgBox = QtWidgets.QMessageBox()
@@ -589,11 +613,12 @@ class LearnBlock(QtWidgets.QMainWindow):
         if internet_on():
             tempXMLs = tempfile.mkdtemp("xmls-ebo")
             pathzip = os.path.join(tempXMLs, "xmls.zip")
-            self.dw = DownloadingWindow(self, self.tr("Donwloading XML's files please wait"), self.tr("Donwloading XML's"))
+            self.dw = DownloadingWindow(self, self.tr("Donwloading XML's files please wait"),
+                                        self.tr("Donwloading XML's"))
             self.dw.show()
             self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/xmls.zip", pathzip, self.dw)
             self.dwTh.start()
-            self.dwTh.finished.connect(lambda : self.unzip(pathzip,tempXMLs,os.environ.get('HOME')))
+            self.dwTh.finished.connect(lambda: self.unzip(pathzip, tempXMLs, os.environ.get('HOME')))
 
         else:
             msgBox = QtWidgets.QMessageBox()
@@ -621,7 +646,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 self.client.connect(host='192.168.16.1', port=50000)
                 self.client.subscribe(topic='camara', qos=2)
                 self.client.loop_start()
-                self.count=0
+                self.count = 0
                 self.start = time.time()
                 print("Connect Camera Successfully")
             except Exception as e:
@@ -629,7 +654,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         else:
             self.client = None
 
-    def readCamera(self,image):
+    def readCamera(self, image):
         try:
             # global imageCamera
             pm = QtGui.QPixmap(image)
@@ -643,14 +668,15 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def addLibrary(self):
         self.scene.stopAllblocks()
-        path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Load Library'), self.libraryPath, QtWidgets.QFileDialog.ShowDirsOnly)
+        path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Load Library'), self.libraryPath,
+                                                          QtWidgets.QFileDialog.ShowDirsOnly)
         nameLibrary = os.path.basename(path)
         self.scene.startAllblocks()
         if path is "":
             return
         if path not in [l[0] for l in self.listLibrary]:
             self.listLibraryWidget.append(Library(self, path))
-            self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1],nameLibrary)))
+            self.listLibrary.append((path, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
         else:
             msgBox = QtWidgets.QMessageBox()
             msgBox.setWindowTitle(self.tr("Warning"))
@@ -660,7 +686,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             ret = msgBox.exec_()
-            if ret ==QtWidgets.QMessageBox.Ok:
+            if ret == QtWidgets.QMessageBox.Ok:
                 self.addLibrary()
 
     def closeEvent(self, event):
@@ -681,7 +707,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox.setIcon(QtWidgets.QMessageBox.Warning)
             msgBox.setText(self.tr("The document has been modified."))
             msgBox.setInformativeText(self.tr("Do you want to save your changes?"))
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
+            msgBox.setStandardButtons(
+                QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
             ret = msgBox.exec_()
             if ret == QtWidgets.QMessageBox.Save:
@@ -766,7 +793,9 @@ class LearnBlock(QtWidgets.QMainWindow):
                     except Exception as e:
                         print(e.with_traceback())
                 subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
-                self.hilo = subprocess.Popen(["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "main_tmp.py")], stdout=subprocess.PIPE)
+                self.hilo = subprocess.Popen(
+                    ["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "main_tmp.py")],
+                    stdout=subprocess.PIPE)
                 # self.hilo = Process(target=self.execTmp)
                 # self.hilo.start()
                 self.disablestartButtons(True)
@@ -795,13 +824,13 @@ class LearnBlock(QtWidgets.QMainWindow):
         try:
             code = parserLearntBotCodeFromCode(textCode, name_Client)
             if not code:
-                    msgBox = QtWidgets.QMessageBox()
-                    msgBox.setWindowTitle(self.tr("Warning"))
-                    msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                    msgBox.setText(self.tr("Your code is empty or is not correct"))
-                    msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
-                    msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
-                    msgBox.exec_()
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Your code is empty or is not correct"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+                msgBox.exec_()
             self.ui.pythonCode.clear()
             self.ui.pythonCode.setText(code)
             return code
@@ -830,12 +859,13 @@ class LearnBlock(QtWidgets.QMainWindow):
         if os.path.exists(os.path.join(os.environ.get('HOME'), "learnbot-xmls")):
             path = os.path.join(os.environ.get('HOME'), "learnbot-xmls")
         fileName = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open xml'), path,
-                                                     self.tr('Rcis file (*.xml)'))
+                                                         self.tr('Rcis file (*.xml)'))
         self.scene.startAllblocks()
         if fileName[0] != "":
             if self.rcisthread is not None:
                 self.rcisthread.terminate()
-            self.rcisthread = Process(target=lambda :os.popen("cd "+ os.path.dirname(fileName[0]) + " && " + configSSH["start_simulator"] + " " + fileName[0]))
+            self.rcisthread = Process(target=lambda: os.popen(
+                "cd " + os.path.dirname(fileName[0]) + " && " + configSSH["start_simulator"] + " " + fileName[0]))
             self.rcisthread.start()
 
     def shutdownRobot(self):
@@ -909,7 +939,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox.setIcon(QtWidgets.QMessageBox.Warning)
             msgBox.setText(self.tr("The document has been modified."))
             msgBox.setInformativeText(self.tr("Do you want to save your changes?"))
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
+            msgBox.setStandardButtons(
+                QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
             ret = msgBox.exec_()
             if ret == QtWidgets.QMessageBox.Save:
@@ -967,8 +998,9 @@ class LearnBlock(QtWidgets.QMainWindow):
                     languages = b["languages"]
                 if "tooltip" in b:
                     tooltip = b["tooltip"]
-                button = Block_Button((self, b["name"], languages, HUE, self.view, self.scene, img + ".png", connections,
-                                       variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
+                button = Block_Button(
+                    (self, b["name"], languages, HUE, self.view, self.scene, img + ".png", connections,
+                     variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
                 if b["name"] == "main":
                     self.mainButton = button
                 self.listButtons.append(button)
@@ -1001,7 +1033,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         if self.__fileProject is None:
             self.scene.stopAllblocks()
             fileName = QtWidgets.QFileDialog.getSaveFileName(self, self.tr('Save Project'), self.workSpace,
-                                                         self.tr('Block Project file (*.blockProject)'))
+                                                             self.tr('Block Project file (*.blockProject)'))
             self.scene.startAllblocks()
             if fileName[0] != "":
                 file = fileName[0]
@@ -1018,14 +1050,16 @@ class LearnBlock(QtWidgets.QMainWindow):
                     block = dic[id]
                     block.file = os.path.basename(block.file)
                 pickle.dump(
-                    (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions, [x[0] for x in self.listLibrary]),
+                    (dic, self.listNameWhens, self.listUserFunctions, self.listNameVars, self.listNameUserFunctions,
+                     [x[0] for x in self.listLibrary]),
                     fichero, protocol=0)
             self.updateOpenRecent()
         self.scene.shouldSave = False
 
     def saveAs(self):
         self.scene.stopAllblocks()
-        fileName = QtWidgets.QFileDialog.getSaveFileName(self, self.tr('Save Project'), self.workSpace, self.tr('Block Project file (*.blockProject)'))
+        fileName = QtWidgets.QFileDialog.getSaveFileName(self, self.tr('Save Project'), self.workSpace,
+                                                         self.tr('Block Project file (*.blockProject)'))
         self.scene.startAllblocks()
         if fileName[0] != "" and fileName[1] == self.tr("Block Project file (*.blockProject)"):
             file = fileName[0]
@@ -1036,14 +1070,15 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def openProject(self, file=None, changeFileName=True):
         sender = self.sender()
-        data = sender.data()
-        if data is not None:
-            file = data
+        if hasattr(sender, "data"):
+            data = sender.data()
+            if data is not None:
+                file = data
         if self.scene.shouldSave is False:
             if file is None:
                 self.scene.stopAllblocks()
                 fileName = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open Project'), self.workSpace,
-                                                         self.tr('Block Project file (*.blockProject)'))
+                                                                 self.tr('Block Project file (*.blockProject)'))
                 self.scene.startAllblocks()
             if file is not None or fileName[0] != "":
                 self.newProject(resetAll=False)
@@ -1066,7 +1101,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                             l = Library(self, path)
                             if l.pathLibrary is not None:
                                 self.listLibraryWidget.append(l)
-                                self.listLibrary.append((l.pathLibrary, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
+                                self.listLibrary.append(
+                                    (l.pathLibrary, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
                     except Exception as e:
                         traceback.print_exc()
 
@@ -1101,7 +1137,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox.setIcon(QtWidgets.QMessageBox.Warning)
             msgBox.setText(self.tr("The document has been modified."))
             msgBox.setInformativeText(self.tr("Do you want to save your changes?"))
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
+            msgBox.setStandardButtons(
+                QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
             ret = msgBox.exec_()
             if ret == QtWidgets.QMessageBox.Save:
@@ -1129,8 +1166,8 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def showGuiAddWhen(self):
         self.addWhenGui = guiAddWhen()
-        self.addWhenGui.ui.pushButtonOK.clicked.connect(lambda : self.addBlockWhen(isOK=True))
-        self.addWhenGui.ui.pushButtonCancel.clicked.connect(lambda : self.addBlockWhen(isOK=False))
+        self.addWhenGui.ui.pushButtonOK.clicked.connect(lambda: self.addBlockWhen(isOK=True))
+        self.addWhenGui.ui.pushButtonCancel.clicked.connect(lambda: self.addBlockWhen(isOK=False))
         self.addWhenGui.open()
 
     def addBlockWhen(self, isOK=True):
@@ -1163,7 +1200,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
+            if name in self.listNameVars or name in [name for name, _ in
+                                                     self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -1185,36 +1223,38 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.addWhenGui.close()
         else:
             self.addWhenGui.close()
+
     def addButtonsWhens(self, configImgPath, name):
         if os.path.basename(configImgPath) == 'block8':
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, "block1"))
             table = self.dicTables['control']
 
             table.insertRow(table.rowCount())
-            button = Block_Button((self, "activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name}, HUE_WHEN,
-                                   self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections, [], blockType,
-                                   table, table.rowCount() - 1, VARIABLE,
-                                   {'ES': "Activa el evento " + name, 'EN': "Activate the event " + name}))
+            button = Block_Button(
+                (self, "activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name}, HUE_WHEN,
+                 self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections, [], blockType,
+                 table, table.rowCount() - 1, VARIABLE,
+                 {'ES': "Activa el evento " + name, 'EN': "Activate the event " + name}))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
             table.insertRow(table.rowCount())
-            button = Block_Button((self, "deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name}, HUE_WHEN,
-                                   self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections, [], blockType,
-                                   table, table.rowCount() - 1, VARIABLE,
-                                   {'ES': "Desactiva el evento " + name, 'EN': "Deactivate the event " + name}))
+            button = Block_Button(
+                (self, "deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name}, HUE_WHEN,
+                 self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections, [], blockType,
+                 table, table.rowCount() - 1, VARIABLE,
+                 {'ES': "Desactiva el evento " + name, 'EN': "Deactivate the event " + name}))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             # table.insertRow(table.rowCount())
 
-
         table = self.dicTables['control']
-        for img in ["block3","block4"]:
+        for img in ["block3", "block4"]:
             table.insertRow(table.rowCount())
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
-            button = Block_Button((self, "state_" + name, {'ES': "Estado_" + name, 'EN': "State_" +name}, HUE_WHEN,
+            button = Block_Button((self, "state_" + name, {'ES': "Estado_" + name, 'EN': "State_" + name}, HUE_WHEN,
                                    self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections, [],
                                    blockType,
                                    table, table.rowCount() - 1, VARIABLE,
@@ -1227,11 +1267,12 @@ class LearnBlock(QtWidgets.QMainWindow):
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, x))
 
             table.insertRow(table.rowCount())
-            button = Block_Button((self, "time_" + name, {'ES': "Tiempo_" + name, 'EN': "Time_" + name}, HUE_WHEN, self.view,
-                                   self.scene, os.path.join(pathBlocks, x + ".png"), connections, [], blockType, table,
-                                   table.rowCount() - 1, VARIABLE,
-                                   {'ES': "Es el numero de segundos que lleva en ejecucion el evento " + name,
-                                    'EN': " " + name}))
+            button = Block_Button(
+                (self, "time_" + name, {'ES': "Tiempo_" + name, 'EN': "Time_" + name}, HUE_WHEN, self.view,
+                 self.scene, os.path.join(pathBlocks, x + ".png"), connections, [], blockType, table,
+                 table.rowCount() - 1, VARIABLE,
+                 {'ES': "Es el numero de segundos que lleva en ejecucion el evento " + name,
+                  'EN': " " + name}))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1256,7 +1297,9 @@ class LearnBlock(QtWidgets.QMainWindow):
                 except Exception as e:
                     print(e.with_traceback())
                 self.generateStopTmpFile()
-                self.hilo = subprocess.Popen(["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "stop_main_tmp.py")], stdout=subprocess.PIPE)
+                self.hilo = subprocess.Popen(
+                    ["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "stop_main_tmp.py")],
+                    stdout=subprocess.PIPE)
             except Exception as e:
                 print(e.with_traceback())
                 pass
@@ -1372,7 +1415,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
+            if name in self.listNameVars or name in [name for name, _ in
+                                                     self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -1412,8 +1456,9 @@ class LearnBlock(QtWidgets.QMainWindow):
         table = self.dicTables['variables']
         table.insertRow(table.rowCount())
         variables = []
-        variables.append(Variable("float", "set to ", "0",{"ES": " poner a ", "EN": " set to "}))
-        button = Block_Button((self, name, {"ES": name + " poner a ", "EN": name + " set to "}, HUE_WHEN, self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections,
+        variables.append(Variable("float", "set to ", "0", {"ES": " poner a ", "EN": " set to "}))
+        button = Block_Button((self, name, {"ES": name + " poner a ", "EN": name + " set to "}, HUE_WHEN, self.view,
+                               self.scene, os.path.join(pathBlocks, "block1.png"), connections,
                                variables, blockType, table, table.rowCount() - 1, VARIABLE, {}))
         self.listButtons.append(button)
         table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1422,7 +1467,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
             table = self.dicTables['variables']
             table.insertRow(table.rowCount())
-            button = Block_Button((self, name, {}, HUE_VARIABLE, self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections,
+            button = Block_Button((self, name, {}, HUE_VARIABLE, self.view, self.scene,
+                                   os.path.join(pathBlocks, img + ".png"), connections,
                                    [], blockType, table, table.rowCount() - 1, VARIABLE, {}))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1452,7 +1498,8 @@ class LearnBlock(QtWidgets.QMainWindow):
     def delVar(self, name):
         table = self.dicTables['variables']
         rango = reversed(range(0, table.rowCount()))
-        for item, row in [(table.cellWidget(r, 0), r) for r in reversed(range(0, table.rowCount())) if table.cellWidget(r, 0).getText() == name]:
+        for item, row in [(table.cellWidget(r, 0), r) for r in reversed(range(0, table.rowCount())) if
+                          table.cellWidget(r, 0).getText() == name]:
             item.delete(row)
             item.removeTmpFile()
             self.listButtons.remove(item)
@@ -1483,7 +1530,9 @@ class LearnBlock(QtWidgets.QMainWindow):
     def delWhen(self, name):
         table = self.dicTables['control']
         rango = reversed(range(0, table.rowCount()))
-        for item, row in [(table.cellWidget(r, 0), r) for r in rango if table.cellWidget(r, 0).getText() in [name, "activate " + name, "deactivate " + name, "time_" + name]]:
+        for item, row in [(table.cellWidget(r, 0), r) for r in rango if
+                          table.cellWidget(r, 0).getText() in [name, "activate " + name, "deactivate " + name,
+                                                               "time_" + name]]:
             item.delete(row)
             item.removeTmpFile()
             self.listButtons.remove(item)
@@ -1524,7 +1573,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
                 return
-            if name in self.listNameVars or name in [name for name, _ in self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
+            if name in self.listNameVars or name in [name for name, _ in
+                                                     self.listNameWhens] or name in self.listNameUserFunctions or name in self.listNameLibraryFunctions:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -1565,7 +1615,8 @@ class LearnBlock(QtWidgets.QMainWindow):
         for img in imgs:
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
             table.insertRow(table.rowCount())
-            button = Block_Button((self, name, {}, HUE_USERFUNCTION, self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections,
+            button = Block_Button((self, name, {}, HUE_USERFUNCTION, self.view, self.scene,
+                                   os.path.join(pathBlocks, img + ".png"), connections,
                                    [], blockType, table, table.rowCount() - 1, USERFUNCTION, {}))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1595,7 +1646,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     def delUserFunction(self, name):
         table = self.dicTables['funtions']
         rango = reversed(range(0, table.rowCount()))
-        for item,row in [(table.cellWidget(r,0),r) for r in rango if table.cellWidget(r,0).getText() == name]:
+        for item, row in [(table.cellWidget(r, 0), r) for r in rango if table.cellWidget(r, 0).getText() == name]:
             item.delete(row)
             item.removeTmpFile()
             self.listButtons.remove(item)

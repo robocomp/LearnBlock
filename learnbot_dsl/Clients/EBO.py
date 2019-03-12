@@ -27,7 +27,7 @@ import RoboCompLaser, RoboCompDifferentialRobot, RoboCompJointMotor, RoboCompGen
 
 
 class Robot(Client):
-    requiementFunctions = ['see_some_tag','is_there_blue_line', 'center_face', 'left_black_line', 'am_I_moving_right', 'left_blue_line', 'is_there_face', 'is_there_somebody_happy', 'move_right', 'expressNeutral', 'am_I_Surprise', 'up_face', 'sleep', 'turn_90_right', 'am_I_Sadness', 'am_I_Joy', 'is_there_black_line', 'expressJoy', 'obstacle_free', 'is_there_red_line', 'near_to_target', 'am_I_Angry', 'back_obstacle', 'right_black_line', 'am_I_moving_left', 'is_there_somebody_angry', 'move_left', 'look_floor', 'look_front', 'front_obstacle', 'right_blue_line', 'am_I_turning_right', 'turn_left', 'turn_right', 'target_at_left', 'expressSurprise', 'center_red_line', 'look_up', 'target_at_front', 'am_I_moving_straight', 'get_distance', 'turn_back', 'am_I_turning', 'center_black_line', 'left_face', 'set_move', 'setAngleCamera', 'line_crossing', 'right_red_line', 'down_camera', 'slow_down', 'is_there_somebody_neutral', 'seeing_the_tag', 'expressDisgust', 'setAngleMotor', 'right_face', 'target_at_right', 'stop_bot', 'get_image', 'expressAnger', 'center_blue_line', 'expressFear', 'get_pose', 'sayText', 'move_straight', 'am_I_Disgust', 'am_I_Neutral', 'expressSadness', 'turn', 'is_there_somebody_surprised', 'left_obstacle', 'is_there_somebody_sad', 'turn_90_left', 'down_face', 'am_I_Scared', 'up_camera', 'right_obstacle', 'left_red_line', 'am_I_turning_left']
+    devicesAvailables = ["base", "camera", "display", "distanceSensor", "jointMotors"]
 
     def __init__(self):
         Client.__init__(self)
@@ -42,13 +42,14 @@ class Robot(Client):
         except Exception as e:
             print("Error connect Streamer\n", e)
         self.connectToRobot()
-        self.open_cv_image = np.zeros((240,320,3), np.uint8)
+        self.open_cv_image = np.zeros((240, 320, 3), np.uint8)
         self.newImage = False
         self.distanceSensors = Devices.DistanceSensors(_readFunction=self.deviceReadLaser)
         self.camera = Devices.Camera(_readFunction=self.deviceReadCamera)
         self.base = Devices.Base(_callFunction=self.deviceMove)
         self.display = Devices.Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
-        self.addJointMotor("CAMERA", _JointMotor=Devices.JointMotor(_callDevice= self.deviceSendAngleHead, _readDevice=None))
+        self.addJointMotor("CAMERA",
+                           _JointMotor=Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
         self.start()
 
     def on_message(self, client, userdata, message):
@@ -62,10 +63,11 @@ class Robot(Client):
     def connectToRobot(self):
         self.laser_proxy = connectComponent("laser:tcp -h 192.168.16.1 -p 10104", RoboCompLaser.LaserPrx)
         self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h 192.168.16.1 -p 10004",
-                                                   RoboCompDifferentialRobot.DifferentialRobotPrx)
-        self.jointmotor_proxy = connectComponent("jointmotor:tcp -h 192.168.16.1 -p 10067", RoboCompJointMotor.JointMotorPrx)
+                                                        RoboCompDifferentialRobot.DifferentialRobotPrx)
+        self.jointmotor_proxy = connectComponent("jointmotor:tcp -h 192.168.16.1 -p 10067",
+                                                 RoboCompJointMotor.JointMotorPrx)
         self.emotionalmotor_proxy = connectComponent("emotionalmotor:tcp -h 192.168.16.1 -p 30001",
-                                                RoboCompEmotionalMotor.EmotionalMotorPrx)
+                                                     RoboCompEmotionalMotor.EmotionalMotorPrx)
 
     def deviceReadLaser(self):
         laserdata = self.laser_proxy.getLaserData()
@@ -75,7 +77,7 @@ class Robot(Client):
                 "right": usList[3:]}
 
     def deviceMove(self, _adv, _rot):
-        self.differentialrobot_proxy.setSpeedBase(_adv , _rot)
+        self.differentialrobot_proxy.setSpeedBase(_adv, _rot)
 
     def deviceReadCamera(self, ):
         return self.open_cv_image, self.newImage
@@ -102,8 +104,19 @@ class Robot(Client):
         goal.position = _angle
         self.jointmotor_proxy.setPosition(goal)
 
+
 if __name__ == '__main__':
-    ebo = Robot()
-    ebo.start()
-    ebo.setBaseSpeed(0,0)
-    ebo.setJointAngle("CAMERA", 0.6000000238)
+    robot = Robot()
+    while True:
+        if robot.obstacle_free(50):
+
+            if not robot.am_I_turning():
+
+                if robot.left_obstacle(50):
+                    robot.turn_right()
+                else:
+                    robot.turn_left()
+
+        else:
+            robot.move_straight()
+    ebo.join()

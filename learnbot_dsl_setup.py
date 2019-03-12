@@ -11,7 +11,7 @@ def readVersion(fname):
     with open(fname, 'rb') as f:
         for l in f.readlines():
             if '__version__' in l:
-                return l.split("=")[-1].replace("'", "").replace(" ", "")
+                return l.split('=')[-1].replace("'", "").replace(" ", "")
 
 
 def listmdfiles(path, rpPath):
@@ -40,10 +40,17 @@ data_files += [
 
 setup(name="learnbot_dsl",
       version=readVersion(os.path.join(os.path.dirname(__file__), "learnbot_dsl", "__init__.py")),
+      keywords='Visual programming language for robots.',
       description="Learnblock is a IDE for program learnbot using blocks",
       author="Ivan Barbecho",
       author_email="ivanbd@unex.es",
-      url="https://github.com/robocomp/learnbot",
+      project_urls={
+          'Documentation': 'https://github.com/ibarbech/learnbot/wiki',
+          # 'Funding': 'https://donate.pypi.org',
+          # 'Say Thanks!': 'http://saythanks.io/to/example',
+          'Source': 'https://github.com/ibarbech/learnbot',
+          'Tracker': 'https://github.com/ibarbech/learnbot/issues',
+      },
       license="GPL",
       scripts=[
           'learnbot_dsl/learnbotCode/Learnblock',
@@ -55,9 +62,27 @@ setup(name="learnbot_dsl",
       data_files=data_files,
       zip_safe=False,
       long_description=read('learnbot_dsl/description.md'),
+      classifiers = [
+            'Development Status :: 4 - Beta',
+            'Intended Audience :: Education',
+            'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
+            'Operating System :: MacOS :: MacOS X',
+            'Operating System :: POSIX',
+            'Operating System :: POSIX :: Linux',
+            # 'Programming Language :: Python :: 2',
+            'Programming Language :: Python :: 2.7',
+            # 'Programming Language :: Python :: 3',
+            # 'Programming Language :: Python :: 3.3',
+            'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: 3.6',
+            'Programming Language :: Python :: 3.7',
+            'Environment :: X11 Applications :: Qt',
+          ],
       long_description_content_type='text/markdown',
-      python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4',
-      platforms="Posix",
+      # python_requires='==2.7, ==3.4, ==3.5, ==3.6',
+      platforms=["Posix",
+                 "MacOS",],
       install_requires=[
           "requests>=2.20.0",
           "pyunpack>=0.1.2",
@@ -80,8 +105,9 @@ setup(name="learnbot_dsl",
           'paho_mqtt>=1.4.0',
           'PySide2',
           # 'zeroc-ice>=3.6.0',
-          # 'pyparsing>=2.0.3',
+          'pyparsing>=2.0.3',
           # 'cmake',
+          'qdarkstyle',
           'future>=0.16.0'
           ],
       )

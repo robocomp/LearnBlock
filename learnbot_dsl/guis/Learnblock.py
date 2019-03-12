@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui',
 # licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui' applies.
 #
-# Created: Thu Mar  7 12:42:46 2019
+# Created: Fri Mar  8 13:22:18 2019
 #      by: pyside2-uic  running on PySide2 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -57,7 +57,12 @@ class Ui_MainWindow(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.language = QtWidgets.QComboBox(self.centralwidget)
-        self.language.setMaximumSize(QtCore.QSize(85, 27))
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.language.sizePolicy().hasHeightForWidth())
+        self.language.setSizePolicy(sizePolicy)
+        self.language.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.language.setObjectName("language")
         self.language.addItem("")
         self.language.addItem("")

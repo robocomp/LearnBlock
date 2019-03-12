@@ -80,7 +80,7 @@ class Connection:
         del self.__type
 
 
-class Variable():
+class Variable:
     translate = {}
     values = []
     translateValues = {}

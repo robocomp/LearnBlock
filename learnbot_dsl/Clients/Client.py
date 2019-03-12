@@ -44,12 +44,13 @@ def connectComponent(stringProxy, _class, tries=4):
 
 class Client(Thread):
 
-    requiementFunctions = []
+    devicesAvailables = []
 
     def __new__(cls, *args, **kwargs):
-        if len(cls.requiementFunctions) is not 0:
-            functions = getFuntions()
-            map(lambda x: setattr(Client, x, functions[x]),cls.requiementFunctions)
+        functions = getFuntions()
+        for k, v in iter(functions.items()):
+            print(k, v)
+            setattr(Client,k,v)
         instance = super(Client, cls).__new__(cls, *args, **kwargs)
         return instance
 

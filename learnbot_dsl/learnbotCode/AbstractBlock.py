@@ -3,7 +3,8 @@
 from __future__ import print_function, absolute_import
 from learnbot_dsl.learnbotCode.Block import *
 
-class AbstractBlock():
+
+class AbstractBlock:
 
     def __init__(self, x, y, nameFunction, dicTrans, file, vars, hue, nameControl="", connections=None,
                  typeBlock=SIMPLEBLOCK, type=None, dicToolTip=None):
@@ -28,22 +29,23 @@ class AbstractBlock():
         self.id = id
         self.hue = hue
 
-    def setId(self, id):
-        self.id = id
+    def setId(self, _id):
+        self.id = _id
 
     def pos(self):
         return self.pos
 
-    def setPos(self, pos):
-        self.pos = pos
+    def setPos(self, _pos):
+        self.pos = _pos
 
-    def updateVars(self, vars):
-        for index in range(len(vars)):
-            self.vars[index].defaul = vars[index]
+    def updateVars(self, _vars):
+        for index in range(len(_vars)):
+            self.vars[index].defaul = _vars[index]
 
     def getVars(self):
         return self.vars
 
     def copy(self):
-        return AbstractBlock(self.pos.x(), self.pos.y(), self.name, self.dicTrans, self.file, copy.deepcopy(self.vars), self.hue, self.nameControl, copy.deepcopy(self.connections),
+        return AbstractBlock(self.pos.x(), self.pos.y(), self.name, self.dicTrans, self.file, copy.deepcopy(self.vars),
+                             self.hue, self.nameControl, copy.deepcopy(self.connections),
                              self.typeBlock, self.type, self.dicToolTip)
