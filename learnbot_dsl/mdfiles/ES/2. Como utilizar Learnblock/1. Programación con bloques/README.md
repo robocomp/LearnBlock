@@ -4,7 +4,8 @@
 
 Learnblock ofrece la posibilidad de crear programas haciendo uso de programación visual mediante bloques.
 
-En este capítulo veremos donde se localizan los diferentes bloques, que bloques disponibles y los dos tipos de programación que se pueden utilizar.
+En este capítulo veremos donde se localizan los diferentes bloques, que bloques disponibles y 
+los dos tipos de programación que se pueden utilizar.
 
 A continuación se muestra una tabla de contenidos:
 
