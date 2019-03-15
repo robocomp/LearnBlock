@@ -8,7 +8,7 @@ from learnbot_dsl.blocksConfig.blocks import *
 listBlock = []
 listNameBlocks = []
 import cv2
-
+from learnbot_dsl.learnbotCode.Language import getLanguage
 for base, dirs, files in os.walk(pathBlocks):
     for f in files:
         archivo, extension = os.path.splitext(base + "/" + f)
@@ -73,8 +73,7 @@ class guiAddWhen(QtWidgets.QDialog):
             self.__updateImage(self.ui.comboBoxBlockImage.currentIndex())
 
     def __updateImage(self, index):
-
-        self.value = "when"
+        self.value = {'EN':"when", 'ES': "Cuando"}[getLanguage()]
         self.nameControl = self.ui.lineEditName.text().replace(" ","_")
         self.img = listNameBlocks[index]
         self.imgName = listBlock[index]

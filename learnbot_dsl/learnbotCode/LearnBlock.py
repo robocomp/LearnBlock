@@ -1219,6 +1219,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                                   self.addWhenGui.nameControl.replace(" ", "_"), connections, blockType, WHEN)
             if self.addWhenGui.nameControl != "start":
                 self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
+            else:
+                self.listNameWhens.append((name, configImgPath))
             self.scene.addItem(block)
             self.addWhenGui.close()
         else:
@@ -1277,7 +1279,6 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
 
-        self.listNameWhens.append((name, configImgPath))
         self.ui.deleteWhenpushButton.setEnabled(True)
 
     def generateStopTmpFile(self):
