@@ -1,3 +1,8 @@
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?token=kY7sGShfBszy9Ncwd-H5ltsagLnyGPNl2n8zdwadOdUZomsU9XuaC7d6u0BNk--QqmyJJ0&country.x=ES&locale.x=ES)
+
+---
+
 # _We suggest using the version-2 branch_
 [Learnbot v 2.0](http://robocomp.org)
 ===============================
@@ -44,3 +49,12 @@ Drop comments and ask questions in:
 - https://gitter.im/robocomp
 
 Please, report any bugs to pbustos@unex.es
+
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick" />
+<input type="hidden" name="hosted_button_id" value="N3VAYG9VP8S4L" />
+<input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/es_ES/i/scr/pixel.gif" width="1" height="1" />
+</form>
+
