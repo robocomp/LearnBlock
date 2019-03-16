@@ -161,10 +161,11 @@ class LearnBlock(QtWidgets.QMainWindow):
         pathLanguages = {'EN': "t_en.qm", "ES": "t_es.qm"}
         for k, v in iter(pathLanguages.items()):
             translator = QtCore.QTranslator()
-            print('Localization loaded: ', os.path.join("languages", v),
+            print('Localization loaded: ', os.path.join(path, "languages", v),
                   translator.load(v, os.path.join(path, "languages")))
             qttranslator = QtCore.QTranslator()
-            qttranslator.load("q" + v, QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath))
+            print('Localization loaded: ', os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath), "q" + v),
+                  qttranslator.load("q" + v, QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath)))
             self.translators[k] = (translator, qttranslator)
         self.currentTranslator = self.translators[getLanguage()]
 

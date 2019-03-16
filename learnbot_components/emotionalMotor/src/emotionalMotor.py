@@ -112,14 +112,21 @@ if __name__ == '__main__':
 	# Remote object connection for Display
 	try:
 		proxyString = ic.getProperties().getProperty('DisplayProxy')
-		try:
-			basePrx = ic.stringToProxy(proxyString)
-			display_proxy = DisplayPrx.checkedCast(basePrx)
-			mprx["DisplayProxy"] = display_proxy
-		except Ice.Exception:
+		tries = 0
+		while tries<4:
+			try:
+				basePrx = ic.stringToProxy(proxyString)
+				display_proxy = DisplayPrx.checkedCast(basePrx)
+				mprx["DisplayProxy"] = display_proxy
+			except Ice.Exception:
+				tries+=1
+				# print('Cannot connect to the remote object (Display)', proxyString)
+				#traceback.print_exc()
+				# status = 1
+		if tries == 4:
 			print('Cannot connect to the remote object (Display)', proxyString)
-			#traceback.print_exc()
 			status = 1
+			raise Ice.Exception
 	except Ice.Exception as e:
 		traceback.print_exc()
 		print('Cannot get DisplayProxy property.')

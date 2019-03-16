@@ -46,7 +46,7 @@ setup(name="learnbot_dsl",
       author_email="ivanbd@unex.es",
       project_urls={
           'Documentation': 'https://github.com/ibarbech/learnbot/wiki',
-          'Funding': 'https://www.paypal.com/donate/?token=kY7sGShfBszy9Ncwd-H5ltsagLnyGPNl2n8zdwadOdUZomsU9XuaC7d6u0BNk--QqmyJJ0&country.x=ES&locale.x=ES',
+          'Funding': 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=N3VAYG9VP8S4L',
           # 'Say Thanks!': 'http://saythanks.io/to/example',
           'Source': 'https://github.com/ibarbech/learnbot',
           'Tracker': 'https://github.com/ibarbech/learnbot/issues',
