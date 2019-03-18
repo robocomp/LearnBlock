@@ -11,8 +11,8 @@ from learnbot_dsl.functions import getFuntions
 __ICEs = ["EmotionRecognition.ice", "Apriltag.ice" ]
 __icePaths = []
 path = os.path.dirname(os.path.realpath(__file__))
-__icePaths.append(os.path.join(os.path.dirname(path), "interfaces"))
 __icePaths.append(PATHINTERFACES)
+
 for ice in __ICEs:
     for p in __icePaths:
         if os.path.isfile(os.path.join(p, ice)):
@@ -49,8 +49,9 @@ class Client(Thread):
     def __new__(cls, *args, **kwargs):
         functions = getFuntions()
         for k, v in iter(functions.items()):
-            print(k, v)
-            setattr(Client,k,v)
+            if v["type"] in cls.devicesAvailables + ["basics"]:
+                print("add ", k)
+                setattr(Client, k, v["function"])
         instance = super(Client, cls).__new__(cls, *args, **kwargs)
         return instance
 

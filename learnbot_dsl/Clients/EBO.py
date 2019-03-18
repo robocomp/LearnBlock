@@ -27,7 +27,7 @@ import RoboCompLaser, RoboCompDifferentialRobot, RoboCompJointMotor, RoboCompGen
 
 
 class Robot(Client):
-    devicesAvailables = ["base", "camera", "display", "distanceSensor", "jointMotors"]
+    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor"]
 
     def __init__(self):
         Client.__init__(self)
@@ -107,6 +107,7 @@ class Robot(Client):
 
 if __name__ == '__main__':
     robot = Robot()
+    print(robot.__dict__)
     while True:
         if robot.obstacle_free(50):
 
