@@ -20,7 +20,7 @@ def cozmo_program(_robot: cozmo.robot.Robot):
 
 
 class Robot(Client):
-    devicesAvailables = ["base", "camera", "display", "jointMotors", "acelerometer", "gyroscope", "speaker"]
+    devicesAvailables = ["base", "camera", "display", "jointmotor", "acelerometer", "gyroscope", "speaker"]
 
     def __init__(self):
         global cozmo

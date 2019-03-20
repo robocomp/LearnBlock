@@ -34,3 +34,13 @@ def reload_functions(file=None):
             b["img"][i] = os.path.join(pathImgBlocks, b["img"][i])
 
     return blocks
+
+
+if __name__ == '__main__':
+    blocks = reload_functions()
+    from learnbot_dsl.functions import getFuntions
+    functions = getFuntions()
+    nameconfigBlocks = [x["name"] for x in blocks]
+    for x in nameconfigBlocks:
+        if x not in functions:
+            print(x)

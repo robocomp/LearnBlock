@@ -1,11 +1,6 @@
 from __future__ import division, print_function
 import time, math
 
-def turn_right(lbot, duration=0.05, rotSpeed=0.3, verbose=False):
+def turn_right(lbot, rotSpeed=0.3):
 	lbot.setBaseSpeed(0, rotSpeed)
-	if verbose:
-		print('~ Learnbot turning right ...')
-	if duration != 0:
-		time.sleep(duration)
-		#lbot.setBaseSpeed(0, 0)
 

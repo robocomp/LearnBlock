@@ -1,12 +1,8 @@
-from __future__ import print_function, absolute_import
 import math as m
 
-def target_at_left(lbot, targetX, targetY, verbose=False):
+def target_at_left(lbot, targetX, targetY,):
 	x, y, alpha = lbot.getPose()
 	targetFromRobotX = m.cos(alpha)*(targetX-x) - m.sin(alpha)*(targetY-y)
-	targetFromRobotY = m.sin(alpha)*(targetX-x) + m.cos(alpha)*(targetY-y)
-	if verbose:
-		print("Target from robot", targetFromRobotX, targetFromRobotY)
 	if targetFromRobotX<0:
 		return True
 	return False

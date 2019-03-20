@@ -1,5 +1,3 @@
-def get_pose(lbot, verbose=False):
+def get_pose(lbot):
 	x, y, alpha = lbot.getPose()
-	if verbose:
-		print('Robot pose:', x, y, alpha)
 	return x, y, alpha

@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 
-import os, sys, inspect
+import os, sys, inspect, warnings
 from importlib import import_module
 
 ignore = [
@@ -37,5 +37,11 @@ def getFuntions():
                 # args = inspect.getargspec(func)
                 functions[name] = dict(function=func, type=_type)
             except Exception as e:
-                print("error", e, module_name, name)
+                print("error", e, module_name, name, fullname)
     return functions
+
+
+if __name__ == '__main__':
+    function = getFuntions()
+    for _ in map(print, function):
+        pass

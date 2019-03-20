@@ -246,7 +246,7 @@ class Face(threading.Thread):
 
 class Robot(Client):
 
-    devicesAvailables = ["base", "camera", "display", "distanceSensor", "jointMotors"]
+    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor"]
 
     def __init__(self):
         Client.__init__(self)

@@ -108,7 +108,7 @@ print("Name of the file is:", name_thymiohandlers)
 
 class Robot(Client):
 
-    devicesAvailables = ["base", "display", "distanceSensor", "acelerometer"]
+    devicesAvailables = ["base", "display", "distancesensors", "acelerometer"]
 
     def __init__(self):
         Client.__init__(self, _miliseconds=100)
