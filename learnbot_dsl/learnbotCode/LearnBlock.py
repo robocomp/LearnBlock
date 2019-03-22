@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 import sys, os, pickle, tempfile, shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, \
@@ -32,7 +32,7 @@ from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
 from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode, cleanCode
 from learnbot_dsl import PATHCLIENT
-
+from learnbot_dsl.learnbotCode.editDictionaryTags import EditDictionaryTags
 import keyword
 
 install_aliases()
@@ -264,6 +264,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionEdit.triggered.connect(self.scene.editBlock)
         self.ui.actionDelete.triggered.connect(self.scene.deleteBlock)
         self.ui.actionExport_Block.triggered.connect(self.scene.exportBlock)
+        self.ui.actionDictionary_Tags.triggered.connect(self.editDictTags)
 
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.dicTables = {'control': self.ui.tableControl, 'motor': self.ui.tableMotor,
@@ -332,6 +333,11 @@ class LearnBlock(QtWidgets.QMainWindow):
 
         r = self.app.exec_()
         sys.exit(r)
+
+    def editDictTags(self):
+        if not hasattr(self, "editDictionaryTagsUI"):
+            self.editDictionaryTagsUI = EditDictionaryTags(self)
+        self.editDictionaryTagsUI.show()
 
     def enbleDarkTheme(self):
         sender = self.sender()

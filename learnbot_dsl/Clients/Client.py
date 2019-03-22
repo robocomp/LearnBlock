@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 from threading import Thread, Lock, Event
-import numpy as np, copy, sys, time, Ice, os, subprocess
+import numpy as np, copy, sys, time, Ice, os, subprocess, json
 from learnbot_dsl.Clients.Devices import *
 from learnbot_dsl import PATHINTERFACES
 from datetime import timedelta
 from learnbot_dsl.functions import getFuntions
-
+from learnbot_dsl.learnbotCode import getAprilTextDict
 __ICEs = ["EmotionRecognition.ice", "Apriltag.ice" ]
 __icePaths = []
 path = os.path.dirname(os.path.realpath(__file__))
@@ -83,6 +83,7 @@ class Client(Thread):
         # Remote object connection for AprilTag
         self.__apriltagProxy = connectComponent("apriltag:tcp -h localhost -p 25000", RoboCompApriltag.ApriltagPrx)
         # self.start()
+        self.aprilTextDict = getAprilTextDict()
 
 
     def addJointMotor(self, _key, _JointMotor):
@@ -133,6 +134,11 @@ class Client(Thread):
 
     def lookingLabel(self, id):
         time.sleep(0)
+        if isinstance(id, str):
+            if id in self.aprilTextDict:
+                id = self.aprilTextDict[id]
+            else:
+                return False
         self.__detectAprilTags()
         return id in self.__listAprilIDs
 

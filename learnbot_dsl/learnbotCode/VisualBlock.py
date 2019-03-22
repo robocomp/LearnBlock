@@ -8,7 +8,7 @@ from learnbot_dsl.learnbotCode.Language import getLanguage
 from learnbot_dsl.learnbotCode.toQImage import *
 from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion
 from learnbot_dsl.blocksConfig import pathImgBlocks
-
+from  learnbot_dsl.learnbotCode import getAprilTextDict
 class KeyPressEater(QtCore.QObject):
     def eventFilter(self, obj, event):
         if isinstance(event, QtGui.QMouseEvent) and event.buttons() & QtCore.Qt.RightButton:
@@ -170,6 +170,11 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 values = var.translateValues[getLanguage()]
                 combobox = QtWidgets.QComboBox()
                 combobox.addItems(values)
+                self.tabVar.setCellWidget(i, 1, combobox)
+            elif var.type == "apriltext":
+                dictApriText = getAprilTextDict()
+                combobox = QtWidgets.QComboBox()
+                combobox.addItems([x for x in dictApriText])
                 self.tabVar.setCellWidget(i, 1, combobox)
 
             combobox = QtWidgets.QComboBox()
@@ -353,6 +358,8 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                     vars.append(self.tabVar.cellWidget(cell, 1).currentText())
                 elif self.tabVar.cellWidget(cell, 3).text() == "list":
                     vars.append('"' + var.values[self.tabVar.cellWidget(cell, 1).currentIndex()] + '"')
+                elif self.tabVar.cellWidget(cell, 3).text() == "apriltext":
+                    vars.append('"' +self.tabVar.cellWidget(cell, 1).currentText() + '"')
                 elif self.tabVar.cellWidget(cell, 3).text() == "string":
                     vars.append('"'+self.tabVar.cellWidget(cell, 1).text()+'"')
                 else:
