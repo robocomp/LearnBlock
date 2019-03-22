@@ -1,13 +1,12 @@
-			
+            
 def sigue_linea_azul():
 
-	if functions.get("center_blue_line")(lbot) :
-		functions.get("move_straight")(lbot)
-	elif functions.get("right_blue_line")(lbot) :
-		functions.get("move_right")(lbot)
-	elif functions.get("left_blue_line")(lbot) :
-		functions.get("move_left")(lbot)
-	else:
-		functions.get("slow_down")(lbot)
-
+    if robot.is_center_red_line():
+        robot.move_straight()
+    elif robot.is_right_red_line():
+        robot.move_right()
+    elif robot.is_left_red_line():
+        robot.move_left()
+    else:
+        robot.stop_bot()
 

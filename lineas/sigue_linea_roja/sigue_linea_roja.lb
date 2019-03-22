@@ -1,12 +1,12 @@
 def sigue_linea_roja():
-	if function.center_red_line():
+	if function.is_center_red_line():
 		function.move_straight()
-	elif function.right_red_line():
+	elif function.is_right_red_line():
 		function.move_right()
-	elif function.left_red_line():
+	elif function.is_left_red_line():
 		function.move_left()
 	else:
-		function.slow_down()
+		function.stop_bot()
 	end
 end
 
