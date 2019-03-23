@@ -866,17 +866,17 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionExit">
    <property name="text">
-    <string>&amp;Exit</string>
+    <string>Exit</string>
    </property>
   </action>
   <action name="actionCreate_New_block">
    <property name="text">
-    <string>&amp;Create New block</string>
+    <string>Create New block</string>
    </property>
   </action>
   <action name="actionSave">
    <property name="text">
-    <string>&amp;Save Project</string>
+    <string>Save Project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -884,7 +884,7 @@
   </action>
   <action name="actionOpen_Project">
    <property name="text">
-    <string>&amp;Open Proyect</string>
+    <string>Open Project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -892,7 +892,7 @@
   </action>
   <action name="actionSave_As">
    <property name="text">
-    <string>Sa&amp;ve As</string>
+    <string>Save As</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -900,7 +900,7 @@
   </action>
   <action name="actionStart_components">
    <property name="text">
-    <string>Start &amp;components</string>
+    <string>Start components</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+1</string>
@@ -908,7 +908,7 @@
   </action>
   <action name="actionReboot">
    <property name="text">
-    <string>&amp;Reboot</string>
+    <string>Reboot</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+2</string>
@@ -916,7 +916,7 @@
   </action>
   <action name="actionShutdown">
    <property name="text">
-    <string>S&amp;hutdown</string>
+    <string>Shutdown</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+3</string>
@@ -924,7 +924,7 @@
   </action>
   <action name="actionStart_Simulator">
    <property name="text">
-    <string>&amp;Start Simulator</string>
+    <string>Start Simulator</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+4</string>
@@ -932,7 +932,7 @@
   </action>
   <action name="actionNew_project">
    <property name="text">
-    <string>&amp;New project</string>
+    <string>New project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -940,7 +940,7 @@
   </action>
   <action name="actionLoad_Library">
    <property name="text">
-    <string>&amp;Load Library</string>
+    <string>Load Library</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -948,7 +948,7 @@
   </action>
   <action name="actionDownload_xmls">
    <property name="text">
-    <string>&amp;Download xmls</string>
+    <string>Download xmls</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+5</string>
@@ -956,7 +956,7 @@
   </action>
   <action name="actionChange_Libraries_path">
    <property name="text">
-    <string>Change Libraries &amp;path</string>
+    <string>Change Libraries path</string>
    </property>
    <property name="shortcut">
     <string>Shift+L</string>
@@ -964,7 +964,7 @@
   </action>
   <action name="actionChange_Workspace">
    <property name="text">
-    <string>Change &amp;Workspace</string>
+    <string>Change Workspace</string>
    </property>
    <property name="shortcut">
     <string>Shift+W</string>
@@ -972,22 +972,22 @@
   </action>
   <action name="actionOpen_Recent">
    <property name="text">
-    <string>Open &amp;Recent</string>
+    <string>Open Recent</string>
    </property>
   </action>
   <action name="actionDownload_examples">
    <property name="text">
-    <string>D&amp;ownload examples</string>
+    <string>Download examples</string>
    </property>
   </action>
   <action name="actionDownload_libraries">
    <property name="text">
-    <string>Download &amp;libraries</string>
+    <string>Download libraries</string>
    </property>
   </action>
   <action name="actionUndo">
    <property name="text">
-    <string>&amp;Undo</string>
+    <string>Undo</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
@@ -995,7 +995,7 @@
   </action>
   <action name="actionRedo">
    <property name="text">
-    <string>&amp;Redo</string>
+    <string>Redo</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+Z</string>
@@ -1003,7 +1003,7 @@
   </action>
   <action name="actionBlocks_to_text">
    <property name="text">
-    <string>&amp;Blocks to text</string>
+    <string>Blocks to text</string>
    </property>
    <property name="shortcut">
     <string>F4</string>
@@ -1027,7 +1027,7 @@
   </action>
   <action name="actionStop">
    <property name="text">
-    <string>S&amp;top</string>
+    <string>Stop</string>
    </property>
    <property name="shortcut">
     <string>F7</string>
@@ -1045,7 +1045,7 @@
   </action>
   <action name="actionDuplicate">
    <property name="text">
-    <string>&amp;Duplicate</string>
+    <string>Duplicate</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
@@ -1053,7 +1053,7 @@
   </action>
   <action name="actionEdit">
    <property name="text">
-    <string>&amp;Edit</string>
+    <string>Edit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
@@ -1061,7 +1061,7 @@
   </action>
   <action name="actionDelete">
    <property name="text">
-    <string>De&amp;lete</string>
+    <string>Delete</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+D</string>
@@ -1069,7 +1069,7 @@
   </action>
   <action name="actionExport_Block">
    <property name="text">
-    <string>Export &amp;Block</string>
+    <string>Export Block</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+E</string>
@@ -1077,7 +1077,7 @@
   </action>
   <action name="actionHelp">
    <property name="text">
-    <string>&amp;Help</string>
+    <string>Help</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+H</string>
@@ -1085,12 +1085,12 @@
   </action>
   <action name="actionAdd_client_robot">
    <property name="text">
-    <string>&amp;Add client robot</string>
+    <string>Add client robot</string>
    </property>
   </action>
   <action name="actionStart">
    <property name="text">
-    <string>&amp;Start</string>
+    <string>Start</string>
    </property>
   </action>
   <action name="actionDark">
@@ -1101,7 +1101,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>&amp;Dark</string>
+    <string>Dark</string>
    </property>
   </action>
   <action name="actionDictionary_Tags">
