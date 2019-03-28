@@ -516,7 +516,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             if c.getConnect() is None:
                 return c
             else:
-                return self.scene.getVisualItem(c.getIdItem()).getLastItem()
+                return self.scene.getVisualItem(c.getIdItem()).getLastRightItem()
         return None
 
     def moveToFront(self):

@@ -900,6 +900,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             b.setEnabled(isChecked)
 
     def searchUpdate(self, text):
+        text = text.replace(" ", "_")
         currentable = self.ui.tableSearch
         currentable.clear()
         currentable.setRowCount(0)
@@ -1222,7 +1223,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             configImgPath = os.path.splitext(imgPath)[0]
             blockType, connections = loadConfigBlock(configImgPath)
 
-            block = AbstractBlock(0, 0, text, {'ES': "Cuando ", 'EN': "When "}, imgPath, [], HUE_WHEN,
+            block = AbstractBlock(0, 0, "when", {'ES': "Cuando ", 'EN': "When "}, imgPath, [], HUE_WHEN,
                                   self.addWhenGui.nameControl.replace(" ", "_"), connections, blockType, WHEN)
             if self.addWhenGui.nameControl != "start":
                 self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
