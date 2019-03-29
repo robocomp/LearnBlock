@@ -40,7 +40,7 @@ The mains aims of the project are the follows:
 
 # Contributing
 Thanks for your interest in contributing code!
-If you find an error or some improvement, I'd appreciate you told me. Please, use [this template](https://github.com/robocomp/learnbot/tree/master/.github)
+If you find an error or some improvement, I'd appreciate you told me. Please, use [this template](https://github.com/robocomp/learnbot/blob/91275d466a7d4269f8451047b3928c9c65d3f363/PULL_REQUEST_TEMPLATE)
 
 ---------------------------------------------------------------------
 Drop comments and ask questions in:
