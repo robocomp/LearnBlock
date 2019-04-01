@@ -46,7 +46,7 @@ If you find an error or some improvement, I'd appreciate you told me. Please, us
 Drop comments and ask questions in:
 
 - https://groups.google.com/forum/?hl=es#!forum/robocomp-dev
-- https://gitter.im/robocomp
+- https://gitter.im/robocomp/robocomp
 
 Please, report any bugs to pbustos@unex.es
 
