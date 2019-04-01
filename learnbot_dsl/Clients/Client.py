@@ -232,7 +232,7 @@ class Client(Thread):
             self.speaker.sendAudio(_audioData)
 
     def getEmotions(self):
-        if not self.emotion_current_exist and hasattr(self, "camera"):
+        if not self.__emotion_current_exist and hasattr(self, "camera"):
             time.sleep(0)
             img = self.camera.getImage()
             frame = RoboCompEmotionRecognition.TImage()
@@ -241,7 +241,7 @@ class Client(Thread):
             frame.depth = img.shape[2]
             frame.image = np.fromstring(img, np.uint8)
             self.currents_emotions = self.__emotionrecognition_proxy.processimage(frame)
-            self.emotion_current_exist = True
+            self.__emotion_current_exist = True
         return self.currents_emotions
 
     def __del__(self):

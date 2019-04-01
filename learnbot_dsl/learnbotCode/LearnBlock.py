@@ -1115,12 +1115,11 @@ class LearnBlock(QtWidgets.QMainWindow):
                         traceback.print_exc()
 
                     dictBlock = d[0]
-                    for id in dictBlock:
-                        block = dictBlock[id]
+                    for block in dictBlock.values():
                         block.file = os.path.join(pathImgBlocks, os.path.basename(block.file))
                     # Load Whens
-                    for x in d[1]:
-                        self.addButtonsWhens(x[1], x[0])
+                    for name, configFile in d[1]:
+                        self.addButtonsWhens(configFile, name)
                     self.listNameWhens = d[1]
                     # Load Variable
                     for name in d[3]:
@@ -1227,7 +1226,6 @@ class LearnBlock(QtWidgets.QMainWindow):
                                   self.addWhenGui.nameControl.replace(" ", "_"), connections, blockType, WHEN)
             if self.addWhenGui.nameControl != "start":
                 self.addButtonsWhens(configImgPath, self.addWhenGui.nameControl.replace(" ", "_"))
-            else:
                 self.listNameWhens.append((name, configImgPath))
             self.scene.addItem(block)
             self.addWhenGui.close()
