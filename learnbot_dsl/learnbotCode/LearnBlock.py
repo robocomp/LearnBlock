@@ -914,8 +914,8 @@ class LearnBlock(QtWidgets.QMainWindow):
     def newProject(self, resetAll=True):
         if self.scene.shouldSave is False:
             # Delete all whens
-            for x in copy.copy(self.listNameWhens):
-                self.delWhen(x[0])
+            for name, _ in copy.copy(self.listNameWhens):
+                self.delWhen(name)
             # Delete all variables
             for name in copy.copy(self.listNameVars):
                 self.delVar(name)
@@ -1539,7 +1539,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         rango = reversed(range(0, table.rowCount()))
         for item, row in [(table.cellWidget(r, 0), r) for r in rango if
                           table.cellWidget(r, 0).getText() in [name, "activate " + name, "deactivate " + name,
-                                                               "time_" + name]]:
+                                                               "time_" + name, "state_" + name]]:
             item.delete(row)
             item.removeTmpFile()
             self.listButtons.remove(item)
