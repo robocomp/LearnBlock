@@ -299,7 +299,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             os.mkdir(os.path.join(tempfile.gettempdir(), "block"))
             os.mkdir(os.path.join(tempfile.gettempdir(), "clients"))
             shutil.copyfile(os.path.join(PATHCLIENT, "EBO.py"),
-                            os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
+                            os.path.join(os.getenv('HOME'), ".learnblock", "clients", "EBO.py"))
             os.mkdir(os.path.join(tempfile.gettempdir(), "functions"))
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                 f.write("")

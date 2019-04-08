@@ -5,7 +5,7 @@ from learnbot_dsl.Clients.Devices import *
 import os, Ice, numpy as np, PIL.Image as Image, io, cv2, paho.mqtt.client
 import learnbot_dsl.Clients.Devices as Devices
 from learnbot_dsl.functions import getFuntions
-
+from learnbot_dsl import PATHINTERFACES
 ROBOCOMP = ''
 try:
     ROBOCOMP = os.environ['ROBOCOMP']
@@ -15,7 +15,8 @@ except KeyError:
 
 ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "EmotionalMotor.ice", "GenericBase.ice"]
 icePaths = []
-icePaths.append("/home/ivan/robocomp/components/learnbot/learnbot_dsl/interfaces")
+
+icePaths.append(PATHINTERFACES)
 for ice in ICEs:
     for p in icePaths:
         if os.path.isfile(os.path.join(p, ice)):

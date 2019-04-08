@@ -84,6 +84,7 @@ setup(name="learnbot_dsl",
       platforms=["Posix",
                  "MacOS",],
       install_requires=[
+          "apriltag"
           "requests>=2.20.0",
           "pyunpack>=0.1.2",
           # "patool",
