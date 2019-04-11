@@ -7,6 +7,7 @@ import learnbot_dsl.Clients.Devices as Devices
 from PIL import Image, ImageDraw
 from random import randint
 from learnbot_dsl import path as Learnblock_Path
+from learnbot_dsl import PATHINTERFACES
 
 
 
@@ -19,7 +20,7 @@ except KeyError:
 
 ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "Display.ice", "RGBD.ice", "GenericBase.ice"]
 icePaths = []
-icePaths.append("/home/ivan/robocomp/components/learnbot/learnbot_dsl/interfaces")
+icePaths.append(PATHINTERFACES)
 for ice in ICEs:
     for p in icePaths:
         if os.path.isfile(os.path.join(p, ice)):
@@ -271,9 +272,9 @@ class Robot(Client):
 
         self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h localhost -p 10004",
                                                         RoboCompDifferentialRobot.DifferentialRobotPrx)
-        self.jointmotor_proxy = connectComponent("jointmotor:tcp -h localhost -p 10067",
+        self.jointmotor_proxy = connectComponent("jointmotor:tcp -h localhost -p 20000",
                                                  RoboCompJointMotor.JointMotorPrx)
-        self.display_proxy = connectComponent("emotionalmotor:tcp -h localhost -p 30001",
+        self.display_proxy = connectComponent("display:tcp -h localhost -p 30000",
                                                      RoboCompDisplay.DisplayPrx)
         self.rgbd_proxy = connectComponent("rgbd:tcp -h localhost -p 10097", RoboCompRGBD.RGBDPrx)
 
@@ -284,6 +285,7 @@ class Robot(Client):
             if os.path.splitext(path)[1] == ".json":
                 with open(os.path.join(imgPaths, "emotionConfig", path), "r") as f:
                     self.configEmotions[os.path.splitext(path)[0]] = json.loads(f.read())
+        self.face.start()
 
     def deviceReadLaser(self):
         usList = []
@@ -324,7 +326,7 @@ class Robot(Client):
     def deviceSendAngleHead(self, _angle):
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
-        goal.position = _angle
+        goal.position = -_angle
         self.jointmotor_proxy.setPosition(goal)
 
 

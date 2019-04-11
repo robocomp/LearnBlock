@@ -16,7 +16,7 @@ except KeyError:
 ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "EmotionalMotor.ice", "GenericBase.ice"]
 icePaths = []
 
-icePaths.append(PATHINTERFACES)
+icePaths.append()PATHINTERFACES
 for ice in ICEs:
     for p in icePaths:
         if os.path.isfile(os.path.join(p, ice)):
