@@ -8,7 +8,7 @@ def read(fname):
 
 
 def readVersion(fname):
-    with open(fname, 'rb') as f:
+    with open(fname, 'r') as f:
         for l in f.readlines():
             if '__version__' in l:
                 return l.split('=')[-1].replace("'", "").replace(" ", "")
@@ -84,7 +84,7 @@ setup(name="learnbot_dsl",
       platforms=["Posix",
                  "MacOS",],
       install_requires=[
-          "apriltag"
+          "apriltag",
           "requests>=2.20.0",
           "pyunpack>=0.1.2",
           # "patool",
