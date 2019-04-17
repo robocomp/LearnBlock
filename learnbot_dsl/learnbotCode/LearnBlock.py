@@ -705,7 +705,9 @@ class LearnBlock(QtWidgets.QMainWindow):
             del self.client
             if self.rcisthread is not None:
                 self.rcisthread.terminate()
-            subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+#            subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+            subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+            subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
             event.accept()
         else:
             self.scene.stopAllblocks()
@@ -725,7 +727,9 @@ class LearnBlock(QtWidgets.QMainWindow):
                 self.stopthread()
                 if self.rcisthread is not None:
                     self.rcisthread.terminate()
-                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+#                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+                subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 event.accept()
             elif ret == QtWidgets.QMessageBox.Discard:
                 self.scene.shouldSave = False
@@ -734,7 +738,9 @@ class LearnBlock(QtWidgets.QMainWindow):
                 self.stopthread()
                 if self.rcisthread is not None:
                     self.rcisthread.terminate()
-                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+ #               subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+                subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 event.accept()
             else:
                 self.scene.startAllblocks()
@@ -799,7 +805,9 @@ class LearnBlock(QtWidgets.QMainWindow):
                         self.hilo.terminate()
                     except Exception as e:
                         print(e.with_traceback())
-                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+#                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+                subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 self.hilo = subprocess.Popen(
                     ["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "main_tmp.py")],
                     stdout=subprocess.PIPE)
@@ -1084,9 +1092,12 @@ class LearnBlock(QtWidgets.QMainWindow):
                 file = data
         if self.scene.shouldSave is False:
             if file is None:
+                print("open project")
                 self.scene.stopAllblocks()
                 fileName = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open Project'), self.workSpace,
                                                                  self.tr('Block Project file (*.blockProject)'))
+                print(fileName)
+                print(self.workSpace)
                 self.scene.startAllblocks()
             if file is not None or fileName[0] != "":
                 self.newProject(resetAll=False)
@@ -1298,7 +1309,9 @@ class LearnBlock(QtWidgets.QMainWindow):
     def stopthread(self):
         if self.hilo is not None:
             try:
-                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                #subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+                subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 try:
                     self.hilo.terminate()
                 except Exception as e:

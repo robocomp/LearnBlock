@@ -3,7 +3,7 @@
 from learnbot_dsl.Clients.Client import *
 from learnbot_dsl.functions import getFuntions
 import os, numpy as np, PIL.Image as Image, PIL.ImageFilter as ImageFilter, io, cv2, paho.mqtt.client, threading, math
-import cozmo
+import cozmo as cozmoR
 from cozmo.util import radians, degrees, distance_mm, speed_mmps
 from learnbot_dsl.Clients.Devices import *
 
@@ -12,7 +12,7 @@ K = 2  # Speed constant
 L = 45  # Distance between wheels
 
 
-def cozmo_program(_robot: cozmo.robot.Robot):
+def cozmo_program(_robot: cozmoR.robot.Robot):
     global cozmo
     cozmo = _robot
     while True:
@@ -36,14 +36,14 @@ class Robot(Client):
         self.speaker = Speaker(_sendText=self.deviceSendText)
         self.connectToRobot()
         self.cozmo = cozmo
+        self.cozmo.camera.image_stream_enabled = True
+        self.cozmo.camera.color_image_enabled = True
         self.start()
 
     def connectToRobot(self):
-        cozmo.robot.Robot.drive_off_charger_on_connect = False
-        self.t = threading.Thread(target=lambda: self.cozmo.run_program(cozmo_program)).start()
+        cozmoR.robot.Robot.drive_off_charger_on_connect = False
+        self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program)).start()
         time.sleep(2)
-        self.cozmo.camera.image_stream_enabled = True
-        self.cozmo.camera.color_image_enabled = True
 
     def deviceSendText(self, text):
         self.cozmo.say_text(text=text, in_parallel=True)
@@ -65,19 +65,19 @@ class Robot(Client):
             return
         trigger = None
         if _emotion is Emotions.Joy:
-            trigger = cozmo.anim.Triggers.PeekABooGetOutHappy
+            trigger = cozmoR.anim.Triggers.PeekABooGetOutHappy
         elif _emotion is Emotions.Sadness:
-            trigger = cozmo.anim.Triggers.PeekABooGetOutSad
+            trigger = cozmoR.anim.Triggers.PeekABooGetOutSad
         elif _emotion is Emotions.Surprise:
-            trigger = cozmo.anim.Triggers.PeekABooSurprised
+            trigger = cozmoR.anim.Triggers.PeekABooSurprised
         elif _emotion is Emotions.Disgust:
             trigger = None
         elif _emotion is Emotions.Anger:
-            trigger = cozmo.anim.Triggers.DriveEndAngry
+            trigger = cozmoR.anim.Triggers.DriveEndAngry
         elif _emotion is Emotions.Fear:
-            trigger = cozmo.anim.Triggers.CodeLabScaredCozmo
+            trigger = cozmoR.anim.Triggers.CodeLabScaredCozmo
         elif _emotion is Emotions.Neutral:
-            trigger = cozmo.anim.Triggers.NeutralFace
+            trigger = cozmoR.anim.Triggers.NeutralFace
         if trigger is not None:
             self.cozmo.play_anim_trigger(trigger, in_parallel=True, ignore_body_track=True,
                                          ignore_head_track=True, ignore_lift_track=True)
@@ -92,11 +92,15 @@ class Robot(Client):
         return {"bottom": [self.cozmo.is_cliff_detected]}
 
     def deviceReadCamera(self):
-        img = self.cozmo.world.latest_image.annotate_image()
-        open_cv_image = np.array(img.convert('RGB'))
-        cv_image = open_cv_image[:, :, ::-1].copy()
-        cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
-        return cv_image, True
+        lastimg = self.cozmo.world.latest_image
+        if lastimg is not None:
+            img = lastimg.annotate_image()
+            open_cv_image = np.array(img.convert('RGB'))
+            cv_image = open_cv_image[:, :, ::-1].copy()
+            cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
+            return cv_image, True
+        else:
+            return None, False
 
     def deviceMove(self, SAdv, SRot):
         if SRot != 0.:

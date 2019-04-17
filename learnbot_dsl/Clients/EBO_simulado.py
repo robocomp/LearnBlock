@@ -130,7 +130,8 @@ class Face(threading.Thread):
         start = time.time()
         sec = randint(2,6)
         while True:
-            print(time.time() - start, sec)
+            #print(time.time() - start, sec)
+            time.sleep(0)
             if time.time() - start > sec:
                 self.pestaneo()
                 sec = randint(2, 6)
@@ -292,7 +293,7 @@ class Robot(Client):
         for prx in self.laser_proxys:
             laserdata = prx.getLaserData()
             usList.append(min([x.dist for x in laserdata]))
-        print(usList)
+        #print(usList)
         return {"front": usList[1:4],  # The values must be in mm
                 "left": usList[:2],
                 "right": usList[3:]}

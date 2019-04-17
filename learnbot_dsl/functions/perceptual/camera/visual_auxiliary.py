@@ -52,7 +52,7 @@ def detect_face(frame):
     # Dibujamos un rectangulo en las coordenadas de cada rostro
     mat = [[0, 0, 0] for x in range(3)]
     for (x, y, w, h) in faces:
-        mat[(y + h / 2) / (height / 3)][(x + w / 2) / (width / 3)] += 1
+        mat[(y + h // 2) // (height // 3)][(x + w // 2) // (width // 3)] += 1
     for (x, y, w, h) in faces2:
-        mat[(y + h / 2) / (height / 3)][(x + w / 2) / (width / 3)] += 1
+        mat[(y + h // 2) // (height // 3)][(x + w // 2) // (width // 3)] += 1
     return mat
