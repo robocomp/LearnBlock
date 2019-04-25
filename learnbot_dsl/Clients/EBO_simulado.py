@@ -130,8 +130,8 @@ class Face(threading.Thread):
         start = time.time()
         sec = randint(2,6)
         while True:
-            #print(time.time() - start, sec)
             time.sleep(0)
+            #print(time.time() - start, sec)
             if time.time() - start > sec:
                 self.pestaneo()
                 sec = randint(2, 6)
@@ -251,9 +251,9 @@ class Robot(Client):
     devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor"]
 
     def __init__(self):
+        self.connectToRobot()
         Client.__init__(self)
 
-        self.connectToRobot()
         self.open_cv_image = np.zeros((240, 320, 3), np.uint8)
         self.newImage = False
         self.distanceSensors = Devices.DistanceSensors(_readFunction=self.deviceReadLaser)
@@ -267,12 +267,13 @@ class Robot(Client):
     def connectToRobot(self):
         self.laser_proxys = []
         # Remote object connection for Lasers
+        self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h localhost -p 10004",
+                                                        RoboCompDifferentialRobot.DifferentialRobotPrx)
+        self.deviceMove(0,0)
 
         for i in range(2, 7):
             self.laser_proxys.append(connectComponent("laser:tcp -h localhost -p 1010" + str(i), RoboCompLaser.LaserPrx))
 
-        self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h localhost -p 10004",
-                                                        RoboCompDifferentialRobot.DifferentialRobotPrx)
         self.jointmotor_proxy = connectComponent("jointmotor:tcp -h localhost -p 20000",
                                                  RoboCompJointMotor.JointMotorPrx)
         self.display_proxy = connectComponent("display:tcp -h localhost -p 30000",

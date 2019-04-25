@@ -16,7 +16,7 @@ except KeyError:
 ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "EmotionalMotor.ice", "GenericBase.ice"]
 icePaths = []
 
-icePaths.append()PATHINTERFACES
+icePaths.append(PATHINTERFACES)
 for ice in ICEs:
     for p in icePaths:
         if os.path.isfile(os.path.join(p, ice)):
@@ -31,7 +31,7 @@ class Robot(Client):
     devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor"]
 
     def __init__(self):
-        Client.__init__(self)
+
         try:
             # self.client = paho.mqtt.client.Client(client_id='learnbotClient', clean_session=False)
             self.client = paho.mqtt.client.Client()
@@ -43,6 +43,7 @@ class Robot(Client):
         except Exception as e:
             print("Error connect Streamer\n", e)
         self.connectToRobot()
+        Client.__init__(self)
         self.open_cv_image = np.zeros((240, 320, 3), np.uint8)
         self.newImage = False
         self.distanceSensors = Devices.DistanceSensors(_readFunction=self.deviceReadLaser)
@@ -62,9 +63,10 @@ class Robot(Client):
         self.open_cv_image = np.array(image)
 
     def connectToRobot(self):
-        self.laser_proxy = connectComponent("laser:tcp -h 192.168.16.1 -p 10104", RoboCompLaser.LaserPrx)
         self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h 192.168.16.1 -p 10004",
                                                         RoboCompDifferentialRobot.DifferentialRobotPrx)
+        self.deviceMove(0,0)
+        self.laser_proxy = connectComponent("laser:tcp -h 192.168.16.1 -p 10104", RoboCompLaser.LaserPrx)
         self.jointmotor_proxy = connectComponent("jointmotor:tcp -h 192.168.16.1 -p 10067",
                                                  RoboCompJointMotor.JointMotorPrx)
         self.emotionalmotor_proxy = connectComponent("emotionalmotor:tcp -h 192.168.16.1 -p 30001",
