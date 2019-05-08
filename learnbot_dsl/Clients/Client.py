@@ -126,6 +126,9 @@ class Client(Thread):
             self.__emotion_current_exist = False
         if hasattr(self, "distanceSensors"):
             self.distanceSensors.read()
+        if hasattr(self, "groundSensors"):
+            self.groundSensors.read()
+
 
     def run(self):
         self.__readDevices()

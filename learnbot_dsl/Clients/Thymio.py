@@ -116,11 +116,13 @@ class Robot(Client):
         self.t = Thread(target=self.connectToRobot).start()
         self.deviceBaseMove(0,0)
         self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
+        self.groundSensors = GroundSensors(_readFunction=self.deviceReadGroundSensors)
         self.base = Base(_callFunction=self.deviceBaseMove)
         self.acelerometer = Acelerometer(_readFunction=self.deviceReadAcelerometer)
         self.display = Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
         self.motorSpeed = [0, 0]
         self.prox = [0, 0, 0, 0, 0, 0, 0]
+        self.prox_ground = [0, 0, 0]
         self.acc = [0, 0, 0]
         self.currentMotorSpeed = [-1, -1]
         self.event = Event()
@@ -149,6 +151,8 @@ class Robot(Client):
         try:
             self.network.GetVariable("thymio-II", "prox.horizontal", reply_handler=self.get_prox_horizontal_reply,
                                      error_handler=self.get_variables_error)
+            self.network.GetVariable("thymio-II", "prox.ground.delta", reply_handler=self.get_prox_ground_reply,
+                                     error_handler=self.get_variables_error)
             self.network.GetVariable("thymio-II", "acc", reply_handler=self.get_acelerometer_reply,
                                      error_handler=self.get_variables_error)
             if self.currentMotorSpeed[0] != self.motorSpeed[0]:
@@ -160,39 +164,33 @@ class Robot(Client):
             if self.currentEmotion is not self.newEmotion:
                 self.currentEmotion = self.newEmotion
                 if self.newEmotion is Emotions.Joy:
-                    #self.network.SetVariable("thymio-II", "leds.top", [255, 0, 0])
-                    #self.network.SetVariable("thymio-II", "leds.bottom.left", [255, 0, 0])
-                    #self.network.SetVariable("thymio-II", "leds.bottom.right", [255, 0, 0])
                     self.send_event_name('SetLEDsTop', [0, 255, 0])
                     self.send_event_name('SetLEDsBottomLeft', [0, 255, 0])
                     self.send_event_name('SetLEDsBottomRight', [0, 255, 0])
                 elif self.newEmotion is Emotions.Sadness:
-                    self.network.SetVariable("thymio-II", "leds.top", [0, 255, 0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0, 255, 0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0, 255, 0])
+                    self.send_event_name('SetLEDsTop', [0, 0, 255])
+                    self.send_event_name('SetLEDsBottomLeft', [0, 0, 255])
+                    self.send_event_name('SetLEDsBottomRight', [0, 0, 255])
                 elif self.newEmotion is Emotions.Surprise:
-                    self.network.SetVariable("thymio-II", "leds.top", [0, 0, 255])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0, 0, 255])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0, 0, 255])
+                    self.send_event_name('SetLEDsTop', [255, 166, 0])
+                    self.send_event_name('SetLEDsBottomLeft', [255, 166, 0])
+                    self.send_event_name('SetLEDsBottomRight', [255, 166, 0])
                 elif self.newEmotion is Emotions.Disgust:
-                    self.network.SetVariable("thymio-II", "leds.top", [255, 0, 0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255, 0, 0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255, 0, 0])
+                    self.send_event_name('SetLEDsTop', [0, 162, 0])
+                    self.send_event_name('SetLEDsBottomLeft', [0, 162, 0])
+                    self.send_event_name('SetLEDsBottomRight', [0, 162, 0])
                 elif self.newEmotion is Emotions.Anger:
-                    self.network.SetVariable("thymio-II", "leds.top", [255, 0, 0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [255, 0, 0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [255, 0, 0])
+                    self.send_event_name('SetLEDsTop', [255, 0, 0])
+                    self.send_event_name('SetLEDsBottomLeft', [255, 0, 0])
+                    self.send_event_name('SetLEDsBottomRight', [255, 0, 0])
                 elif self.newEmotion is Emotions.Fear:
-                    #self.network.SetVariable("thymio-II", "leds.top", [255, 0, 0])
-                    #self.network.SetVariable("thymio-II", "leds.bottom.left", [255, 0, 0])
-                    #self.network.SetVariable("thymio-II", "leds.bottom.right", [255, 0, 0])
                     self.send_event_name('SetLEDsTop', [124, 0, 255])
                     self.send_event_name('SetLEDsBottomLeft', [124, 0, 255])
                     self.send_event_name('SetLEDsBottomRight', [124, 0, 255])
                 elif self.newEmotion is Emotions.Neutral:
-                    self.network.SetVariable("thymio-II", "leds.top", [0, 0, 0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.left", [0, 0, 0])
-                    self.network.SetVariable("thymio-II", "leds.bottom.right", [0, 0, 0])
+                    self.send_event_name('SetLEDsTop', [0, 0, 0])
+                    self.send_event_name('SetLEDsBottomLeft', [0, 0, 0])
+                    self.send_event_name('SetLEDsBottomRight', [0, 0, 0])
         except Exception as e:
             traceback.print_exc()
         return True
@@ -211,6 +209,10 @@ class Robot(Client):
 
     def get_prox_horizontal_reply(self, r):
         self.prox = r
+
+    def get_prox_ground_reply(self, r):
+        self.prox_ground = r
+#        print(self.prox_ground[0], self.prox_ground[1])
 
     def get_acelerometer_reply(self, r):
         self.acc = r
@@ -243,37 +245,15 @@ class Robot(Client):
                 "right": p[3:5],
                 "back": p[5:7]}
 
+    def deviceReadGroundSensors(self):
+        p = [self.prox_ground[0]<500, self.prox_ground[1]<500]
+        return {"left": p[0],
+                "central": p[0] and p[1],
+                "right": p[1]}
+
+
     def deviceSendEmotion(self, _emotion):
         self.newEmotion = _emotion
-#        if _emotion is Emotions.Joy:
-#            self.send_event_name('SetLEDsTop', [255, 255, 0])
-#            self.send_event_name('SetLEDsBottomLeft', [255, 255, 0])
-#            self.send_event_name('SetLEDsBottomRight', [255, 255, 0])
-#        elif _emotion is Emotions.Sadness:
-#            self.send_event_name('SetLEDsTop', [0, 0, 255])
-#            self.send_event_name('SetLEDsBottomLeft', [0, 0, 255])
-#            self.send_event_name('SetLEDsBottomRight', [0, 0, 255])
-#        elif _emotion is Emotions.Surprise:
-#            self.send_event_name('SetLEDsTop', [255, 166, 0])
-#            self.send_event_name('SetLEDsBottomLeft', [255, 166, 0])
-#            self.send_event_name('SetLEDsBottomRight', [255, 166, 0])
-#        elif _emotion is Emotions.Disgust:
-#            self.send_event_name('SetLEDsTop', [0, 162, 0])
-#            self.send_event_name('SetLEDsBottomLeft', [0, 162, 0])
-#            self.send_event_name('SetLEDsBottomRight', [0, 162, 0])
-#        elif _emotion is Emotions.Anger:
-#            self.send_event_name('SetLEDsTop', [255, 0, 0])
-#            self.send_event_name('SetLEDsBottomLeft', [255, 0, 0])
-#            self.send_event_name('SetLEDsBottomRight', [255, 0, 0])
-#        elif _emotion is Emotions.Fear:
-#            self.send_event_name('SetLEDsTop', [124, 0, 255])
-#            self.send_event_name('SetLEDsBottomLeft', [124, 0, 255])
-#            self.send_event_name('SetLEDsBottomRight', [124, 0, 255])
-#        elif _emotion is Emotions.Neutral:
-#            self.send_event_name('SetLEDsTop', [0, 0, 0])
-#            self.send_event_name('SetLEDsBottomLeft', [0, 0, 0])
-#            self.send_event_name('SetLEDsBottomRight', [0, 0, 0])
-
 
 if __name__ == '__main__':
     try:
