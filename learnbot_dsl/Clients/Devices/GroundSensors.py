@@ -12,7 +12,7 @@ class GroundSensors():
 
     def read(self):
         dictValues = self._readDevice()
-        print(dictValues)
+        #print(dictValues)
         for key in dictValues:
             self.set(key, dictValues[key])
 

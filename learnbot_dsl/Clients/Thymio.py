@@ -110,7 +110,7 @@ print("Name of the file is:", name_thymiohandlers)
 
 class Robot(Client):
 
-    devicesAvailables = ["base", "display", "distancesensors", "acelerometer"]
+    devicesAvailables = ["base", "display", "distancesensors", "groundsensors","acelerometer"]
 
     def __init__(self):
         self.t = Thread(target=self.connectToRobot).start()
@@ -246,7 +246,7 @@ class Robot(Client):
                 "back": p[5:7]}
 
     def deviceReadGroundSensors(self):
-        p = [self.prox_ground[0]<500, self.prox_ground[1]<500]
+        p = [self.prox_ground[0]>500, self.prox_ground[1]>500]
         return {"left": p[0],
                 "central": p[0] and p[1],
                 "right": p[1]}

@@ -161,6 +161,12 @@ class Client(Thread):
             time.sleep(0)
             return self.distanceSensors.get()
 
+    def getGroundSensors(self):
+        if hasattr(self, "groundSensors"):
+            time.sleep(0)
+            return self.groundSensors.get()
+
+
     def getImage(self):
         if hasattr(self, "camera"):
             time.sleep(0)
