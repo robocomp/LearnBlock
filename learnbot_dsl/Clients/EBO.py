@@ -72,6 +72,10 @@ class Robot(Client):
         self.emotionalmotor_proxy = connectComponent("emotionalmotor:tcp -h 192.168.16.1 -p 30001",
                                                      RoboCompEmotionalMotor.EmotionalMotorPrx)
 
+    def disconnect(self):
+        self.deviceMove(0, 0)
+        self.client.disconnect()
+
     def deviceReadLaser(self):
         laserdata = self.laser_proxy.getLaserData()
         usList = [d.dist for d in laserdata]

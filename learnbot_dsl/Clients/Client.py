@@ -85,6 +85,9 @@ class Client(Thread):
         # self.start()
         self.aprilTextDict = getAprilTextDict()
 
+    def disconnect(self):
+        raise NotImplementedError()
+
 
     def addJointMotor(self, _key, _JointMotor):
 
@@ -150,7 +153,8 @@ class Client(Thread):
 
     def stop(self):
         self.__stop_event.set()
-        subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
+        subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+        subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
         self.join()
 
     def stopped(self):

@@ -125,11 +125,12 @@ class Face(threading.Thread):
         self.t = 0.9
         self.config_target = DEFAULTCONFIGNEUTRAL
         self.display_proxy = display_proxy
+        self.stopped = False
 
     def run(self):
         start = time.time()
         sec = randint(2,6)
-        while True:
+        while not self.stopped:
             time.sleep(0)
             #print(time.time() - start, sec)
             if time.time() - start > sec:
@@ -246,6 +247,10 @@ class Face(threading.Thread):
         self.t = 0.06666666666666667
         # self.start()
 
+    def stop(self):
+        self.stopped = True
+        self.join()
+
 class Robot(Client):
 
     devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor"]
@@ -288,6 +293,10 @@ class Robot(Client):
                 with open(os.path.join(imgPaths, "emotionConfig", path), "r") as f:
                     self.configEmotions[os.path.splitext(path)[0]] = json.loads(f.read())
         self.face.start()
+
+    def disconnect(self):
+        self.deviceMove(0, 0)
+        self.face.stop()
 
     def deviceReadLaser(self):
         usList = []

@@ -11,6 +11,8 @@ from __future__ import print_function, absolute_import
 import sys, os, time, traceback
 sys.path.insert(0, os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
 from <Client> import Robot
+import signal
+import sys
 
 try:
 <TABHERE>robot = Robot()
@@ -26,6 +28,17 @@ def elapsedTime(umbral):
 <TABHERE>global time_global_start
 <TABHERE>time_global = time.time()-time_global_start
 <TABHERE>return time_global > umbral
+
+"""
+
+signalHandlerFunction = """
+def signal_handler(sig, frame):
+<TABHERE>robot.disconnect()
+<TABHERE>robot.stop()
+<TABHERE>sys.exit(0)
+
+signal.signal(signal.SIGTERM, signal_handler)
+signal.signal(signal.SIGINT, signal_handler)
 
 """
 loadLibraryCode = """
@@ -519,6 +532,7 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
         traceback.print_exc()
         raise e
     text = elapsedTimeFunction
+    text += signalHandlerFunction
     text += __generatePy(tree)
     text = cleanCode(_code=text)
 
@@ -539,6 +553,7 @@ def parserLearntBotCodeFromCode(code, name_client):
         traceback.print_exc()
         raise e
     text = elapsedTimeFunction
+    text += signalHandlerFunction
     text += __generatePy(tree)
     text = cleanCode(_code=text)
     header = HEADER.replace('<Client>', name_client)
@@ -623,6 +638,7 @@ end
         header = HEADER.replace('<Client>', 'LearnBotClient')
     text = header
     text += elapsedTimeFunction
+    text += signalHandlerFunction
     text += __generatePy(__parserFromFile(argv[0]))
     text = cleanCode(_code=text)
     print(bcolors.OKGREEN + "Generating file " + argv[1] + "\t[100%]" + bcolors.ENDC)

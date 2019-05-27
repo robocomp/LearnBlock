@@ -1310,16 +1310,16 @@ class LearnBlock(QtWidgets.QMainWindow):
         if self.hilo is not None:
             try:
                 #subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
-                subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
-                subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                #subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+                #subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 try:
                     self.hilo.terminate()
                 except Exception as e:
                     print(e.with_traceback())
-                self.generateStopTmpFile()
-                self.hilo = subprocess.Popen(
-                    ["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "stop_main_tmp.py")],
-                    stdout=subprocess.PIPE)
+                #self.generateStopTmpFile()
+                #self.hilo = subprocess.Popen(
+                #    ["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "stop_main_tmp.py")],
+                #    stdout=subprocess.PIPE)
             except Exception as e:
                 print(e.with_traceback())
                 pass
