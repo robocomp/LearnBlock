@@ -137,6 +137,7 @@ class Client(Thread):
         self.__readDevices()
         while not self.__stop_event.wait(self.__period.total_seconds()):
             self.__readDevices()
+        self.disconnect()
 
     def lookingLabel(self, id):
         time.sleep(0)
@@ -155,7 +156,6 @@ class Client(Thread):
         self.__stop_event.set()
         subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
         subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
-        self.join()
 
     def stopped(self):
         return self.__stop_event.is_set()

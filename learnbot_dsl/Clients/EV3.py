@@ -3,7 +3,7 @@ from learnbot_dsl.Clients.Devices import *
 from learnbot_dsl.functions import getFuntions
 import math, traceback, sys, tempfile, os
 from threading import Event
-import rpyc
+import rpyc, time
 
 K = 30
 L = 120
@@ -11,7 +11,7 @@ MAXSPEED = 1000
 
 class Robot(Client):
 
-    devicesAvailables = ["base"]
+    devicesAvailables = ["base","distancesensors", "groundsensors"]
 
     def __init__(self):
         self.ev3 = None
@@ -19,21 +19,25 @@ class Robot(Client):
         self.motorL = None
         self.connectToRobot()
         self.base = Base(_callFunction=self.deviceBaseMove)
+        self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
+        self.groundSensors = GroundSensors(_readFunction=self.deviceReadGroundSensors)
         self.motorSpeed = [0, 0]
         self.currentMotorSpeed = [-1, -1]
         Client.__init__(self, _miliseconds=100)
         self.start()
 
     def connectToRobot(self):
-        self. conn = rpyc.classic.connect('192.168.0.119')  # host name or IP address of the EV3
+        self. conn = rpyc.classic.connect('192.168.0.112')  # host name or IP address of the EV3
         self.ev3 = self.conn.modules['ev3dev.ev3']  # import ev3dev.ev3 remotely
         self.motorR = self.ev3.LargeMotor('outD')
         self.motorL = self.ev3.LargeMotor('outB')
+        self.ultrasonic = self.ev3.UltrasonicSensor()
+        self.colorsensor = self.ev3.ColorSensor() 
 
 
     def disconnect(self):
-        self.motorR.run_timed(time_sp=100, speed_sp=0)
-        self.motorL.run_timed(time_sp=100, speed_sp=0)
+        self.motorR.run_forever(speed_sp=0)
+        self.motorL.run_forever(speed_sp=0)
 
 
     def deviceBaseMove(self, SAdv, SRot):
@@ -48,9 +52,24 @@ class Robot(Client):
         else:
             l_wheel_speed = SAdv * 360/ (2 * math.pi * K)
             r_wheel_speed = SAdv * 360/ (2 * math.pi * K)
-        print("rspeed", r_wheel_speed, "lspeed", l_wheel_speed)
+        #print("rspeed", r_wheel_speed, "lspeed", l_wheel_speed)
         self.motorR.run_forever(speed_sp = int(r_wheel_speed))
         self.motorL.run_forever(speed_sp = int(l_wheel_speed))
+
+    def deviceReadLaser(self):
+        dist = self.ultrasonic.value()
+        return {"front": [dist],  # The values must be in mm
+                "left": [2000],
+                "right": [2000],
+                "back": [2000]}
+
+    def deviceReadGroundSensors(self):
+        color = self.colorsensor.value()
+        ground = color>20
+        return {"left": ground,
+                "central": ground,
+                "right": ground}
+
 
 
 if __name__ == '__main__':

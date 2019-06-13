@@ -33,7 +33,6 @@ def elapsedTime(umbral):
 
 signalHandlerFunction = """
 def signal_handler(sig, frame):
-<TABHERE>robot.disconnect()
 <TABHERE>robot.stop()
 <TABHERE>sys.exit(0)
 

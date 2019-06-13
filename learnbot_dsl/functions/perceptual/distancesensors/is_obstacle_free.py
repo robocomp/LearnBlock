@@ -4,5 +4,5 @@ def is_obstacle_free(lbot, threshold = 200):
 	values += sonarsvalue["left"]
 	values += sonarsvalue["right"]
 	if min(values) < threshold:
-		return True
-	return False
+		return False
+	return True
