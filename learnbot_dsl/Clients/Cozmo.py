@@ -14,16 +14,18 @@ L = 45  # Distance between wheels
 
 def cozmo_program(_robot: cozmoR.robot.Robot):
     global cozmo
+    global stopThread
     cozmo = _robot
-    while True:
+    while not stopThread:
         pass
-
 
 class Robot(Client):
     devicesAvailables = ["base", "camera", "display", "jointmotor", "acelerometer", "gyroscope", "speaker"]
 
     def __init__(self):
         global cozmo
+        global stopThread
+        stopThread = False
         Client.__init__(self)
         self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
         self.acelerometer = Acelerometer(_readFunction=self.deviceReadAcelerometer)
@@ -42,8 +44,16 @@ class Robot(Client):
 
     def connectToRobot(self):
         cozmoR.robot.Robot.drive_off_charger_on_connect = False
-        self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program)).start()
+        self.t = threading.Thread(target=lambda: cozmoR.run_program(cozmo_program))
+        self.t.start()
         time.sleep(2)
+
+    def disconnect(self):
+        print("disconnecting")
+        self.deviceMove(0,0)
+        self.cozmo.wait_for_all_actions_completed()
+        global stopThread
+        stopThread = True
 
     def deviceSendText(self, text):
         self.cozmo.say_text(text=text, in_parallel=True)
@@ -100,6 +110,7 @@ class Robot(Client):
             cv_image = cv2.cvtColor(cv_image, cv2.COLOR_RGB2BGR)
             return cv_image, True
         else:
+            print("error leyendo camara")
             return None, False
 
     def deviceMove(self, SAdv, SRot):

@@ -50,7 +50,7 @@ class SpecificWorker(GenericWorker):
 			#frame = cv2.flip(frame, 0)
 			frame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
 			aprils = self.detector.detect(frame)
-			#print(aprils)
+			print(aprils)
 			for a in aprils:
 				Tag = tag()
 				Tag.id = a.tag_id
