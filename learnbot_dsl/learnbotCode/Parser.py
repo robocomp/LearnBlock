@@ -371,12 +371,14 @@ def __processASSIGSTRING(line, text="", index=0):
 
 
 def __processACTIVATE(line, text="", index=0):
-    text += "<TABHERE>" * index + line.nameWHEN[0] + " = True\n"
+    text += "<TABHERE>" * index + "global state_" + line.nameWHEN[0] + "\n"
+    text += "<TABHERE>" * index + "state_" + line.nameWHEN[0] + " = True\n"
     return text
 
 
 def __processDEACTIVATE(line, text="", index=0):
-    text += "<TABHERE>" * index + line.nameWHEN[0] + " = False\n"
+    text += "<TABHERE>" * index + "global state_" + line.nameWHEN[0] + "\n"
+    text += "<TABHERE>" * index + "state_" + line.nameWHEN[0] + " = False\n"
     return text
 
 
