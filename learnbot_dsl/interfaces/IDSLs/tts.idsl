@@ -1,0 +1,7 @@
+module RoboCompTTSpeech{
+	interface TTSpeech{
+	 void say(string text);
+	 void sayLanguage(string text, string language);
+	 void sayVoice(string text, int voz);
+  };
+};
