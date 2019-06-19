@@ -229,6 +229,7 @@ def __parserFromString(text):
         print(' ' * (pe.col - 1) + '^')
         print(pe)
 
+list_when = []
 
 def __generatePy(lines):
     text = ""
@@ -236,6 +237,7 @@ def __generatePy(lines):
     if len(imports)>0:
         imports = "imports = [" + ", ".join(imports) + "]"
         text = "\n" + imports + loadLibraryCode
+    global list_when
     list_when = [x.nameWHEN[0] for x in lines if x.getName() is "WHEN"]
     list_var=[x.nameVAR[0] for x in lines if x.getName() is 'VAR']
     for x in list_when:
@@ -371,13 +373,11 @@ def __processASSIGSTRING(line, text="", index=0):
 
 
 def __processACTIVATE(line, text="", index=0):
-    text += "<TABHERE>" * index + "global state_" + line.nameWHEN[0] + "\n"
     text += "<TABHERE>" * index + "state_" + line.nameWHEN[0] + " = True\n"
     return text
 
 
 def __processDEACTIVATE(line, text="", index=0):
-    text += "<TABHERE>" * index + "global state_" + line.nameWHEN[0] + "\n"
     text += "<TABHERE>" * index + "state_" + line.nameWHEN[0] + " = False\n"
     return text
 
@@ -397,7 +397,7 @@ def __processWHILE(line, text="", index=0):
 
 
 def __processWHEN(line, list_var, text="", index=0):
-    global ini
+    global ini, list_when
     name = str(line.nameWHEN[0])
     whenText = """
 <INIVARIABLES>
@@ -412,6 +412,8 @@ def when_<NAME>():
     else:
         index += 1
     variables = list(set([name + "_start", "time_" + name] + __listVariables(line)))
+    states = ["state_" + x for x in list_when if x!="start"]
+    variables = variables + states
     text += whenText.replace("<GLOBALSVARIABLES>", ", ".join(variables))
     for cline in line.content:
         text = __process(cline, [], text, index) + "\n"
