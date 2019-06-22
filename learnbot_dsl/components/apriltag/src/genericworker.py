@@ -34,11 +34,13 @@ import RoboCompCommonBehavior
 additionalPathStr = ''
 icePaths = [ os.path.dirname(__file__)]
 
+print(icePaths)
 ice_Apriltag = False
 for p in icePaths:
 	if os.path.isfile(p+'/Apriltag.ice'):
 		preStr = "-I" + p + " --all " + p + '/'
 		wholeStr = preStr+"Apriltag.ice"
+		print(wholeStr)
 		Ice.loadSlice(wholeStr)
 		ice_Apriltag = True
 		break

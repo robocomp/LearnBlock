@@ -68,6 +68,7 @@ class Client(Thread):
         # Variables of AprilTag
         self.__apriltag_current_exist = False
         self.__listAprilIDs = []
+        self.__posAprilTags = {}
 
         self.__period = timedelta(milliseconds=_miliseconds)
         try:
@@ -110,6 +111,7 @@ class Client(Thread):
         if not self.__apriltag_current_exist and hasattr(self, "camera"):
             img = self.camera.getImage()
             frame = RoboCompApriltag.TImage()
+            print("img.width", frame.width)
             frame.width = img.shape[0]
             frame.height = img.shape[1]
             frame.depth = img.shape[2]
@@ -117,6 +119,7 @@ class Client(Thread):
             aprils = self.__apriltagProxy.processimage(frame)
             self.__apriltag_current_exist = True
             self.__listAprilIDs = [a.id for a in aprils]
+            self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
 
     def __readDevices(self):
         if hasattr(self, "acelerometer"):
@@ -148,6 +151,19 @@ class Client(Thread):
                 return False
         self.__detectAprilTags()
         return id in self.__listAprilIDs
+
+    def getPosTag(self, id=None):
+        time.sleep(0)
+        self.__detectAprilTags()
+        if id is None:
+            if len(self.__listAprilIDs)>0:
+                return self.__posAprilTags[self.__listAprilIDs[0]]
+            else:
+                return None
+        if id in self.__listAprilIDs:
+            return self.__posAprilTags[id]
+        else:
+            return None
 
     def listTags(self):
         return self.__listAprilIDs

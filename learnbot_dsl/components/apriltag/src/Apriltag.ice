@@ -13,12 +13,8 @@ module RoboCompApriltag
 	struct tag
 	{
 		 int id;
-		 float tx;
-		 float ty;
-		 float tz;
-		 float rx;
-		 float ry;
-		 float rz;
+		 int cx;
+		 int cy;
 		 string cameraId;
 	};
 	sequence <tag> tagsList;

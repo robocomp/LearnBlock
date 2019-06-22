@@ -145,8 +145,7 @@ CONDITION = Group(SIMPLECONDITION + ZeroOrMore(( ORAND | SRMD | COMP ) + SIMPLEC
 
 """-----------------asignacion-VARIABLES------------"""
 
-ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQUOTE | NUMS))).setResultsName(
-    'ASSIGSTRING')
+ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQUOTE | NUMS))).setResultsName('ASSIGSTRING')
 
 NONEVAR = NONE.setResultsName("NONEVAR")
 VAR = Group(SECTAB + identifier.setResultsName("nameVAR") + (eq | PLUE | MINE | DIVE | MULE) + ( FIELDS | NONEVAR | OPERATION )).setResultsName("VAR")
@@ -243,7 +242,7 @@ def __generatePy(lines):
     for x in list_when:
         list_var.append("time_" + str(x))
         list_var.append(str(x) + "_start")
-        list_var.append(x)
+        list_var.append("state_" + x)
     global ini
     for x in lines:
         if x.getName() is "MAIN" and len(list_when)>0 or x.getName() is "IMPORT":
@@ -413,7 +412,7 @@ def when_<NAME>():
         index += 1
     variables = list(set([name + "_start", "time_" + name] + __listVariables(line)))
     states = ["state_" + x for x in list_when if x!="start"]
-    variables = variables + states
+    variables = list_var #variables + states
     text += whenText.replace("<GLOBALSVARIABLES>", ", ".join(variables))
     for cline in line.content:
         text = __process(cline, [], text, index) + "\n"

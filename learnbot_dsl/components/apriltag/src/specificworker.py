@@ -54,6 +54,8 @@ class SpecificWorker(GenericWorker):
 			for a in aprils:
 				Tag = tag()
 				Tag.id = a.tag_id
+				Tag.cx = a.center[0]
+				Tag.cy = a.center[1]
 				# tx =
 				# ty =
 				# tz =
