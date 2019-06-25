@@ -111,7 +111,6 @@ class Client(Thread):
         if not self.__apriltag_current_exist and hasattr(self, "camera"):
             img = self.camera.getImage()
             frame = RoboCompApriltag.TImage()
-            print("img.width", frame.width)
             frame.width = img.shape[0]
             frame.height = img.shape[1]
             frame.depth = img.shape[2]

@@ -13,9 +13,9 @@ LU_blue = (130, 255, 255)
 
 def countRois(binary):
     rois = [0, 0, 0]
-    rois[0] = cv2.countNonZero(binary[15:225, 0:120])
-    rois[1] = cv2.countNonZero(binary[15:225, 120:200])
-    rois[2] = cv2.countNonZero(binary[15:225, 200:320])
+    rois[0] = cv2.countNonZero(binary[30:225, 0:120])
+    rois[1] = cv2.countNonZero(binary[30:225, 120:200])
+    rois[2] = cv2.countNonZero(binary[30:225, 200:320])
     return rois
 
 def detect_black_line(frame):

@@ -113,6 +113,7 @@ class Robot(Client):
     devicesAvailables = ["base", "display", "distancesensors", "groundsensors","acelerometer"]
 
     def __init__(self):
+        self.lastCommand = False
         self.t = Thread(target=self.connectToRobot).start()
         self.deviceBaseMove(0,0)
         self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
@@ -142,10 +143,10 @@ class Robot(Client):
             raise Exception("Connection to thymio failed")
         node = self.network.GetNodesList()
         self.network.LoadScripts(name_thymiohandlers)
-        loop = GObject.MainLoop()
+        self.loop = GObject.MainLoop()
         handle = GObject.timeout_add(100, self.comunicateRobot)
         self.event.set()
-        loop.run()
+        self.loop.run()
 
     def comunicateRobot(self):
         try:
@@ -191,6 +192,8 @@ class Robot(Client):
                     self.send_event_name('SetLEDsTop', [0, 0, 0])
                     self.send_event_name('SetLEDsBottomLeft', [0, 0, 0])
                     self.send_event_name('SetLEDsBottomRight', [0, 0, 0])
+            if self.lastCommand:
+                self.loop.quit()
         except Exception as e:
             traceback.print_exc()
         return True
@@ -206,6 +209,10 @@ class Robot(Client):
     def dbus_error(self, e):
         print('error:')
         print(str(e))
+
+    def disconnect(self):
+        self.deviceBaseMove(0,0)
+        self.lastCommand = True
 
     def get_prox_horizontal_reply(self, r):
         self.prox = r
@@ -225,6 +232,7 @@ class Robot(Client):
         return self.acc
 
     def deviceBaseMove(self, SAdv, SRot):
+#        print("adv", SAdv, "rot", SRot)
         if SRot != 0.:
             Rrot = SAdv / math.tan(SRot)
 
@@ -246,14 +254,17 @@ class Robot(Client):
                 "back": p[5:7]}
 
     def deviceReadGroundSensors(self):
-        p = [self.prox_ground[0]>500, self.prox_ground[1]>500]
+        p = [self.prox_ground[0]//10, self.prox_ground[1]//10]  #range between 0 and 100
         return {"left": p[0],
-                "central": p[0] and p[1],
                 "right": p[1]}
 
 
     def deviceSendEmotion(self, _emotion):
         self.newEmotion = _emotion
+
+#    def getColor(self):
+#        print("sensor 0", self.prox_ground[0], "sensor 1", self.prox_ground[1])
+#        return self.prox_ground
 
 if __name__ == '__main__':
     try:
