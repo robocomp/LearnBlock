@@ -13,8 +13,14 @@ module RoboCompTTSpeech
 	interface TTSpeech
 	{
 		void say (string text);
-		void sayLanguage (string text, string language);
-		void sayVoice (string text, int voz);
+		void sayAlternativeGreet ();
+		void addGreet ();
+		void deleteGreet ();
+		void showGreet ();
+		void sayAlternativeBye ();
+		void addBye ();
+		void deleteBye ();
+		void showBye ();
 	};
 };
 
