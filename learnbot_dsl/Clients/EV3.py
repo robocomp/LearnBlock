@@ -19,6 +19,7 @@ class Robot(Client):
         self.ev3Base = None
         self.connectToRobot()
         self.base = Base(_callFunction=self.deviceBaseMove)
+	self.addJointMotor("ARM", _JointMotor=JointMotor(_callDevice=self.deviceSendAngleArm, _readDevice=None))
         self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
         self.groundSensors = GroundSensors(_readFunction=self.deviceReadGroundSensors)
         self.gyroscope = Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope)
@@ -33,6 +34,8 @@ class Robot(Client):
         LEFT_MOTOR = self.ev3Motor.OUTPUT_B
         RIGHT_MOTOR = self.ev3Motor.OUTPUT_D
         self.ev3Base = self.ev3Motor.MoveTank(LEFT_MOTOR, RIGHT_MOTOR)
+	ARM_MOTOR = self.ev3Motor.OUTPUT_A
+	self.ev3Arm = self.ev3Motor.ServoMotor(ARM_MOTOR)
         self.ev3Sensors = self.conn.modules['ev3dev2.sensor.lego']
         self.ultrasonic = self.ev3Sensors.UltrasonicSensor()
         self.colorsensor = self.ev3Sensors.ColorSensor() 
@@ -59,6 +62,25 @@ class Robot(Client):
             r_wheel_speed = SAdv * 360/ (2 * math.pi * K)
         #print("rspeed", r_wheel_speed, "lspeed", l_wheel_speed)
         self.ev3Base.on(left_speed=self.ev3Motor.SpeedDPS(l_wheel_speed), right_speed=self.ev3Motor.SpeedDPS(r_wheel_speed))
+
+    def deviceSendAngleArm(self, _angle):
+        if _angle > 100 :
+            _angle = 100
+        elif _angle < -100:
+            _angle = -100
+	#calculamos valor del angulo a enviar	
+	if _angle = 0:
+	    a = mid_pulse_sp
+	elif _angle = -100:
+	    a = min_pulse_sp
+	elif _angle = 100:
+	    a = max_pulse_sp
+	elif _angle < 0 and _angle > -100:
+	    a = - ( 
+            #a = (_angle + 100) / (100 + (-100))
+
+	self.ev3Arm.position_sp = a
+	self.ev3Arm.run()		#move the servo to the value of position_sp()
 
     def deviceReadLaser(self):
         dist = self.ultrasonic.value()
