@@ -29,7 +29,7 @@ class Robot(Client):
         Client.__init__(self)
         self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
         self.acelerometer = Acelerometer(_readFunction=self.deviceReadAcelerometer)
-        self.gyroscope = Gyroscope(_readFunction=self.deviceReadGyroscope)
+        self.gyroscope = Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope)
         self.camera = Camera(_readFunction=self.deviceReadCamera)
         self.base = Base(_callFunction=self.deviceMove)
         self.display = Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
@@ -40,6 +40,10 @@ class Robot(Client):
         self.cozmo = cozmo
         self.cozmo.camera.image_stream_enabled = True
         self.cozmo.camera.color_image_enabled = True
+        self.cozmo.enable_device_imu(enable_raw=True, enable_gyro = True)
+        self.current_pose_angle = 0
+        self.vueltas = 0
+        self.last_pose_read = 0
         self.start()
 
     def connectToRobot(self):
@@ -93,7 +97,24 @@ class Robot(Client):
                                          ignore_head_track=True, ignore_lift_track=True)
 
     def deviceReadGyroscope(self):
-        return self.cozmo.gyro.x_y_z
+        rx = 0
+        ry_n = self.cozmo.pose.rotation.angle_z.degrees
+        if ry_n < 0:
+            ry_n = 360 + ry_n
+        if math.fabs(self.last_pose_read-ry_n) > 180:
+            self.vueltas = self.vueltas+np.sign(self.last_pose_read-ry_n)
+        self.last_pose_read = ry_n
+        ry = ry_n - self.current_pose_angle + self.vueltas*360
+        rz = 0
+        #print("Cozmo gyro", ry_n, ry)
+        return rx, int(-ry), rz
+
+    def resetGyroscope(self):
+        self.vueltas=0
+        self.current_pose_angle = self.cozmo.pose.rotation.angle_z.degrees
+        if self.current_pose_angle < 0:
+            self.current_pose_angle = 360 + self.current_pose_angle
+        self.last_pose_read = self.current_pose_angle
 
     def deviceReadAcelerometer(self):
         return self.cozmo.accelerometer.x_y_z
@@ -115,7 +136,6 @@ class Robot(Client):
 
     def deviceMove(self, SAdv, SRot):
         if SRot != 0.:
-            print(SRot)
             Rrot = SAdv / math.tan(SRot)
 
             Rl = Rrot - (L / 2)
