@@ -11,38 +11,43 @@ MAXSPEED = 1000
 
 class Robot(Client):
 
-    devicesAvailables = ["base","distancesensors", "groundsensors"]
+    devicesAvailables = ["base","distancesensors", "groundsensors", "gyroscope"]
 
     def __init__(self):
-        self.ev3 = None
-        self.motorR = None
-        self.motorL = None
+        self.ev3Motor = None
+        self.ev3Sensors = None
+        self.ev3Base = None
         self.connectToRobot()
         self.base = Base(_callFunction=self.deviceBaseMove)
         self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
         self.groundSensors = GroundSensors(_readFunction=self.deviceReadGroundSensors)
+        self.gyroscope = Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope)
         self.motorSpeed = [0, 0]
         self.currentMotorSpeed = [-1, -1]
         Client.__init__(self, _miliseconds=100)
         self.start()
 
     def connectToRobot(self):
-        self. conn = rpyc.classic.connect('192.168.0.112')  # host name or IP address of the EV3
-        self.ev3 = self.conn.modules['ev3dev.ev3']  # import ev3dev.ev3 remotely
-        self.motorR = self.ev3.LargeMotor('outD')
-        self.motorL = self.ev3.LargeMotor('outB')
-        self.ultrasonic = self.ev3.UltrasonicSensor()
-        self.colorsensor = self.ev3.ColorSensor() 
+        self. conn = rpyc.classic.connect('192.168.0.113')  # host name or IP address of the EV3
+        self.ev3Motor = self.conn.modules['ev3dev2.motor']  # import ev3dev.ev3 remotely
+        LEFT_MOTOR = self.ev3Motor.OUTPUT_B
+        RIGHT_MOTOR = self.ev3Motor.OUTPUT_D
+        self.ev3Base = self.ev3Motor.MoveTank(LEFT_MOTOR, RIGHT_MOTOR)
+        self.ev3Sensors = self.conn.modules['ev3dev2.sensor.lego']
+        self.ultrasonic = self.ev3Sensors.UltrasonicSensor()
+        self.colorsensor = self.ev3Sensors.ColorSensor() 
+        self.colorsensor.mode = 'COL-REFLECT'
+        self.gyrosensor = self.ev3Sensors.GyroSensor()
+        self.gyrosensor.mode = 'GYRO-ANG'
 
 
     def disconnect(self):
-        self.motorR.run_forever(speed_sp=0)
-        self.motorL.run_forever(speed_sp=0)
-
+        self.ev3Base.on(left_speed=0, right_speed=0)
 
     def deviceBaseMove(self, SAdv, SRot):
         if SRot != 0.:
-            Rrot = SAdv / math.tan(SRot)
+            #Rrot = SAdv / math.tan(SRot)
+            Rrot = SAdv / SRot
 
             Rl = Rrot - (L / 2)
             r_wheel_speed = SRot * Rl * 360/ (2 * math.pi * K)
@@ -53,8 +58,7 @@ class Robot(Client):
             l_wheel_speed = SAdv * 360/ (2 * math.pi * K)
             r_wheel_speed = SAdv * 360/ (2 * math.pi * K)
         #print("rspeed", r_wheel_speed, "lspeed", l_wheel_speed)
-        self.motorR.run_forever(speed_sp = int(r_wheel_speed))
-        self.motorL.run_forever(speed_sp = int(l_wheel_speed))
+        self.ev3Base.on(left_speed=self.ev3Motor.SpeedDPS(l_wheel_speed), right_speed=self.ev3Motor.SpeedDPS(r_wheel_speed))
 
     def deviceReadLaser(self):
         dist = self.ultrasonic.value()
@@ -64,11 +68,17 @@ class Robot(Client):
                 "back": [2000]}
 
     def deviceReadGroundSensors(self):
-        color = self.colorsensor.value()
-        ground = color>20
+        ground = self.colorsensor.value()
         return {"left": ground,
-                "central": ground,
                 "right": ground}
+
+    def deviceReadGyroscope(self):
+        ry = self.gyrosensor.value()
+        return 0, ry, 0
+
+    def resetGyroscope(self):
+        self.gyrosensor.mode = 'GYRO-CAL'
+        self.gyrosensor.mode = 'GYRO-ANG'
 
 
 
