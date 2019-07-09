@@ -3,7 +3,7 @@ import numpy
 import time
 
 
-def slow_down(lbot, decAdv=-0.2, decRot=-0.0002):
+def slow_down(lbot, decAdv=-0.2, decRot=-0.002):
 	currAdv = lbot.getAdv()
 	currRot = lbot.getRot()
 	aR = numpy.sign(currRot)

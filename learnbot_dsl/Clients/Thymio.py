@@ -6,7 +6,7 @@ from gi.repository import GObject
 import math, traceback, sys, tempfile, os
 from threading import Event
 
-K = 6
+K = 3
 L = 95
 
 
@@ -229,12 +229,14 @@ class Robot(Client):
         print(str(e))
 
     def deviceReadAcelerometer(self):
+        print("Thymio acc", self.acc[0], self.acc[1], self.acc[2])
         return self.acc
 
     def deviceBaseMove(self, SAdv, SRot):
 #        print("adv", SAdv, "rot", SRot)
         if SRot != 0.:
-            Rrot = SAdv / math.tan(SRot)
+            #Rrot = SAdv / math.tan(SRot)
+            Rrot = SAdv / SRot
 
             Rl = Rrot - (L / 2)
             r_wheel_speed = SRot * Rl * K
