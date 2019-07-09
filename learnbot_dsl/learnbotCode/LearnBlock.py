@@ -331,6 +331,10 @@ class LearnBlock(QtWidgets.QMainWindow):
         # subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
         # subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
 
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(self.checkProgramRunning)
+        timer.start(200)
+
         r = self.app.exec_()
         sys.exit(r)
 
@@ -833,6 +837,14 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
+
+    def checkProgramRunning(self):
+        if self.hilo is not None:
+            p = self.hilo.poll()
+            if p is not None:
+                self.disablestartButtons(False)
+                self.hilo = None
+
 
     def textCodeToPython(self, name_Client):
         textCode = self.ui.textCode.toPlainText()

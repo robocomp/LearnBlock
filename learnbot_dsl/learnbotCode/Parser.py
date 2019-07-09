@@ -40,6 +40,13 @@ signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
 
 """
+
+endOfProgram = """
+robot.stop()
+sys.exit(0)
+
+"""
+
 loadLibraryCode = """
 for f in imports:
 <TABHERE>for subPath in [os.path.join(f, x) for x in os.listdir(f)]:
@@ -536,6 +543,7 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
     text = elapsedTimeFunction
     text += signalHandlerFunction
     text += __generatePy(tree)
+    text += endOfProgram
     text = cleanCode(_code=text)
 
     header = HEADER.replace('<Client>', client_name)
@@ -557,6 +565,7 @@ def parserLearntBotCodeFromCode(code, name_client):
     text = elapsedTimeFunction
     text += signalHandlerFunction
     text += __generatePy(tree)
+    text += endOfProgram
     text = cleanCode(_code=text)
     header = HEADER.replace('<Client>', name_client)
     header = cleanCode(_code=header)
