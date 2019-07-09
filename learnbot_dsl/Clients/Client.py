@@ -249,6 +249,12 @@ class Client(Thread):
             time.sleep(0)
             return self.gyroscope.get()
 
+    def resetGyroscope(self):
+        if hasattr(self, "gyroscope"):
+            time.sleep(0)
+            self.gyroscope.reset()
+
+
     def speakText(self,_text):
         if hasattr(self, "speaker"):
             time.sleep(0)
