@@ -1,4 +1,4 @@
 
 
 def arm_up(lbot):
-    lbot.setJointAngle("ARM",0.6000000238)
+    lbot.setJointAngle("ARM",100)

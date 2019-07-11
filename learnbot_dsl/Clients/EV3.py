@@ -11,7 +11,7 @@ MAXSPEED = 1000
 
 class Robot(Client):
 
-    devicesAvailables = ["base","distancesensors", "groundsensors", "gyroscope"]
+    devicesAvailables = ["base","distancesensors", "groundsensors", "gyroscope", "jointmotor"]
 
     def __init__(self):
         self.ev3Motor = None
@@ -34,8 +34,8 @@ class Robot(Client):
         LEFT_MOTOR = self.ev3Motor.OUTPUT_B
         RIGHT_MOTOR = self.ev3Motor.OUTPUT_D
         self.ev3Base = self.ev3Motor.MoveTank(LEFT_MOTOR, RIGHT_MOTOR)
-	ARM_MOTOR = self.ev3Motor.OUTPUT_A
-	self.ev3Arm = self.ev3Motor.ServoMotor(ARM_MOTOR)
+#	ARM_MOTOR = self.ev3Motor.OUTPUT_A
+#	self.ev3Arm = self.ev3Motor.ServoMotor(ARM_MOTOR)
         self.ev3Sensors = self.conn.modules['ev3dev2.sensor.lego']
         self.ultrasonic = self.ev3Sensors.UltrasonicSensor()
         self.colorsensor = self.ev3Sensors.ColorSensor() 
@@ -64,23 +64,24 @@ class Robot(Client):
         self.ev3Base.on(left_speed=self.ev3Motor.SpeedDPS(l_wheel_speed), right_speed=self.ev3Motor.SpeedDPS(r_wheel_speed))
 
     def deviceSendAngleArm(self, _angle):
-        if _angle > 100 :
-            _angle = 100
-        elif _angle < -100:
-            _angle = -100
+        if _angle > 2400 :
+            _angle = 2400
+        elif _angle < 600:
+            _angle = 600
 	#calculamos valor del angulo a enviar	
-	if _angle = 0:
+	if _angle = 1500:
 	    a = mid_pulse_sp
-	elif _angle = -100:
+	elif _angle = 600:
 	    a = min_pulse_sp
-	elif _angle = 100:
+	elif _angle = 2400:
 	    a = max_pulse_sp
-	elif _angle < 0 and _angle > -100:
-	    a = - ( 
-            #a = (_angle + 100) / (100 + (-100))
-
+	elif _angle < 1500 and _angle > 600:
+	    a = - 50
+	elif _angle > 1500 and _angle < 2400:
+	    a = 50
 	self.ev3Arm.position_sp = a
-	self.ev3Arm.run()		#move the servo to the value of position_sp()
+	#move the servo to the value of position_sp()
+	self.ev3Arm.run()
 
     def deviceReadLaser(self):
         dist = self.ultrasonic.value()
