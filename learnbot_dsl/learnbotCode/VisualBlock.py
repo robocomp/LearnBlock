@@ -136,9 +136,15 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.DialogVar.setSlotToDeleteButton(self.delete)
         self.tabVar = self.DialogVar.getTable()
         self.tabVar.verticalHeader().setVisible(False)
-        self.tabVar.horizontalHeader().setVisible(False)
+        self.tabVar.horizontalHeader().setVisible(True)
         self.tabVar.setColumnCount(4)
         self.tabVar.setRowCount(len(vars))
+        self.tableHeader = [] #QtCore.QStringList()
+        self.tableHeader.append("Name")
+        self.tableHeader.append("Constant")
+        self.tableHeader.append("Set to")
+        self.tableHeader.append("Type")
+        self.tabVar.setHorizontalHeaderLabels(self.tableHeader)
 
         # i = 0
         for i, var in zip(range(len(vars)),vars):
@@ -153,8 +159,12 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 edit = QtWidgets.QLineEdit()
                 if var.type == "float":
                     edit.setValidator(QtGui.QDoubleValidator())
+                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel("number"))
                 elif var.type == "int":
                     edit.setValidator(QtGui.QIntValidator())
+                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel("number"))
+                else:
+                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel("text"))
                 edit.setText(var.defaul)
                 self.tabVar.setCellWidget(i, 1, edit)
             elif var.type == "boolean":
@@ -178,9 +188,9 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 self.tabVar.setCellWidget(i, 1, combobox)
 
             combobox = QtWidgets.QComboBox()
-            combobox.addItem("None")
+            combobox.addItem("Constant")
             self.tabVar.setCellWidget(i, 2, combobox)
-            self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(var.type))
+#            self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(var.type))
             # i += 1
 
         self.sizeIn = 0
@@ -285,9 +295,24 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
     def on_clicked_menu_edit(self):
         self.scene.setIdItemSelected(None)
-        if self.DialogVar is not None:
+        if self.DialogVar is not None and len(self.parentBlock.getVars())>0:
+            self.setCurrentParamInDialog()
             self.DialogVar.open()
             self.scene.setTable(self.DialogVar)
+
+    def setCurrentParamInDialog(self):
+        varS = self.parentBlock.getVars()
+        if len(varS)>0:
+            combo = self.tabVar.cellWidget(0, 2)
+            assignList = [combo.itemText(i) for i in range(combo.count())]
+            for cell, var in zip(range(len(varS)), varS):
+                if varS[cell].defaul in assignList:
+                    index = assignList.index(varS[cell].defaul)
+                    self.tabVar.cellWidget(cell, 2).setCurrentIndex(index)
+                    if var.type in ["float","int", "string"]:
+                        self.tabVar.cellWidget(cell, 1).setText("")
+                    else:
+                        self.tabVar.cellWidget(cell, 1).setCurrentIndex(0)
 
     def on_clicked_menu_delete(self):
         self.delete()
@@ -353,7 +378,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         # for cell in range(0, self.tabVar.rowCount()):
         for cell, var in zip(range(len(varS)), varS):
 
-            if self.tabVar.cellWidget(cell, 2).currentText() == "None":
+            if self.tabVar.cellWidget(cell, 2).currentText() == "Constant":
                 if self.tabVar.cellWidget(cell, 3).text() == "boolean":
                     vars.append(self.tabVar.cellWidget(cell, 1).currentText())
                 elif self.tabVar.cellWidget(cell, 3).text() == "list":

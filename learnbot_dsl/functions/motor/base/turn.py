@@ -3,10 +3,12 @@ import time, math, numpy
 
 def turn(lbot, angle=0):
     if "gyroscope" in lbot.devicesAvailables:
-        lbot.resetGyroscope()
+        #lbot.resetGyroscope()
+        #rx, curAngle, rz = lbot.getGyroscope()
+        #while curAngle!=0:
+         #   rx, curAngle, rz = lbot.getGyroscope()
+
         rx, curAngle, rz = lbot.getGyroscope()
-        while curAngle!=0:
-            rx, curAngle, rz = lbot.getGyroscope()
         diff = math.fabs(angle) 
         s = numpy.sign(angle)
         curVel = 0
@@ -19,7 +21,7 @@ def turn(lbot, angle=0):
                     angleVel = diff
                 if angleVel < 10:
                     angleVel = 10            
-                finalVel = (angleVel*s)/2
+                finalVel = (angleVel*s)
                 if curVel!=finalVel:
                     lbot.setBaseSpeed(0, math.radians(finalVel))
                     curVel = finalVel
@@ -27,10 +29,10 @@ def turn(lbot, angle=0):
                 rx, curAngle, rz = lbot.getGyroscope()
                 diff = math.fabs(curAngle-angle)
                 s = numpy.sign(angle-curAngle)
-                #print("angle", curAngle)
+                print("angle", curAngle)
 
             lbot.setBaseSpeed(0, 0)
-            time.sleep(0.3)
+            time.sleep(1)
             rx, curAngle, rz = lbot.getGyroscope()
             diff = math.fabs(curAngle-angle)
             if diff>1:
@@ -38,6 +40,7 @@ def turn(lbot, angle=0):
                 curVel = 0
             else:
                 keep_turning = False
+            print("angle after stopping", curAngle)
     else:
         if angle > 0:
             if angle > 20:

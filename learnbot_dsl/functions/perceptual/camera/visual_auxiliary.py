@@ -20,7 +20,7 @@ def countRois(binary):
 
 def detect_black_line(frame):
     gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-    err, binary = cv2.threshold(gray, 30, 255, cv2.THRESH_BINARY_INV)
+    err, binary = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY_INV)
     return countRois(binary)
 
 def detect_red_line(frame):

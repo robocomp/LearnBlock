@@ -17,3 +17,4 @@ def slow_down(lbot, decAdv=-0.2, decRot=-0.002):
 	if sR!=numpy.sign(rot):
 		rot = 0
 	lbot.setBaseSpeed(adv, rot)
+	time.sleep(0.1)

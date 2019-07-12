@@ -8,7 +8,7 @@ from cozmo.util import radians, degrees, distance_mm, speed_mmps
 from learnbot_dsl.Clients.Devices import *
 
 cozmo = None
-K = 2  # Speed constant
+K = 1  # Speed constant
 L = 45  # Distance between wheels
 
 
@@ -106,7 +106,7 @@ class Robot(Client):
         self.last_pose_read = ry_n
         ry = ry_n - self.current_pose_angle + self.vueltas*360
         rz = 0
-        #print("Cozmo gyro", ry_n, ry)
+        print("Cozmo gyro", ry_n, ry)
         return rx, int(-ry), rz
 
     def resetGyroscope(self):
