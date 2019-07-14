@@ -824,7 +824,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                msgBox.setText(self.tr("You should check connection the " + name_Client + " robot"))
+                msgBox.setText(self.tr("You should check the connection to " + name_Client))
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
@@ -844,6 +844,17 @@ class LearnBlock(QtWidgets.QMainWindow):
             if p is not None:
                 self.disablestartButtons(False)
                 self.hilo = None
+                print("returned value", p)
+                if p!=0:
+                    name_Client = self.ui.clientscomboBox.currentText()
+                    msgBox = QtWidgets.QMessageBox()
+                    msgBox.setWindowTitle(self.tr("Warning"))
+                    msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                    msgBox.setText(self.tr("You should check the connection to " + name_Client))
+                    msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                    msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+                    msgBox.exec_()
+
 
 
     def textCodeToPython(self, name_Client):
