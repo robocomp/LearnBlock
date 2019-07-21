@@ -16,7 +16,7 @@ def set_orientation(lbot, angle=0):
                     angleVel = diff
                 if angleVel < 10:
                     angleVel = 10            
-                finalVel = (angleVel*s)/2
+                finalVel = (angleVel*s)
                 if curVel!=finalVel:
                     lbot.setBaseSpeed(0, math.radians(finalVel))
                     curVel = finalVel

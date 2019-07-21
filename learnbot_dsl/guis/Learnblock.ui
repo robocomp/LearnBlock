@@ -94,9 +94,12 @@
       </item>
       <item>
        <widget class="QComboBox" name="clientscomboBox">
+        <property name="currentText">
+         <string notr="true">EBO</string>
+        </property>
         <item>
          <property name="text">
-          <string>EBO</string>
+          <string notr="true">EBO</string>
          </property>
         </item>
        </widget>
@@ -810,7 +813,7 @@
    </widget>
    <widget class="QMenu" name="menuTools_robot">
     <property name="title">
-     <string>tools &amp;robot</string>
+     <string>Robot &amp;tools</string>
     </property>
     <addaction name="actionStart_Simulator"/>
     <addaction name="separator"/>

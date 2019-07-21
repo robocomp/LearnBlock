@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui',
-# licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/Learnblock.ui' applies.
+# Form implementation generated from reading ui file 'Learnblock.ui',
+# licensing of 'Learnblock.ui' applies.
 #
-# Created: Fri Mar 22 13:35:32 2019
-#      by: pyside2-uic  running on PySide2 5.12.1
+# Created: Sun Jul 21 16:28:04 2019
+#      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -48,8 +48,10 @@ class Ui_MainWindow(object):
         self.useEventscheckBox.setObjectName("useEventscheckBox")
         self.horizontalLayout_2.addWidget(self.useEventscheckBox)
         self.clientscomboBox = QtWidgets.QComboBox(self.centralwidget)
+        self.clientscomboBox.setCurrentText("EBO")
         self.clientscomboBox.setObjectName("clientscomboBox")
         self.clientscomboBox.addItem("")
+        self.clientscomboBox.setItemText(0, "EBO")
         self.horizontalLayout_2.addWidget(self.clientscomboBox)
         self.addClientPushButton = QtWidgets.QPushButton(self.centralwidget)
         self.addClientPushButton.setObjectName("addClientPushButton")
@@ -552,7 +554,6 @@ class Ui_MainWindow(object):
         self.addStringpushButton.setToolTip(QtWidgets.QApplication.translate("MainWindow", "Add String", None, -1))
         self.addStringpushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Add String", None, -1))
         self.useEventscheckBox.setText(QtWidgets.QApplication.translate("MainWindow", "Use Events", None, -1))
-        self.clientscomboBox.setItemText(0, QtWidgets.QApplication.translate("MainWindow", "EBO", None, -1))
         self.addClientPushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Add Client", None, -1))
         self.language.setItemText(0, QtWidgets.QApplication.translate("MainWindow", "ES", None, -1))
         self.language.setItemText(1, QtWidgets.QApplication.translate("MainWindow", "EN", None, -1))
@@ -593,7 +594,7 @@ class Ui_MainWindow(object):
         self.stopPushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Stop", None, -1))
         self.Tabwi.setTabText(self.Tabwi.indexOf(self.program_visual), QtWidgets.QApplication.translate("MainWindow", "LearnBlock", None, -1))
         self.menuFile.setTitle(QtWidgets.QApplication.translate("MainWindow", "Fi&le", None, -1))
-        self.menuTools_robot.setTitle(QtWidgets.QApplication.translate("MainWindow", "tools &robot", None, -1))
+        self.menuTools_robot.setTitle(QtWidgets.QApplication.translate("MainWindow", "Robot &tools", None, -1))
         self.menuEdit.setTitle(QtWidgets.QApplication.translate("MainWindow", "Edit", None, -1))
         self.menuTheme.setTitle(QtWidgets.QApplication.translate("MainWindow", "&Theme", None, -1))
         self.menuProject.setTitle(QtWidgets.QApplication.translate("MainWindow", "Pro&ject", None, -1))
