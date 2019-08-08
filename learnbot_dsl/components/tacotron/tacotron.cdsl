@@ -1,0 +1,11 @@
+import "tacotron.idsl";
+
+Component tacotron
+{
+    Communications
+    {
+        implements TTSTacotron;
+    };
+	language python;
+};
+
