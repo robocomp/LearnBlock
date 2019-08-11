@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'Learnblock.ui',
 # licensing of 'Learnblock.ui' applies.
 #
-# Created: Sun Jul 21 16:28:04 2019
+# Created: Sun Aug 11 17:28:24 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -494,6 +494,8 @@ class Ui_MainWindow(object):
         self.actionDark.setObjectName("actionDark")
         self.actionDictionary_Tags = QtWidgets.QAction(MainWindow)
         self.actionDictionary_Tags.setObjectName("actionDictionary_Tags")
+        self.actionLoad_Sets_of_Blocks = QtWidgets.QAction(MainWindow)
+        self.actionLoad_Sets_of_Blocks.setObjectName("actionLoad_Sets_of_Blocks")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_New_block)
@@ -504,6 +506,7 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSave_As)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionLoad_Library)
+        self.menuFile.addAction(self.actionLoad_Sets_of_Blocks)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionChange_Libraries_path)
         self.menuFile.addAction(self.actionChange_Workspace)
@@ -656,4 +659,5 @@ class Ui_MainWindow(object):
         self.actionStart.setText(QtWidgets.QApplication.translate("MainWindow", "Start", None, -1))
         self.actionDark.setText(QtWidgets.QApplication.translate("MainWindow", "Dark", None, -1))
         self.actionDictionary_Tags.setText(QtWidgets.QApplication.translate("MainWindow", "Dictionary Tags", None, -1))
+        self.actionLoad_Sets_of_Blocks.setText(QtWidgets.QApplication.translate("MainWindow", "Load Sets of Blocks", None, -1))
 

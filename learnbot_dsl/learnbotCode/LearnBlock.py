@@ -13,6 +13,7 @@ from learnbot_dsl.learnbotCode.Button import *
 from learnbot_dsl.learnbotCode.Scene import *
 from learnbot_dsl.learnbotCode.View import *
 from learnbot_dsl.blocksConfig.parserConfigBlock import reload_functions
+from learnbot_dsl.blocksConfig import pathConfig
 from learnbot_dsl.learnbotCode.checkFile import compile
 from learnbot_dsl.learnbotCode.dialogAddNumberOrString import *
 from learnbot_dsl.learnbotCode.guiCreateBlock import *
@@ -218,6 +219,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
+        self.ui.actionLoad_Sets_of_Blocks.triggered.connect(self.loadSetsOfBlocks)
         self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
         self.ui.actionDownload_examples.triggered.connect(self.downloadExamples)
         self.ui.actionDownload_libraries.triggered.connect(self.downloadLibraries)
@@ -925,7 +927,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     def avtiveEvents(self, isChecked):
         self.scene.useEvents(isChecked)
         self.ui.addWhenpushButton.setEnabled(isChecked)
-        if not self.scene.thereisMain():
+        if not self.scene.thereisMain() and self.mainButton is not None:
             self.mainButton.setEnabled(not isChecked)
         for b in self.listButtonsWhen:
             b.setEnabled(isChecked)
@@ -1008,8 +1010,8 @@ class LearnBlock(QtWidgets.QMainWindow):
         if isinstance(self.__fileProject, str):
             self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
 
-    def load_blocks(self):
-        blocks = reload_functions()
+    def load_blocks(self, config_path = None):
+        blocks = reload_functions(config_path)
         for k, table in iter(self.dicTables.items()):
             table.clear()
             table.setRowCount(0)
@@ -1018,6 +1020,9 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.listButtons.clear()
         except:
             pass
+#        if blocks is None:
+#            print("Sorry, no block configuration files have been found")
+#            exit(-1)
         for b in blocks:
             if b["name"] in self.listNameBlock:
                 continue
@@ -1042,6 +1047,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                      variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
                 if b["name"] == "main":
                     self.mainButton = button
+                else:
+                    self.mainButton = None
                 self.listButtons.append(button)
                 table.setCellWidget(table.rowCount() - 1, 0, button)
 
@@ -1168,7 +1175,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                     self.scene.startAllblocks()
                     self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
                 self.updateOpenRecent()
-                if self.scene.thereisMain():
+                if self.scene.thereisMain() and self.mainButton is not None:
                     self.mainButton.setEnabled(False)
                 self.savetmpProject()
 
@@ -1187,6 +1194,12 @@ class LearnBlock(QtWidgets.QMainWindow):
             elif ret == QtWidgets.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 self.openProject(file)
+
+
+    def loadSetsOfBlocks(self):
+        blocks_path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr("Select Directory"), pathConfig, QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
+        if blocks_path!="":
+            self.load_blocks(blocks_path)
 
     def showCreateBlock(self):
         self.createBlockGui = guiCreateBlock(self.load_blocks)

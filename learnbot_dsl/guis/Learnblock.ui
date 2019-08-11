@@ -805,6 +805,7 @@
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
     <addaction name="actionLoad_Library"/>
+    <addaction name="actionLoad_Sets_of_Blocks"/>
     <addaction name="separator"/>
     <addaction name="actionChange_Libraries_path"/>
     <addaction name="actionChange_Workspace"/>
@@ -1110,6 +1111,11 @@
   <action name="actionDictionary_Tags">
    <property name="text">
     <string>Dictionary Tags</string>
+   </property>
+  </action>
+  <action name="actionLoad_Sets_of_Blocks">
+   <property name="text">
+    <string>Load Sets of Blocks</string>
    </property>
   </action>
  </widget>
