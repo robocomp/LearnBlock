@@ -601,7 +601,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 c.getConnect().setItem(None)
         if self.parentBlock.name == "when":
             self.scene.parent.delWhen(self.parentBlock.nameControl)
-        if self.parentBlock.name == "main":
+        if self.parentBlock.name == "main" and self.scene.parent.mainButton is not None:
             self.scene.parent.mainButton.setEnabled(True)
         self.scene.removeItem(self.id, savetmp)
         del self.parentBlock
