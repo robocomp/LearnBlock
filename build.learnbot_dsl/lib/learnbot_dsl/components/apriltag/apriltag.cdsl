@@ -1,0 +1,11 @@
+import "Apriltag.idsl";
+
+Component aprilTag
+{
+	Communications
+	{
+		implements Apriltag;
+	};
+	language Python;
+};
+

@@ -125,7 +125,6 @@ class Face(threading.Thread):
         self.t = 0.9
         self.config_target = DEFAULTCONFIGNEUTRAL
         self.display_proxy = display_proxy
-	self.speaker = Speaker(_sendText=self.deviceSendText)
         self.stopped = False
 
     def run(self):
@@ -142,9 +141,6 @@ class Face(threading.Thread):
             path = self.render()
             if path is not None:
                 self.display_proxy.setImageFromFile(path)
-
-    def deviceSendText(self, text):
-        self.say_text(text)
 
     def pestaneo(self):
         configaux = copy.copy(self.config)
@@ -257,7 +253,7 @@ class Face(threading.Thread):
 
 class Robot(Client):
 
-    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor", "speaker"]
+    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor", "speaker_proxy"]
 
     def __init__(self):
         self.connectToRobot()
@@ -269,10 +265,9 @@ class Robot(Client):
         self.camera = Devices.Camera(_readFunction=self.deviceReadCamera)
         self.base = Devices.Base(_callFunction=self.deviceMove)
         self.display = Devices.Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
-        self.addJointMotor("CAMERA",
-                           _JointMotor=Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
-	self.speaker = Devices.
-        self.start()
+        self.addJointMotor("CAMERA", _JointMotor=Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
+	self.speaker_proxy = Devices.Speaker(_sendText=self.deviceSendText)
+	self.start()
 
     def connectToRobot(self):
         self.laser_proxys = []
@@ -280,7 +275,7 @@ class Robot(Client):
         self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h localhost -p 10004",
                                                         RoboCompDifferentialRobot.DifferentialRobotPrx)
         self.deviceMove(0,0)
-	self.speaker = connectComponent("speaker:tcp -h localhost -p 9999", RoboCompTTSTacotron.TacotronPrx)
+	self.speaker_proxy = connectComponent("speaker:tcp -h localhost -p 9999", RoboCompTTSTacotron.TacotronPrx)
 
         for i in range(2, 7):
             self.laser_proxys.append(connectComponent("laser:tcp -h localhost -p 1010" + str(i), RoboCompLaser.LaserPrx))
@@ -302,6 +297,9 @@ class Robot(Client):
     def disconnect(self):
         self.deviceMove(0, 0)
         self.face.stop()
+
+    def deviceSendText(self, text):
+        self.speaker_proxy.say(text)
 
     def deviceReadLaser(self):
         usList = []
