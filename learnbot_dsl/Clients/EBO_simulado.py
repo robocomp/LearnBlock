@@ -253,7 +253,7 @@ class Face(threading.Thread):
 
 class Robot(Client):
 
-    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor", "speaker_proxy"]
+    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor", "speaker"]
 
     def __init__(self):
         self.connectToRobot()
@@ -266,8 +266,8 @@ class Robot(Client):
         self.base = Devices.Base(_callFunction=self.deviceMove)
         self.display = Devices.Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
         self.addJointMotor("CAMERA", _JointMotor=Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
-	self.speaker_proxy = Devices.Speaker(_sendText=self.deviceSendText)
-	self.start()
+        self.speaker = Devices.Speaker(_sendText=self.deviceSendText)
+        self.start()
 
     def connectToRobot(self):
         self.laser_proxys = []
@@ -275,7 +275,7 @@ class Robot(Client):
         self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h localhost -p 10004",
                                                         RoboCompDifferentialRobot.DifferentialRobotPrx)
         self.deviceMove(0,0)
-	self.speaker_proxy = connectComponent("speaker:tcp -h localhost -p 9999", RoboCompTTSTacotron.TacotronPrx)
+        self.speaker_proxy = connectComponent("speaker:tcp -h localhost -p 9999", RoboCompTTSTacotron.TacotronPrx)
 
         for i in range(2, 7):
             self.laser_proxys.append(connectComponent("laser:tcp -h localhost -p 1010" + str(i), RoboCompLaser.LaserPrx))
