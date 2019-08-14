@@ -279,7 +279,7 @@
         <bool>true</bool>
        </property>
        <attribute name="title">
-        <string>Text Code</string>
+        <string>Block-Text</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>

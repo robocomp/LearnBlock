@@ -927,7 +927,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     def avtiveEvents(self, isChecked):
         self.scene.useEvents(isChecked)
         self.ui.addWhenpushButton.setEnabled(isChecked)
-        if not self.scene.thereisMain() and self.mainButton is not None:
+        if not self.scene.thereisMain() and (self.mainButton is not None):
             self.mainButton.setEnabled(not isChecked)
         for b in self.listButtonsWhen:
             b.setEnabled(isChecked)
@@ -1020,9 +1020,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.listButtons.clear()
         except:
             pass
-#        if blocks is None:
-#            print("Sorry, no block configuration files have been found")
-#            exit(-1)
+
+        self.mainButton = None
         for b in blocks:
             if b["name"] in self.listNameBlock:
                 continue
@@ -1047,8 +1046,6 @@ class LearnBlock(QtWidgets.QMainWindow):
                      variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
                 if b["name"] == "main":
                     self.mainButton = button
-                else:
-                    self.mainButton = None
                 self.listButtons.append(button)
                 table.setCellWidget(table.rowCount() - 1, 0, button)
 
@@ -1175,7 +1172,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                     self.scene.startAllblocks()
                     self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
                 self.updateOpenRecent()
-                if self.scene.thereisMain() and self.mainButton is not None:
+                if self.scene.thereisMain() and (self.mainButton is not None):
                     self.mainButton.setEnabled(False)
                 self.savetmpProject()
 

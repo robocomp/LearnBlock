@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'Learnblock.ui',
 # licensing of 'Learnblock.ui' applies.
 #
-# Created: Sun Aug 11 17:28:24 2019
+# Created: Wed Aug 14 17:32:09 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -574,7 +574,7 @@ class Ui_MainWindow(object):
         self.label_2.setText(QtWidgets.QApplication.translate("MainWindow", "Size Leter", None, -1))
         self.starttextPushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Start", None, -1))
         self.stoptextPushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Stop", None, -1))
-        self.Tabwi.setTabText(self.Tabwi.indexOf(self.program_text), QtWidgets.QApplication.translate("MainWindow", "Text Code", None, -1))
+        self.Tabwi.setTabText(self.Tabwi.indexOf(self.program_text), QtWidgets.QApplication.translate("MainWindow", "Block-Text", None, -1))
         self.functions.setTabText(self.functions.indexOf(self.search), QtWidgets.QApplication.translate("MainWindow", "Search", None, -1))
         self.addWhenpushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Add When", None, -1))
         self.deleteWhenpushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Delete When", None, -1))

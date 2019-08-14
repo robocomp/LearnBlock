@@ -140,10 +140,10 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.tabVar.setColumnCount(4)
         self.tabVar.setRowCount(len(vars))
         self.tableHeader = [] #QtCore.QStringList()
-        self.tableHeader.append("Name")
-        self.tableHeader.append("Constant")
-        self.tableHeader.append("Set to")
-        self.tableHeader.append("Type")
+        self.tableHeader.append(self.tr('Name'))
+        self.tableHeader.append(self.tr('Constant'))
+        self.tableHeader.append(self.tr('Set to'))
+        self.tableHeader.append(self.tr('Type'))
         self.tabVar.setHorizontalHeaderLabels(self.tableHeader)
 
         # i = 0
@@ -188,7 +188,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 self.tabVar.setCellWidget(i, 1, combobox)
 
             combobox = QtWidgets.QComboBox()
-            combobox.addItem("Constant")
+            combobox.addItem(self.tr('Constant'))
             self.tabVar.setCellWidget(i, 2, combobox)
 #            self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(var.type))
             # i += 1
@@ -467,6 +467,15 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
     def update(self):
         if len(self.dicTrans) is not 0 and self.showtext is not self.dicTrans[getLanguage()]:
+            #Language change
+            self.DialogVar.retranslateUi(self.DialogVar)
+            self.tableHeader = [] #QtCore.QStringList()
+            self.tableHeader.append(self.tr('Name'))
+            self.tableHeader.append(self.tr('Constant'))
+            self.tableHeader.append(self.tr('Set to'))
+            self.tableHeader.append(self.tr('Type'))
+            self.tabVar.setHorizontalHeaderLabels(self.tableHeader)
+
             self.shouldUpdate = True
             self.showtext = self.dicTrans[getLanguage()]
             vars = self.parentBlock.vars

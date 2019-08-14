@@ -414,7 +414,7 @@
         <translation>Seleccionar directorio de trabajo</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1651"/>
+        <location filename="../LearnBlock.py" line="1653"/>
         <source>Warning</source>
         <translation>Peligro</translation>
     </message>
@@ -489,12 +489,12 @@
         <translation>¿Quiere seleccionar otra librería?</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1184"/>
+        <location filename="../LearnBlock.py" line="1186"/>
         <source>The document has been modified.</source>
         <translation>El documento ha sido modificado.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1185"/>
+        <location filename="../LearnBlock.py" line="1187"/>
         <source>Do you want to save your changes?</source>
         <translation>¿Quieres guardar los cambios?</translation>
     </message>
@@ -534,32 +534,32 @@
         <translation>Archivo Rcis (*.xml)</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1105"/>
+        <location filename="../LearnBlock.py" line="1107"/>
         <source>Save Project</source>
         <translation>Guardar Proyecto</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1125"/>
+        <location filename="../LearnBlock.py" line="1127"/>
         <source>Block Project file (*.blockProject)</source>
         <translation>Archivo Block Project (*.blockProject)</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1125"/>
+        <location filename="../LearnBlock.py" line="1127"/>
         <source>Open Project</source>
         <translation>Abrir Proyecto</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1616"/>
+        <location filename="../LearnBlock.py" line="1618"/>
         <source>Error the name can not be &apos;start&apos;</source>
         <translation>Error el nombre no puede ser start</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1653"/>
+        <location filename="../LearnBlock.py" line="1655"/>
         <source>Error Name is empty.</source>
         <translation>Error el nombre está vacío.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1625"/>
+        <location filename="../LearnBlock.py" line="1627"/>
         <source>This name is reserved</source>
         <translation>Este nombre esta reservado</translation>
     </message>
@@ -569,7 +569,7 @@
         <translation type="obsolete">Este nombre ya existe</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1644"/>
+        <location filename="../LearnBlock.py" line="1646"/>
         <source>The name can&apos;t start by number</source>
         <translation>El nombre no puede comenzar por número</translation>
     </message>
@@ -579,14 +579,13 @@
         <translation>Revisa la conexión a</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1635"/>
+        <location filename="../LearnBlock.py" line="1637"/>
         <source>This name already exists</source>
         <translation>Este nombre ya existe</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1198"/>
+        <location filename="../LearnBlock.py" line="1200"/>
         <source>Select Directory</source>
-        <translatorcomment>%n</translatorcomment>
         <translation type="unfinished">Seleccionar Directorio</translation>
     </message>
 </context>
@@ -728,7 +727,7 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="577"/>
         <source>Text Code</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Código</numerusform>
             <numerusform>%n</numerusform>
         </translation>
@@ -1437,6 +1436,14 @@
             <numerusform>%n</numerusform>
         </translation>
     </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="577"/>
+        <source>Block-Text</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>Updated</name>
@@ -1499,6 +1506,26 @@ to load the updates close and reopen the program.</source>
         <location filename="../VisualBlock.py" line="236"/>
         <source>Do you want to overwrite the changes?</source>
         <translation>¿Quiere sobrescribir los cambios?</translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="473"/>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="474"/>
+        <source>Constant</source>
+        <translation type="unfinished">Constante</translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="475"/>
+        <source>Set to</source>
+        <translation type="unfinished">Asignación</translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="476"/>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
     </message>
 </context>
 <context>
