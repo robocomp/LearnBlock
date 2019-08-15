@@ -13,7 +13,9 @@ def reload_functions(selected_path=None):
     if selected_path is None:
         selected_path = os.path.join(pathConfig, "default")
 
-    pathsConfig = [selected_path,
+    basic_path = os.path.join(pathConfig, "basic")
+
+    pathsConfig = [basic_path, selected_path,
                    os.path.join(os.getenv('HOME'), ".learnblock", "block")
                    ]
     for path in pathsConfig:
