@@ -418,7 +418,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1653"/>
+        <location filename="../LearnBlock.py" line="1650"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
@@ -488,12 +488,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1186"/>
+        <location filename="../LearnBlock.py" line="1183"/>
         <source>The document has been modified.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1187"/>
+        <location filename="../LearnBlock.py" line="1184"/>
         <source>Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -528,37 +528,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1107"/>
+        <location filename="../LearnBlock.py" line="1104"/>
         <source>Save Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1127"/>
+        <location filename="../LearnBlock.py" line="1124"/>
         <source>Block Project file (*.blockProject)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1127"/>
+        <location filename="../LearnBlock.py" line="1124"/>
         <source>Open Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1618"/>
+        <location filename="../LearnBlock.py" line="1615"/>
         <source>Error the name can not be &apos;start&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1655"/>
+        <location filename="../LearnBlock.py" line="1652"/>
         <source>Error Name is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1627"/>
+        <location filename="../LearnBlock.py" line="1624"/>
         <source>This name is reserved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1646"/>
+        <location filename="../LearnBlock.py" line="1643"/>
         <source>The name can&apos;t start by number</source>
         <translation type="unfinished"></translation>
     </message>
@@ -568,12 +568,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1637"/>
+        <location filename="../LearnBlock.py" line="1634"/>
         <source>This name already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1200"/>
+        <location filename="../LearnBlock.py" line="1197"/>
         <source>Select Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1425,63 +1425,73 @@ to load the updates close and reopen the program.</source>
 <context>
     <name>VisualBlock</name>
     <message>
-        <location filename="../VisualBlock.py" line="203"/>
+        <location filename="../VisualBlock.py" line="217"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="208"/>
+        <location filename="../VisualBlock.py" line="222"/>
         <source>Export Block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="212"/>
+        <location filename="../VisualBlock.py" line="226"/>
         <source>Duplicate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="217"/>
+        <location filename="../VisualBlock.py" line="231"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="226"/>
+        <location filename="../VisualBlock.py" line="240"/>
         <source>Select Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="233"/>
+        <location filename="../VisualBlock.py" line="247"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="235"/>
+        <location filename="../VisualBlock.py" line="249"/>
         <source>This module already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="236"/>
+        <location filename="../VisualBlock.py" line="250"/>
         <source>Do you want to overwrite the changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="473"/>
+        <location filename="../VisualBlock.py" line="155"/>
         <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="474"/>
+        <location filename="../VisualBlock.py" line="203"/>
         <source>Constant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="475"/>
+        <location filename="../VisualBlock.py" line="157"/>
         <source>Set to</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="476"/>
+        <location filename="../VisualBlock.py" line="158"/>
         <source>Type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="177"/>
+        <source>number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="179"/>
+        <source>text</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

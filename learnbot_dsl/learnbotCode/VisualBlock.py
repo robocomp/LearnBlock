@@ -129,6 +129,18 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.timer.timeout.connect(self.update)
         self.posmouseinItem = None
 
+        self.DialogVar = None
+        self.popMenu = None
+        self.create_dialogs()
+
+        self.sizeIn = 0
+        self.shouldUpdateConnections = False
+
+    def create_dialogs(self):
+
+        if self.DialogVar is not None:
+            del self.DialogVar
+
         vars = self.parentBlock.vars
 
         self.DialogVar = VarGui()
@@ -145,6 +157,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.tableHeader.append(self.tr('Set to'))
         self.tableHeader.append(self.tr('Type'))
         self.tabVar.setHorizontalHeaderLabels(self.tableHeader)
+        self.tabVar.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
 
         # i = 0
         for i, var in zip(range(len(vars)),vars):
@@ -159,12 +172,12 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 edit = QtWidgets.QLineEdit()
                 if var.type == "float":
                     edit.setValidator(QtGui.QDoubleValidator())
-                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel("number"))
+                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('number')))
                 elif var.type == "int":
                     edit.setValidator(QtGui.QIntValidator())
-                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel("number"))
+                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('number')))
                 else:
-                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel("text"))
+                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('text')))
                 edit.setText(var.defaul)
                 self.tabVar.setCellWidget(i, 1, edit)
             elif var.type == "boolean":
@@ -193,8 +206,10 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 #            self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(var.type))
             # i += 1
 
-        self.sizeIn = 0
-        self.shouldUpdateConnections = False
+        if self.popMenu is not None:
+            del self.popMenu
+            del self.keyPressEater
+
         self.popMenu = QtWidgets.QMenu(self)
 
         self.keyPressEater = KeyPressEater(self.popMenu)
@@ -378,7 +393,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         # for cell in range(0, self.tabVar.rowCount()):
         for cell, var in zip(range(len(varS)), varS):
 
-            if self.tabVar.cellWidget(cell, 2).currentText() == "Constant":
+            if self.tabVar.cellWidget(cell, 2).currentText() == self.tr('Constant'):
                 if self.tabVar.cellWidget(cell, 3).text() == "boolean":
                     vars.append(self.tabVar.cellWidget(cell, 1).currentText())
                 elif self.tabVar.cellWidget(cell, 3).text() == "list":
@@ -468,13 +483,8 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
     def update(self):
         if len(self.dicTrans) is not 0 and self.showtext is not self.dicTrans[getLanguage()]:
             #Language change
-            self.DialogVar.retranslateUi(self.DialogVar)
-            self.tableHeader = [] #QtCore.QStringList()
-            self.tableHeader.append(self.tr('Name'))
-            self.tableHeader.append(self.tr('Constant'))
-            self.tableHeader.append(self.tr('Set to'))
-            self.tableHeader.append(self.tr('Type'))
-            self.tabVar.setHorizontalHeaderLabels(self.tableHeader)
+
+            self.create_dialogs()
 
             self.shouldUpdate = True
             self.showtext = self.dicTrans[getLanguage()]
