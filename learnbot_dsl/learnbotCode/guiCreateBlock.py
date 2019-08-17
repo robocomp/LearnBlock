@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 import os, tempfile, json
-from PySide2 import QtGui, QtWidgets
+from PySide2 import QtGui, QtWidgets, QtCore
 import learnbot_dsl.guis.CreateBlock as CreateBlock
 from learnbot_dsl.blocksConfig.blocks import pathBlocks
 from learnbot_dsl.blocksConfig.parserConfigBlock import pathConfig
@@ -14,16 +14,18 @@ for base, dirs, files in os.walk(pathBlocks):
     for f in files:
         archivo, extension = os.path.splitext(base + "/" + f)
         if extension == ".png" and "block" in f and "azul" not in f:
-            listBlock.append(os.path.join(base,f))
             archivo, extension = os.path.splitext(f)
-            listNameBlocks.append(archivo)
+            if archivo in ["block1", "block3", "block4"]:
+                listBlock.append(os.path.join(base,f))
+                listNameBlocks.append(archivo)
 
-listTypeBlock = ["control",
+listBlock.sort()
+listNameBlocks.sort()
+
+listTypeBlock = ["express",
                  "motor",
                  "perceptual",
                  "proprioceptive",
-                 "operator",
-                 "express",
                  "others"]
 
 pythonCode = """from __future__ import print_function, absolute_import
@@ -47,6 +49,8 @@ class guiCreateBlock(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.__updateBlockType(0)
         self.__updateImage(0)
+        self.ui.tableWidgetToolTip.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        self.ui.tableWidgetlanguages.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
         for name in listNameBlocks:
             self.ui.comboBoxBlockImage.addItem(name)
         self.ui.comboBoxBlockImage.currentIndexChanged.connect(self.__updateImage)
@@ -61,6 +65,7 @@ class guiCreateBlock(QtWidgets.QDialog):
         self.ui.pushButtonRemoveBlockImage.clicked.connect(self.__removeImage)
         self.ui.pushButtonRemoveVar.setEnabled(False)
         self.ui.pushButtonRemoveBlockImage.setEnabled(False)
+        self.ui.pushButtonConfigFile.clicked.connect(self.__selectConfigFile)
         self.ui.pushButtonOK.clicked.connect(lambda: self.__buttons(1))
         self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
         self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
@@ -156,6 +161,7 @@ class guiCreateBlock(QtWidgets.QDialog):
         table.removeRow(table.currentRow())
         if table.rowCount() == 0:
             buton.setEnabled(False)
+
     def __clear(self):
         self.ui.lineEditFile.clear()
         self.ui.lineEditName.clear()
@@ -176,21 +182,34 @@ class guiCreateBlock(QtWidgets.QDialog):
         if len(self.listImg) == 0:
             self.ui.pushButtonRemoveBlockImage.setEnabled(False)
 
+    def __selectConfigFile(self):
+        configPath = self.ui.lineEditConfigFile.text()
+        if self.ui.lineEditConfigFile.text() == "":
+            initialConfigPath = pathConfig
+        else:
+            initialConfigPath = os.path.dirname(configPath)
+
+        configFile, _ = QtWidgets.QFileDialog.getSaveFileName(self, self.tr("Select configuration file"), initialConfigPath, filter = "*.conf", options = QtWidgets.QFileDialog.DontConfirmOverwrite)
+        if configFile != "" and (os.path.exists(configFile) or os.path.exists(os.path.dirname(configFile))):
+            self.ui.lineEditConfigFile.setText(configFile)
+        print("selection of config file", configFile)
+
     def __buttons(self, ret):
         if ret is 1:
             ret = None
             name = self.ui.lineEditName.text().replace(" ", "_")
+            configFile = self.ui.lineEditConfigFile.text()
             if name == "":
                 msgBox = QtWidgets.QMessageBox()
-                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setWindowTitle(self.tr("Error"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                msgBox.setText(self.tr("Error Name is empty."))
+                msgBox.setText(self.tr("Block name is empty"))
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
-            if name not in functions.keys():
+            if name in functions.keys():
                 msgBox = QtWidgets.QMessageBox()
-                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setWindowTitle(self.tr("Error"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
                 msgBox.setText(self.tr("This name already exists"))
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
@@ -198,20 +217,29 @@ class guiCreateBlock(QtWidgets.QDialog):
                 ret = msgBox.exec_()
             elif len(self.listImg) is 0:
                 msgBox = QtWidgets.QMessageBox()
-                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setWindowTitle(self.tr("Error"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                msgBox.setText(self.tr("Error Images of block is empty."))
+                msgBox.setText(self.tr("Images of block is empty"))
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
-            elif self.__repitNameVar():
+            elif self.__repeatNameVar():
                 msgBox = QtWidgets.QMessageBox()
-                msgBox.setWindowTitle(self.tr("Warning"))
+                msgBox.setWindowTitle(self.tr("Error"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                msgBox.setText(self.tr("Error name of vars already exists, name is empty or default value is empty."))
+                msgBox.setText(self.tr("Name of variable already exists, name is empty or default value is empty."))
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
+            elif configFile == "":
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Error"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("No valid configuration file was chosen"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+                ret = msgBox.exec_()
+
             if ret is not None:
                 return
 
@@ -231,6 +259,7 @@ class guiCreateBlock(QtWidgets.QDialog):
             for img in self.listImg:
                 listImgs.append(img)
             dictBlock["img"] = listImgs
+            
             if self.ui.tableWidgetlanguages.rowCount() is not 0:
                 dictLanguages = {}
                 for row in range(0, self.ui.tableWidgetlanguages.rowCount()):
@@ -242,26 +271,33 @@ class guiCreateBlock(QtWidgets.QDialog):
                     dictToolTip[self.ui.tableWidgetToolTip.cellWidget(row, 0).text()] = self.ui.tableWidgetToolTip.cellWidget(row, 1).text()
                 dictBlock["tooltip"] = dictToolTip
 
-            msgBox = QtWidgets.QMessageBox()
-            msgBox.setWindowTitle(self.tr("Warning"))
-            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-            msgBox.setText(self.tr("Are you sure you want to add this function?"))
-            msgBox.setInformativeText(str(dictBlock))
-            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
-            ret = msgBox.exec_()
-            if ret == QtWidgets.QMessageBox.Ok:
-                with open(os.path.join(tempfile.gettempdir(), "block", self.ui.lineEditName.text() + ".conf"), 'w') as file:
-                    json.dump([dictBlock], file)
-                with open(os.path.join(tempfile.gettempdir(), "functions", self.ui.lineEditName.text() + ".py"), 'w') as file:
-                    code = self.ui.textEditPythonCode.toPlainText()
-                    file.write(code)
+            if os.path.exists(configFile):
+                with open(configFile, 'r') as file:
+                    listOfBlocks = json.load(file)
             else:
-                return
-            self.load_blocks()
+                listOfBlocks = []
+            listOfBlocks.append(dictBlock)
+            with open(configFile, 'w') as file:
+                json.dump(listOfBlocks, file, indent=4)
+            with open(os.path.join(tempfile.gettempdir(), "functions", self.ui.lineEditName.text() + ".py"), 'w') as file:
+                code = self.ui.textEditPythonCode.toPlainText()
+                file.write(code)
+
+            for i in range(len(dictBlock["img"])):
+                dictBlock["img"][i] = os.path.join(pathBlocks, dictBlock["img"][i])
+            self.load_blocks(dictBlock)
+
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Block created"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Information)
+            msgBox.setText(self.tr("New Python file created at ")+ os.path.join(tempfile.gettempdir(), "functions"))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+            ret = msgBox.exec_()
+
         self.close()
 
-    def __repitNameVar(self):
+    def __repeatNameVar(self):
         varlist = []
         if self.ui.tableWidgetVars.rowCount() is not 0:
             for row in range(0, self.ui.tableWidgetVars.rowCount()):

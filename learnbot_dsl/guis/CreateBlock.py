@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/CreateBlock.ui',
-# licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/CreateBlock.ui' applies.
+# Form implementation generated from reading ui file 'CreateBlock.ui',
+# licensing of 'CreateBlock.ui' applies.
 #
-# Created: Thu Mar  7 12:39:25 2019
-#      by: pyside2-uic  running on PySide2 5.12.1
+# Created: Sat Aug 17 18:29:11 2019
+#      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,7 +13,7 @@ from PySide2 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(814, 779)
+        Dialog.resize(867, 779)
         self.verticalLayout_18 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_18.setObjectName("verticalLayout_18")
         self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
@@ -94,7 +94,6 @@ class Ui_Dialog(object):
         self.comboBoxBlockType = QtWidgets.QComboBox(Dialog)
         self.comboBoxBlockType.setMaximumSize(QtCore.QSize(110, 27))
         self.comboBoxBlockType.setObjectName("comboBoxBlockType")
-        self.comboBoxBlockType.addItem("")
         self.comboBoxBlockType.addItem("")
         self.comboBoxBlockType.addItem("")
         self.comboBoxBlockType.addItem("")
@@ -188,7 +187,7 @@ class Ui_Dialog(object):
         self.horizontalLayout_8.addItem(spacerItem8)
         self.verticalLayout_4.addLayout(self.horizontalLayout_8)
         self.tableWidgetlanguages = QtWidgets.QTableWidget(Dialog)
-        self.tableWidgetlanguages.setMinimumSize(QtCore.QSize(200, 0))
+        self.tableWidgetlanguages.setMinimumSize(QtCore.QSize(250, 0))
         self.tableWidgetlanguages.setMaximumSize(QtCore.QSize(200, 16777215))
         self.tableWidgetlanguages.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.tableWidgetlanguages.setAutoScroll(True)
@@ -236,6 +235,11 @@ class Ui_Dialog(object):
         self.horizontalLayout_19.addItem(spacerItem10)
         self.verticalLayout_17.addLayout(self.horizontalLayout_19)
         self.tableWidgetToolTip = QtWidgets.QTableWidget(Dialog)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.tableWidgetToolTip.sizePolicy().hasHeightForWidth())
+        self.tableWidgetToolTip.setSizePolicy(sizePolicy)
         self.tableWidgetToolTip.setMinimumSize(QtCore.QSize(0, 0))
         self.tableWidgetToolTip.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.tableWidgetToolTip.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
@@ -252,6 +256,18 @@ class Ui_Dialog(object):
         self.verticalLayout_17.addWidget(self.tableWidgetToolTip)
         self.horizontalLayout_16.addLayout(self.verticalLayout_17)
         self.verticalLayout_18.addLayout(self.horizontalLayout_16)
+        self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_12.setObjectName("horizontalLayout_12")
+        self.pushButtonConfigFile = QtWidgets.QPushButton(Dialog)
+        self.pushButtonConfigFile.setObjectName("pushButtonConfigFile")
+        self.horizontalLayout_12.addWidget(self.pushButtonConfigFile)
+        spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_12.addItem(spacerItem11)
+        self.lineEditConfigFile = QtWidgets.QLineEdit(Dialog)
+        self.lineEditConfigFile.setMinimumSize(QtCore.QSize(650, 0))
+        self.lineEditConfigFile.setObjectName("lineEditConfigFile")
+        self.horizontalLayout_12.addWidget(self.lineEditConfigFile)
+        self.verticalLayout_18.addLayout(self.horizontalLayout_12)
         self.label = QtWidgets.QLabel(Dialog)
         self.label.setObjectName("label")
         self.verticalLayout_18.addWidget(self.label)
@@ -260,8 +276,8 @@ class Ui_Dialog(object):
         self.verticalLayout_18.addWidget(self.textEditPythonCode)
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
-        spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_9.addItem(spacerItem11)
+        spacerItem12 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_9.addItem(spacerItem12)
         self.pushButtonCancel = QtWidgets.QPushButton(Dialog)
         self.pushButtonCancel.setMaximumSize(QtCore.QSize(150, 16777215))
         self.pushButtonCancel.setAutoDefault(False)
@@ -286,25 +302,24 @@ class Ui_Dialog(object):
         Dialog.setTabOrder(self.tableWidgetVars, self.pushButtonCancel)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtWidgets.QApplication.translate("Dialog", "Dialog", None, -1))
+        Dialog.setWindowTitle(QtWidgets.QApplication.translate("Dialog", "Create a new block", None, -1))
         self.label_4.setText(QtWidgets.QApplication.translate("Dialog", "Block name:", None, -1))
-        self.lineEditName.setPlaceholderText(QtWidgets.QApplication.translate("Dialog", "Name Block", None, -1))
+        self.lineEditName.setPlaceholderText(QtWidgets.QApplication.translate("Dialog", "Name of the new block", None, -1))
         self.label_2.setText(QtWidgets.QApplication.translate("Dialog", "Block image:", None, -1))
         self.pushButtonAddBlockImage.setText(QtWidgets.QApplication.translate("Dialog", "Add", None, -1))
         self.pushButtonRemoveBlockImage.setText(QtWidgets.QApplication.translate("Dialog", "Remove", None, -1))
         self.label_6.setText(QtWidgets.QApplication.translate("Dialog", "Block type:", None, -1))
-        self.comboBoxBlockType.setItemText(0, QtWidgets.QApplication.translate("Dialog", "CONTROL", None, -1))
+        self.comboBoxBlockType.setItemText(0, QtWidgets.QApplication.translate("Dialog", "EXPRESSION", None, -1))
         self.comboBoxBlockType.setItemText(1, QtWidgets.QApplication.translate("Dialog", "MOTOR", None, -1))
-        self.comboBoxBlockType.setItemText(2, QtWidgets.QApplication.translate("Dialog", "PERCEPTIVE", None, -1))
-        self.comboBoxBlockType.setItemText(3, QtWidgets.QApplication.translate("Dialog", "PROPIOPERCEPTIVE", None, -1))
-        self.comboBoxBlockType.setItemText(4, QtWidgets.QApplication.translate("Dialog", "OPERATOR", None, -1))
-        self.comboBoxBlockType.setItemText(5, QtWidgets.QApplication.translate("Dialog", "VARIABLE", None, -1))
+        self.comboBoxBlockType.setItemText(2, QtWidgets.QApplication.translate("Dialog", "PERCEPTUAL", None, -1))
+        self.comboBoxBlockType.setItemText(3, QtWidgets.QApplication.translate("Dialog", "PROPRIOPERCEPTIVE", None, -1))
+        self.comboBoxBlockType.setItemText(4, QtWidgets.QApplication.translate("Dialog", "OTHERS", None, -1))
         self.label_5.setText(QtWidgets.QApplication.translate("Dialog", "Variables:", None, -1))
         self.pushButtonAddVar.setText(QtWidgets.QApplication.translate("Dialog", "Add", None, -1))
         self.pushButtonRemoveVar.setText(QtWidgets.QApplication.translate("Dialog", "Remove", None, -1))
         self.tableWidgetVars.horizontalHeaderItem(0).setText(QtWidgets.QApplication.translate("Dialog", "Type", None, -1))
         self.tableWidgetVars.horizontalHeaderItem(1).setText(QtWidgets.QApplication.translate("Dialog", "Name", None, -1))
-        self.tableWidgetVars.horizontalHeaderItem(2).setText(QtWidgets.QApplication.translate("Dialog", "Defaul value", None, -1))
+        self.tableWidgetVars.horizontalHeaderItem(2).setText(QtWidgets.QApplication.translate("Dialog", "Default value", None, -1))
         self.label_7.setText(QtWidgets.QApplication.translate("Dialog", "Languages:", None, -1))
         self.pushButtonAddlanguages.setText(QtWidgets.QApplication.translate("Dialog", "Add", None, -1))
         self.pushButtonRemovelanguages.setText(QtWidgets.QApplication.translate("Dialog", "Remove", None, -1))
@@ -315,6 +330,8 @@ class Ui_Dialog(object):
         self.pushButtonRemoveTooltip.setText(QtWidgets.QApplication.translate("Dialog", "Remove", None, -1))
         self.tableWidgetToolTip.horizontalHeaderItem(0).setText(QtWidgets.QApplication.translate("Dialog", "Language", None, -1))
         self.tableWidgetToolTip.horizontalHeaderItem(1).setText(QtWidgets.QApplication.translate("Dialog", "Tooltip", None, -1))
+        self.pushButtonConfigFile.setText(QtWidgets.QApplication.translate("Dialog", "Select configuration file", None, -1))
+        self.lineEditConfigFile.setPlaceholderText(QtWidgets.QApplication.translate("Dialog", "Complete path of the block configuration file where the new block will be added", None, -1))
         self.label.setText(QtWidgets.QApplication.translate("Dialog", "Python Code", None, -1))
         self.pushButtonCancel.setText(QtWidgets.QApplication.translate("Dialog", "CANCEL", None, -1))
         self.pushButtonOK.setText(QtWidgets.QApplication.translate("Dialog", "OK", None, -1))

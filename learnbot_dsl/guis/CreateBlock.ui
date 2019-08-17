@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>814</width>
+    <width>867</width>
     <height>779</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Create a new block</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_18">
    <item>
@@ -56,7 +56,7 @@
         <string extracomment="Name of block"/>
        </property>
        <property name="placeholderText">
-        <string>Name Block</string>
+        <string>Name of the new block</string>
        </property>
       </widget>
      </item>
@@ -248,7 +248,7 @@
        </property>
        <item>
         <property name="text">
-         <string>CONTROL</string>
+         <string>EXPRESSION</string>
         </property>
        </item>
        <item>
@@ -258,22 +258,17 @@
        </item>
        <item>
         <property name="text">
-         <string>PERCEPTIVE</string>
+         <string>PERCEPTUAL</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>PROPIOPERCEPTIVE</string>
+         <string>PROPRIOPERCEPTIVE</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>OPERATOR</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>VARIABLE</string>
+         <string>OTHERS</string>
         </property>
        </item>
       </widget>
@@ -428,7 +423,7 @@
            </column>
            <column>
             <property name="text">
-             <string>Defaul value</string>
+             <string>Default value</string>
             </property>
            </column>
           </widget>
@@ -547,7 +542,7 @@
         <widget class="QTableWidget" name="tableWidgetlanguages">
          <property name="minimumSize">
           <size>
-           <width>200</width>
+           <width>250</width>
            <height>0</height>
           </size>
          </property>
@@ -682,6 +677,12 @@
        </item>
        <item>
         <widget class="QTableWidget" name="tableWidgetToolTip">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -719,6 +720,43 @@
         </widget>
        </item>
       </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_12">
+     <item>
+      <widget class="QPushButton" name="pushButtonConfigFile">
+       <property name="text">
+        <string>Select configuration file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_7">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="lineEditConfigFile">
+       <property name="minimumSize">
+        <size>
+         <width>650</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="placeholderText">
+        <string>Complete path of the block configuration file where the new block will be added</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

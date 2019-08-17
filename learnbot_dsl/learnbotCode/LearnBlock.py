@@ -1023,31 +1023,35 @@ class LearnBlock(QtWidgets.QMainWindow):
 
         self.mainButton = None
         for b in blocks:
-            if b["name"] in self.listNameBlock:
-                continue
-            self.listNameBlock.append(b["name"])
-            variables = []
-            if "variables" in b:
-                for v in b["variables"]:
-                    variables.append(Variable(dict=copy.copy(v)))
-            funtionType, HUE = type2Values[b["type"]]
-            for img in b["img"]:
-                blockType, connections = loadConfigBlock(img)
-                table = self.dicTables[b["type"]]
-                table.insertRow(table.rowCount())
-                tooltip = {}
-                languages = {}
-                if "languages" in b:
-                    languages = b["languages"]
-                if "tooltip" in b:
-                    tooltip = b["tooltip"]
-                button = Block_Button(
-                    (self, b["name"], languages, HUE, self.view, self.scene, img + ".png", connections,
-                     variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
-                if b["name"] == "main":
-                    self.mainButton = button
-                self.listButtons.append(button)
-                table.setCellWidget(table.rowCount() - 1, 0, button)
+            self.addBlock(b)
+
+    def addBlock(self, b):
+        if b["name"] in self.listNameBlock:
+            return
+
+        self.listNameBlock.append(b["name"])
+        variables = []
+        if "variables" in b:
+            for v in b["variables"]:
+                variables.append(Variable(dict=copy.copy(v)))
+        funtionType, HUE = type2Values[b["type"]]
+        for img in b["img"]:
+            blockType, connections = loadConfigBlock(img)
+            table = self.dicTables[b["type"]]
+            table.insertRow(table.rowCount())
+            tooltip = {}
+            languages = {}
+            if "languages" in b:
+                languages = b["languages"]
+            if "tooltip" in b:
+                tooltip = b["tooltip"]
+            button = Block_Button(
+                (self, b["name"], languages, HUE, self.view, self.scene, img + ".png", connections, variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
+            if b["name"] == "main":
+                self.mainButton = button
+            self.listButtons.append(button)
+            table.setCellWidget(table.rowCount() - 1, 0, button)
+
 
     def execTmp(self):
         sys.path.insert(0, tempfile.gettempdir())
@@ -1199,7 +1203,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.load_blocks(blocks_path)
 
     def showCreateBlock(self):
-        self.createBlockGui = guiCreateBlock(self.load_blocks)
+        self.createBlockGui = guiCreateBlock(self.addBlock)
         self.createBlockGui.open()
 
     def showGuiAddNumberOrString(self, type):
