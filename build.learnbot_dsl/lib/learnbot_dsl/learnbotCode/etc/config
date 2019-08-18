@@ -1,6 +1,0 @@
-learnbot.ip = "192.168.16.1"
-learnbot.user = "pi"
-learnbot.pass = "raspberry"
-learnbot.command.start = "sudo ./learnbot/startComponents"
-learnbot.command.stop = "sudo killall -9 python3 python"
-learnbot.command.start_simulator = "/opt/robocomp/bin/rcis"

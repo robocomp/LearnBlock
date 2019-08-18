@@ -275,7 +275,8 @@ class Robot(Client):
         self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h localhost -p 10004",
                                                         RoboCompDifferentialRobot.DifferentialRobotPrx)
         self.deviceMove(0,0)
-        self.speaker_proxy = connectComponent("speaker:tcp -h localhost -p 9999", RoboCompTTSTacotron.TacotronPrx)
+        self.speaker_proxy = connectComponent("ttstacotron:tcp -h localhost -p 9000", RoboCompTTSTacotron.TTSTacotronPrx)
+        #self.speaker_proxy = connectComponent("speaker:tcp -h localhost -p 9999", RoboCompTTSTacotron.TTSTacotronPrx)
 
         for i in range(2, 7):
             self.laser_proxys.append(connectComponent("laser:tcp -h localhost -p 1010" + str(i), RoboCompLaser.LaserPrx))
