@@ -875,7 +875,7 @@
   </action>
   <action name="actionCreate_New_block">
    <property name="text">
-    <string>Create New block</string>
+    <string>Create New Block</string>
    </property>
   </action>
   <action name="actionSave">

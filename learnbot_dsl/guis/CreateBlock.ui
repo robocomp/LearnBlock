@@ -18,6 +18,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout_10">
      <item>
       <widget class="QLabel" name="label_4">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>102</width>
@@ -26,7 +32,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>102</width>
+         <width>130</width>
          <height>27</height>
         </size>
        </property>
@@ -83,6 +89,12 @@
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLabel" name="label_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="minimumSize">
             <size>
              <width>102</width>
@@ -91,7 +103,7 @@
            </property>
            <property name="maximumSize">
             <size>
-             <width>102</width>
+             <width>130</width>
              <height>27</height>
             </size>
            </property>
@@ -226,7 +238,7 @@
        </property>
        <property name="maximumSize">
         <size>
-         <width>102</width>
+         <width>130</width>
          <height>27</height>
         </size>
        </property>
@@ -242,7 +254,7 @@
       <widget class="QComboBox" name="comboBoxBlockType">
        <property name="maximumSize">
         <size>
-         <width>110</width>
+         <width>130</width>
          <height>27</height>
         </size>
        </property>
@@ -389,7 +401,7 @@
           <widget class="QTableWidget" name="tableWidgetVars">
            <property name="minimumSize">
             <size>
-             <width>301</width>
+             <width>330</width>
              <height>0</height>
             </size>
            </property>

@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'CreateBlock.ui',
 # licensing of 'CreateBlock.ui' applies.
 #
-# Created: Sat Aug 17 18:29:11 2019
+# Created: Sun Aug 18 16:08:54 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,8 +19,13 @@ class Ui_Dialog(object):
         self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_10.setObjectName("horizontalLayout_10")
         self.label_4 = QtWidgets.QLabel(Dialog)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_4.sizePolicy().hasHeightForWidth())
+        self.label_4.setSizePolicy(sizePolicy)
         self.label_4.setMinimumSize(QtCore.QSize(102, 27))
-        self.label_4.setMaximumSize(QtCore.QSize(102, 27))
+        self.label_4.setMaximumSize(QtCore.QSize(130, 27))
         self.label_4.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_4.setObjectName("label_4")
         self.horizontalLayout_10.addWidget(self.label_4)
@@ -40,8 +45,13 @@ class Ui_Dialog(object):
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.label_2 = QtWidgets.QLabel(Dialog)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy)
         self.label_2.setMinimumSize(QtCore.QSize(102, 27))
-        self.label_2.setMaximumSize(QtCore.QSize(102, 27))
+        self.label_2.setMaximumSize(QtCore.QSize(130, 27))
         self.label_2.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout_3.addWidget(self.label_2)
@@ -87,12 +97,12 @@ class Ui_Dialog(object):
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.label_6 = QtWidgets.QLabel(Dialog)
         self.label_6.setMinimumSize(QtCore.QSize(102, 27))
-        self.label_6.setMaximumSize(QtCore.QSize(102, 27))
+        self.label_6.setMaximumSize(QtCore.QSize(130, 27))
         self.label_6.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_6.setObjectName("label_6")
         self.horizontalLayout.addWidget(self.label_6)
         self.comboBoxBlockType = QtWidgets.QComboBox(Dialog)
-        self.comboBoxBlockType.setMaximumSize(QtCore.QSize(110, 27))
+        self.comboBoxBlockType.setMaximumSize(QtCore.QSize(130, 27))
         self.comboBoxBlockType.setObjectName("comboBoxBlockType")
         self.comboBoxBlockType.addItem("")
         self.comboBoxBlockType.addItem("")
@@ -137,7 +147,7 @@ class Ui_Dialog(object):
         self.horizontalLayout_7.addItem(spacerItem5)
         self.verticalLayout_3.addLayout(self.horizontalLayout_7)
         self.tableWidgetVars = QtWidgets.QTableWidget(Dialog)
-        self.tableWidgetVars.setMinimumSize(QtCore.QSize(301, 0))
+        self.tableWidgetVars.setMinimumSize(QtCore.QSize(330, 0))
         self.tableWidgetVars.setMaximumSize(QtCore.QSize(301, 16777215))
         self.tableWidgetVars.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.tableWidgetVars.setAutoScroll(True)

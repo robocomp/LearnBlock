@@ -3,7 +3,7 @@
 <context>
     <name>Dialog</name>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="319"/>
+        <location filename="../../guis/CreateBlock.py" line="336"/>
         <source>CANCEL</source>
         <translation>
             <numerusform>Cancel</numerusform>
@@ -21,7 +21,7 @@
     <message numerus="yes">
         <location filename="../../guis/CreateBlock.py" line="289"/>
         <source>Dialog</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Updated Successfully</numerusform>
             <numerusform>%n</numerusform>
         </translation>
@@ -43,7 +43,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="291"/>
+        <location filename="../../guis/AddWhen.py" line="91"/>
         <source>Name Block</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -51,7 +51,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="292"/>
+        <location filename="../../guis/CreateBlock.py" line="308"/>
         <source>Block image:</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -107,7 +107,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="290"/>
+        <location filename="../../guis/CreateBlock.py" line="306"/>
         <source>Block name:</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -115,7 +115,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="314"/>
+        <location filename="../../guis/CreateBlock.py" line="329"/>
         <source>Add</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -123,7 +123,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="315"/>
+        <location filename="../../guis/CreateBlock.py" line="330"/>
         <source>Remove</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -131,7 +131,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="295"/>
+        <location filename="../../guis/CreateBlock.py" line="311"/>
         <source>Block type:</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -139,15 +139,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="296"/>
-        <source>CONTROL</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="297"/>
+        <location filename="../../guis/CreateBlock.py" line="313"/>
         <source>MOTOR</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -155,39 +147,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="298"/>
-        <source>PERCEPTIVE</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="299"/>
-        <source>PROPIOPERCEPTIVE</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="300"/>
-        <source>OPERATOR</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="301"/>
-        <source>VARIABLE</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="302"/>
+        <location filename="../../guis/CreateBlock.py" line="317"/>
         <source>Variables:</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -195,7 +155,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="305"/>
+        <location filename="../../guis/CreateBlock.py" line="320"/>
         <source>Type</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -203,7 +163,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="312"/>
+        <location filename="../../guis/CreateBlock.py" line="327"/>
         <source>Name</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -211,15 +171,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="307"/>
-        <source>Defaul value</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="313"/>
+        <location filename="../../guis/CreateBlock.py" line="328"/>
         <source>Languages:</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -227,7 +179,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="316"/>
+        <location filename="../../guis/CreateBlock.py" line="331"/>
         <source>Language</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -235,7 +187,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="317"/>
+        <location filename="../../guis/CreateBlock.py" line="332"/>
         <source>Tooltip</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -243,7 +195,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/CreateBlock.py" line="318"/>
+        <location filename="../../guis/CreateBlock.py" line="335"/>
         <source>Python Code</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -285,6 +237,78 @@
     <message numerus="yes">
         <location filename="../../guis/EditVar.py" line="40"/>
         <source>Delete</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="305"/>
+        <source>Create a new block</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="307"/>
+        <source>Name of the new block</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="312"/>
+        <source>EXPRESSION</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="314"/>
+        <source>PERCEPTUAL</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="315"/>
+        <source>PROPRIOPERCEPTIVE</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="316"/>
+        <source>OTHERS</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="322"/>
+        <source>Default value</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="333"/>
+        <source>Select configuration file</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/CreateBlock.py" line="334"/>
+        <source>Complete path of the block configuration file where the new block will be added</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -418,7 +442,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1650"/>
+        <location filename="../LearnBlock.py" line="1654"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
@@ -488,12 +512,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1183"/>
+        <location filename="../LearnBlock.py" line="1187"/>
         <source>The document has been modified.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1184"/>
+        <location filename="../LearnBlock.py" line="1188"/>
         <source>Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -528,37 +552,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1104"/>
+        <location filename="../LearnBlock.py" line="1108"/>
         <source>Save Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1124"/>
+        <location filename="../LearnBlock.py" line="1128"/>
         <source>Block Project file (*.blockProject)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1124"/>
+        <location filename="../LearnBlock.py" line="1128"/>
         <source>Open Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1615"/>
+        <location filename="../LearnBlock.py" line="1619"/>
         <source>Error the name can not be &apos;start&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1652"/>
+        <location filename="../LearnBlock.py" line="1656"/>
         <source>Error Name is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1624"/>
+        <location filename="../LearnBlock.py" line="1628"/>
         <source>This name is reserved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1643"/>
+        <location filename="../LearnBlock.py" line="1647"/>
         <source>The name can&apos;t start by number</source>
         <translation type="unfinished"></translation>
     </message>
@@ -568,12 +592,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1634"/>
+        <location filename="../LearnBlock.py" line="1638"/>
         <source>This name already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1197"/>
+        <location filename="../LearnBlock.py" line="1201"/>
         <source>Select Directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -956,14 +980,6 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="605"/>
         <source>Exit</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="606"/>
-        <source>Create New block</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -1401,6 +1417,14 @@
             <numerusform></numerusform>
         </translation>
     </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="606"/>
+        <source>Create New Block</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>Updated</name>
@@ -1425,42 +1449,42 @@ to load the updates close and reopen the program.</source>
 <context>
     <name>VisualBlock</name>
     <message>
-        <location filename="../VisualBlock.py" line="217"/>
+        <location filename="../VisualBlock.py" line="218"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="222"/>
+        <location filename="../VisualBlock.py" line="223"/>
         <source>Export Block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="226"/>
+        <location filename="../VisualBlock.py" line="227"/>
         <source>Duplicate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="231"/>
+        <location filename="../VisualBlock.py" line="232"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="240"/>
+        <location filename="../VisualBlock.py" line="241"/>
         <source>Select Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="247"/>
+        <location filename="../VisualBlock.py" line="248"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="249"/>
+        <location filename="../VisualBlock.py" line="250"/>
         <source>This module already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="250"/>
+        <location filename="../VisualBlock.py" line="251"/>
         <source>Do you want to overwrite the changes?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1470,7 +1494,7 @@ to load the updates close and reopen the program.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="203"/>
+        <location filename="../VisualBlock.py" line="396"/>
         <source>Constant</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1485,12 +1509,12 @@ to load the updates close and reopen the program.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="177"/>
+        <location filename="../VisualBlock.py" line="178"/>
         <source>number</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="179"/>
+        <location filename="../VisualBlock.py" line="180"/>
         <source>text</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1511,33 +1535,48 @@ to load the updates close and reopen the program.</source>
 <context>
     <name>guiCreateBlock</name>
     <message>
-        <location filename="../guiCreateBlock.py" line="246"/>
-        <source>Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../guiCreateBlock.py" line="187"/>
-        <source>Error Name is empty.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../guiCreateBlock.py" line="203"/>
-        <source>Error Images of block is empty.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../guiCreateBlock.py" line="248"/>
-        <source>Are you sure you want to add this function?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../guiCreateBlock.py" line="195"/>
+        <location filename="../guiCreateBlock.py" line="214"/>
         <source>This name already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="211"/>
-        <source>Error name of vars already exists, name is empty or default value is empty.</source>
+        <location filename="../guiCreateBlock.py" line="192"/>
+        <source>Select configuration file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../guiCreateBlock.py" line="236"/>
+        <source>Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../guiCreateBlock.py" line="206"/>
+        <source>Block name is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../guiCreateBlock.py" line="222"/>
+        <source>Images of block is empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../guiCreateBlock.py" line="230"/>
+        <source>Name of variable already exists, name is empty or default value is empty.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../guiCreateBlock.py" line="238"/>
+        <source>No valid configuration file was chosen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../guiCreateBlock.py" line="291"/>
+        <source>Block created</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../guiCreateBlock.py" line="293"/>
+        <source>New Python file created at </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

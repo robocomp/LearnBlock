@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'Learnblock.ui',
 # licensing of 'Learnblock.ui' applies.
 #
-# Created: Wed Aug 14 17:32:09 2019
+# Created: Sun Aug 18 15:34:57 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -603,7 +603,7 @@ class Ui_MainWindow(object):
         self.menuProject.setTitle(QtWidgets.QApplication.translate("MainWindow", "Pro&ject", None, -1))
         self.menuHelp.setTitle(QtWidgets.QApplication.translate("MainWindow", "&Help", None, -1))
         self.actionExit.setText(QtWidgets.QApplication.translate("MainWindow", "Exit", None, -1))
-        self.actionCreate_New_block.setText(QtWidgets.QApplication.translate("MainWindow", "Create New block", None, -1))
+        self.actionCreate_New_block.setText(QtWidgets.QApplication.translate("MainWindow", "Create New Block", None, -1))
         self.actionSave.setText(QtWidgets.QApplication.translate("MainWindow", "Save Project", None, -1))
         self.actionSave.setShortcut(QtWidgets.QApplication.translate("MainWindow", "Ctrl+S", None, -1))
         self.actionOpen_Project.setText(QtWidgets.QApplication.translate("MainWindow", "Open Project", None, -1))

@@ -50,6 +50,7 @@ class guiCreateBlock(QtWidgets.QDialog):
         self.__updateBlockType(0)
         self.__updateImage(0)
         self.ui.tableWidgetToolTip.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        self.ui.tableWidgetVars.horizontalHeader().setSectionResizeMode(2, QtWidgets.QHeaderView.Stretch)
         self.ui.tableWidgetlanguages.horizontalHeader().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
         for name in listNameBlocks:
             self.ui.comboBoxBlockImage.addItem(name)
