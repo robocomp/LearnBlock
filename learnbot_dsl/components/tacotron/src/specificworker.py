@@ -27,7 +27,9 @@ import tensorflow as tf
 import numpy as np
 from text import text_to_sequence
 from util import audio
-
+GreetList = ["hi", "hello", "what's up?"]
+ByeList = ["bye", "good bye", "see you soon"]
+import random
 
 # If RoboComp was compiled with Python bindings you can use InnerModel in Python
 # sys.path.append('/opt/robocomp/lib')
@@ -84,7 +86,6 @@ class SpecificWorker(GenericWorker):
             trim_top_db=40,
 
             # Model:
-            # TODO: add more configurable hparams
             outputs_per_step=5,
             embedding_dim=512,
 
@@ -128,49 +129,11 @@ class SpecificWorker(GenericWorker):
         return True
 
     # =============== Methods for Component Implements ==================# ===================================================================
-    #
-    # sayAlternativeBye
-    #
-    def sayAlternativeBye(self):
-        #
-        # implementCODE
-        #
-        pass
-
-    #
-    # addGreet
-    #
-    def addGreet(self, newtext):
-        #
-        # implementCODE
-        #
-        pass
-
-    #
-    # deleteBye
-    #
-    def deleteBye(self, newtext):
-        #
-        # implementCODE
-        #
-        pass
-
-    #
-    # deleteGreet
-    #
-    def deleteGreet(self, newtext):
-        #
-        # implementCODE
-        #
-        pass
-
+    
     #
     # say
     #
     def say(self, text):
-
-
-
         cleaner_names = [x.strip() for x in self.hparams.cleaners.split(',')]
         seq = text_to_sequence(text, cleaner_names)
         feed_dict = {
@@ -195,42 +158,93 @@ class SpecificWorker(GenericWorker):
         with open("prueba_hello2.wav", 'wb') as f:
             f.write(out.getvalue())
         playsound('prueba_hello2.wav')
-        pass
+        pass 
 
-    #
-    # showBye
-    #
-    def showBye(self):
-        #
-        # implementCODE
-        #
-        pass
 
     #
     # sayAlternativeGreet
     #
     def sayAlternativeGreet(self):
-        #
-        # implementCODE
-        #
+        global GreetList
+        if list:
+            text = random.choice(GreetList)
+        else:
+            text = "Hello"
+        self.say(text)
+        pass
+
+
+    #
+    # addGreet
+    #
+    def addGreet(self, newtext):
+        global GreetList
+        GreetList.append(newtext)
+        pass
+
+
+    #
+    # deleteGreet
+    #
+    def deleteGreet(self, newtext):
+        global GreetList
+        if newtext in GreetList:
+            GreetList.remove(newtext)
+        else:
+            self.say("The sentence is not found")
         pass
 
     #
     # showGreet
     #
     def showGreet(self):
-        #
-        # implementCODE
-        #
+        global GreetList
+        for text in GreetList:
+            self.say(text)
+        self.say("These are the sentences found in the list")
+        pass   
+
+
+    #
+    # sayAlternativeBye
+    #
+    def sayAlternativeBye(self):
+        global ByeList
+        if list:
+            text = random.choice(ByeList)
+        else:
+            text = "Bye"
+        self.say(text)
         pass
+
 
     #
     # addBye
     #
     def addBye(self, newtext):
-        #
-        # implementCODE
-        #
+        global ByeList
+        ByeList.append(newtext)
         pass
 
-# =============== Methods for Component Implements ==================# ===================================================================
+
+    #
+    # deleteBye
+    #
+    def deleteBye(self, newtext):
+        global ByeList
+        if newtext in ByeList:
+            ByeList.remove(newtext)
+        else:
+            self.say("The sentence is not found")
+        pass  
+  
+
+    #
+    # showBye
+    #
+    def showBye(self):
+        global ByeList
+        for text in ByeList:
+            self.say(text)
+        self.say("These are the sentences found in the list")
+        pass
