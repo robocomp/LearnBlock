@@ -134,30 +134,43 @@ class SpecificWorker(GenericWorker):
     # say
     #
     def say(self, text):
-        cleaner_names = [x.strip() for x in self.hparams.cleaners.split(',')]
-        seq = text_to_sequence(text, cleaner_names)
-        feed_dict = {
-            self.inputs: [np.asarray(seq, dtype=np.int32)],
-            self.input_lengths: np.asarray([len(seq)], dtype=np.int32)
-        }
-        wav, alignment = self.sess.run(
-            [self.wav_output, self.alignment_tensor],
-            feed_dict=feed_dict
-        )
-        audio_endpoint = audio.find_endpoint(wav)
-        alignment_endpoint = find_alignment_endpoint(
-            alignment.shape, audio_endpoint / len(wav)
-        )
+        directory = tempfile.gettempdir() + "/tacotron/"
+        try:
+           os.stat(directory)
+        except:
+           os.mkdir(directory)
+        audio_path = directory + text +".wav"
 
-        wav = wav[:audio_endpoint]
-        alignment = alignment[:, :alignment_endpoint]
+        if os.path.exists(audio_path):
+            playsound(audio)
+        else:
+            cleaner_names = [x.strip() for x in self.hparams.cleaners.split(',')]
+            seq = text_to_sequence(text, cleaner_names)
+            feed_dict = {
+                self.inputs: [np.asarray(seq, dtype=np.int32)],
+                self.input_lengths: np.asarray([len(seq)], dtype=np.int32)
+            }
+            wav, alignment = self.sess.run(
+                [self.wav_output, self.alignment_tensor],
+                feed_dict=feed_dict
+            )
+            audio_endpoint = audio.find_endpoint(wav)
+            alignment_endpoint = find_alignment_endpoint(
+                alignment.shape, audio_endpoint / len(wav)
+            )
 
-        out = io.BytesIO()
-        audio.save_wav(wav, out)
+            wav = wav[:audio_endpoint]
+            alignment = alignment[:, :alignment_endpoint]
 
-        with open("prueba_hello2.wav", 'wb') as f:
-            f.write(out.getvalue())
-        playsound('prueba_hello2.wav')
+            out = io.BytesIO()
+            audio.save_wav(wav, out)
+
+            name = text + ".wav"
+            os.path.join(directory, name)
+            final_audio = directory + name
+            with open(final_audio, "wb") as f:
+                f.write(out.getvalue())
+            playsound(final_audio)
         pass 
 
 
