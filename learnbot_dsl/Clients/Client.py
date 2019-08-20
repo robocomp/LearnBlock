@@ -64,6 +64,7 @@ class Client(Thread):
         self.__currents_emotions = []
         self.__currentEmotion = Emotions.NoneEmotion
         self.__JointMotors = {}
+        self.__Cameras = {}
         self.__Leds = {}
         # Variables of AprilTag
         self.__apriltag_current_exist = False
@@ -99,6 +100,16 @@ class Client(Thread):
         else:
             self.__JointMotors[_key] = _JointMotor
 
+    def addCamera(self, _key, _Camera):
+
+        if _key in self.__Cameras:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Camera, Camera):
+            raise Exception("_Camera is of type "+ type(_Camera) + " and must be of type Camera")
+        else:
+            self.__Cameras[_key] = _Camera
+
+
     def addLed(self, _key, _Led):
         if _key in self.__Leds:
             raise Exception("The key " + _key + "already exist")
@@ -107,9 +118,9 @@ class Client(Thread):
         else:
             self.__Leds[_key] = _Led
 
-    def __detectAprilTags(self):
-        if not self.__apriltag_current_exist and hasattr(self, "camera"):
-            img = self.camera.getImage()
+    def __detectAprilTags(self, keyCam = "HEAD"):
+        if not self.__apriltag_current_exist and keyCam in self.__Cameras:
+            img = self.__Cameras[keyCam].getImage()
             frame = RoboCompApriltag.TImage()
             frame.width = img.shape[0]
             frame.height = img.shape[1]
@@ -125,8 +136,9 @@ class Client(Thread):
             self.acelerometer.read()
         if hasattr(self, "gyroscope"):
             self.gyroscope.read()
-        if hasattr(self, "camera"):
-            self.camera.read()
+        if bool(self.__Cameras):
+            for cam in self.__Cameras.values():
+                cam.read()
             self.__apriltag_current_exist = False
             self.__emotion_current_exist = False
         if hasattr(self, "distanceSensors"):
@@ -141,19 +153,19 @@ class Client(Thread):
             self.__readDevices()
         self.disconnect()
 
-    def lookingLabel(self, id):
+    def lookingLabel(self, id, keyCam="HEAD"):
         time.sleep(0)
         if isinstance(id, str):
             if id in self.aprilTextDict:
                 id = self.aprilTextDict[id]
             else:
                 return False
-        self.__detectAprilTags()
+        self.__detectAprilTags(keyCam)
         return id in self.__listAprilIDs
 
-    def getPosTag(self, id=None):
+    def getPosTag(self, id=None, keyCam="HEAD"):
         time.sleep(0)
-        self.__detectAprilTags()
+        self.__detectAprilTags(keyCam)
         if id is None:
             if len(self.__listAprilIDs)>0:
                 return self.__posAprilTags[self.__listAprilIDs[0]]
@@ -186,10 +198,10 @@ class Client(Thread):
             return self.groundSensors.get()
 
 
-    def getImage(self):
-        if hasattr(self, "camera"):
+    def getImage(self, keyCam = "HEAD"):
+        if keyCam in self.__Cameras:
             time.sleep(0)
-            return self.camera.getImage()
+            return self.__Cameras[keyCam].getImage()
 
     def getPose(self):
         time.sleep(0)
@@ -265,10 +277,10 @@ class Client(Thread):
             time.sleep(0)
             self.speaker.sendAudio(_audioData)
 
-    def getEmotions(self):
-        if not self.__emotion_current_exist and hasattr(self, "camera"):
+    def getEmotions(self, keyCam = "HEAD"):
+        if not self.__emotion_current_exist and keyCam in self.__Cameras:
             time.sleep(0)
-            img = self.camera.getImage()
+            img = self.__Cameras[keyCam].getImage()
             frame = RoboCompEmotionRecognition.TImage()
             frame.width = img.shape[0]
             frame.height = img.shape[1]

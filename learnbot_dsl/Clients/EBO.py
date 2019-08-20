@@ -47,7 +47,7 @@ class Robot(Client):
         self.open_cv_image = np.zeros((240, 320, 3), np.uint8)
         self.newImage = False
         self.distanceSensors = Devices.DistanceSensors(_readFunction=self.deviceReadLaser)
-        self.camera = Devices.Camera(_readFunction=self.deviceReadCamera)
+        self.addCamera("HEAD", _Camera=Devices.Camera(_readFunction=self.deviceReadCamera))
         self.base = Devices.Base(_callFunction=self.deviceMove)
         self.display = Devices.Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
         self.addJointMotor("CAMERA",
