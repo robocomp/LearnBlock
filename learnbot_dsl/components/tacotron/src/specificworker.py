@@ -142,7 +142,10 @@ class SpecificWorker(GenericWorker):
         audio_path = directory + text +".wav"
 
         if os.path.exists(audio_path):
-            playsound(audio)
+            audio = text + ".wav"
+            print("Audio exists... ", audio)
+            os.path.join(directory, audio)
+            playsound(audio_path)
         else:
             cleaner_names = [x.strip() for x in self.hparams.cleaners.split(',')]
             seq = text_to_sequence(text, cleaner_names)
