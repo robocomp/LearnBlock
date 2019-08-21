@@ -60,12 +60,12 @@ class SpecificWorker(GenericWorker):
         self.timer.timeout.connect(self.compute)
         self.Period = 2000
         self.timer.start(self.Period)
-        graph, sess = load_graph("meta/graph-000256_frz.pb")
+        graph, sess = load_graph("meta/English_graph.pb")
         wav_output = self.graph.get_tensor_by_name("model/griffinlim/Squeeze:0")
         alignment_tensor = self.graph.get_tensor_by_name("model/strided_slice_1:0")
         inputs = self.graph.get_tensor_by_name("inputs:0")
         input_lengths = self.graph.get_tensor_by_name("input_lengths:0")
-        self.ttss = {"en": (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')}
+        self.tts = {"en": (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')}
         
         # Spanish Graph
         # graph, sess = load_graph("meta/spanish.pb")
@@ -73,7 +73,7 @@ class SpecificWorker(GenericWorker):
         # alignment_tensor = self.graph.get_tensor_by_name("model/strided_slice_1:0")
         # inputs = self.graph.get_tensor_by_name("inputs:0")
         # input_lengths = self.graph.get_tensor_by_name("input_lengths:0")
-        # self.ttss["es"] = (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')
+        # self.tts["es"] = (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')
         
 
     def __del__(self):
@@ -106,7 +106,7 @@ class SpecificWorker(GenericWorker):
     #
     # say
     #
-    def say(self, text):
+    def say(self, text, language):
         try:
            os.stat(directory)
         except:
@@ -119,7 +119,8 @@ class SpecificWorker(GenericWorker):
             os.path.join(directory, audio)
             playsound(audio_path)
         else:
-            graph, sess, wav_output, alignment_tensor, inputs, input_lengths, cleaners = self.ttss["es"]
+            if language = 'spanish' or language = 'es':
+                graph, sess, wav_output, alignment_tensor, inputs, input_lengths, cleaners = self.tts["es"]
             cleaner_names = [x.strip() for x in cleaners]
             seq = text_to_sequence(text, cleaner_names)
             feed_dict = {
