@@ -18,7 +18,7 @@ except KeyError:
     print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
     ROBOCOMP = os.path.join('opt', 'robocomp')
 
-ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "Display.ice", "RGBD.ice", "GenericBase.ice"]
+ICEs = ["Laser.ice", "DifferentialRobot.ice", "JointMotor.ice", "Display.ice", "RGBD.ice", "GenericBase.ice", "tacotron.ice"]
 icePaths = []
 icePaths.append(PATHINTERFACES)
 for ice in ICEs:
@@ -28,7 +28,7 @@ for ice in ICEs:
             Ice.loadSlice(wholeStr)
             break
 
-import RoboCompLaser, RoboCompDifferentialRobot, RoboCompJointMotor, RoboCompGenericBase, RoboCompDisplay, RoboCompRGBD
+import RoboCompLaser, RoboCompDifferentialRobot, RoboCompJointMotor, RoboCompGenericBase, RoboCompDisplay, RoboCompRGBD, RoboCompTTSTacotron
 
 DEFAULTCONFIGNEUTRAL = {
     "cejaD": {"P2": {"y": 73, "x": 314},
@@ -253,7 +253,7 @@ class Face(threading.Thread):
 
 class Robot(Client):
 
-    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor"]
+    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor", "speaker"]
 
     def __init__(self):
         self.connectToRobot()
@@ -265,8 +265,8 @@ class Robot(Client):
         self.addCamera("HEAD", _Camera=Devices.Camera(_readFunction=self.deviceReadCamera))
         self.base = Devices.Base(_callFunction=self.deviceMove)
         self.display = Devices.Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
-        self.addJointMotor("CAMERA",
-                           _JointMotor=Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
+        self.addJointMotor("CAMERA", _JointMotor=Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
+        self.speaker = Devices.Speaker(_sendText=self.deviceSendText)
         self.start()
 
     def connectToRobot(self):
@@ -275,12 +275,13 @@ class Robot(Client):
         self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h localhost -p 10004",
                                                         RoboCompDifferentialRobot.DifferentialRobotPrx)
         self.deviceMove(0,0)
+        self.speaker_proxy = connectComponent("ttstacotron:tcp -h localhost -p 9000", RoboCompTTSTacotron.TTSTacotronPrx)
+        #self.speaker_proxy = connectComponent("speaker:tcp -h localhost -p 9999", RoboCompTTSTacotron.TTSTacotronPrx)
 
         for i in range(2, 7):
             self.laser_proxys.append(connectComponent("laser:tcp -h localhost -p 1010" + str(i), RoboCompLaser.LaserPrx))
 
-        self.jointmotor_proxy = connectComponent("jointmotor:tcp -h localhost -p 20000",
-                                                 RoboCompJointMotor.JointMotorPrx)
+        self.jointmotor_proxy = connectComponent("jointmotor:tcp -h localhost -p 20000", RoboCompJointMotor.JointMotorPrx)
         self.display_proxy = connectComponent("display:tcp -h localhost -p 30000",
                                                      RoboCompDisplay.DisplayPrx)
         self.rgbd_proxy = connectComponent("rgbd:tcp -h localhost -p 10097", RoboCompRGBD.RGBDPrx)
@@ -297,6 +298,9 @@ class Robot(Client):
     def disconnect(self):
         self.deviceMove(0, 0)
         self.face.stop()
+
+    def deviceSendText(self, text):
+        self.speaker_proxy.say(text)
 
     def deviceReadLaser(self):
         usList = []
