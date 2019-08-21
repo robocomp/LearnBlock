@@ -60,49 +60,13 @@ class SpecificWorker(GenericWorker):
         self.timer.timeout.connect(self.compute)
         self.Period = 2000
         self.timer.start(self.Period)
-        self.graph, self.sess = load_graph("meta/graph-000256_frz.pb")
-        self.wav_output = self.graph.get_tensor_by_name("model/griffinlim/Squeeze:0")
-        self.alignment_tensor = self.graph.get_tensor_by_name("model/strided_slice_1:0")
-        self.inputs = self.graph.get_tensor_by_name("inputs:0")
-        self.input_lengths = self.graph.get_tensor_by_name("input_lengths:0")
-        self.hparams = tf.contrib.training.HParams(
-            # Comma-separated list of cleaners to run on text prior to training and eval. For non-English
-            # text, you may want to use "basic_cleaners" or "transliteration_cleaners" See TRAINING_DATA.md.
-            cleaners='english_cleaners',
-
-            # Audio:
-            num_mels=80,
-            num_freq=1025,
-            min_mel_freq=125,
-            max_mel_freq=7600,
-            sample_rate=22000,
-            frame_length_ms=50,
-            frame_shift_ms=12.5,
-            min_level_db=-100,
-            ref_level_db=20,
-
-            # MAILABS trim params
-            trim_fft_size=1024,
-            trim_hop_size=256,
-            trim_top_db=40,
-
-            # Model:
-            outputs_per_step=5,
-            embedding_dim=512,
-
-            # Training:
-            batch_size=32,
-            adam_beta1=0.9,
-            adam_beta2=0.999,
-            initial_learning_rate=0.0015,
-            learning_rate_decay_halflife=100000,
-            use_cmudict=False,  # Use CMUDict during training to learn pronunciation of ARPAbet phonemes
-
-            # Eval:
-            max_iters=200,
-            griffin_lim_iters=50,
-            power=1.5,  # Power to raise magnitudes to prior to Griffin-Lim
-        )
+        graph, sess = load_graph("meta/graph-000256_frz.pb")
+        wav_output = self.graph.get_tensor_by_name("model/griffinlim/Squeeze:0")
+        alignment_tensor = self.graph.get_tensor_by_name("model/strided_slice_1:0")
+        inputs = self.graph.get_tensor_by_name("inputs:0")
+        input_lengths = self.graph.get_tensor_by_name("input_lengths:0")
+        self.ttss = {"en": (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')}
+        
 
     def __del__(self):
         print('SpecificWorker destructor')
@@ -148,14 +112,15 @@ class SpecificWorker(GenericWorker):
             os.path.join(directory, audio)
             playsound(audio_path)
         else:
-            cleaner_names = [x.strip() for x in self.hparams.cleaners.split(',')]
+            graph, sess, wav_output, alignment_tensor, inputs, input_lengths, cleaners = self.ttss["es"]
+            cleaner_names = [x.strip() for x in cleaners]
             seq = text_to_sequence(text, cleaner_names)
             feed_dict = {
-                self.inputs: [np.asarray(seq, dtype=np.int32)],
-                self.input_lengths: np.asarray([len(seq)], dtype=np.int32)
+                inputs: [np.asarray(seq, dtype=np.int32)],
+                input_lengths: np.asarray([len(seq)], dtype=np.int32)
             }
-            wav, alignment = self.sess.run(
-                [self.wav_output, self.alignment_tensor],
+            wav, alignment = sess.run(
+                [wav_output, alignment_tensor],
                 feed_dict=feed_dict
             )
             audio_endpoint = audio.find_endpoint(wav)
