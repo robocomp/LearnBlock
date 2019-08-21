@@ -38,15 +38,22 @@ class helper(Ui_Help,QtWidgets.QDialog):
         self.absModel = QtCore.QAbstractListModel
         self.hidePath = os.path.join(os.environ["HOME"], ".learnblock", "mdfiles")
         paths = "/home/robocomp/robocomp/components/learnbot:" + os.environ["XDG_DATA_DIRS"]
+        curItem = None
         for sharepath in paths.split(":"):
             if os.path.exists(os.path.join(sharepath,"learnbot_dsl","mdfiles")):
                 # print(sharepath)
                 self.sharePath = os.path.join(sharepath, "learnbot_dsl", "mdfiles")
                 # self.css = open(os.path.join(self.sharePath, "styles.css"), "r").read()
                 self.css = os.path.join(self.sharePath, "styles.css")
-                self.treeWidget.addTopLevelItems(self.getItems(os.path.join(self.sharePath, Lang)))
-                break
+                curItem = os.path.join(self.sharePath, Lang)
+                if os.path.exists(curItem):
+                    self.treeWidget.addTopLevelItems(self.getItems(os.path.join(self.sharePath, Lang)))
+                    break
         self.treeWidget.itemClicked.connect(self.load_MarkDonw)
+        if curItem is not None and os.path.exists(curItem):
+            self.empty = False
+        else:
+            self.empty = True
 
     def getItems(self,path_):
         listItems = []

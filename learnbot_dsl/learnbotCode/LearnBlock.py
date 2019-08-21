@@ -383,7 +383,18 @@ class LearnBlock(QtWidgets.QMainWindow):
     def openHelp(self):
         if self.help is None:
             self.help = helper(getLanguage())
-        self.help.show()
+        if not self.help.empty:
+            self.help.show()
+        else:
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle(self.tr("Not available"))
+            msgBox.setIcon(QtWidgets.QMessageBox.Information)
+            msgBox.setText(self.tr("The english version of this help has not been integrated yet. It will be included soon. We apologize for the inconveniences."))
+            msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+            ret = msgBox.exec_()
+
+            del self.help
 
     def disablestartButtons(self, disabled):
         self.ui.startpushButton.setEnabled(not disabled)
@@ -1009,6 +1020,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             b.updateImg()
         if isinstance(self.__fileProject, str):
             self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+        if self.help is not None:
+            del self.help
 
     def load_blocks(self, config_path = None):
         blocks = reload_functions(config_path)
