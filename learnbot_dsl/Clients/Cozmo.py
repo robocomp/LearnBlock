@@ -20,18 +20,17 @@ def cozmo_program(_robot: cozmoR.robot.Robot):
         pass
 
 class Robot(Client):
-    devicesAvailables = ["base", "camera", "display", "jointmotor", "acelerometer", "gyroscope", "speaker"]
+    devicesAvailables = ["base", "camera", "display", "jointmotor", "groundsensors", "acelerometer", "gyroscope", "speaker"]
 
     def __init__(self):
         global cozmo
         global stopThread
         stopThread = False
         Client.__init__(self)
-        self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
+        self.groundSensors = GroundSensors(_readFunction=self.deviceReadGSensor)
         self.acelerometer = Acelerometer(_readFunction=self.deviceReadAcelerometer)
         self.gyroscope = Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope)
         self.addCamera("HEAD", _Camera=Camera(_readFunction=self.deviceReadCamera))
-        #self.camera = Camera(_readFunction=self.deviceReadCamera)
         self.base = Base(_callFunction=self.deviceMove)
         self.display = Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
         self.addJointMotor("CAMERA", _JointMotor=JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
@@ -120,8 +119,12 @@ class Robot(Client):
     def deviceReadAcelerometer(self):
         return self.cozmo.accelerometer.x_y_z
 
-    def deviceReadLaser(self):
-        return {"bottom": [self.cozmo.is_cliff_detected]}
+    def deviceReadGSensor(self):
+        if self.cozmo.is_cliff_detected:
+            ground = 0
+        else:
+            ground = 100
+        return {"central": ground}
 
     def deviceReadCamera(self):
         lastimg = self.cozmo.world.latest_image

@@ -3,8 +3,8 @@ class DistanceSensors():
     __distanceSensor = {"front": [0],  # The values must be in mm
                         "left": [0],
                         "right": [0],
-                        "back": [0],
-                        "bottom": [0]}
+                        "back": [0]
+                       }
 
     def __init__(self, _readFunction):
         self._readDevice = _readFunction

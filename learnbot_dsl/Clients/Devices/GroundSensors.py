@@ -1,8 +1,8 @@
 
 class GroundSensors():
-    __groundSensor = {"left": False,  
-                        "central": False,
-                        "right": False}
+    __groundSensor = {"left": None,  
+                        "central": None,
+                        "right": None}
 
     def __init__(self, _readFunction):
         self._readDevice = _readFunction
