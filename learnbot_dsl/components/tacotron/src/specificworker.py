@@ -29,6 +29,7 @@ from text import text_to_sequence
 from util import audio
 GreetList = ["hi", "hello", "what's up?"]
 ByeList = ["bye", "good bye", "see you soon"]
+directory = os.path.join(tempfile.gettempdir(), "tacotron")
 import random
 
 # If RoboComp was compiled with Python bindings you can use InnerModel in Python
@@ -134,12 +135,12 @@ class SpecificWorker(GenericWorker):
     # say
     #
     def say(self, text):
-        directory = tempfile.gettempdir() + "/tacotron/"
+        global directory
         try:
            os.stat(directory)
         except:
            os.mkdir(directory)
-        audio_path = directory + text +".wav"
+        audio_path = os.path.join(directory, text +".wav")
 
         if os.path.exists(audio_path):
             audio = text + ".wav"
