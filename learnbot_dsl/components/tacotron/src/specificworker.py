@@ -119,35 +119,35 @@ class SpecificWorker(GenericWorker):
             os.path.join(directory, audio)
             playsound(audio_path)
         else:
-            if language = 'spanish' or language = 'es':
-                graph, sess, wav_output, alignment_tensor, inputs, input_lengths, cleaners = self.tts["es"]
-            cleaner_names = [x.strip() for x in cleaners]
-            seq = text_to_sequence(text, cleaner_names)
-            feed_dict = {
-                inputs: [np.asarray(seq, dtype=np.int32)],
-                input_lengths: np.asarray([len(seq)], dtype=np.int32)
-            }
-            wav, alignment = sess.run(
-                [wav_output, alignment_tensor],
-                feed_dict=feed_dict
-            )
-            audio_endpoint = audio.find_endpoint(wav)
-            alignment_endpoint = find_alignment_endpoint(
-                alignment.shape, audio_endpoint / len(wav)
-            )
+            if language.lower() in self.tts:
+                graph, sess, wav_output, alignment_tensor, inputs, input_lengths, cleaners = self.tts[language.lower()]
+                cleaner_names = [x.strip() for x in cleaners]
+                seq = text_to_sequence(text, cleaner_names)
+                feed_dict = {
+                    inputs: [np.asarray(seq, dtype=np.int32)],
+                    input_lengths: np.asarray([len(seq)], dtype=np.int32)
+                }
+                wav, alignment = sess.run(
+                    [wav_output, alignment_tensor],
+                    feed_dict=feed_dict
+                )
+                audio_endpoint = audio.find_endpoint(wav)
+                alignment_endpoint = find_alignment_endpoint(
+                    alignment.shape, audio_endpoint / len(wav)
+                )
 
-            wav = wav[:audio_endpoint]
-            alignment = alignment[:, :alignment_endpoint]
+                wav = wav[:audio_endpoint]
+                alignment = alignment[:, :alignment_endpoint]
 
-            out = io.BytesIO()
-            audio.save_wav(wav, out)
+                out = io.BytesIO()
+                audio.save_wav(wav, out)
 
-            name = text + ".wav"
-            os.path.join(directory, name)
-            final_audio = directory + name
-            with open(final_audio, "wb") as f:
-                f.write(out.getvalue())
-            playsound(final_audio)
+                name = text + ".wav"
+                os.path.join(directory, name)
+                final_audio = directory + name
+                with open(final_audio, "wb") as f:
+                    f.write(out.getvalue())
+                playsound(final_audio)
         pass 
 
 
