@@ -1,17 +1,17 @@
 <a name="Inicio"></a>
-# TBlockCode
+# Block-Text
 
-## ¿Qué es TBlockCode?
+## ¿Qué es Block-Text?
 
-La programación **TBlockCode** es un lenguaje propio de la herramienta Learnblock.
+**Block-Text** es un lenguaje propio de la herramienta Learnblock.
 
-Este lenguaje es una traducción del código creado en bloques visuales.
+Este lenguaje es una traducción del código creado con bloques visuales a texto.
 
 ## Tipos de Programación que permite.
 
-Al igual que la programación visual, este lenguaje de programación permite los mismos paradigmas de programación
+Al igual que la programación visual, este lenguaje de programación permite los mismos tipos de programación
 
-Las funciones relacionadas con el robot deben de ir precedidas de la palabra reservada **function**.
+Las funciones relacionadas con el robot deben ir precedidas de la palabra reservada **function**.
 
 Las sentencias de control:
 

@@ -50,6 +50,7 @@ class helper(Ui_Help,QtWidgets.QDialog):
                     self.treeWidget.addTopLevelItems(self.getItems(os.path.join(self.sharePath, Lang)))
                     break
         self.treeWidget.itemClicked.connect(self.load_MarkDonw)
+        self.load_MarkDonw(self.treeWidget.topLevelItem(0), 0)
         if curItem is not None and os.path.exists(curItem):
             self.empty = False
         else:

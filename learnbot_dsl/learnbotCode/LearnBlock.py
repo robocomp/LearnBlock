@@ -389,7 +389,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox = QtWidgets.QMessageBox()
             msgBox.setWindowTitle(self.tr("Not available"))
             msgBox.setIcon(QtWidgets.QMessageBox.Information)
-            msgBox.setText(self.tr("The english version of this help has not been integrated yet. It will be included soon. We apologize for the inconveniences."))
+            msgBox.setText(self.tr("The help is not available for the selected language. We apologize for the inconveniences."))
             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             ret = msgBox.exec_()
