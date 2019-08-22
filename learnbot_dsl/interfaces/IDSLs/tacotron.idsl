@@ -1,13 +1,13 @@
 module RoboCompTTSTacotron{
 	interface TTSTacotron{
 		void say(string newtext, string language);
-	 	void sayAlternativeGreet();
-	 	void addGreet(string newtext);
-	 	void deleteGreet(string newtext);
-	 	void showGreet();
-	 	void sayAlternativeBye();
-		void addBye(string newtext);
-	 	void deleteBye(string newtext);
-	 	void showBye();
+	 	void sayAlternativeGreet(string language);
+	 	void addGreet(string newtext, string language);
+	 	void deleteGreet(string newtext, string language);
+	 	void showGreet(string language);
+	 	void sayAlternativeBye(string language);
+		void addBye(string newtext, string language);
+	 	void deleteBye(string newtext, string language);
+	 	void showBye(string language);
 	};
 };

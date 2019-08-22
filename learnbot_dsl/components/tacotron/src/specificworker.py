@@ -27,8 +27,6 @@ import tensorflow as tf
 import numpy as np
 from text import text_to_sequence
 from util import audio
-GreetList = ["hi", "hello", "what's up?"]
-ByeList = ["bye", "good bye", "see you soon"]
 directory = os.path.join(tempfile.gettempdir(), "tacotron")
 import random
 
@@ -60,6 +58,7 @@ class SpecificWorker(GenericWorker):
         self.timer.timeout.connect(self.compute)
         self.Period = 2000
         self.timer.start(self.Period)
+        # English graph
         graph, sess = load_graph("meta/English_graph.pb")
         wav_output = self.graph.get_tensor_by_name("model/griffinlim/Squeeze:0")
         alignment_tensor = self.graph.get_tensor_by_name("model/strided_slice_1:0")
@@ -74,7 +73,9 @@ class SpecificWorker(GenericWorker):
         # inputs = self.graph.get_tensor_by_name("inputs:0")
         # input_lengths = self.graph.get_tensor_by_name("input_lengths:0")
         # self.tts["es"] = (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')
-        
+
+        self.alternatives_greetings = {"es": ["hola", "¿qué tal?", "hey"], "en": ["hi", "hello", "what's up?"]}
+        self.alternatives_farewells = {"es": ["adios", "hasta pronto", "hasta la proxima"], "en": ["bye", "good bye", "see you soon"]}
 
     def __del__(self):
         print('SpecificWorker destructor')
@@ -104,137 +105,139 @@ class SpecificWorker(GenericWorker):
     # =============== Methods for Component Implements ==================# ===================================================================
     
     #
-    # say
+    # This method synthesizes the text and reproduces the audio generated in the language passed by parameters
     #
     def say(self, text, language):
         try:
            os.stat(directory)
         except:
            os.mkdir(directory)
-        audio_path = os.path.join(directory, text +".wav")
 
+        audio_path = os.path.join(directory, text +".wav")
         if os.path.exists(audio_path):
             audio = text + ".wav"
             print("Audio exists... ", audio)
             os.path.join(directory, audio)
             playsound(audio_path)
         else:
-            if language = 'spanish' or language = 'es':
-                graph, sess, wav_output, alignment_tensor, inputs, input_lengths, cleaners = self.tts["es"]
-            cleaner_names = [x.strip() for x in cleaners]
-            seq = text_to_sequence(text, cleaner_names)
-            feed_dict = {
-                inputs: [np.asarray(seq, dtype=np.int32)],
-                input_lengths: np.asarray([len(seq)], dtype=np.int32)
-            }
-            wav, alignment = sess.run(
-                [wav_output, alignment_tensor],
-                feed_dict=feed_dict
-            )
-            audio_endpoint = audio.find_endpoint(wav)
-            alignment_endpoint = find_alignment_endpoint(
-                alignment.shape, audio_endpoint / len(wav)
-            )
+            if language.lower() in self.tts:
+                graph, sess, wav_output, alignment_tensor, inputs, input_lengths, cleaners = self.tts[language.lower()]
+                cleaner_names = [x.strip() for x in cleaners]
+                seq = text_to_sequence(text, cleaner_names)
+                feed_dict = {
+                    inputs: [np.asarray(seq, dtype=np.int32)],
+                    input_lengths: np.asarray([len(seq)], dtype=np.int32)
+                }
+                wav, alignment = sess.run(
+                    [wav_output, alignment_tensor],
+                    feed_dict=feed_dict
+                )
+                audio_endpoint = audio.find_endpoint(wav)
+                alignment_endpoint = find_alignment_endpoint(
+                    alignment.shape, audio_endpoint / len(wav)
+                )
 
-            wav = wav[:audio_endpoint]
-            alignment = alignment[:, :alignment_endpoint]
+                wav = wav[:audio_endpoint]
+                alignment = alignment[:, :alignment_endpoint]
 
-            out = io.BytesIO()
-            audio.save_wav(wav, out)
+                out = io.BytesIO()
+                audio.save_wav(wav, out)
 
-            name = text + ".wav"
-            os.path.join(directory, name)
-            final_audio = directory + name
-            with open(final_audio, "wb") as f:
-                f.write(out.getvalue())
-            playsound(final_audio)
+                name = text + ".wav"
+                os.path.join(directory, name)
+                final_audio = directory + name
+                with open(final_audio, "wb") as f:
+                    f.write(out.getvalue())
+                playsound(final_audio)
         pass 
 
 
     #
-    # sayAlternativeGreet
+    # This method chooses a random greeting in the chosen language and is sent to the say() method to generate an audio.
     #
-    def sayAlternativeGreet(self):
-        global GreetList
-        if list:
-            text = random.choice(GreetList)
+    def sayAlternativeGreet(self, language):
+        if language.lower() in self.alternatives_greetings:
+            text = random.choice(self.alternatives_greetings[language])
         else:
-            text = "Hello"
-        self.say(text)
+            text = "No greeting sentences available in that language"
+        self.say(text, language)
         pass
 
 
     #
-    # addGreet
+    # This method adds a greeting to the dictionary of greetings in the selected language.
     #
-    def addGreet(self, newtext):
-        global GreetList
-        GreetList.append(newtext)
-        pass
-
-
-    #
-    # deleteGreet
-    #
-    def deleteGreet(self, newtext):
-        global GreetList
-        if newtext in GreetList:
-            GreetList.remove(newtext)
+    def addGreet(self, newtext, language):
+        if language.lower() in self.alternatives_greetings: 
+            self.alternatives_greetings[language.lower()].append[newtext]
         else:
-            self.say("The sentence is not found")
+            self.say("No greeting sentences available in that language")
+        pass
+
+
+    #
+    # This method eliminates a greeting to the dictionary of greetings in the selected language.
+    #
+    def deleteGreet(self, newtext, language):
+        if newtext in GreetList && language.lower() in self.alternatives_greetings:
+            self.alternatives_greetings[language.lower()].remove(newtext)
+        else:
+            self.say("The sentence is not found in that language")
         pass
 
     #
-    # showGreet
+    # This method shows all available phrases in the greetings dictionary in the selected language.
     #
-    def showGreet(self):
-        global GreetList
-        for text in GreetList:
-            self.say(text)
-        self.say("These are the sentences found in the list")
+    def showGreet(self, language):
+        if language.lower() in self.alternatives_greetings.values():
+            for text in self.alternatives_greeting[language]:
+                self.alternatives_greeting[language].say(text)
+        else:
+            self.say("No greeting sentences available in that language")
         pass   
 
 
     #
-    # sayAlternativeBye
+    # This method chooses a random farewell in the chosen language and is sent to the say() method to generate an audio.
     #
-    def sayAlternativeBye(self):
-        global ByeList
-        if list:
-            text = random.choice(ByeList)
+    def sayAlternativeBye(self, language):
+        if language.lower() in self.alternatives_farewells:
+            text = random.choice(self.alternatives_farewells[language])
         else:
-            text = "Bye"
+            text = "No farewell sentences available in that language"
         self.say(text)
         pass
 
 
     #
-    # addBye
+    # This method adds a farewell to the dictionary of farewells in the selected language.
     #
-    def addBye(self, newtext):
-        global ByeList
-        ByeList.append(newtext)
+    def addBye(self, newtext, language):
+        if language.lower() in self.alternatives_farewells:
+            self.alternatives_farewells[language].append(newtext)
+        else:
+            self.say("No farewell sentences available in that language")
         pass
 
 
     #
-    # deleteBye
+    # This method eliminates a farewell to the dictionary of farewells in the selected language.
     #
-    def deleteBye(self, newtext):
-        global ByeList
-        if newtext in ByeList:
-            ByeList.remove(newtext)
+    def deleteBye(self, newtext, language):
+        if newtext in GreetList && language.lower() in self.alternatives_farewells:
+            self.alternatives_farewells[language.lower()].remove(newtext)
         else:
-            self.say("The sentence is not found")
+            self.say("The sentence is not found in that language")
         pass  
   
 
     #
-    # showBye
+    # This method shows all available phrases in the farewell dictionary in the selected language.
     #
-    def showBye(self):
-        global ByeList
-        for text in ByeList:
-            self.say(text)
-        self.say("These are the sentences found in the list")
+    def showBye(self, language):
+        if language.lower() in self.alternatives_farewells:
+            for text in self.alternatives_farewells[language.lower()]:
+                self.alternatives_lower[language.lower()].say(text)
+        else:
+            self.say("No farewell sentences available in that language")
         pass

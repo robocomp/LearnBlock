@@ -60,21 +60,21 @@ class TTSTacotronI(TTSTacotron):
 	def __init__(self, worker):
 		self.worker = worker
 
-	def sayAlternativeBye(self, c):
-		return self.worker.sayAlternativeBye()
-	def addGreet(self, newtext, c):
-		return self.worker.addGreet(newtext)
-	def deleteBye(self, newtext, c):
-		return self.worker.deleteBye(newtext)
-	def deleteGreet(self, newtext, c):
-		return self.worker.deleteGreet(newtext)
+	def sayAlternativeBye(self, language, c):
+		return self.worker.sayAlternativeBye(language)
+	def addGreet(self, newtext, language, c):
+		return self.worker.addGreet(newtext, language)
+	def deleteBye(self, newtext, language, c):
+		return self.worker.deleteBye(newtext, language)
+	def deleteGreet(self, newtext, language, c):
+		return self.worker.deleteGreet(newtext, language)
 	def say(self, newtext, language, c):
 		return self.worker.say(newtext, language)
-	def showBye(self, c):
-		return self.worker.showBye()
-	def sayAlternativeGreet(self, c):
-		return self.worker.sayAlternativeGreet()
-	def showGreet(self, c):
-		return self.worker.showGreet()
-	def addBye(self, newtext, c):
-		return self.worker.addBye(newtext)
+	def showBye(self, language, c):
+		return self.worker.showBye(language)
+	def sayAlternativeGreet(self, language, c):
+		return self.worker.sayAlternativeGreet(language)
+	def showGreet(self, language, c):
+		return self.worker.showGreet(language)
+	def addBye(self, newtext, language, c):
+		return self.worker.addBye(newtext, language)
