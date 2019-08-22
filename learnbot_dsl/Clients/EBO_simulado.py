@@ -300,7 +300,7 @@ class Robot(Client):
         self.face.stop()
 
     def deviceSendText(self, text):
-        self.speaker_proxy.say(text)
+        self.speaker_proxy.say(text, "en")
 
     def deviceReadLaser(self):
         usList = []

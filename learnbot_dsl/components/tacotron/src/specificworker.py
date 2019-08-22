@@ -19,12 +19,12 @@
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
 import math
-
 from genericworker import *
 import io
 from playsound import playsound
 import tensorflow as tf
 import numpy as np
+import tempfile
 from text import text_to_sequence
 from util import audio
 directory = os.path.join(tempfile.gettempdir(), "tacotron")
@@ -59,11 +59,11 @@ class SpecificWorker(GenericWorker):
         self.Period = 2000
         self.timer.start(self.Period)
         # English graph
-        graph, sess = load_graph("meta/English_graph.pb")
-        wav_output = self.graph.get_tensor_by_name("model/griffinlim/Squeeze:0")
-        alignment_tensor = self.graph.get_tensor_by_name("model/strided_slice_1:0")
-        inputs = self.graph.get_tensor_by_name("inputs:0")
-        input_lengths = self.graph.get_tensor_by_name("input_lengths:0")
+        graph, sess = load_graph("meta/graph-000256_frz.pb")
+        wav_output = graph.get_tensor_by_name("model/griffinlim/Squeeze:0")
+        alignment_tensor = graph.get_tensor_by_name("model/strided_slice_1:0")
+        inputs = graph.get_tensor_by_name("inputs:0")
+        input_lengths = graph.get_tensor_by_name("input_lengths:0")
         self.tts = {"en": (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')}
         
         # Spanish Graph
@@ -179,7 +179,7 @@ class SpecificWorker(GenericWorker):
     # This method eliminates a greeting to the dictionary of greetings in the selected language.
     #
     def deleteGreet(self, newtext, language):
-        if newtext in GreetList && language.lower() in self.alternatives_greetings:
+        if newtext in alternatives_greetings[language.lower()] and language.lower() in self.alternatives_greetings:
             self.alternatives_greetings[language.lower()].remove(newtext)
         else:
             self.say("The sentence is not found in that language")
@@ -224,7 +224,7 @@ class SpecificWorker(GenericWorker):
     # This method eliminates a farewell to the dictionary of farewells in the selected language.
     #
     def deleteBye(self, newtext, language):
-        if newtext in GreetList && language.lower() in self.alternatives_farewells:
+        if newtext in self.alternatives_farewells[language.lower()] and language.lower() in self.alternatives_farewells:
             self.alternatives_farewells[language.lower()].remove(newtext)
         else:
             self.say("The sentence is not found in that language")
