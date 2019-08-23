@@ -7,19 +7,13 @@ from learnbot_dsl.blocksConfig.parserConfigBlock import pathConfig
 from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.toQImage import *
 
-listTypeBlock = ["express",
-                 "motor",
-                 "perceptual",
-                 "proprioceptive",
-                 "others"]
-
-
 
 class guiSelectBlocks(QtWidgets.QDialog):
 
-    def __init__(self, blockLists):
+    def __init__(self, blockLists, action):
+        self.selectionAction = action
         QtWidgets.QDialog.__init__(self)
-        self.setWindowTitle('Example List')
+        self.setWindowTitle('Select visible blocks')
         self.createTabWidget(blockLists)
         self.createButtons()
         self.createLayout()
@@ -35,19 +29,22 @@ class guiSelectBlocks(QtWidgets.QDialog):
 
 
     def createListView(self, bList, blockList):
-        bList.addItems(blockList)
         for i in range(len(blockList)):
+            bList.addItem(blockList[i][0])
             item = bList.item(i)
             item.setFlags(item.flags() or Qt.ItemIsUserCheckable)
-            item.setCheckState(QtCore.Qt.Unchecked)
+            if blockList[i][1]:
+                item.setCheckState(QtCore.Qt.Checked)
+            else:
+                item.setCheckState(QtCore.Qt.Unchecked)
 
     def createButtons(self):
         self.viewBox = QtWidgets.QGroupBox()
         self.buttonBox = QtWidgets.QDialogButtonBox()
-        self.saveButton = self.buttonBox.addButton(QtWidgets.QDialogButtonBox.Save)
-        self.closeButton = self.buttonBox.addButton(QtWidgets.QDialogButtonBox.Close)
-        self.closeButton.clicked.connect(self.close)
-        self.saveButton.clicked.connect(self.printList)
+        self.okButton = self.buttonBox.addButton(QtWidgets.QDialogButtonBox.Ok)
+        self.cancelButton = self.buttonBox.addButton(QtWidgets.QDialogButtonBox.Cancel)
+        self.cancelButton.clicked.connect(self.close)
+        self.okButton.clicked.connect(self.selectionAction)
 
     def createLayout(self):
         self.viewLayout = QtWidgets.QVBoxLayout()
@@ -63,17 +60,12 @@ class guiSelectBlocks(QtWidgets.QDialog):
 
         self.setLayout(self.mainLayout)
 
-    def printList(self):
-        for l in self.lists:
-            for i in range(l.count()):
-                item = l.item(i)
-                if item.checkState() == QtCore.Qt.Checked:
-                    print(item.text())
-    
+def printList():
+    print("selection done")    
         
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
 
-    selectBlocks =guiSelectBlocks({"tab1":["uno","dos","tres"], "tab2":["aaa","bbb","ccc"]})
+    selectBlocks =guiSelectBlocks({"tab1":[("uno", True),("dos", True),("tres", False)], "tab2":[("aaa", True),("bbb", False),("ccc", True)]}, printList)
     selectBlocks.show()
     sys.exit(app.exec_())

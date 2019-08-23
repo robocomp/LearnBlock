@@ -804,9 +804,11 @@
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
-    <addaction name="actionLoad_Library"/>
     <addaction name="actionLoad_Sets_of_Blocks"/>
+    <addaction name="actionSelect_Visible_Blocks"/>
+    <addaction name="actionSave_Sets_of_Blocks"/>
     <addaction name="separator"/>
+    <addaction name="actionLoad_Library"/>
     <addaction name="actionChange_Libraries_path"/>
     <addaction name="actionChange_Workspace"/>
     <addaction name="separator"/>
@@ -1116,6 +1118,16 @@
   <action name="actionLoad_Sets_of_Blocks">
    <property name="text">
     <string>Load Sets of Blocks</string>
+   </property>
+  </action>
+  <action name="actionSelect_Visible_Blocks">
+   <property name="text">
+    <string>Select Visible Blocks</string>
+   </property>
+  </action>
+  <action name="actionSave_Sets_of_Blocks">
+   <property name="text">
+    <string>Save Sets of Blocks</string>
    </property>
   </action>
  </widget>

@@ -17,6 +17,7 @@ from learnbot_dsl.blocksConfig import pathConfig
 from learnbot_dsl.learnbotCode.checkFile import compile
 from learnbot_dsl.learnbotCode.dialogAddNumberOrString import *
 from learnbot_dsl.learnbotCode.guiCreateBlock import *
+from learnbot_dsl.learnbotCode.guiSelectBlocks import *
 from learnbot_dsl.learnbotCode.guiaddWhen import *
 import learnbot_dsl.guis.Learnblock as Learnblock
 from learnbot_dsl.guis import pathGuis
@@ -116,12 +117,13 @@ def on_message(client, userdata, message):
     except:
         pass
 
+languageCategories = ["control","operator","variables","functions"]
 
 type2Values = {"control": (CONTROL, HUE_CONTROL),
                "motor": (FUNTION, HUE_MOTOR),
                "perceptual": (FUNTION, HUE_PERCEPTUAL),
                "proprioceptive": (FUNTION, HUE_PROPIOPERCEPTIVE),
-               "operador": (OPERATOR, HUE_OPERATOR),
+               "operator": (OPERATOR, HUE_OPERATOR),
                "express": (FUNTION, HUE_EXPRESS),
                "others": (FUNTION, HUE_OTHERS)
                }
@@ -220,6 +222,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
         self.ui.actionLoad_Sets_of_Blocks.triggered.connect(self.loadSetsOfBlocks)
+        self.ui.actionSelect_Visible_Blocks.triggered.connect(self.selectVisibleBlocks)
         self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
         self.ui.actionDownload_examples.triggered.connect(self.downloadExamples)
         self.ui.actionDownload_libraries.triggered.connect(self.downloadLibraries)
@@ -271,7 +274,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.dicTables = {'control': self.ui.tableControl, 'motor': self.ui.tableMotor,
                           'perceptual': self.ui.tablePerceptual,
-                          'proprioceptive': self.ui.tablePropioperceptive, 'operador': self.ui.tableOperadores,
+                          'proprioceptive': self.ui.tablePropioperceptive, 'operator': self.ui.tableOperadores,
                           'variables': self.ui.tableVariables,
                           'funtions': self.ui.tableUserfunctions, 'express': self.ui.tableExpress,
                           'others': self.ui.tableOthers}
@@ -312,7 +315,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
         self.updateOpenRecent()
         self.updateClients()
-        self.load_blocks()
+        self.load_blockConfigurations()
         self.avtiveEvents(False)
         self.pmlast = None
         self.cameraScene = QtWidgets.QGraphicsScene()
@@ -1023,8 +1026,49 @@ class LearnBlock(QtWidgets.QMainWindow):
         if self.help is not None:
             del self.help
 
-    def load_blocks(self, config_path = None):
+    def load_blockConfigurations(self, config_path = None):
         blocks = reload_functions(config_path)
+        self.blocksInCategories = {}
+        for b in blocks:
+            btype = str(b["type"])
+            if not btype in self.blocksInCategories.keys():
+                self.blocksInCategories[btype] = []
+            self.blocksInCategories[btype].append((b,True))
+        self.load_blocks()
+
+    def selectVisibleBlocks(self):
+        lang = getLanguage()
+        self.visibleBlockLists = {}
+        for cat in self.blocksInCategories.keys():
+            if not cat in languageCategories:
+                newList = []
+                for b, visible in self.blocksInCategories[cat]:
+                    if "languages" in b.keys():
+                        newList.append((b["languages"][lang], visible))
+                    else:
+                        newList.append((b["name"], visible))
+                self.visibleBlockLists[cat] = newList
+        self.dialogSelectBlocks = guiSelectBlocks(self.visibleBlockLists, self.setVisibleBlocks)
+        self.dialogSelectBlocks.show()
+
+    def setVisibleBlocks(self):
+        keys = list(self.visibleBlockLists.keys())
+        k = 0
+        for l in self.dialogSelectBlocks.lists:
+            cat = keys[k]
+            for i in range(l.count()):
+                item = l.item(i)
+                if item.checkState() == QtCore.Qt.Checked:
+                    self.blocksInCategories[cat][i] = (self.blocksInCategories[cat][i][0], True)
+                else:
+                    self.blocksInCategories[cat][i] = (self.blocksInCategories[cat][i][0], False)
+            k+=1
+        self.dialogSelectBlocks.close()
+        self.load_blocks()
+                   
+
+
+    def load_blocks(self):
         for k, table in iter(self.dicTables.items()):
             table.clear()
             table.setRowCount(0)
@@ -1035,8 +1079,10 @@ class LearnBlock(QtWidgets.QMainWindow):
             pass
 
         self.mainButton = None
-        for b in blocks:
-            self.addBlock(b)
+        for k, blocks in iter(self.blocksInCategories.items()):
+            for b in blocks:
+                if b[1]:
+                    self.addBlock(b[0])
 
     def addBlock(self, b):
         if b["name"] in self.listNameBlock:
@@ -1049,7 +1095,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 variables.append(Variable(dict=copy.copy(v)))
         funtionType, HUE = type2Values[b["type"]]
         for img in b["img"]:
-            blockType, connections = loadConfigBlock(img)
+            blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
             table = self.dicTables[b["type"]]
             table.insertRow(table.rowCount())
             tooltip = {}
@@ -1059,7 +1105,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             if "tooltip" in b:
                 tooltip = b["tooltip"]
             button = Block_Button(
-                (self, b["name"], languages, HUE, self.view, self.scene, img + ".png", connections, variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
+                (self, b["name"], languages, HUE, self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections, variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
             if b["name"] == "main":
                 self.mainButton = button
             self.listButtons.append(button)
@@ -1213,7 +1259,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     def loadSetsOfBlocks(self):
         blocks_path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr("Select Directory"), pathConfig, QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
         if blocks_path!="":
-            self.load_blocks(blocks_path)
+            self.load_blockConfigurations(blocks_path)
 
     def showCreateBlock(self):
         self.createBlockGui = guiCreateBlock(self.addBlock)

@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'Learnblock.ui',
 # licensing of 'Learnblock.ui' applies.
 #
-# Created: Sun Aug 18 15:34:57 2019
+# Created: Fri Aug 23 16:13:31 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -496,6 +496,10 @@ class Ui_MainWindow(object):
         self.actionDictionary_Tags.setObjectName("actionDictionary_Tags")
         self.actionLoad_Sets_of_Blocks = QtWidgets.QAction(MainWindow)
         self.actionLoad_Sets_of_Blocks.setObjectName("actionLoad_Sets_of_Blocks")
+        self.actionSelect_Visible_Blocks = QtWidgets.QAction(MainWindow)
+        self.actionSelect_Visible_Blocks.setObjectName("actionSelect_Visible_Blocks")
+        self.actionSave_Sets_of_Blocks = QtWidgets.QAction(MainWindow)
+        self.actionSave_Sets_of_Blocks.setObjectName("actionSave_Sets_of_Blocks")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionCreate_New_block)
@@ -505,9 +509,11 @@ class Ui_MainWindow(object):
         self.menuFile.addAction(self.actionSave)
         self.menuFile.addAction(self.actionSave_As)
         self.menuFile.addSeparator()
-        self.menuFile.addAction(self.actionLoad_Library)
         self.menuFile.addAction(self.actionLoad_Sets_of_Blocks)
+        self.menuFile.addAction(self.actionSelect_Visible_Blocks)
+        self.menuFile.addAction(self.actionSave_Sets_of_Blocks)
         self.menuFile.addSeparator()
+        self.menuFile.addAction(self.actionLoad_Library)
         self.menuFile.addAction(self.actionChange_Libraries_path)
         self.menuFile.addAction(self.actionChange_Workspace)
         self.menuFile.addSeparator()
@@ -660,4 +666,6 @@ class Ui_MainWindow(object):
         self.actionDark.setText(QtWidgets.QApplication.translate("MainWindow", "Dark", None, -1))
         self.actionDictionary_Tags.setText(QtWidgets.QApplication.translate("MainWindow", "Dictionary Tags", None, -1))
         self.actionLoad_Sets_of_Blocks.setText(QtWidgets.QApplication.translate("MainWindow", "Load Sets of Blocks", None, -1))
+        self.actionSelect_Visible_Blocks.setText(QtWidgets.QApplication.translate("MainWindow", "Select Visible Blocks", None, -1))
+        self.actionSave_Sets_of_Blocks.setText(QtWidgets.QApplication.translate("MainWindow", "Save Sets of Blocks", None, -1))
 

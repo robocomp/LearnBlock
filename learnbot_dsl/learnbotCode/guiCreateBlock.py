@@ -284,8 +284,6 @@ class guiCreateBlock(QtWidgets.QDialog):
                 code = self.ui.textEditPythonCode.toPlainText()
                 file.write(code)
 
-            for i in range(len(dictBlock["img"])):
-                dictBlock["img"][i] = os.path.join(pathBlocks, dictBlock["img"][i])
             self.load_blocks(dictBlock)
 
             msgBox = QtWidgets.QMessageBox()

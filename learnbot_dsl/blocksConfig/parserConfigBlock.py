@@ -31,10 +31,10 @@ def reload_functions(selected_path=None):
                     blocks = json.loads(text)
                 else:
                     blocks += json.loads(text)
-    if blocks is not None:
-        for b in blocks:
-            for i in range(len(b["img"])):
-                b["img"][i] = os.path.join(pathImgBlocks, b["img"][i])
+#    if blocks is not None:
+#        for b in blocks:
+#            for i in range(len(b["img"])):
+#                b["img"][i] = os.path.join(pathImgBlocks, b["img"][i])
 
     return blocks
 
