@@ -30,23 +30,23 @@ if len(ROBOCOMP)<1:
 	sys.exit()
 
 additionalPathStr = ''
-icePaths = []
-try:
-	icePaths.append('/opt/robocomp/interfaces')
-	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-	for p in SLICE_PATH:
-		icePaths.append(p)
-		additionalPathStr += ' -I' + p + ' '
-except:
-	print('SLICE_PATH environment variable was not exported. Using only the default paths')
-	pass
+icePaths = [  os.path.dirname(__file__) ]
+# try:
+# 	icePaths.append('/opt/robocomp/interfaces')
+# 	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
+# 	for p in SLICE_PATH:
+# 		icePaths.append(p)
+# 		additionalPathStr += ' -I' + p + ' '
+# except:
+# 	print('SLICE_PATH environment variable was not exported. Using only the default paths')
+# 	pass
 
 ice_tacotron = False
 for p in icePaths:
 	print('Trying', p, 'to load tacotron.ice')
 	if os.path.isfile(p+'/tacotron.ice'):
 		print('Using', p, 'to load tacotron.ice')
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
+		preStr = "-I" + p + " --all " + p + '/'
 		wholeStr = preStr+"tacotron.ice"
 		Ice.loadSlice(wholeStr)
 		ice_tacotron = True

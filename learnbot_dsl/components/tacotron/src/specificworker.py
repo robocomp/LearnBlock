@@ -19,7 +19,10 @@
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 #
 import math
+import os
+
 from genericworker import *
+from PySide2 import QtCore
 import io
 from playsound import playsound
 import tensorflow as tf
@@ -27,8 +30,10 @@ import numpy as np
 import tempfile
 from text import text_to_sequence
 from util import audio
-directory = os.path.join(tempfile.gettempdir(), "tacotron")
 import random
+
+directory = os.path.join(tempfile.gettempdir(), "tacotron")
+
 
 # If RoboComp was compiled with Python bindings you can use InnerModel in Python
 # sys.path.append('/opt/robocomp/lib')
@@ -50,7 +55,8 @@ def load_graph(graph_path):
 
 
 def find_alignment_endpoint(alignment_shape, ratio):
-  return math.ceil(alignment_shape[1] * ratio)
+    return math.ceil(alignment_shape[1] * ratio)
+
 
 class SpecificWorker(GenericWorker):
     def __init__(self, proxy_map):
@@ -65,17 +71,18 @@ class SpecificWorker(GenericWorker):
         inputs = graph.get_tensor_by_name("inputs:0")
         input_lengths = graph.get_tensor_by_name("input_lengths:0")
         self.tts = {"en": (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')}
-        
+
         # Spanish Graph
         # graph, sess = load_graph("meta/spanish.pb")
-        # wav_output = self.graph.get_tensor_by_name("model/griffinlim/Squeeze:0")
-        # alignment_tensor = self.graph.get_tensor_by_name("model/strided_slice_1:0")
-        # inputs = self.graph.get_tensor_by_name("inputs:0")
-        # input_lengths = self.graph.get_tensor_by_name("input_lengths:0")
+        # wav_output = graph.get_tensor_by_name("model/griffinlim/Squeeze:0")
+        # alignment_tensor = graph.get_tensor_by_name("model/strided_slice_1:0")
+        # inputs = graph.get_tensor_by_name("inputs:0")
+        # input_lengths = graph.get_tensor_by_name("input_lengths:0")
         # self.tts["es"] = (graph, sess, wav_output, alignment_tensor, inputs, input_lengths, 'english_cleaners')
 
         self.alternatives_greetings = {"es": ["hola", "¿qué tal?", "hey"], "en": ["hi", "hello", "what's up?"]}
-        self.alternatives_farewells = {"es": ["adios", "hasta pronto", "hasta la proxima"], "en": ["bye", "good bye", "see you soon"]}
+        self.alternatives_farewells = {"es": ["adios", "hasta pronto", "hasta la proxima"],
+                                       "en": ["bye", "good bye", "see you soon"]}
 
     def __del__(self):
         print('SpecificWorker destructor')
@@ -103,26 +110,28 @@ class SpecificWorker(GenericWorker):
         return True
 
     # =============== Methods for Component Implements ==================# ===================================================================
-    
+
     #
     # This method synthesizes the text and reproduces the audio generated in the language passed by parameters
     #
     def say(self, text, language):
         try:
-           os.stat(directory)
+            os.stat(directory)
         except:
-           os.mkdir(directory)
+            os.mkdir(directory)
 
-        audio_path = os.path.join(directory, text +".wav")
+        audio_path = os.path.join(directory, text + ".wav")
         if os.path.exists(audio_path):
-            audio = text + ".wav"
-            print("Audio exists... ", audio)
-            os.path.join(directory, audio)
+            audio_file = text + ".wav"
+            print("Audio exists... ", audio_file)
+            os.path.join(directory, audio_file)
             playsound(audio_path)
         else:
             if language.lower() in self.tts:
                 graph, sess, wav_output, alignment_tensor, inputs, input_lengths, cleaners = self.tts[language.lower()]
-                cleaner_names = [x.strip() for x in cleaners]
+                cleaner_names = [x.strip() for x in cleaners.split(',')]
+                # cleaner_names = [x.strip() for x in self.hparams.cleaners.split(',')]
+                print(cleaner_names)
                 seq = text_to_sequence(text, cleaner_names)
                 feed_dict = {
                     inputs: [np.asarray(seq, dtype=np.int32)],
@@ -149,10 +158,10 @@ class SpecificWorker(GenericWorker):
                 with open(final_audio, "wb") as f:
                     f.write(out.getvalue())
                 playsound(final_audio)
-        pass 
+        pass
 
+        #
 
-    #
     # This method chooses a random greeting in the chosen language and is sent to the say() method to generate an audio.
     #
     def sayAlternativeGreet(self, language):
@@ -163,17 +172,15 @@ class SpecificWorker(GenericWorker):
         self.say(text, language)
         pass
 
-
     #
     # This method adds a greeting to the dictionary of greetings in the selected language.
     #
     def addGreet(self, newtext, language):
-        if language.lower() in self.alternatives_greetings: 
+        if language.lower() in self.alternatives_greetings:
             self.alternatives_greetings[language.lower()].append[newtext]
         else:
             self.say("No greeting sentences available in that language")
         pass
-
 
     #
     # This method eliminates a greeting to the dictionary of greetings in the selected language.
@@ -194,10 +201,10 @@ class SpecificWorker(GenericWorker):
                 self.alternatives_greeting[language].say(text)
         else:
             self.say("No greeting sentences available in that language")
-        pass   
+        pass
 
+        #
 
-    #
     # This method chooses a random farewell in the chosen language and is sent to the say() method to generate an audio.
     #
     def sayAlternativeBye(self, language):
@@ -207,7 +214,6 @@ class SpecificWorker(GenericWorker):
             text = "No farewell sentences available in that language"
         self.say(text)
         pass
-
 
     #
     # This method adds a farewell to the dictionary of farewells in the selected language.
@@ -219,7 +225,6 @@ class SpecificWorker(GenericWorker):
             self.say("No farewell sentences available in that language")
         pass
 
-
     #
     # This method eliminates a farewell to the dictionary of farewells in the selected language.
     #
@@ -228,10 +233,10 @@ class SpecificWorker(GenericWorker):
             self.alternatives_farewells[language.lower()].remove(newtext)
         else:
             self.say("The sentence is not found in that language")
-        pass  
-  
+        pass
 
-    #
+        #
+
     # This method shows all available phrases in the farewell dictionary in the selected language.
     #
     def showBye(self, language):

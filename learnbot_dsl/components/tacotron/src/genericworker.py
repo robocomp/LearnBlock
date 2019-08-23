@@ -33,21 +33,22 @@ Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 
 additionalPathStr = ''
-icePaths = [ '/opt/robocomp/interfaces' ]
-try:
-	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
-	for p in SLICE_PATH:
-		icePaths.append(p)
-		additionalPathStr += ' -I' + p + ' '
-	icePaths.append('/opt/robocomp/interfaces')
-except:
-	print('SLICE_PATH environment variable was not exported. Using only the default paths')
-	pass
+icePaths = [  os.path.dirname(__file__) ]
+# icePaths = [ '/opt/robocomp/interfaces' ]
+# try:
+# 	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
+# 	for p in SLICE_PATH:
+# 		icePaths.append(p)
+# 		additionalPathStr += ' -I' + p + ' '
+# 	icePaths.append('/opt/robocomp/interfaces')
+# except:
+# 	print('SLICE_PATH environment variable was not exported. Using only the default paths')
+# 	pass
 
 ice_tacotron = False
 for p in icePaths:
 	if os.path.isfile(p+'/tacotron.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
+		preStr = "-I" + p + " --all " + p + '/'
 		wholeStr = preStr+"tacotron.ice"
 		Ice.loadSlice(wholeStr)
 		ice_tacotron = True

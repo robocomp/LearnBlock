@@ -63,6 +63,7 @@ import signal
 from PySide2 import QtCore
 
 from specificworker import *
+configPath = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'etc', 'config')
 
 
 class CommonBehaviorI(RoboCompCommonBehavior.CommonBehavior):
@@ -99,7 +100,7 @@ if __name__ == '__main__':
 		if not params[1].startswith('--Ice.Config='):
 			params[1] = '--Ice.Config=' + params[1]
 	elif len(params) == 1:
-		params.append('--Ice.Config=config')
+		params.append('--Ice.Config='+configPath)
 	ic = Ice.initialize(params)
 	status = 0
 	mprx = {}
