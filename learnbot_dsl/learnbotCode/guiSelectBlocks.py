@@ -10,22 +10,22 @@ from learnbot_dsl.learnbotCode.toQImage import *
 
 class guiSelectBlocks(QtWidgets.QDialog):
 
-    def __init__(self, blockLists, action):
+    def __init__(self, blockLists, action, text4Tabs):
         self.selectionAction = action
         QtWidgets.QDialog.__init__(self)
-        self.setWindowTitle('Select visible blocks')
-        self.createTabWidget(blockLists)
+        self.setWindowTitle(self.tr('Select visible blocks'))
+        self.createTabWidget(blockLists, text4Tabs)
         self.createButtons()
         self.createLayout()
 
-    def createTabWidget(self, blockLists):	
+    def createTabWidget(self, blockLists, text4Tabs):	
         self.tabWidget = QtWidgets.QTabWidget()
         self.lists = []
         for key in blockLists.keys():
             bList = QtWidgets.QListWidget()
             self.lists.append(bList)
             self.createListView(bList, blockLists[key])
-            self.tabWidget.addTab(bList, key)
+            self.tabWidget.addTab(bList, text4Tabs[key])
 
 
     def createListView(self, bList, blockList):
@@ -60,12 +60,4 @@ class guiSelectBlocks(QtWidgets.QDialog):
 
         self.setLayout(self.mainLayout)
 
-def printList():
-    print("selection done")    
-        
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
 
-    selectBlocks =guiSelectBlocks({"tab1":[("uno", True),("dos", True),("tres", False)], "tab2":[("aaa", True),("bbb", False),("ccc", True)]}, printList)
-    selectBlocks.show()
-    sys.exit(app.exec_())

@@ -1,7 +1,7 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
-import sys, os, pickle, tempfile, shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, \
+import sys, os, pickle, tempfile, pathlib, shutil, subprocess, io, socket, struct, numpy as np, cv2, paho.mqtt.client, time, \
     requests, paramiko, traceback
 from PIL import Image
 from pyunpack import Archive
@@ -119,6 +119,18 @@ def on_message(client, userdata, message):
 
 languageCategories = ["control","operator","variables","functions"]
 
+text4Categories = {"ES": {"motor": "Motor",
+                "perceptual": "Percepción",
+                "proprioceptive": "Propiocepción",
+                "express": "Expresiones",
+                "others": "Otros"},
+              "EN": {"motor": "Motor",
+                "perceptual": "Perceptual",
+                "proprioceptive": "Proprioceptive",
+                "express": "Expresions",
+                "others": "Others"}
+              }
+
 type2Values = {"control": (CONTROL, HUE_CONTROL),
                "motor": (FUNTION, HUE_MOTOR),
                "perceptual": (FUNTION, HUE_PERCEPTUAL),
@@ -223,6 +235,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
         self.ui.actionLoad_Sets_of_Blocks.triggered.connect(self.loadSetsOfBlocks)
         self.ui.actionSelect_Visible_Blocks.triggered.connect(self.selectVisibleBlocks)
+        self.ui.actionSave_Visible_Blocks.triggered.connect(self.saveVisibleBlocks)
         self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
         self.ui.actionDownload_examples.triggered.connect(self.downloadExamples)
         self.ui.actionDownload_libraries.triggered.connect(self.downloadLibraries)
@@ -1044,11 +1057,14 @@ class LearnBlock(QtWidgets.QMainWindow):
                 newList = []
                 for b, visible in self.blocksInCategories[cat]:
                     if "languages" in b.keys():
-                        newList.append((b["languages"][lang], visible))
+                        if lang in b["languages"].keys():
+                            newList.append((b["languages"][lang], visible))
+                        else:
+                            newList.append((b["name"], visible))
                     else:
                         newList.append((b["name"], visible))
                 self.visibleBlockLists[cat] = newList
-        self.dialogSelectBlocks = guiSelectBlocks(self.visibleBlockLists, self.setVisibleBlocks)
+        self.dialogSelectBlocks = guiSelectBlocks(self.visibleBlockLists, self.setVisibleBlocks,text4Categories[lang])
         self.dialogSelectBlocks.show()
 
     def setVisibleBlocks(self):
@@ -1065,7 +1081,34 @@ class LearnBlock(QtWidgets.QMainWindow):
             k+=1
         self.dialogSelectBlocks.close()
         self.load_blocks()
-                   
+
+    def saveVisibleBlocks(self):
+        blocks_path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr("Select Directory"), str(pathlib.Path.home()), QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
+        if blocks_path!="":
+            for cat in self.blocksInCategories.keys():
+                if not cat in languageCategories:
+                    configFile = os.path.join(blocks_path, cat+".conf")
+                    saveConfig = True
+                    if os.path.isfile(configFile):
+                        msgBox = QtWidgets.QMessageBox()
+                        msgBox.setWindowTitle(self.tr("Warning"))
+                        msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                        msgBox.setText(self.tr("The config file ") + "\"" + cat + ".conf" + "\"" + self.tr(" already exists"))
+                        msgBox.setInformativeText(self.tr("Do you want to overwrite it?"))
+                        msgBox.setStandardButtons(QtWidgets.QMessageBox.Save |QtWidgets.QMessageBox.Cancel)
+                        msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
+                        ret = msgBox.exec_()
+                        if ret == QtWidgets.QMessageBox.Save:
+                            saveConfig = True
+                        else:
+                            saveConfig = False
+                    if saveConfig:
+                        listOfBlocks = []
+                        for b in self.blocksInCategories[cat]:
+                            if b[1]:
+                                listOfBlocks.append(b[0])
+                        with open(configFile, "w") as file:
+                            json.dump(listOfBlocks, file, indent=4)                  
 
 
     def load_blocks(self):
