@@ -226,6 +226,10 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionSave.triggered.connect(self.saveInstance)
         self.ui.actionSave_As.triggered.connect(self.saveAs)
         self.ui.actionOpen_Project.triggered.connect(self.openProject)
+        self.ui.actionLoad_Block_Text_Code.triggered.connect(self.loadBlockTextCode)
+        self.ui.actionSave_Block_Text_Code.triggered.connect(self.saveBlockTextCode)
+        self.ui.actionLoad_Python_Code.triggered.connect(self.loadPythonCode)
+        self.ui.actionSave_Python_Code.triggered.connect(self.savePythonCode)
         self.ui.actionStart_components.triggered.connect(self.startRobot)
         self.ui.actionStart.triggered.connect(lambda: self.startProgram(self.ui.Tabwi.currentIndex()))
         self.ui.actionStart_Simulator.triggered.connect(self.startSimulatorRobot)
@@ -285,6 +289,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionDictionary_Tags.triggered.connect(self.editDictTags)
 
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
+        self.ui.bt2pythonpushButton.clicked.connect(self.btToPython)
         self.dicTables = {'control': self.ui.tableControl, 'motor': self.ui.tableMotor,
                           'perceptual': self.ui.tablePerceptual,
                           'proprioceptive': self.ui.tablePropioperceptive, 'operator': self.ui.tableOperadores,
@@ -788,6 +793,10 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.blocksToTextCode()
         self.textCodeToPython(name_Client)
 
+    def btToPython(self):
+        name_Client = self.ui.clientscomboBox.currentText()
+        self.textCodeToPython(name_Client)
+
     def blocksToTextCode(self):
         text = ""
         for library in self.listLibrary:
@@ -1225,12 +1234,9 @@ class LearnBlock(QtWidgets.QMainWindow):
                 file = data
         if self.scene.shouldSave is False:
             if file is None:
-                print("open project")
                 self.scene.stopAllblocks()
                 fileName = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open Project'), self.workSpace,
                                                                  self.tr('Block Project file (*.blockProject)'))
-                print(fileName)
-                print(self.workSpace)
                 self.scene.startAllblocks()
             if file is not None or fileName[0] != "":
                 self.newProject(resetAll=False)
@@ -1297,6 +1303,47 @@ class LearnBlock(QtWidgets.QMainWindow):
             elif ret == QtWidgets.QMessageBox.Discard:
                 self.scene.shouldSave = False
                 self.openProject(file)
+
+    def loadBlockTextCode(self):
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Load Block-Text code'), self.workSpace, self.tr('Block-Text file (*.bt)'))
+        if os.path.exists(fileName):
+            f = open(fileName, "r")
+            code = f.read()
+            self.ui.textCode.clear()
+            self.ui.textCode.setText(code)
+            f.close()
+
+    def saveBlockTextCode(self):
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, self.tr('Save Block-Text code'), self.workSpace, self.tr('Block-Text file (*.bt)'))
+        if fileName!="":
+            name, extension = os.path.splitext(fileName)
+            if extension == "":
+                fileName += ".bt"
+            f = open(fileName, "w")
+            code = self.ui.textCode.toPlainText()
+            f.write(code)
+            f.close()
+
+    def loadPythonCode(self):
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Load Python code'), self.workSpace, self.tr('Python file (*.py)'))
+        if os.path.exists(fileName):
+            f = open(fileName, "r")
+            code = f.read()
+            self.ui.pythonCode.clear()
+            self.ui.pythonCode.setText(code)
+            f.close()
+
+
+    def savePythonCode(self):
+        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, self.tr('Save Python code'), self.workSpace, self.tr('Python file (*.py)'))
+        if fileName!="":
+            name, extension = os.path.splitext(fileName)
+            if extension == "":
+                fileName += ".py"
+            f = open(fileName, "w")
+            code = self.ui.pythonCode.toPlainText()
+            f.write(code)
+            f.close()
 
 
     def loadSetsOfBlocks(self):

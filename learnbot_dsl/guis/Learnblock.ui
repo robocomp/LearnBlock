@@ -386,6 +386,13 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_17">
             <item>
+             <widget class="QPushButton" name="bt2pythonpushButton">
+              <property name="text">
+               <string>Block-Text to Python</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="starttextPushButton">
               <property name="text">
                <string>Start</string>
@@ -793,20 +800,21 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Fi&amp;le</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionNew_project"/>
     <addaction name="separator"/>
-    <addaction name="actionCreate_New_block"/>
     <addaction name="actionOpen_Project"/>
     <addaction name="actionOpen_Recent"/>
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
-    <addaction name="actionLoad_Sets_of_Blocks"/>
-    <addaction name="actionSelect_Visible_Blocks"/>
-    <addaction name="actionSave_Visible_Blocks"/>
+    <addaction name="actionLoad_Block_Text_Code"/>
+    <addaction name="actionSave_Block_Text_Code"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoad_Python_Code"/>
+    <addaction name="actionSave_Python_Code"/>
     <addaction name="separator"/>
     <addaction name="actionLoad_Library"/>
     <addaction name="actionChange_Libraries_path"/>
@@ -816,7 +824,7 @@
    </widget>
    <widget class="QMenu" name="menuTools_robot">
     <property name="title">
-     <string>Robot &amp;tools</string>
+     <string>&amp;Robot tools</string>
     </property>
     <addaction name="actionStart_Simulator"/>
     <addaction name="separator"/>
@@ -825,14 +833,15 @@
     <addaction name="actionReboot"/>
     <addaction name="actionShutdown"/>
     <addaction name="separator"/>
+    <addaction name="actionAdd_client_robot"/>
+    <addaction name="separator"/>
     <addaction name="actionDownload_xmls"/>
     <addaction name="actionDownload_examples"/>
     <addaction name="actionDownload_libraries"/>
-    <addaction name="actionAdd_client_robot"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>&amp;Edit</string>
     </property>
     <widget class="QMenu" name="menuTheme">
      <property name="title">
@@ -851,7 +860,7 @@
    </widget>
    <widget class="QMenu" name="menuProject">
     <property name="title">
-     <string>Pro&amp;ject</string>
+     <string>&amp;Project</string>
     </property>
     <addaction name="actionBlocks_to_text"/>
     <addaction name="actionStart"/>
@@ -863,9 +872,20 @@
     </property>
     <addaction name="actionHelp"/>
    </widget>
+   <widget class="QMenu" name="menuBlocks">
+    <property name="title">
+     <string>&amp;Blocks</string>
+    </property>
+    <addaction name="actionCreate_New_block"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoad_Sets_of_Blocks"/>
+    <addaction name="actionSelect_Visible_Blocks"/>
+    <addaction name="actionSave_Visible_Blocks"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuProject"/>
+   <addaction name="menuBlocks"/>
    <addaction name="menuTools_robot"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -906,7 +926,7 @@
   </action>
   <action name="actionStart_components">
    <property name="text">
-    <string>Start components</string>
+    <string>Start EBO Components</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+1</string>
@@ -914,7 +934,7 @@
   </action>
   <action name="actionReboot">
    <property name="text">
-    <string>Reboot</string>
+    <string>Reboot EBO</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+2</string>
@@ -922,7 +942,7 @@
   </action>
   <action name="actionShutdown">
    <property name="text">
-    <string>Shutdown</string>
+    <string>Shutdown EBO</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+3</string>
@@ -930,7 +950,7 @@
   </action>
   <action name="actionStart_Simulator">
    <property name="text">
-    <string>Start Simulator</string>
+    <string>Start EBO Simulator</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+4</string>
@@ -938,7 +958,7 @@
   </action>
   <action name="actionNew_project">
    <property name="text">
-    <string>New project</string>
+    <string>New Project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -962,7 +982,7 @@
   </action>
   <action name="actionChange_Libraries_path">
    <property name="text">
-    <string>Change Libraries path</string>
+    <string>Change Path of Libraries</string>
    </property>
    <property name="shortcut">
     <string>Shift+L</string>
@@ -1091,7 +1111,7 @@
   </action>
   <action name="actionAdd_client_robot">
    <property name="text">
-    <string>Add client robot</string>
+    <string>Add Robot Client</string>
    </property>
   </action>
   <action name="actionStart">
@@ -1112,7 +1132,7 @@
   </action>
   <action name="actionDictionary_Tags">
    <property name="text">
-    <string>Dictionary Tags</string>
+    <string>Dictionary of Tags</string>
    </property>
   </action>
   <action name="actionLoad_Sets_of_Blocks">
@@ -1128,6 +1148,26 @@
   <action name="actionSave_Visible_Blocks">
    <property name="text">
     <string>Save Visible Blocks</string>
+   </property>
+  </action>
+  <action name="actionLoad_Block_Text_Code">
+   <property name="text">
+    <string>Load Block-Text Code</string>
+   </property>
+  </action>
+  <action name="actionSave_Block_Text_Code">
+   <property name="text">
+    <string>Save Block-Text Code</string>
+   </property>
+  </action>
+  <action name="actionLoad_Python_Code">
+   <property name="text">
+    <string>Load Python Code</string>
+   </property>
+  </action>
+  <action name="actionSave_Python_Code">
+   <property name="text">
+    <string>Save Python Code</string>
    </property>
   </action>
  </widget>

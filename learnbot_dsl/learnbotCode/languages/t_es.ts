@@ -455,107 +455,107 @@
 <context>
     <name>LearnBlock</name>
     <message>
-        <location filename="../LearnBlock.py" line="471"/>
+        <location filename="../LearnBlock.py" line="476"/>
         <source>Add Client</source>
         <translation>Añadir Cliente</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="471"/>
+        <location filename="../LearnBlock.py" line="476"/>
         <source>Python File(*.py)</source>
         <translation>Archivo python(*.py)</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="592"/>
+        <location filename="../LearnBlock.py" line="597"/>
         <source>Choose workspace directory</source>
         <translation>Seleccionar directorio de trabajo</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1756"/>
+        <location filename="../LearnBlock.py" line="1803"/>
         <source>Warning</source>
         <translation>Peligro</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="562"/>
+        <location filename="../LearnBlock.py" line="567"/>
         <source>Workspace is empty</source>
         <translation>El directorio de trabajo está vacío</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="541"/>
+        <location filename="../LearnBlock.py" line="546"/>
         <source>The working directory will be created in</source>
         <translation>El directorio se creará en</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="600"/>
+        <location filename="../LearnBlock.py" line="605"/>
         <source>Choose the libraries directory</source>
         <translation>Seleccionar directorio de librerías</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="563"/>
+        <location filename="../LearnBlock.py" line="568"/>
         <source>The libraries directory will be </source>
         <translation>El directorio de librerías se creará en </translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="616"/>
+        <location filename="../LearnBlock.py" line="621"/>
         <source>Donwloading Libraries files please wait</source>
         <translation>Descargando Librerías por favor espere</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="616"/>
+        <location filename="../LearnBlock.py" line="621"/>
         <source>Donwloading Libraries</source>
         <translation>Descargando Librerías</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="667"/>
+        <location filename="../LearnBlock.py" line="672"/>
         <source>Your computer does not have an internet connection.</source>
         <translation>Tu ordenador no tiene conexión a internet.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="636"/>
+        <location filename="../LearnBlock.py" line="641"/>
         <source>Donwloading Examples files please wait</source>
         <translation>Descargando ejemplos por favor espere</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="636"/>
+        <location filename="../LearnBlock.py" line="641"/>
         <source>Donwloading Examples</source>
         <translation>Descargando Ejemplos</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="656"/>
+        <location filename="../LearnBlock.py" line="661"/>
         <source>Donwloading XML&apos;s files please wait</source>
         <translation>Descargando los archivos XML&apos;s por favor espere</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="656"/>
+        <location filename="../LearnBlock.py" line="661"/>
         <source>Donwloading XML&apos;s</source>
         <translation>Descargando XML&apos;s</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="711"/>
+        <location filename="../LearnBlock.py" line="716"/>
         <source>Load Library</source>
         <translation>Cargar Librería</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="724"/>
+        <location filename="../LearnBlock.py" line="729"/>
         <source>The library has already been imported.</source>
         <translation>La librería ya ha sido importada.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="725"/>
+        <location filename="../LearnBlock.py" line="730"/>
         <source>Do you want select another library?</source>
         <translation>¿Quiere seleccionar otra librería?</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1289"/>
+        <location filename="../LearnBlock.py" line="1295"/>
         <source>The document has been modified.</source>
         <translation>El documento ha sido modificado.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1290"/>
+        <location filename="../LearnBlock.py" line="1296"/>
         <source>Do you want to save your changes?</source>
         <translation>¿Quieres guardar los cambios?</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="809"/>
+        <location filename="../LearnBlock.py" line="818"/>
         <source>You should check connection the physical robot</source>
         <translation>Debes chequear la conexión al robot físico</translation>
     </message>
@@ -565,57 +565,57 @@
         <translation type="obsolete">Debes chequear la conexión al </translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="865"/>
+        <location filename="../LearnBlock.py" line="874"/>
         <source>Your code has an error. Check it out again</source>
         <translation>Tu código tiene un error. Verificalo de nuevo</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="897"/>
+        <location filename="../LearnBlock.py" line="906"/>
         <source>Your code is empty or is not correct</source>
         <translation>Tu código esta vacio o no es correcto</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="909"/>
+        <location filename="../LearnBlock.py" line="918"/>
         <source>line: {}</source>
         <translation>linea: {}</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="928"/>
+        <location filename="../LearnBlock.py" line="937"/>
         <source>Open xml</source>
         <translation>Abrir xml</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="928"/>
+        <location filename="../LearnBlock.py" line="937"/>
         <source>Rcis file (*.xml)</source>
         <translation>Archivo Rcis (*.xml)</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1210"/>
+        <location filename="../LearnBlock.py" line="1219"/>
         <source>Save Project</source>
         <translation>Guardar Proyecto</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1230"/>
+        <location filename="../LearnBlock.py" line="1238"/>
         <source>Block Project file (*.blockProject)</source>
         <translation>Archivo Block Project (*.blockProject)</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1230"/>
+        <location filename="../LearnBlock.py" line="1238"/>
         <source>Open Project</source>
         <translation>Abrir Proyecto</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1721"/>
+        <location filename="../LearnBlock.py" line="1768"/>
         <source>Error the name can not be &apos;start&apos;</source>
         <translation>Error el nombre no puede ser start</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1758"/>
+        <location filename="../LearnBlock.py" line="1805"/>
         <source>Error Name is empty.</source>
         <translation>Error el nombre está vacío.</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1730"/>
+        <location filename="../LearnBlock.py" line="1777"/>
         <source>This name is reserved</source>
         <translation>Este nombre esta reservado</translation>
     </message>
@@ -625,49 +625,79 @@
         <translation type="obsolete">Este nombre ya existe</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1749"/>
+        <location filename="../LearnBlock.py" line="1796"/>
         <source>The name can&apos;t start by number</source>
         <translation>El nombre no puede comenzar por número</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="882"/>
+        <location filename="../LearnBlock.py" line="891"/>
         <source>You should check the connection to </source>
         <translation>Revisa la conexión a</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1740"/>
+        <location filename="../LearnBlock.py" line="1787"/>
         <source>This name already exists</source>
         <translation>Este nombre ya existe</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1303"/>
+        <location filename="../LearnBlock.py" line="1350"/>
         <source>Select Directory</source>
         <translation>Seleccionar Directorio</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="406"/>
+        <location filename="../LearnBlock.py" line="411"/>
         <source>Not available</source>
         <translation>No disponible</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="408"/>
+        <location filename="../LearnBlock.py" line="413"/>
         <source>The help is not available for the selected language. We apologize for the inconveniences.</source>
         <translation>La ayuda no está disponible para el lenguaje seleccionado. Disculpe las molestias</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1096"/>
+        <location filename="../LearnBlock.py" line="1105"/>
         <source>The config file </source>
         <translation>El fichero de configuración </translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1096"/>
+        <location filename="../LearnBlock.py" line="1105"/>
         <source> already exists</source>
         <translation> ya existe</translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1097"/>
+        <location filename="../LearnBlock.py" line="1106"/>
         <source>Do you want to overwrite it?</source>
         <translation>¿Quiere sobreescribirlo?</translation>
+    </message>
+    <message>
+        <location filename="../LearnBlock.py" line="1308"/>
+        <source>Load Block-Text code</source>
+        <translation>Cargar código Block-Text</translation>
+    </message>
+    <message>
+        <location filename="../LearnBlock.py" line="1317"/>
+        <source>Block-Text file (*.bt)</source>
+        <translation>Fichero Block-Text (*.bt)</translation>
+    </message>
+    <message>
+        <location filename="../LearnBlock.py" line="1317"/>
+        <source>Save Block-Text code</source>
+        <translation>Guardar código Block-Text</translation>
+    </message>
+    <message>
+        <location filename="../LearnBlock.py" line="1328"/>
+        <source>Load Python code</source>
+        <translation>Cargar código Python</translation>
+    </message>
+    <message>
+        <location filename="../LearnBlock.py" line="1338"/>
+        <source>Python file (*.py)</source>
+        <translation>Fichero Python (*.py)</translation>
+    </message>
+    <message>
+        <location filename="../LearnBlock.py" line="1338"/>
+        <source>Save Python code</source>
+        <translation>Guardar código Python</translation>
     </message>
 </context>
 <context>
@@ -686,7 +716,7 @@
 <context>
     <name>MainWindow</name>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="557"/>
+        <location filename="../../guis/Learnblock.py" line="578"/>
         <source>MainWindow</source>
         <translation>
             <numerusform>Learnblock 2.0</numerusform>
@@ -694,7 +724,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="558"/>
+        <location filename="../../guis/Learnblock.py" line="579"/>
         <source>Open</source>
         <translation>
             <numerusform>Abrir</numerusform>
@@ -702,7 +732,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="559"/>
+        <location filename="../../guis/Learnblock.py" line="580"/>
         <source>Save</source>
         <translation>
             <numerusform>Guardar</numerusform>
@@ -710,7 +740,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="562"/>
+        <location filename="../../guis/Learnblock.py" line="583"/>
         <source>Add Number</source>
         <translation>
             <numerusform>Añadir número</numerusform>
@@ -718,7 +748,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="564"/>
+        <location filename="../../guis/Learnblock.py" line="585"/>
         <source>Add String</source>
         <translation>
             <numerusform>Añadir Texto</numerusform>
@@ -726,7 +756,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="565"/>
+        <location filename="../../guis/Learnblock.py" line="586"/>
         <source>Use Events</source>
         <translation>
             <numerusform>Usar Eventos</numerusform>
@@ -734,7 +764,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="566"/>
+        <location filename="../../guis/Learnblock.py" line="587"/>
         <source>Add Client</source>
         <translation>
             <numerusform>Añadir Cliente</numerusform>
@@ -742,7 +772,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="567"/>
+        <location filename="../../guis/Learnblock.py" line="588"/>
         <source>ES</source>
         <translation>
             <numerusform>Español</numerusform>
@@ -750,7 +780,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="568"/>
+        <location filename="../../guis/Learnblock.py" line="589"/>
         <source>EN</source>
         <translation>
             <numerusform>Inglés</numerusform>
@@ -758,7 +788,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="569"/>
+        <location filename="../../guis/Learnblock.py" line="590"/>
         <source>Update</source>
         <translation>
             <numerusform>Actualización disponible</numerusform>
@@ -766,7 +796,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="577"/>
+        <location filename="../../guis/Learnblock.py" line="598"/>
         <source>Program</source>
         <translation>
             <numerusform>Programa</numerusform>
@@ -774,7 +804,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="580"/>
+        <location filename="../../guis/Learnblock.py" line="601"/>
         <source>Size Leter</source>
         <translation>
             <numerusform>Tamaño letra</numerusform>
@@ -782,7 +812,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="665"/>
+        <location filename="../../guis/Learnblock.py" line="688"/>
         <source>Start</source>
         <translation>
             <numerusform>Iniciar</numerusform>
@@ -790,7 +820,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="650"/>
+        <location filename="../../guis/Learnblock.py" line="673"/>
         <source>Stop</source>
         <translation>
             <numerusform>Parar</numerusform>
@@ -798,7 +828,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="578"/>
+        <location filename="../../guis/Learnblock.py" line="599"/>
         <source>Connect Camera Robot</source>
         <translation>
             <numerusform>Conectar cámara (Robot)</numerusform>
@@ -814,7 +844,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="584"/>
+        <location filename="../../guis/Learnblock.py" line="606"/>
         <source>Search</source>
         <translation>
             <numerusform>Buscar</numerusform>
@@ -822,7 +852,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="585"/>
+        <location filename="../../guis/Learnblock.py" line="607"/>
         <source>Add When</source>
         <translation>
             <numerusform>Añadir Evento</numerusform>
@@ -830,7 +860,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="586"/>
+        <location filename="../../guis/Learnblock.py" line="608"/>
         <source>Delete When</source>
         <translation>
             <numerusform>Eliminar Evento</numerusform>
@@ -838,7 +868,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="588"/>
+        <location filename="../../guis/Learnblock.py" line="610"/>
         <source>Expressions</source>
         <translation>
             <numerusform>Expresiones</numerusform>
@@ -846,7 +876,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="590"/>
+        <location filename="../../guis/Learnblock.py" line="612"/>
         <source>Perceptual</source>
         <translation>
             <numerusform>Percepción</numerusform>
@@ -854,7 +884,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="591"/>
+        <location filename="../../guis/Learnblock.py" line="613"/>
         <source>Proprioceptive</source>
         <translation type="unfinished">
             <numerusform>Propiocepción</numerusform>
@@ -862,7 +892,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="592"/>
+        <location filename="../../guis/Learnblock.py" line="614"/>
         <source>Operators</source>
         <translation>
             <numerusform>Operadores</numerusform>
@@ -870,7 +900,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="593"/>
+        <location filename="../../guis/Learnblock.py" line="615"/>
         <source>Add Variable</source>
         <translation>
             <numerusform>Añadir variable</numerusform>
@@ -878,7 +908,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="594"/>
+        <location filename="../../guis/Learnblock.py" line="616"/>
         <source>Delete Variable</source>
         <translation>
             <numerusform>Eliminar variable</numerusform>
@@ -886,7 +916,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="595"/>
+        <location filename="../../guis/Learnblock.py" line="617"/>
         <source>Add List</source>
         <translation>
             <numerusform>Añadir lista de variables</numerusform>
@@ -894,7 +924,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="597"/>
+        <location filename="../../guis/Learnblock.py" line="619"/>
         <source>Create Functions</source>
         <translation>
             <numerusform>Crear Función</numerusform>
@@ -902,7 +932,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="598"/>
+        <location filename="../../guis/Learnblock.py" line="620"/>
         <source>Delete Functions</source>
         <translation>
             <numerusform>Eliminar Función</numerusform>
@@ -910,7 +940,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="599"/>
+        <location filename="../../guis/Learnblock.py" line="621"/>
         <source>User functions</source>
         <translation>
             <numerusform>Funciones de usuario</numerusform>
@@ -918,7 +948,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="600"/>
+        <location filename="../../guis/Learnblock.py" line="622"/>
         <source>Others</source>
         <translation>
             <numerusform>Otros</numerusform>
@@ -926,7 +956,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="644"/>
+        <location filename="../../guis/Learnblock.py" line="667"/>
         <source>Blocks to text</source>
         <translation>
             <numerusform>Convertir bloques a texto</numerusform>
@@ -950,7 +980,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="656"/>
+        <location filename="../../guis/Learnblock.py" line="679"/>
         <source>Edit</source>
         <translation>
             <numerusform>Editar</numerusform>
@@ -974,7 +1004,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="662"/>
+        <location filename="../../guis/Learnblock.py" line="685"/>
         <source>Help</source>
         <translation>
             <numerusform>Ayuda</numerusform>
@@ -982,7 +1012,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="611"/>
+        <location filename="../../guis/Learnblock.py" line="634"/>
         <source>Exit</source>
         <translation>
             <numerusform>Salir</numerusform>
@@ -998,7 +1028,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="613"/>
+        <location filename="../../guis/Learnblock.py" line="636"/>
         <source>Save Project</source>
         <translation>
             <numerusform>Guardar Proyecto</numerusform>
@@ -1014,7 +1044,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="617"/>
+        <location filename="../../guis/Learnblock.py" line="640"/>
         <source>Save As</source>
         <translation>
             <numerusform>Guardar como</numerusform>
@@ -1024,7 +1054,7 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="619"/>
         <source>Start components</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Iniciar Componentes</numerusform>
             <numerusform>%n</numerusform>
         </translation>
@@ -1032,7 +1062,7 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="621"/>
         <source>Reboot</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Reiniciar</numerusform>
             <numerusform>%n</numerusform>
         </translation>
@@ -1040,7 +1070,7 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="623"/>
         <source>Shutdown</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Apagar</numerusform>
             <numerusform>%n</numerusform>
         </translation>
@@ -1048,7 +1078,7 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="625"/>
         <source>Start Simulator</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Iniciar Simulador</numerusform>
             <numerusform>%n</numerusform>
         </translation>
@@ -1056,13 +1086,13 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="627"/>
         <source>New project</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Nuevo proyecto</numerusform>
             <numerusform>%n</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="629"/>
+        <location filename="../../guis/Learnblock.py" line="652"/>
         <source>Load Library</source>
         <translation>
             <numerusform>Cargar Librería</numerusform>
@@ -1070,7 +1100,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="631"/>
+        <location filename="../../guis/Learnblock.py" line="654"/>
         <source>Download xmls</source>
         <translation>
             <numerusform>Descargar xmls</numerusform>
@@ -1080,13 +1110,13 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="633"/>
         <source>Change Libraries path</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Seleccionar directorio de librerías</numerusform>
             <numerusform>%n</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="635"/>
+        <location filename="../../guis/Learnblock.py" line="658"/>
         <source>Change Workspace</source>
         <translation>
             <numerusform>Seleccionar directorio de trabajo</numerusform>
@@ -1094,7 +1124,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="637"/>
+        <location filename="../../guis/Learnblock.py" line="660"/>
         <source>Open Recent</source>
         <translation>
             <numerusform>Abierto Recientemente</numerusform>
@@ -1102,7 +1132,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="638"/>
+        <location filename="../../guis/Learnblock.py" line="661"/>
         <source>Download examples</source>
         <translation>
             <numerusform>Descargar ejemplos</numerusform>
@@ -1110,7 +1140,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="639"/>
+        <location filename="../../guis/Learnblock.py" line="662"/>
         <source>Download libraries</source>
         <translation>
             <numerusform>Descargar librerías</numerusform>
@@ -1118,7 +1148,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="640"/>
+        <location filename="../../guis/Learnblock.py" line="663"/>
         <source>Undo</source>
         <translation>
             <numerusform>Deshacer</numerusform>
@@ -1126,7 +1156,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="642"/>
+        <location filename="../../guis/Learnblock.py" line="665"/>
         <source>Redo</source>
         <translation>
             <numerusform>Rehacer</numerusform>
@@ -1134,7 +1164,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="646"/>
+        <location filename="../../guis/Learnblock.py" line="669"/>
         <source>Start (simulated robot)</source>
         <translation>
             <numerusform>Iniciar (Robot simulado)</numerusform>
@@ -1142,7 +1172,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="648"/>
+        <location filename="../../guis/Learnblock.py" line="671"/>
         <source>Start (physical robot)</source>
         <translation>
             <numerusform>Iniciar (Robot físico)</numerusform>
@@ -1150,7 +1180,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="652"/>
+        <location filename="../../guis/Learnblock.py" line="675"/>
         <source>Stop Simulator</source>
         <translation>
             <numerusform>Parar Simulador</numerusform>
@@ -1158,7 +1188,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="653"/>
+        <location filename="../../guis/Learnblock.py" line="676"/>
         <source>Start aprilTag</source>
         <translation>
             <numerusform>Iniciar aprilTag</numerusform>
@@ -1166,7 +1196,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="654"/>
+        <location filename="../../guis/Learnblock.py" line="677"/>
         <source>Duplicate</source>
         <translation>
             <numerusform>Duplicar</numerusform>
@@ -1174,7 +1204,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="658"/>
+        <location filename="../../guis/Learnblock.py" line="681"/>
         <source>Delete</source>
         <translation>
             <numerusform>Eliminar</numerusform>
@@ -1182,7 +1212,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="660"/>
+        <location filename="../../guis/Learnblock.py" line="683"/>
         <source>Export Block</source>
         <translation>
             <numerusform>Exportar Bloque</numerusform>
@@ -1192,13 +1222,13 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="664"/>
         <source>Add client robot</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Añadir Cliente</numerusform>
             <numerusform>%n</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="666"/>
+        <location filename="../../guis/Learnblock.py" line="689"/>
         <source>Dark</source>
         <translation>
             <numerusform>Oscuro</numerusform>
@@ -1208,7 +1238,7 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="605"/>
         <source>Fi&amp;le</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>&amp;Archivo</numerusform>
             <numerusform>&amp;%n</numerusform>
         </translation>
@@ -1216,13 +1246,13 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="606"/>
         <source>Robot &amp;tools</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>&amp;Herramientas robot</numerusform>
             <numerusform>&amp;%n</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="608"/>
+        <location filename="../../guis/Learnblock.py" line="630"/>
         <source>&amp;Theme</source>
         <translation>
             <numerusform>&amp;Tema</numerusform>
@@ -1230,7 +1260,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="610"/>
+        <location filename="../../guis/Learnblock.py" line="632"/>
         <source>&amp;Help</source>
         <translation>
             <numerusform>A&amp;yuda</numerusform>
@@ -1240,13 +1270,13 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="667"/>
         <source>Dictionary Tags</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Diccionario de marcas</numerusform>
             <numerusform>%n</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="615"/>
+        <location filename="../../guis/Learnblock.py" line="638"/>
         <source>Open Project</source>
         <translation>
             <numerusform>Abrir Proyecto</numerusform>
@@ -1254,7 +1284,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="560"/>
+        <location filename="../../guis/Learnblock.py" line="581"/>
         <source>Zoom</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1262,7 +1292,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="570"/>
+        <location filename="../../guis/Learnblock.py" line="591"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;H&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1270,7 +1300,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="579"/>
+        <location filename="../../guis/Learnblock.py" line="600"/>
         <source>px</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1278,7 +1308,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="576"/>
+        <location filename="../../guis/Learnblock.py" line="597"/>
         <source>Python</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1286,7 +1316,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="587"/>
+        <location filename="../../guis/Learnblock.py" line="609"/>
         <source>Control</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1294,7 +1324,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="589"/>
+        <location filename="../../guis/Learnblock.py" line="611"/>
         <source>Motor</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1302,7 +1332,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="596"/>
+        <location filename="../../guis/Learnblock.py" line="618"/>
         <source>Variables</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1310,7 +1340,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="604"/>
+        <location filename="../../guis/Learnblock.py" line="626"/>
         <source>LearnBlock</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1320,13 +1350,13 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="609"/>
         <source>Pro&amp;ject</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>&amp;Proyecto</numerusform>
             <numerusform>&amp;%n</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="614"/>
+        <location filename="../../guis/Learnblock.py" line="637"/>
         <source>Ctrl+S</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1334,7 +1364,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="616"/>
+        <location filename="../../guis/Learnblock.py" line="639"/>
         <source>Ctrl+O</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1342,7 +1372,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="618"/>
+        <location filename="../../guis/Learnblock.py" line="641"/>
         <source>Ctrl+Shift+S</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1350,7 +1380,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="620"/>
+        <location filename="../../guis/Learnblock.py" line="643"/>
         <source>Ctrl+1</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1358,7 +1388,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="622"/>
+        <location filename="../../guis/Learnblock.py" line="645"/>
         <source>Ctrl+2</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1366,7 +1396,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="624"/>
+        <location filename="../../guis/Learnblock.py" line="647"/>
         <source>Ctrl+3</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1374,7 +1404,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="626"/>
+        <location filename="../../guis/Learnblock.py" line="649"/>
         <source>Ctrl+4</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1382,7 +1412,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="628"/>
+        <location filename="../../guis/Learnblock.py" line="651"/>
         <source>Ctrl+N</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1390,7 +1420,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="630"/>
+        <location filename="../../guis/Learnblock.py" line="653"/>
         <source>Ctrl+L</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1398,7 +1428,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="632"/>
+        <location filename="../../guis/Learnblock.py" line="655"/>
         <source>Ctrl+5</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1406,7 +1436,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="634"/>
+        <location filename="../../guis/Learnblock.py" line="657"/>
         <source>Shift+L</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1414,7 +1444,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="636"/>
+        <location filename="../../guis/Learnblock.py" line="659"/>
         <source>Shift+W</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1422,7 +1452,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="641"/>
+        <location filename="../../guis/Learnblock.py" line="664"/>
         <source>Ctrl+Z</source>
         <translation>
             <numerusform></numerusform>
@@ -1430,7 +1460,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="643"/>
+        <location filename="../../guis/Learnblock.py" line="666"/>
         <source>Ctrl+Shift+Z</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1438,7 +1468,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="645"/>
+        <location filename="../../guis/Learnblock.py" line="668"/>
         <source>F4</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1446,7 +1476,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="647"/>
+        <location filename="../../guis/Learnblock.py" line="670"/>
         <source>F5</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1454,7 +1484,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="649"/>
+        <location filename="../../guis/Learnblock.py" line="672"/>
         <source>F6</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1462,7 +1492,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="651"/>
+        <location filename="../../guis/Learnblock.py" line="674"/>
         <source>F7</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1470,7 +1500,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="655"/>
+        <location filename="../../guis/Learnblock.py" line="678"/>
         <source>Ctrl+D</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1478,7 +1508,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="657"/>
+        <location filename="../../guis/Learnblock.py" line="680"/>
         <source>Ctrl+E</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1486,7 +1516,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="659"/>
+        <location filename="../../guis/Learnblock.py" line="682"/>
         <source>Ctrl+Shift+D</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1494,7 +1524,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="661"/>
+        <location filename="../../guis/Learnblock.py" line="684"/>
         <source>Ctrl+Shift+E</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1502,7 +1532,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="663"/>
+        <location filename="../../guis/Learnblock.py" line="686"/>
         <source>Ctrl+H</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1510,7 +1540,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="668"/>
+        <location filename="../../guis/Learnblock.py" line="691"/>
         <source>Load Sets of Blocks</source>
         <translation>
             <numerusform>Cargar Conjuntos de Bloques</numerusform>
@@ -1518,7 +1548,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="583"/>
+        <location filename="../../guis/Learnblock.py" line="605"/>
         <source>Block-Text</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1526,7 +1556,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="612"/>
+        <location filename="../../guis/Learnblock.py" line="635"/>
         <source>Create New Block</source>
         <translation>
             <numerusform>Crear Nuevo Bloque</numerusform>
@@ -1534,7 +1564,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="669"/>
+        <location filename="../../guis/Learnblock.py" line="692"/>
         <source>Select Visible Blocks</source>
         <translation>
             <numerusform>Seleccionar Bloques Visible</numerusform>
@@ -1542,10 +1572,154 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../../guis/Learnblock.py" line="670"/>
+        <location filename="../../guis/Learnblock.py" line="693"/>
         <source>Save Visible Blocks</source>
         <translation>
             <numerusform>Guardar Bloques Visibles</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="602"/>
+        <source>Block-Text to Python</source>
+        <translation>
+            <numerusform>Block-Text a Python</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="627"/>
+        <source>&amp;File</source>
+        <translation>
+            <numerusform>&amp;Archivo</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="628"/>
+        <source>&amp;Robot tools</source>
+        <translation>
+            <numerusform>&amp;Herramientas</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="629"/>
+        <source>&amp;Edit</source>
+        <translation>
+            <numerusform>&amp;Editar</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="631"/>
+        <source>&amp;Project</source>
+        <translation>
+            <numerusform>&amp;Proyecto</numerusform>
+            <numerusform>&amp;n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="633"/>
+        <source>&amp;Blocks</source>
+        <translation>
+            <numerusform>&amp;Bloques</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="642"/>
+        <source>Start EBO Components</source>
+        <translation>
+            <numerusform>Arrancar Componentes de EBO</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="644"/>
+        <source>Reboot EBO</source>
+        <translation>
+            <numerusform>Reiniciar EBO</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="646"/>
+        <source>Shutdown EBO</source>
+        <translation>
+            <numerusform>Apagar EBO</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="648"/>
+        <source>Start EBO Simulator</source>
+        <translation>
+            <numerusform>Arrancar Simulador de EBO</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="650"/>
+        <source>New Project</source>
+        <translation>
+            <numerusform>Nuevo Proyecto</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="656"/>
+        <source>Change Path of Libraries</source>
+        <translation>
+            <numerusform>Cambiar Ruta de Librerías</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="687"/>
+        <source>Add Robot Client</source>
+        <translation>
+            <numerusform>Añadir Robot</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="690"/>
+        <source>Dictionary of Tags</source>
+        <translation>
+            <numerusform>Diccionario de Etiquetas</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="694"/>
+        <source>Load Block-Text Code</source>
+        <translation>
+            <numerusform>Cargar Código Block-Text</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="695"/>
+        <source>Save Block-Text Code</source>
+        <translation>
+            <numerusform>Guardar Código Block-Text</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="696"/>
+        <source>Load Python Code</source>
+        <translation>
+            <numerusform>Cargar Código Python</numerusform>
+            <numerusform>%n</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../../guis/Learnblock.py" line="697"/>
+        <source>Save Python Code</source>
+        <translation>
+            <numerusform>Guardar Código Python</numerusform>
             <numerusform>%n</numerusform>
         </translation>
     </message>

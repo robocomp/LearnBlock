@@ -6,7 +6,7 @@ import sys, traceback
 from pyparsing import *
 
 HEADER = """
-#EXECUTION: python code_example.py config
+#EXECUTION: python code.py
 from __future__ import print_function, absolute_import
 import sys, os, time, traceback
 sys.path.insert(0, os.path.join(os.getenv('HOME'), ".learnblock", "clients"))
