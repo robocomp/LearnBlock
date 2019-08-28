@@ -327,13 +327,14 @@ class LearnBlock(QtWidgets.QMainWindow):
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                 f.write("")
 
+        self.confBlocksPath = None
         self.loadConfigFile()
         self.menuOpenRecent = QtWidgets.QMenu()
         self.ui.actionOpen_Recent.setMenu(self.menuOpenRecent)
 
         self.updateOpenRecent()
         self.updateClients()
-        self.load_blockConfigurations()
+        self.load_blockConfigurations(self.confBlocksPath)
         self.avtiveEvents(False)
         self.pmlast = None
         self.cameraScene = QtWidgets.QGraphicsScene()
@@ -575,7 +576,6 @@ class LearnBlock(QtWidgets.QMainWindow):
                     else:
                         break
                 self.saveConfigFile()
-                # pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent), confFile, protocol=0)
 
         else:
             with open(self.confFile, 'rb') as fichero:
@@ -591,7 +591,13 @@ class LearnBlock(QtWidgets.QMainWindow):
                     self.ui.actionDark.setChecked(d[4])
                 except:
                     pass
-                # self.ui.actionDark.changed.emit()
+                try:
+                    self.confBlocksPath = d[5]
+                    if not os.path.exists(self.confBlocksPath):
+                        self.confBlocksPath = None
+                except:
+                    pass
+
 
     def changeWorkSpace(self):
         newworkSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose workspace directory'),
@@ -611,8 +617,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def saveConfigFile(self):
         with open(self.confFile, 'wb') as fichero:
-            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent,
-                         self.ui.actionDark.isChecked()), fichero, protocol=0)
+            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent, self.ui.actionDark.isChecked(), self.confBlocksPath), fichero, protocol=0)
 
     def downloadLibraries(self):
         if internet_on():
@@ -1349,6 +1354,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     def loadSetsOfBlocks(self):
         blocks_path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr("Select Directory"), pathConfig, QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
         if blocks_path!="":
+            self.confBlocksPath = blocks_path
             self.load_blockConfigurations(blocks_path)
 
     def showCreateBlock(self):
