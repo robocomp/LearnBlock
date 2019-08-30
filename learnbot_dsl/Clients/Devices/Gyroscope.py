@@ -1,7 +1,7 @@
 
 class Gyroscope():
     '''
-    Gyroscope is a class that contain the values rx, ry, rz of a Gyroscope in rad.
+    Gyroscope is a class that contain the values rx, ry, rz of a Gyroscope in degrees.
     '''
     rx = None
     ry = None

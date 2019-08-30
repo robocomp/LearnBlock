@@ -1,7 +1,7 @@
 def is_front_obstacle(lbot, threshold= 200):
-	sonarsValue = lbot.getSonars()["front"]
-	if sonarsValue == None:
+	distanceValues = lbot.getDistanceSensors()["front"]
+	if distanceValues == None:
 		return False
-	if min(sonarsValue) < threshold:
+	if min(distanceValues) < threshold:
 		return True
 	return False

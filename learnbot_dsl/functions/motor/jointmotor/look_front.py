@@ -1,4 +1,4 @@
 
 
 def look_front(lbot):
-    lbot.setJointAngle("CAMERA",0)
+    lbot.setJointAngle(0, "CAMERA")

@@ -1,10 +1,10 @@
 def get_min_distance(lbot, left=0, front=1, right=0):
-    sonarsValue = lbot.getSonars()
+    distanceValues = lbot.getDistanceSensors()
     if left:
-        return min(sonarsValue["left"])
+        return min(distanceValues["left"])
     elif front:
-        return min(sonarsValue["front"])
+        return min(distanceValues["front"])
     elif right:
-        return min(sonarsValue["right"])
+        return min(distanceValues["right"])
     else:
-        return min(map(lambda x: min(x), sonarsValue.values()))
+        return min(map(lambda x: min(x), distanceValues.values()))

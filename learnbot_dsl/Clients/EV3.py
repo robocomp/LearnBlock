@@ -18,12 +18,10 @@ class Robot(Client):
         self.ev3Sensors = None
         self.ev3Base = None
         self.connectToRobot()
-        self.base = Base(_callFunction=self.deviceBaseMove)
-        self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
-        self.groundSensors = GroundSensors(_readFunction=self.deviceReadGroundSensors)
-        self.gyroscope = Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope)
-        self.motorSpeed = [0, 0]
-        self.currentMotorSpeed = [-1, -1]
+        self.addBase(Base(_callFunction=self.deviceBaseMove))
+        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadLaser))
+        self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensors))
+        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope))
         Client.__init__(self, _miliseconds=100)
         self.start()
 
@@ -45,15 +43,16 @@ class Robot(Client):
         self.ev3Base.on(left_speed=0, right_speed=0)
 
     def deviceBaseMove(self, SAdv, SRot):
+        SRot_rad = math.radians(SRot)        
         if SRot != 0.:
-            #Rrot = SAdv / math.tan(SRot)
-            Rrot = SAdv / SRot
+            #Rrot = SAdv / math.tan(SRot_rad)
+            Rrot = SAdv / SRot_rad
 
             Rl = Rrot - (L / 2)
-            r_wheel_speed = SRot * Rl * 360/ (2 * math.pi * K)
+            r_wheel_speed = SRot_rad * Rl * 360/ (2 * math.pi * K)
 
             Rr = Rrot + (L / 2)
-            l_wheel_speed = SRot * Rr * 360/ (2 * math.pi * K)
+            l_wheel_speed = SRot_rad * Rr * 360/ (2 * math.pi * K)
         else:
             l_wheel_speed = SAdv * 360/ (2 * math.pi * K)
             r_wheel_speed = SAdv * 360/ (2 * math.pi * K)

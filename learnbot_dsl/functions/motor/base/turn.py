@@ -21,9 +21,9 @@ def turn(lbot, angle=0):
                     angleVel = diff
                 if angleVel < 10:
                     angleVel = 10            
-                finalVel = (angleVel*s)/2
+                finalVel = (angleVel*s)
                 if curVel!=finalVel:
-                    lbot.setBaseSpeed(0, math.radians(finalVel))
+                    lbot.setBaseSpeed(0, finalVel)
                     curVel = finalVel
                 time.sleep(0.1)
                 rx, curAngle, rz = lbot.getGyroscope()
@@ -49,6 +49,6 @@ def turn(lbot, angle=0):
             if angle < -20:
                 angleVel = -20
         movingTime = angle/angleVel
-        lbot.setBaseSpeed(0, math.radians(angleVel))
+        lbot.setBaseSpeed(0, angleVel)
         time.sleep(movingTime)
         lbot.setBaseSpeed(0, 0)        

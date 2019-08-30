@@ -1,5 +1,5 @@
 def is_left_obstacle(lbot, threshold = 200):
-	sonarsValue = lbot.getSonars()["left"]
-	if min(sonarsValue) < threshold:
+	distanceValues = lbot.getDistanceSensors()["left"]
+	if min(distanceValues) < threshold:
 		return True
 	return False

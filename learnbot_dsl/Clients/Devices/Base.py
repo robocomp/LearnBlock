@@ -5,7 +5,7 @@ class Base():
     Base is the differential base of the robot.
     """
     __Sadv = 0  # in mm/s
-    __Srot = 0  # in rad/s
+    __Srot = 0  # in degrees/s
 
     def __init__(self, _callFunction):
         self.__callDevice = _callFunction

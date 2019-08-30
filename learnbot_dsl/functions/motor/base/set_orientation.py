@@ -18,7 +18,7 @@ def set_orientation(lbot, angle=0):
                     angleVel = 10            
                 finalVel = (angleVel*s)
                 if curVel!=finalVel:
-                    lbot.setBaseSpeed(0, math.radians(finalVel))
+                    lbot.setBaseSpeed(0, finalVel)
                     curVel = finalVel
                 time.sleep(0.1)
                 rx, curAngle, rz = lbot.getGyroscope()

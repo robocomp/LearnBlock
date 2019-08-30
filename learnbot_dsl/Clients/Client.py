@@ -63,9 +63,16 @@ class Client(Thread):
         self.__emotion_current_exist = False
         self.__currents_emotions = []
         self.__currentEmotion = Emotions.NoneEmotion
-        self.__JointMotors = {}
+        self.__Acelerometers = {}
+        self.__Bases = {}
         self.__Cameras = {}
+        self.__Displays = {}
+        self.__DistanceSensors = {}
+        self.__GroundSensors = {}
+        self.__Gyroscopes = {}
+        self.__JointMotors = {}
         self.__Leds = {}
+        self.__Speakers = {}
         # Variables of AprilTag
         self.__apriltag_current_exist = False
         self.__listAprilIDs = []
@@ -90,17 +97,25 @@ class Client(Thread):
     def disconnect(self):
         raise NotImplementedError()
 
+    def addAcelerometer(self, _Acelerometer, _key = "ROBOT"):
 
-    def addJointMotor(self, _key, _JointMotor):
-
-        if _key in self.__JointMotors:
+        if _key in self.__Acelerometers:
             raise Exception("The key " + _key + "already exist")
-        elif not isinstance(_JointMotor, JointMotor):
-            raise Exception("_JointMotor is of type "+ type(_JointMotor) + " and must be of type JointMotor")
+        elif not isinstance(_Acelerometer, Acelerometer):
+            raise Exception("_Acelerometer is of type "+ type(_Acelerometer) + " and must be of type Acelerometer")
         else:
-            self.__JointMotors[_key] = _JointMotor
+            self.__Acelerometers[_key] = _Acelerometer
 
-    def addCamera(self, _key, _Camera):
+    def addBase(self, _Base, _key = "ROBOT"):
+
+        if _key in self.__Bases:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Base, Base):
+            raise Exception("_Base is of type "+ type(_Base) + " and must be of type Base")
+        else:
+            self.__Bases[_key] = _Base
+
+    def addCamera(self, _Camera, _key = "ROBOT"):
 
         if _key in self.__Cameras:
             raise Exception("The key " + _key + "already exist")
@@ -109,8 +124,53 @@ class Client(Thread):
         else:
             self.__Cameras[_key] = _Camera
 
+    def addDisplay(self, _Display, _key = "ROBOT"):
 
-    def addLed(self, _key, _Led):
+        if _key in self.__Displays:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Display, Display):
+            raise Exception("_Display is of type "+ type(_Display) + " and must be of type Display")
+        else:
+            self.__Displays[_key] = _Display
+
+    def addDistanceSensors(self, _DistanceSensors, _key = "ROBOT"):
+
+        if _key in self.__DistanceSensors:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_DistanceSensors, DistanceSensors):
+            raise Exception("_DistanceSensors is of type "+ type(_DistanceSensors) + " and must be of type DistanceSensors")
+        else:
+            self.__DistanceSensors[_key] = _DistanceSensors
+
+    def addGroundSensors(self, _GroundSensors, _key = "ROBOT"):
+
+        if _key in self.__GroundSensors:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_GroundSensors, GroundSensors):
+            raise Exception("_GroundSensors is of type "+ type(_GroundSensors) + " and must be of type GroundSensors")
+        else:
+            self.__GroundSensors[_key] = _GroundSensors
+
+    def addGyroscope(self, _Gyroscope, _key = "ROBOT"):
+
+        if _key in self.__Gyroscopes:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Gyroscope, Gyroscope):
+            raise Exception("_Gyroscope is of type "+ type(_Gyroscope) + " and must be of type Gyroscope")
+        else:
+            self.__Gyroscopes[_key] = _Gyroscope
+
+
+    def addJointMotor(self, _JointMotor, _key = "ROBOT"):
+
+        if _key in self.__JointMotors:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_JointMotor, JointMotor):
+            raise Exception("_JointMotor is of type "+ type(_JointMotor) + " and must be of type JointMotor")
+        else:
+            self.__JointMotors[_key] = _JointMotor
+
+    def addLed(self, _Led, _key = "ROBOT"):
         if _key in self.__Leds:
             raise Exception("The key " + _key + "already exist")
         elif not isinstance(_Led, Led):
@@ -118,9 +178,19 @@ class Client(Thread):
         else:
             self.__Leds[_key] = _Led
 
-    def __detectAprilTags(self, keyCam = "HEAD"):
-        if not self.__apriltag_current_exist and keyCam in self.__Cameras:
-            img = self.__Cameras[keyCam].getImage()
+    def addSpeaker(self, _Speaker, _key = "ROBOT"):
+
+        if _key in self.__Speakers:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Speaker, Speaker):
+            raise Exception("_Speaker is of type "+ type(_Speaker) + " and must be of type Speaker")
+        else:
+            self.__Speakers[_key] = _Speaker
+
+
+    def __detectAprilTags(self, _keyCam = "ROBOT"):
+        if not self.__apriltag_current_exist and _keyCam in self.__Cameras:
+            img = self.__Cameras[_keyCam].getImage()
             frame = RoboCompApriltag.TImage()
             frame.width = img.shape[0]
             frame.height = img.shape[1]
@@ -132,19 +202,23 @@ class Client(Thread):
             self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
 
     def __readDevices(self):
-        if hasattr(self, "acelerometer"):
-            self.acelerometer.read()
-        if hasattr(self, "gyroscope"):
-            self.gyroscope.read()
+        if bool(self.__Acelerometers):
+            for acelerometer in self.__Acelerometers.values():
+                acelerometer.read()
+        if bool(self.__Gyroscopes):
+            for gyroscope in self.__Gyroscopes.values():
+                gyroscope.read()
         if bool(self.__Cameras):
             for cam in self.__Cameras.values():
                 cam.read()
             self.__apriltag_current_exist = False
             self.__emotion_current_exist = False
-        if hasattr(self, "distanceSensors"):
-            self.distanceSensors.read()
-        if hasattr(self, "groundSensors"):
-            self.groundSensors.read()
+        if bool(self.__DistanceSensors):
+            for distSensors in self.__DistanceSensors.values():
+                distSensors.read()
+        if bool(self.__GroundSensors):
+            for groundSensors in self.__GroundSensors.values():
+                groundSensors.read()
 
 
     def run(self):
@@ -153,19 +227,19 @@ class Client(Thread):
             self.__readDevices()
         self.disconnect()
 
-    def lookingLabel(self, id, keyCam="HEAD"):
+    def lookingLabel(self, id, _keyCam="ROBOT"):
         time.sleep(0)
         if isinstance(id, str):
             if id in self.aprilTextDict:
                 id = self.aprilTextDict[id]
             else:
                 return False
-        self.__detectAprilTags(keyCam)
+        self.__detectAprilTags(_keyCam)
         return id in self.__listAprilIDs
 
-    def getPosTag(self, id=None, keyCam="HEAD"):
+    def getPosTag(self, id=None, _keyCam="ROBOT"):
         time.sleep(0)
-        self.__detectAprilTags(keyCam)
+        self.__detectAprilTags(_keyCam)
         if id is None:
             if len(self.__listAprilIDs)>0:
                 return self.__posAprilTags[self.__listAprilIDs[0]]
@@ -187,63 +261,63 @@ class Client(Thread):
     def stopped(self):
         return self.__stop_event.is_set()
 
-    def getSonars(self):
-        if hasattr(self, "distanceSensors"):
+    def getDistanceSensors(self, _keyDS="ROBOT"):
+        if _keyDS in self.__DistanceSensors:
             time.sleep(0)
-            return self.distanceSensors.get()
+            return self.__DistanceSensors[_keyDS].get()
 
-    def getGroundSensors(self):
-        if hasattr(self, "groundSensors"):
+    def getGroundSensors(self, _keyGS="ROBOT"):
+        if _keyGS in self.__GroundSensors:
             time.sleep(0)
-            return self.groundSensors.get()
+            return self.__GroundSensors[_keyGS].get()
 
 
-    def getImage(self, keyCam = "HEAD"):
-        if keyCam in self.__Cameras:
+    def getImage(self, _keyCam = "ROBOT"):
+        if _keyCam in self.__Cameras:
             time.sleep(0)
-            return self.__Cameras[keyCam].getImage()
+            return self.__Cameras[_keyCam].getImage()
 
-    def getPose(self):
+    def getPose(self, _keyBase = "ROBOT"):
         time.sleep(0)
         raise NotImplementedError("To do")
 
-    def setBaseSpeed(self, vAdvance, vRotation):
-        if hasattr(self, "base"):
+    def setBaseSpeed(self, vAdvance, vRotation, _keyBase = "ROBOT"):
+        if _keyBase in self.__Bases:
             time.sleep(0)
-            self.base.move(vAdvance, vRotation)
+            self.__Bases[_keyBase].move(vAdvance, vRotation)
 
-    def getAdv(self):
-        if hasattr(self, "base"):
+    def getAdv(self, _keyBase = "ROBOT"):
+        if _keyBase in self.__Bases:
             time.sleep(0)
-            return self.base.adv()
+            return self.__Bases[_keyBase].adv()
 
-    def getRot(self):
-        if hasattr(self, "base"):
+    def getRot(self, _keyBase = "ROBOT"):
+        if _keyBase in self.__Bases:
             time.sleep(0)
-            return self.base.rot()
+            return self.__Bases[_keyBase].rot()
 
-    def express(self, _key):
-        if hasattr(self, "display"):
+    def express(self, _keyEmotion, _keyDisplay = "ROBOT"):
+        if _keyDisplay in self.__Displays:
             time.sleep(0)
-            self.__currentEmotion = _key
-            self.display.setEmotion(_key)
+            self.__currentEmotion = _keyEmotion
+            self.__Displays[_keyDisplay].setEmotion(_keyEmotion)
 
-    def showImage(self, _img):
-        if hasattr(self, "display"):
+    def showImage(self, _img, _keyDisplay = "ROBOT"):
+        if _keyDisplay in self.__Displays:
             time.sleep(0)
-            self.display.setImage(_img)
+            self.__Displays[_keyDisplay].setImage(_img)
 
-    def setJointAngle(self, _key, _angle):
-        if _key in self.__JointMotors:
+    def setJointAngle(self, _angle, _keyJoint = "ROBOT"):
+        if _keyJoint in self.__JointMotors:
             time.sleep(0)
-            self.__JointMotors.get(_key).sendAngle(_angle)
+            self.__JointMotors.get(_keyJoint).sendAngle(_angle)
         # else:
         #     raise Exception("The key don't exist JointMotors")
 
-    def setLedState(self, _key, _status):
-        if _key in self.__Leds:
+    def setLedState(self, _status, _keyLed = "ROBOT"):
+        if _keyLed in self.__Leds:
             time.sleep(0)
-            self.__Leds.get(_key).setState(_status)
+            self.__Leds.get(_keyLed).setState(_status)
         # else:
         #     raise Exception("The key don't exist Leds")
 
@@ -251,36 +325,36 @@ class Client(Thread):
         time.sleep(0)
         return self.__currentEmotion
 
-    def getAcelerometer(self):
-        if hasattr(self, "acelerometer"):
+    def getAcelerometer(self, _keyAcel = "ROBOT"):
+        if _keyAcel in self.__Acelerometers:
             time.sleep(0)
-            return self.acelerometer.get()
+            return self.__Acelerometers[_keyAcel].get()
 
-    def getGyroscope(self):
-        if hasattr(self, "gyroscope"):
+    def getGyroscope(self, _keyGyro = "ROBOT"):
+        if _keyGyro in self.__Gyroscopes:
             time.sleep(0)
-            return self.gyroscope.get()
+            return self.__Gyroscopes[_keyGyro].get()
 
-    def resetGyroscope(self):
-        if hasattr(self, "gyroscope"):
+    def resetGyroscope(self, _keyGyro = "ROBOT"):
+        if _keyGyro in self.__Gyroscopes:
             time.sleep(0)
-            self.gyroscope.reset()
+            self.__Gyroscopes[_keyGyro].reset()
 
 
-    def speakText(self,_text):
-        if hasattr(self, "speaker"):
+    def speakText(self,_text, _keySpeaker = "ROBOT"):
+        if _keySpeaker in self.__Speakers:
             time.sleep(0)
-            self.speaker.sendText(_text)
+            self.__Speakers[_keySpeaker].sendText(_text)
 
-    def sendAudio(self, _audioData):
-        if hasattr(self, "speaker"):
+    def sendAudio(self, _audioData, _keySpeaker = "ROBOT"):
+        if _keySpeaker in self.__Speakers:
             time.sleep(0)
-            self.speaker.sendAudio(_audioData)
+            self.__Speakers[_keySpeaker].sendAudio(_audioData)
 
-    def getEmotions(self, keyCam = "HEAD"):
-        if not self.__emotion_current_exist and keyCam in self.__Cameras:
+    def getEmotions(self, _keyCam = "ROBOT"):
+        if not self.__emotion_current_exist and _keyCam in self.__Cameras:
             time.sleep(0)
-            img = self.__Cameras[keyCam].getImage()
+            img = self.__Cameras[_keyCam].getImage()
             frame = RoboCompEmotionRecognition.TImage()
             frame.width = img.shape[0]
             frame.height = img.shape[1]

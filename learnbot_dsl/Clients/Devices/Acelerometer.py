@@ -1,7 +1,7 @@
 
 class Acelerometer():
     '''
-    Acelerometer is a class that contain the values rx, ry, rz of a Acelerometer in rad.
+    Acelerometer is a class that contain the values rx, ry, rz of a Acelerometer in degrees.
     '''
     _x = None
     _y = None

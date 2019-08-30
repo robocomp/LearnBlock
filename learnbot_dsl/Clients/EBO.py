@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from learnbot_dsl.Clients.Client import *
 from learnbot_dsl.Clients.Devices import *
-import os, Ice, numpy as np, PIL.Image as Image, io, cv2, paho.mqtt.client
+import os, Ice, numpy as np, PIL.Image as Image, io, cv2, paho.mqtt.client, math
 import learnbot_dsl.Clients.Devices as Devices
 from learnbot_dsl.functions import getFuntions
 from learnbot_dsl import PATHINTERFACES
@@ -46,12 +46,11 @@ class Robot(Client):
         Client.__init__(self)
         self.open_cv_image = np.zeros((240, 320, 3), np.uint8)
         self.newImage = False
-        self.distanceSensors = Devices.DistanceSensors(_readFunction=self.deviceReadLaser)
-        self.addCamera("HEAD", _Camera=Devices.Camera(_readFunction=self.deviceReadCamera))
-        self.base = Devices.Base(_callFunction=self.deviceMove)
-        self.display = Devices.Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
-        self.addJointMotor("CAMERA",
-                           _JointMotor=Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
+        self.addDistanceSensors(Devices.DistanceSensors(_readFunction=self.deviceReadLaser))
+        self.addCamera(Devices.Camera(_readFunction=self.deviceReadCamera))
+        self.addBase(Devices.Base(_callFunction=self.deviceMove))
+        self.addDisplay(Devices.Display(_setEmotion=self.deviceSendEmotion, _setImage=None))
+        self.addJointMotor(Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None), "CAMERA")
         self.start()
 
     def on_message(self, client, userdata, message):
@@ -84,7 +83,7 @@ class Robot(Client):
                 "right": usList[3:]}
 
     def deviceMove(self, _adv, _rot):
-        self.differentialrobot_proxy.setSpeedBase(_adv, _rot)
+        self.differentialrobot_proxy.setSpeedBase(_adv, math.radians(_rot))
 
     def deviceReadCamera(self, ):
         return self.open_cv_image, self.newImage
@@ -108,7 +107,7 @@ class Robot(Client):
     def deviceSendAngleHead(self, _angle):
         goal = RoboCompJointMotor.MotorGoalPosition()
         goal.name = 'servo'
-        goal.position = _angle
+        goal.position = math.radians(_angle)
         self.jointmotor_proxy.setPosition(goal)
 
 

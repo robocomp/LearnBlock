@@ -27,15 +27,15 @@ class Robot(Client):
         global stopThread
         stopThread = False
         Client.__init__(self)
-        self.groundSensors = GroundSensors(_readFunction=self.deviceReadGSensor)
-        self.acelerometer = Acelerometer(_readFunction=self.deviceReadAcelerometer)
-        self.gyroscope = Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope)
-        self.addCamera("HEAD", _Camera=Camera(_readFunction=self.deviceReadCamera))
-        self.base = Base(_callFunction=self.deviceMove)
-        self.display = Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
-        self.addJointMotor("CAMERA", _JointMotor=JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None))
-        self.addJointMotor("ARM", _JointMotor=JointMotor(_callDevice=self.deviceSendAngleArm, _readDevice=None))
-        self.speaker = Speaker(_sendText=self.deviceSendText)
+        self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
+        self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
+        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope))
+        self.addCamera(Camera(_readFunction=self.deviceReadCamera))
+        self.addBase(Base(_callFunction=self.deviceMove))
+        self.addDisplay(Display(_setEmotion=self.deviceSendEmotion, _setImage=None))
+        self.addJointMotor(JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None), "CAMERA")
+        self.addJointMotor(JointMotor(_callDevice=self.deviceSendAngleArm, _readDevice=None), "ARM")
+        self.addSpeaker(Speaker(_sendText=self.deviceSendText))
         self.connectToRobot()
         self.cozmo = cozmo
         self.cozmo.camera.image_stream_enabled = True
@@ -63,15 +63,16 @@ class Robot(Client):
         self.cozmo.say_text(text=text, in_parallel=True)
 
     def deviceSendAngleArm(self, _angle):
-        if _angle > 0.79:
-            _angle = 0.79
-        elif _angle < -0.20:
-            _angle = -0.20
-        a = (_angle + 0.20) / (0.79 + 0.20)
+        angle_rad = math.radians(_angle)
+        if angle_rad > 0.79:
+            angle_rad = 0.79
+        elif angle_rad < -0.20:
+            angle_rad = -0.20
+        a = (angle_rad + 0.20) / (0.79 + 0.20)
         self.cozmo.set_lift_height(a, in_parallel=True)
 
     def deviceSendAngleHead(self, _angle):
-        a = radians(_angle)
+        a = degrees(_angle)
         self.cozmo.set_head_angle(a, in_parallel=True)
 
     def deviceSendEmotion(self, _emotion):
@@ -139,14 +140,15 @@ class Robot(Client):
             return None, False
 
     def deviceMove(self, SAdv, SRot):
-        if SRot != 0.:
-            Rrot = SAdv / math.tan(SRot)
+        SRot_rad = math.radians(SRot)
+        if SRot_rad != 0.:
+            Rrot = SAdv / math.tan(SRot_rad)
 
             Rl = Rrot - (L / 2)
-            l_wheel_speed = SRot * Rl * K
+            l_wheel_speed = SRot_rad * Rl * K
 
             Rr = Rrot + (L / 2)
-            r_wheel_speed = SRot * Rr * K
+            r_wheel_speed = SRot_rad * Rr * K
         else:
             l_wheel_speed = SAdv * K
             r_wheel_speed = SAdv * K
@@ -154,6 +156,6 @@ class Robot(Client):
 
 
 if __name__ == '__main__':
-    ebo = Robot()
-    ebo.speakText("hola")
-    ebo.join()
+    robot = Robot()
+    robot.speakText("hola")
+    robot.join()

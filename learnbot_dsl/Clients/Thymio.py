@@ -113,14 +113,14 @@ class Robot(Client):
     devicesAvailables = ["base", "display", "distancesensors", "groundsensors","acelerometer"]
 
     def __init__(self):
+        Client.__init__(self, _miliseconds=100)
         self.lastCommand = False
         self.t = Thread(target=self.connectToRobot).start()
-        self.deviceBaseMove(0,0)
-        self.distanceSensors = DistanceSensors(_readFunction=self.deviceReadLaser)
-        self.groundSensors = GroundSensors(_readFunction=self.deviceReadGroundSensors)
-        self.base = Base(_callFunction=self.deviceBaseMove)
-        self.acelerometer = Acelerometer(_readFunction=self.deviceReadAcelerometer)
-        self.display = Display(_setEmotion=self.deviceSendEmotion, _setImage=None)
+        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadLaser))
+        self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensors))
+        self.addBase(Base(_callFunction=self.deviceBaseMove))
+        self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
+        self.addDisplay(Display(_setEmotion=self.deviceSendEmotion, _setImage=None))
         self.motorSpeed = [0, 0]
         self.prox = [0, 0, 0, 0, 0, 0, 0]
         self.prox_ground = [0, 0, 0]
@@ -130,7 +130,6 @@ class Robot(Client):
         self.event.wait()
         self.currentEmotion = Emotions.NoneEmotion
         self.newEmotion = Emotions.NoneEmotion
-        Client.__init__(self, _miliseconds=100)
         self.start()
 
     def connectToRobot(self):
@@ -233,16 +232,16 @@ class Robot(Client):
         return self.acc
 
     def deviceBaseMove(self, SAdv, SRot):
-#        print("adv", SAdv, "rot", SRot)
+        SRot_rad = math.radians(SRot)
         if SRot != 0.:
             #Rrot = SAdv / math.tan(SRot)
-            Rrot = SAdv / SRot
+            Rrot = SAdv / SRot_rad
 
             Rl = Rrot - (L / 2)
-            r_wheel_speed = SRot * Rl * K
+            r_wheel_speed = SRot_rad * Rl * K
 
             Rr = Rrot + (L / 2)
-            l_wheel_speed = SRot * Rr * K
+            l_wheel_speed = SRot_rad * Rr * K
         else:
             l_wheel_speed = SAdv * K
             r_wheel_speed = SAdv * K
