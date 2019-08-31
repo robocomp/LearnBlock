@@ -188,19 +188,6 @@ class Client(Thread):
             self.__Speakers[_key] = _Speaker
 
 
-    def __detectAprilTags(self, _keyCam = "ROBOT"):
-        if not self.__apriltag_current_exist and _keyCam in self.__Cameras:
-            img = self.__Cameras[_keyCam].getImage()
-            frame = RoboCompApriltag.TImage()
-            frame.width = img.shape[0]
-            frame.height = img.shape[1]
-            frame.depth = img.shape[2]
-            frame.image = np.fromstring(img, np.uint8)
-            aprils = self.__apriltagProxy.processimage(frame)
-            self.__apriltag_current_exist = True
-            self.__listAprilIDs = [a.id for a in aprils]
-            self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
-
     def __readDevices(self):
         if bool(self.__Acelerometers):
             for acelerometer in self.__Acelerometers.values():
@@ -227,32 +214,6 @@ class Client(Thread):
             self.__readDevices()
         self.disconnect()
 
-    def lookingLabel(self, id, _keyCam="ROBOT"):
-        time.sleep(0)
-        if isinstance(id, str):
-            if id in self.aprilTextDict:
-                id = self.aprilTextDict[id]
-            else:
-                return False
-        self.__detectAprilTags(_keyCam)
-        return id in self.__listAprilIDs
-
-    def getPosTag(self, id=None, _keyCam="ROBOT"):
-        time.sleep(0)
-        self.__detectAprilTags(_keyCam)
-        if id is None:
-            if len(self.__listAprilIDs)>0:
-                return self.__posAprilTags[self.__listAprilIDs[0]]
-            else:
-                return None
-        if id in self.__listAprilIDs:
-            return self.__posAprilTags[id]
-        else:
-            return None
-
-    def listTags(self):
-        return self.__listAprilIDs
-
     def stop(self):
         self.__stop_event.set()
         subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
@@ -271,11 +232,6 @@ class Client(Thread):
             time.sleep(0)
             return self.__GroundSensors[_keyGS].get()
 
-
-    def getImage(self, _keyCam = "ROBOT"):
-        if _keyCam in self.__Cameras:
-            time.sleep(0)
-            return self.__Cameras[_keyCam].getImage()
 
     def getPose(self, _keyBase = "ROBOT"):
         time.sleep(0)
@@ -302,6 +258,10 @@ class Client(Thread):
             self.__currentEmotion = _keyEmotion
             self.__Displays[_keyDisplay].setEmotion(_keyEmotion)
 
+    def getCurrentEmotion(self):
+        time.sleep(0)
+        return self.__currentEmotion
+
     def showImage(self, _img, _keyDisplay = "ROBOT"):
         if _keyDisplay in self.__Displays:
             time.sleep(0)
@@ -321,10 +281,6 @@ class Client(Thread):
         # else:
         #     raise Exception("The key don't exist Leds")
 
-    def getCurrentEmotion(self):
-        time.sleep(0)
-        return self.__currentEmotion
-
     def getAcelerometer(self, _keyAcel = "ROBOT"):
         if _keyAcel in self.__Acelerometers:
             time.sleep(0)
@@ -340,7 +296,6 @@ class Client(Thread):
             time.sleep(0)
             self.__Gyroscopes[_keyGyro].reset()
 
-
     def speakText(self,_text, _keySpeaker = "ROBOT"):
         if _keySpeaker in self.__Speakers:
             time.sleep(0)
@@ -350,6 +305,50 @@ class Client(Thread):
         if _keySpeaker in self.__Speakers:
             time.sleep(0)
             self.__Speakers[_keySpeaker].sendAudio(_audioData)
+
+    def getImage(self, _keyCam = "ROBOT"):
+        if _keyCam in self.__Cameras:
+            time.sleep(0)
+            return self.__Cameras[_keyCam].getImage()
+
+    def __detectAprilTags(self, _keyCam = "ROBOT"):
+        if not self.__apriltag_current_exist and _keyCam in self.__Cameras:
+            img = self.__Cameras[_keyCam].getImage()
+            frame = RoboCompApriltag.TImage()
+            frame.width = img.shape[0]
+            frame.height = img.shape[1]
+            frame.depth = img.shape[2]
+            frame.image = np.fromstring(img, np.uint8)
+            aprils = self.__apriltagProxy.processimage(frame)
+            self.__apriltag_current_exist = True
+            self.__listAprilIDs = [a.id for a in aprils]
+            self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
+
+    def lookingLabel(self, id, _keyCam="ROBOT"):
+        time.sleep(0)
+        if isinstance(id, str):
+            if id in self.aprilTextDict:
+                id = self.aprilTextDict[id]
+            else:
+                return False
+        self.__detectAprilTags(_keyCam)
+        return id in self.__listAprilIDs
+
+    def getPosTag(self, id=None, _keyCam="ROBOT"):
+        time.sleep(0)
+        self.__detectAprilTags(_keyCam)
+        if id is None:
+            if len(self.__listAprilIDs)>0:
+                return self.__posAprilTags[self.__listAprilIDs[0]]
+            else:
+                return None
+        if id in self.__listAprilIDs:
+            return self.__posAprilTags[id]
+        else:
+            return None
+
+    def listTags(self):
+        return self.__listAprilIDs
 
     def getEmotions(self, _keyCam = "ROBOT"):
         if not self.__emotion_current_exist and _keyCam in self.__Cameras:
