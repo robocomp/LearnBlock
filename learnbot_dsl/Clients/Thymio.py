@@ -228,7 +228,6 @@ class Robot(Client):
         print(str(e))
 
     def deviceReadAcelerometer(self):
-        print("Thymio acc", self.acc[0], self.acc[1], self.acc[2])
         return self.acc
 
     def deviceBaseMove(self, SAdv, SRot):

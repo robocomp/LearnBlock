@@ -14,6 +14,7 @@ class Robot(Client):
     devicesAvailables = ["base","distancesensors", "groundsensors", "gyroscope"]
 
     def __init__(self):
+        Client.__init__(self, _miliseconds=100)
         self.ev3Motor = None
         self.ev3Sensors = None
         self.ev3Base = None
@@ -22,7 +23,6 @@ class Robot(Client):
         self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadLaser))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensors))
         self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope))
-        Client.__init__(self, _miliseconds=100)
         self.start()
 
     def connectToRobot(self):
