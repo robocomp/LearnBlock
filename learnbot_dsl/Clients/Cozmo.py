@@ -29,7 +29,7 @@ class Robot(Client):
         Client.__init__(self)
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
         self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
-        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope))
+        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope), "Z-AXIS")
         self.addCamera(Camera(_readFunction=self.deviceReadCamera))
         self.addBase(Base(_callFunction=self.deviceMove))
         self.addDisplay(Display(_setEmotion=self.deviceSendEmotion, _setImage=None))
@@ -98,17 +98,15 @@ class Robot(Client):
                                          ignore_head_track=True, ignore_lift_track=True)
 
     def deviceReadGyroscope(self):
-        rx = 0
-        ry_n = self.cozmo.pose.rotation.angle_z.degrees
-        if ry_n < 0:
-            ry_n = 360 + ry_n
-        if math.fabs(self.last_pose_read-ry_n) > 180:
-            self.vueltas = self.vueltas+np.sign(self.last_pose_read-ry_n)
-        self.last_pose_read = ry_n
-        ry = ry_n - self.current_pose_angle + self.vueltas*360
-        rz = 0
-        print("Cozmo gyro", ry_n, ry)
-        return rx, int(-ry), rz
+        rz_n = self.cozmo.pose.rotation.angle_z.degrees
+        if rz_n < 0:
+            rz_n = 360 + rz_n
+        if math.fabs(self.last_pose_read-rz_n) > 180:
+            self.vueltas = self.vueltas+np.sign(self.last_pose_read-rz_n)
+        self.last_pose_read = rz_n
+        rz = rz_n - self.current_pose_angle + self.vueltas*360
+        print("Cozmo gyro", rz_n, rz)
+        return int(-rz)
 
     def resetGyroscope(self):
         self.vueltas=0

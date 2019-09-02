@@ -226,11 +226,15 @@ class Client(Thread):
         if _keyDS in self.__DistanceSensors:
             time.sleep(0)
             return self.__DistanceSensors[_keyDS].get()
+        else:
+            return None
 
     def getGroundSensors(self, _keyGS="ROBOT"):
         if _keyGS in self.__GroundSensors:
             time.sleep(0)
             return self.__GroundSensors[_keyGS].get()
+        else:
+            return None
 
 
     def getPose(self, _keyBase = "ROBOT"):
@@ -241,22 +245,30 @@ class Client(Thread):
         if _keyBase in self.__Bases:
             time.sleep(0)
             self.__Bases[_keyBase].move(vAdvance, vRotation)
+        else:
+            return None
 
     def getAdv(self, _keyBase = "ROBOT"):
         if _keyBase in self.__Bases:
             time.sleep(0)
             return self.__Bases[_keyBase].adv()
+        else:
+            return None
 
     def getRot(self, _keyBase = "ROBOT"):
         if _keyBase in self.__Bases:
             time.sleep(0)
             return self.__Bases[_keyBase].rot()
+        else:
+            return None
 
     def express(self, _keyEmotion, _keyDisplay = "ROBOT"):
         if _keyDisplay in self.__Displays:
             time.sleep(0)
             self.__currentEmotion = _keyEmotion
             self.__Displays[_keyDisplay].setEmotion(_keyEmotion)
+        else:
+            return None
 
     def getCurrentEmotion(self):
         time.sleep(0)
@@ -266,63 +278,78 @@ class Client(Thread):
         if _keyDisplay in self.__Displays:
             time.sleep(0)
             self.__Displays[_keyDisplay].setImage(_img)
+        else:
+            return None
 
     def setJointAngle(self, _angle, _keyJoint = "ROBOT"):
         if _keyJoint in self.__JointMotors:
             time.sleep(0)
             self.__JointMotors.get(_keyJoint).sendAngle(_angle)
-        # else:
-        #     raise Exception("The key don't exist JointMotors")
+        else:
+            return None
 
     def setLedState(self, _status, _keyLed = "ROBOT"):
         if _keyLed in self.__Leds:
             time.sleep(0)
             self.__Leds.get(_keyLed).setState(_status)
-        # else:
-        #     raise Exception("The key don't exist Leds")
+        else:
+            return None
 
     def getAcelerometer(self, _keyAcel = "ROBOT"):
         if _keyAcel in self.__Acelerometers:
             time.sleep(0)
             return self.__Acelerometers[_keyAcel].get()
+        else:
+            return None
 
     def getGyroscope(self, _keyGyro = "ROBOT"):
         if _keyGyro in self.__Gyroscopes:
             time.sleep(0)
             return self.__Gyroscopes[_keyGyro].get()
+        else:
+            return None
 
     def resetGyroscope(self, _keyGyro = "ROBOT"):
         if _keyGyro in self.__Gyroscopes:
             time.sleep(0)
             self.__Gyroscopes[_keyGyro].reset()
+        else:
+            return None
 
     def speakText(self,_text, _keySpeaker = "ROBOT"):
         if _keySpeaker in self.__Speakers:
             time.sleep(0)
             self.__Speakers[_keySpeaker].sendText(_text)
+        else:
+            return None
 
     def sendAudio(self, _audioData, _keySpeaker = "ROBOT"):
         if _keySpeaker in self.__Speakers:
             time.sleep(0)
             self.__Speakers[_keySpeaker].sendAudio(_audioData)
+        else:
+            return None
 
     def getImage(self, _keyCam = "ROBOT"):
         if _keyCam in self.__Cameras:
             time.sleep(0)
             return self.__Cameras[_keyCam].getImage()
+        else:
+            return None
 
     def __detectAprilTags(self, _keyCam = "ROBOT"):
-        if not self.__apriltag_current_exist and _keyCam in self.__Cameras:
-            img = self.__Cameras[_keyCam].getImage()
-            frame = RoboCompApriltag.TImage()
-            frame.width = img.shape[0]
-            frame.height = img.shape[1]
-            frame.depth = img.shape[2]
-            frame.image = np.fromstring(img, np.uint8)
-            aprils = self.__apriltagProxy.processimage(frame)
-            self.__apriltag_current_exist = True
-            self.__listAprilIDs = [a.id for a in aprils]
-            self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
+        if _keyCam in self.__Cameras:
+            if not self.__apriltag_current_exist:
+                img = self.__Cameras[_keyCam].getImage()
+                frame = RoboCompApriltag.TImage()
+                frame.width = img.shape[0]
+                frame.height = img.shape[1]
+                frame.depth = img.shape[2]
+                frame.image = np.fromstring(img, np.uint8)
+                aprils = self.__apriltagProxy.processimage(frame)
+                self.__apriltag_current_exist = True
+                self.__listAprilIDs = [a.id for a in aprils]
+                self.__posAprilTags = {a.id : [a.cx, a.cy] for a in aprils}
 
     def lookingLabel(self, id, _keyCam="ROBOT"):
         time.sleep(0)

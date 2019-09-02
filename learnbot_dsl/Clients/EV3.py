@@ -22,7 +22,7 @@ class Robot(Client):
         self.addBase(Base(_callFunction=self.deviceBaseMove))
         self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadLaser))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensors))
-        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope))
+        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope), "Z-AXIS")
         self.start()
 
     def connectToRobot(self):
@@ -68,12 +68,11 @@ class Robot(Client):
 
     def deviceReadGroundSensors(self):
         ground = self.colorsensor.value()
-        return {"left": ground,
-                "right": ground}
+        return {"central": ground}
 
     def deviceReadGyroscope(self):
-        ry = self.gyrosensor.value()
-        return 0, ry, 0
+        rz = self.gyrosensor.value()
+        return rz
 
     def resetGyroscope(self):
         self.gyrosensor.mode = 'GYRO-CAL'
@@ -99,13 +98,4 @@ if __name__ == '__main__':
         time_global = time.time() - time_global_start
         return time_global > umbral
 
-    # try:
-    #     while True:
-    #
-    #         if robot.front_obstacle(50):
-    #             robot.stop_bot()
-    #         else:
-    #             robot.move_straight()
-    #         print("bucle")
-    # finally:
-    #     print("quit")
+

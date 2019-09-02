@@ -1,25 +1,25 @@
 
 class Gyroscope():
     '''
-    Gyroscope is a class that contain the values rx, ry, rz of a Gyroscope in degrees.
+    Gyroscope interface class.
+    This class reads, updates and returns the rotation (degrees) of the robotic platform on a given axis.
+    The key of the device used in the addGyroscope method should be related to the rotation axis: "X-AXIS", "Y-AXIS", "Z-AXIS"
     '''
-    rx = None
-    ry = None
-    rz = None
+    rot = None
 
     def __init__(self, _readFunction, _resetFunction):
         self.__readDevice = _readFunction
         self.__resetDevice = _resetFunction
 
-    def set(self, _rx, _ry, _rz):
-        self.rx, self.ry, self.rz = _rx, _ry, _rz
+    def set(self, _rot):
+        self.rot = _rot
 
     def get(self):
-        return self.rx, self.ry, self.rz
+        return self.rot
 
     def read(self):
-        _rx, _ry, _rz = self.__readDevice()
-        self.set(_rx, _ry, _rz)
+        _rot = self.__readDevice()
+        self.set(_rot)
 
     def reset(self):
         self.__resetDevice()

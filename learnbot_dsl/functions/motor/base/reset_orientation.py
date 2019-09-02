@@ -1,10 +1,10 @@
 from __future__ import print_function, absolute_import
 import time, math, numpy
 
-def reset_orientation(lbot):
+def reset_orientation(lbot, keygyro = "Z_AXIS"):
     if "gyroscope" in lbot.devicesAvailables:
-        lbot.resetGyroscope()
-        rx, curAngle, rz = lbot.getGyroscope()
+        lbot.resetGyroscope(keygyro)
+        curAngle= lbot.getGyroscope(keygyro)
         while curAngle!=0:
-            rx, curAngle, rz = lbot.getGyroscope()
+            curAngle = lbot.getGyroscope(keygyro)
 
