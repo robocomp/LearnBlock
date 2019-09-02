@@ -29,7 +29,7 @@ class Robot(Client):
         Client.__init__(self)
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGSensor))
         self.addAcelerometer(Acelerometer(_readFunction=self.deviceReadAcelerometer))
-        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope), "Z-AXIS")
+        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.deviceResetGyroscope), "Z_AXIS")
         self.addCamera(Camera(_readFunction=self.deviceReadCamera))
         self.addBase(Base(_callFunction=self.deviceMove))
         self.addDisplay(Display(_setEmotion=self.deviceSendEmotion, _setImage=None))
@@ -108,7 +108,7 @@ class Robot(Client):
         print("Cozmo gyro", rz_n, rz)
         return int(-rz)
 
-    def resetGyroscope(self):
+    def deviceResetGyroscope(self):
         self.vueltas=0
         self.current_pose_angle = self.cozmo.pose.rotation.angle_z.degrees
         if self.current_pose_angle < 0:

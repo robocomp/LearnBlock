@@ -22,7 +22,7 @@ class Robot(Client):
         self.addBase(Base(_callFunction=self.deviceBaseMove))
         self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadLaser))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensors))
-        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.resetGyroscope), "Z-AXIS")
+        self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.deviceResetGyroscope), "Z_AXIS")
         self.start()
 
     def connectToRobot(self):
@@ -74,7 +74,7 @@ class Robot(Client):
         rz = self.gyrosensor.value()
         return rz
 
-    def resetGyroscope(self):
+    def deviceResetGyroscope(self):
         self.gyrosensor.mode = 'GYRO-CAL'
         self.gyrosensor.mode = 'GYRO-ANG'
 
