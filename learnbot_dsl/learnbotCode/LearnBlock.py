@@ -290,12 +290,13 @@ class LearnBlock(QtWidgets.QMainWindow):
 
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.ui.bt2pythonpushButton.clicked.connect(self.btToPython)
-        self.dicTables = {'control': self.ui.tableControl, 'motor': self.ui.tableMotor,
-                          'perceptual': self.ui.tablePerceptual,
-                          'proprioceptive': self.ui.tablePropioperceptive, 'operator': self.ui.tableOperadores,
+        self.dicTables = {'control': self.ui.tableControl, 'operator': self.ui.tableOperadores,
                           'variables': self.ui.tableVariables,
-                          'funtions': self.ui.tableUserfunctions, 'express': self.ui.tableExpress,
-                          'others': self.ui.tableOthers}
+                          'funtions': self.ui.tableUserfunctions}
+
+# Test code for including new tabs associated to new types of blocks
+#        tableNew = QtWidgets.QTableWidget()
+#        self.ui.functions.addTab(tableNew, "new")
 
         self.highlighter = Highlighter(self.ui.textCode.document())
         self.updateTextCodeStyle()
@@ -1057,7 +1058,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         blocks = reload_functions(config_path)
         self.blocksInCategories = {}
         for b in blocks:
-            btype = str(b["type"])
+            btype = str(b["category"])
             if not btype in self.blocksInCategories.keys():
                 self.blocksInCategories[btype] = []
             self.blocksInCategories[btype].append((b,True))
@@ -1078,7 +1079,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                     else:
                         newList.append((b["name"], visible))
                 self.visibleBlockLists[cat] = newList
-        self.dialogSelectBlocks = guiSelectBlocks(self.visibleBlockLists, self.setVisibleBlocks,text4Categories[lang])
+        self.dialogSelectBlocks = guiSelectBlocks(self.visibleBlockLists, self.setVisibleBlocks)
         self.dialogSelectBlocks.show()
 
     def setVisibleBlocks(self):
@@ -1129,6 +1130,13 @@ class LearnBlock(QtWidgets.QMainWindow):
         for k, table in iter(self.dicTables.items()):
             table.clear()
             table.setRowCount(0)
+        kBlocks = list(self.dicTables.keys())
+        for k in kBlocks:
+            if not k in languageCategories:
+                indTab = self.ui.functions.indexOf(self.dicTables[k])
+                self.ui.functions.removeTab(indTab)
+                del self.dicTables[k]
+
         try:
             self.listNameBlock.clear()
             self.listButtons.clear()
@@ -1145,6 +1153,17 @@ class LearnBlock(QtWidgets.QMainWindow):
         if b["name"] in self.listNameBlock:
             return
 
+        if not b["category"] in self.dicTables.keys():
+            tableNew = QtWidgets.QTableWidget()
+            tableNew.verticalHeader().setVisible(False)
+            tableNew.horizontalHeader().setVisible(False)
+            tableNew.setShowGrid(False)
+            tableNew.setColumnCount(1)
+            tableNew.setRowCount(0)
+            self.ui.functions.addTab(tableNew, b["category"])
+            self.dicTables[b["category"]] = tableNew
+
+
         self.listNameBlock.append(b["name"])
         variables = []
         if "variables" in b:
@@ -1153,7 +1172,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         funtionType, HUE = type2Values[b["type"]]
         for img in b["img"]:
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
-            table = self.dicTables[b["type"]]
+            table = self.dicTables[b["category"]]
             table.insertRow(table.rowCount())
             tooltip = {}
             languages = {}

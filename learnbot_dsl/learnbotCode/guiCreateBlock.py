@@ -199,6 +199,7 @@ class guiCreateBlock(QtWidgets.QDialog):
         if ret is 1:
             ret = None
             name = self.ui.lineEditName.text().replace(" ", "_")
+            category = self.ui.lineEditCategory.text()
             configFile = self.ui.lineEditConfigFile.text()
             if name == "":
                 msgBox = QtWidgets.QMessageBox()
@@ -240,12 +241,22 @@ class guiCreateBlock(QtWidgets.QDialog):
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
+            elif category == "":
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle(self.tr("Error"))
+                msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+                msgBox.setText(self.tr("Block category is empty"))
+                msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+                msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+                ret = msgBox.exec_()
+
 
             if ret is not None:
                 return
 
             dictBlock = {}
             dictBlock["type"] = self.blockType
+            dictBlock["category"] = category
             dictBlock["name"] = self.ui.lineEditName.text()
             if self.ui.tableWidgetVars.rowCount() is not 0:
                 listVariables = []

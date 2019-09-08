@@ -10,22 +10,22 @@ from learnbot_dsl.learnbotCode.toQImage import *
 
 class guiSelectBlocks(QtWidgets.QDialog):
 
-    def __init__(self, blockLists, action, text4Tabs):
+    def __init__(self, blockLists, action):
         self.selectionAction = action
         QtWidgets.QDialog.__init__(self)
         self.setWindowTitle(self.tr('Select visible blocks'))
-        self.createTabWidget(blockLists, text4Tabs)
+        self.createTabWidget(blockLists)
         self.createButtons()
         self.createLayout()
 
-    def createTabWidget(self, blockLists, text4Tabs):	
+    def createTabWidget(self, blockLists):	
         self.tabWidget = QtWidgets.QTabWidget()
         self.lists = []
         for key in blockLists.keys():
             bList = QtWidgets.QListWidget()
             self.lists.append(bList)
             self.createListView(bList, blockLists[key])
-            self.tabWidget.addTab(bList, text4Tabs[key])
+            self.tabWidget.addTab(bList, key)
 
 
     def createListView(self, bList, blockList):

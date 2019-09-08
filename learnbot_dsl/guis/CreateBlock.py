@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'CreateBlock.ui',
 # licensing of 'CreateBlock.ui' applies.
 #
-# Created: Sun Aug 18 16:08:54 2019
+# Created: Sun Sep  8 19:09:48 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -110,6 +110,12 @@ class Ui_Dialog(object):
         self.comboBoxBlockType.addItem("")
         self.comboBoxBlockType.addItem("")
         self.horizontalLayout.addWidget(self.comboBoxBlockType)
+        self.label_3 = QtWidgets.QLabel(Dialog)
+        self.label_3.setObjectName("label_3")
+        self.horizontalLayout.addWidget(self.label_3)
+        self.lineEditCategory = QtWidgets.QLineEdit(Dialog)
+        self.lineEditCategory.setObjectName("lineEditCategory")
+        self.horizontalLayout.addWidget(self.lineEditCategory)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
         self.verticalLayout_18.addLayout(self.horizontalLayout)
@@ -324,6 +330,8 @@ class Ui_Dialog(object):
         self.comboBoxBlockType.setItemText(2, QtWidgets.QApplication.translate("Dialog", "PERCEPTUAL", None, -1))
         self.comboBoxBlockType.setItemText(3, QtWidgets.QApplication.translate("Dialog", "PROPRIOPERCEPTIVE", None, -1))
         self.comboBoxBlockType.setItemText(4, QtWidgets.QApplication.translate("Dialog", "OTHERS", None, -1))
+        self.label_3.setText(QtWidgets.QApplication.translate("Dialog", "Block category:", None, -1))
+        self.lineEditCategory.setPlaceholderText(QtWidgets.QApplication.translate("Dialog", "Category of the new block", None, -1))
         self.label_5.setText(QtWidgets.QApplication.translate("Dialog", "Variables:", None, -1))
         self.pushButtonAddVar.setText(QtWidgets.QApplication.translate("Dialog", "Add", None, -1))
         self.pushButtonRemoveVar.setText(QtWidgets.QApplication.translate("Dialog", "Remove", None, -1))

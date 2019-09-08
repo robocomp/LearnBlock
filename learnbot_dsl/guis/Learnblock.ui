@@ -538,74 +538,6 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="express">
-            <attribute name="title">
-             <string>Expressions</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_14">
-             <item>
-              <widget class="QTableWidget" name="tableExpress">
-               <property name="showGrid">
-                <bool>false</bool>
-               </property>
-               <property name="gridStyle">
-                <enum>Qt::NoPen</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="move">
-            <attribute name="title">
-             <string>Motor</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_11">
-             <item>
-              <widget class="QTableWidget" name="tableMotor">
-               <property name="showGrid">
-                <bool>false</bool>
-               </property>
-               <property name="gridStyle">
-                <enum>Qt::NoPen</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="sensors">
-            <attribute name="title">
-             <string>Perceptual</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_10">
-             <item>
-              <widget class="QTableWidget" name="tablePerceptual">
-               <property name="showGrid">
-                <bool>false</bool>
-               </property>
-               <property name="gridStyle">
-                <enum>Qt::NoPen</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="propioperceptive">
-            <attribute name="title">
-             <string>Proprioceptive</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_9">
-             <item>
-              <widget class="QTableWidget" name="tablePropioperceptive">
-               <property name="showGrid">
-                <bool>false</bool>
-               </property>
-               <property name="gridStyle">
-                <enum>Qt::NoPen</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
            <widget class="QWidget" name="operators">
             <attribute name="title">
              <string>Operators</string>
@@ -708,23 +640,6 @@
              </item>
              <item>
               <widget class="QTableWidget" name="tableUserfunctions">
-               <property name="showGrid">
-                <bool>false</bool>
-               </property>
-               <property name="gridStyle">
-                <enum>Qt::NoPen</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-           <widget class="QWidget" name="others">
-            <attribute name="title">
-             <string>Others</string>
-            </attribute>
-            <layout class="QVBoxLayout" name="verticalLayout_15">
-             <item>
-              <widget class="QTableWidget" name="tableOthers">
                <property name="showGrid">
                 <bool>false</bool>
                </property>
