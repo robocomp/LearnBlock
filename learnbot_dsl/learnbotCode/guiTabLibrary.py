@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-import os, sys
+import os, sys, json
 from PySide2 import QtGui, QtWidgets
 import learnbot_dsl.guis.TabLibrary as TabLibrary
 from learnbot_dsl.blocksConfig.parserConfigBlock import reload_functions
@@ -44,7 +44,9 @@ class Library(QtWidgets.QWidget):
                 if os.path.isdir(os.path.abspath(subPath)):
                     for subsubPath in [os.path.join(subPath, x) for x in os.listdir(subPath)]:
                         if os.path.splitext(subsubPath)[-1] == ".conf":
-                            self.load(reload_functions(subsubPath))
+                            with open(subsubPath, "rb") as f:
+                                text = f.read()
+                            self.load(json.loads(text))
 
     def load(self, blocks):
         listRepitFuntions = []

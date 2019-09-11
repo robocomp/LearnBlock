@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+import learnbot_dsl
 from learnbot_dsl.guis.help import *
 from PySide2 import QtCore, QtGui, QtWebEngineWidgets, QtWidgets
 import sys, os, markdown
@@ -28,7 +29,6 @@ class helper(Ui_Help,QtWidgets.QDialog):
     def __init__(self, Lang):
         Ui_Help.__init__(self)
         QtWidgets.QDialog.__init__(self)
-        # self.dialog = QtWidgets.QDialog()
         self.setupUi(self)
         self.webView = MarkdownView()
         self.webView.setUrl(QtCore.QUrl("about:blank"))
@@ -37,12 +37,12 @@ class helper(Ui_Help,QtWidgets.QDialog):
         self.dictDocs = {}
         self.absModel = QtCore.QAbstractListModel
         self.hidePath = os.path.join(os.environ["HOME"], ".learnblock", "mdfiles")
-        paths = "/home/robocomp/robocomp/components/learnbot:" + os.environ["XDG_DATA_DIRS"]
+        paths = os.path.dirname(learnbot_dsl.__file__)+ ":" + os.environ["XDG_DATA_DIRS"]
         curItem = None
         for sharepath in paths.split(":"):
-            if os.path.exists(os.path.join(sharepath,"learnbot_dsl","mdfiles")):
+            if os.path.exists(os.path.join(sharepath,"mdfiles")):
                 # print(sharepath)
-                self.sharePath = os.path.join(sharepath, "learnbot_dsl", "mdfiles")
+                self.sharePath = os.path.join(sharepath, "mdfiles")
                 # self.css = open(os.path.join(self.sharePath, "styles.css"), "r").read()
                 self.css = os.path.join(self.sharePath, "styles.css")
                 curItem = os.path.join(self.sharePath, Lang)
