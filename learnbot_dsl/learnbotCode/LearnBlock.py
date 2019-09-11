@@ -292,7 +292,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.bt2pythonpushButton.clicked.connect(self.btToPython)
         self.dicTables = {'control': self.ui.tableControl, 'operator': self.ui.tableOperadores,
                           'variables': self.ui.tableVariables,
-                          'funtions': self.ui.tableUserfunctions}
+                          'functions': self.ui.tableUserfunctions}
 
 # Test code for including new tabs associated to new types of blocks
 #        tableNew = QtWidgets.QTableWidget()
@@ -1841,7 +1841,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.deleteFuntionsPushButton.setEnabled(True)
         imgs = ['block8', 'block1']
         self.listNameUserFunctions.append(name)
-        table = self.dicTables['funtions']
+        table = self.dicTables['functions']
         i = 0
         for img in imgs:
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
@@ -1875,7 +1875,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.ui.deleteFuntionsPushButton.setEnabled(False)
 
     def delUserFunction(self, name):
-        table = self.dicTables['funtions']
+        table = self.dicTables['functions']
         rango = reversed(range(0, table.rowCount()))
         for item, row in [(table.cellWidget(r, 0), r) for r in rango if table.cellWidget(r, 0).getText() == name]:
             item.delete(row)
