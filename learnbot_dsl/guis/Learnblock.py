@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'Learnblock.ui',
 # licensing of 'Learnblock.ui' applies.
 #
-# Created: Sun Sep  8 16:14:14 2019
+# Created: Thu Sep 12 16:34:05 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -453,6 +453,8 @@ class Ui_MainWindow(object):
         self.actionLoad_Python_Code.setObjectName("actionLoad_Python_Code")
         self.actionSave_Python_Code = QtWidgets.QAction(MainWindow)
         self.actionSave_Python_Code.setObjectName("actionSave_Python_Code")
+        self.actionAdd_Set_of_Blocks = QtWidgets.QAction(MainWindow)
+        self.actionAdd_Set_of_Blocks.setObjectName("actionAdd_Set_of_Blocks")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen_Project)
@@ -500,6 +502,7 @@ class Ui_MainWindow(object):
         self.menuBlocks.addAction(self.actionCreate_New_block)
         self.menuBlocks.addSeparator()
         self.menuBlocks.addAction(self.actionLoad_Sets_of_Blocks)
+        self.menuBlocks.addAction(self.actionAdd_Set_of_Blocks)
         self.menuBlocks.addAction(self.actionSelect_Visible_Blocks)
         self.menuBlocks.addAction(self.actionSave_Visible_Blocks)
         self.menubar.addAction(self.menuFile.menuAction())
@@ -630,4 +633,5 @@ class Ui_MainWindow(object):
         self.actionSave_Block_Text_Code.setText(QtWidgets.QApplication.translate("MainWindow", "Save Block-Text Code", None, -1))
         self.actionLoad_Python_Code.setText(QtWidgets.QApplication.translate("MainWindow", "Load Python Code", None, -1))
         self.actionSave_Python_Code.setText(QtWidgets.QApplication.translate("MainWindow", "Save Python Code", None, -1))
+        self.actionAdd_Set_of_Blocks.setText(QtWidgets.QApplication.translate("MainWindow", "Add Set of Blocks", None, -1))
 

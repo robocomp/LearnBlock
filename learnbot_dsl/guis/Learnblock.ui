@@ -794,6 +794,7 @@
     <addaction name="actionCreate_New_block"/>
     <addaction name="separator"/>
     <addaction name="actionLoad_Sets_of_Blocks"/>
+    <addaction name="actionAdd_Set_of_Blocks"/>
     <addaction name="actionSelect_Visible_Blocks"/>
     <addaction name="actionSave_Visible_Blocks"/>
    </widget>
@@ -1083,6 +1084,11 @@
   <action name="actionSave_Python_Code">
    <property name="text">
     <string>Save Python Code</string>
+   </property>
+  </action>
+  <action name="actionAdd_Set_of_Blocks">
+   <property name="text">
+    <string>Add Set of Blocks</string>
    </property>
   </action>
  </widget>

@@ -238,6 +238,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionNew_project.triggered.connect(self.newProject)
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
         self.ui.actionLoad_Sets_of_Blocks.triggered.connect(self.loadSetsOfBlocks)
+        self.ui.actionAdd_Set_of_Blocks.triggered.connect(self.addSetOfBlocks)
         self.ui.actionSelect_Visible_Blocks.triggered.connect(self.selectVisibleBlocks)
         self.ui.actionSave_Visible_Blocks.triggered.connect(self.saveVisibleBlocks)
         self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
@@ -956,7 +957,6 @@ class LearnBlock(QtWidgets.QMainWindow):
             client.load_system_host_keys()
             client.set_missing_host_key_policy(paramiko.WarningPolicy)
             client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
-            stdin, stdout, stderr = client.exec_command("sudo shutdown 0")
 
     def rebootRobot(self):
         if self.checkConnectionToBot():
@@ -1371,10 +1371,24 @@ class LearnBlock(QtWidgets.QMainWindow):
 
 
     def loadSetsOfBlocks(self):
-        blocks_path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr("Select Directory"), pathConfig, QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
+        blocks_path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr("Select directory"), pathConfig, QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
         if blocks_path!="":
             self.confBlocksPath = blocks_path
             self.load_blockConfigurations(blocks_path)
+
+    def addSetOfBlocks(self):
+        blocks_file, _ = QtWidgets.QFileDialog.getOpenFileName(self, self.tr("Select a block configuration file"), pathConfig, filter = "*.conf")
+        if blocks_file!="":
+            with open(blocks_file, "rb") as f:
+                text = f.read()
+            blocks = json.loads(text)
+            for b in blocks:
+                btype = str(b["category"])
+                if not btype in self.blocksInCategories.keys():
+                    self.blocksInCategories[btype] = []
+                self.blocksInCategories[btype].append((b,True))
+                self.addBlock(b)
+
 
     def showCreateBlock(self):
         self.createBlockGui = guiCreateBlock(self.addBlock)
