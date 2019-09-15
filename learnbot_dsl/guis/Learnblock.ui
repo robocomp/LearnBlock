@@ -107,7 +107,14 @@
       <item>
        <widget class="QPushButton" name="addClientPushButton">
         <property name="text">
-         <string>Add Client</string>
+         <string>Add Robot</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="configRobotPushButton">
+        <property name="text">
+         <string>Configure Robot</string>
         </property>
        </widget>
       </item>
@@ -749,6 +756,7 @@
     <addaction name="actionShutdown"/>
     <addaction name="separator"/>
     <addaction name="actionAdd_client_robot"/>
+    <addaction name="actionConfigure_Robot"/>
     <addaction name="separator"/>
     <addaction name="actionDownload_xmls"/>
     <addaction name="actionDownload_examples"/>
@@ -1089,6 +1097,11 @@
   <action name="actionAdd_Set_of_Blocks">
    <property name="text">
     <string>Add Set of Blocks</string>
+   </property>
+  </action>
+  <action name="actionConfigure_Robot">
+   <property name="text">
+    <string>Configure Robot</string>
    </property>
   </action>
  </widget>

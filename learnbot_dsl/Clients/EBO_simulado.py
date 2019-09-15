@@ -269,20 +269,24 @@ class Robot(Client):
         self.start()
 
     def connectToRobot(self):
+        configRobot = {}
+        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "EBO_simulado.cfg"), "rb") as f:
+            configRobot = json.loads(f.read())
         self.laser_proxys = []
         # Remote object connection for Lasers
-        self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h localhost -p 10004",
+        robotIP = configRobot["RobotIP"]
+        self.differentialrobot_proxy = connectComponent("differentialrobot:tcp -h " + robotIP + " -p 10004",
                                                         RoboCompDifferentialRobot.DifferentialRobotPrx)
         self.deviceMove(0,0)
 
         for i in range(2, 7):
-            self.laser_proxys.append(connectComponent("laser:tcp -h localhost -p 1010" + str(i), RoboCompLaser.LaserPrx))
+            self.laser_proxys.append(connectComponent("laser:tcp -h " + robotIP + " -p 1010" + str(i), RoboCompLaser.LaserPrx))
 
-        self.jointmotor_proxy = connectComponent("jointmotor:tcp -h localhost -p 20000",
+        self.jointmotor_proxy = connectComponent("jointmotor:tcp -h " + robotIP + " -p 20000",
                                                  RoboCompJointMotor.JointMotorPrx)
-        self.display_proxy = connectComponent("display:tcp -h localhost -p 30000",
+        self.display_proxy = connectComponent("display:tcp -h " + robotIP + " -p 30000",
                                                      RoboCompDisplay.DisplayPrx)
-        self.rgbd_proxy = connectComponent("rgbd:tcp -h localhost -p 10097", RoboCompRGBD.RGBDPrx)
+        self.rgbd_proxy = connectComponent("rgbd:tcp -h " + robotIP + " -p 10097", RoboCompRGBD.RGBDPrx)
 
         self.configEmotions = {}
         self.face = Face(self.display_proxy)

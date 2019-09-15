@@ -18,6 +18,7 @@ from learnbot_dsl.learnbotCode.checkFile import compile
 from learnbot_dsl.learnbotCode.dialogAddNumberOrString import *
 from learnbot_dsl.learnbotCode.guiCreateBlock import *
 from learnbot_dsl.learnbotCode.guiSelectBlocks import *
+from learnbot_dsl.learnbotCode.guiJsonEditor import guiJsonEditor
 from learnbot_dsl.learnbotCode.guiaddWhen import *
 import learnbot_dsl.guis.Learnblock as Learnblock
 from learnbot_dsl.guis import pathGuis
@@ -233,6 +234,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionStart_components.triggered.connect(self.startRobot)
         self.ui.actionStart.triggered.connect(lambda: self.startProgram(self.ui.Tabwi.currentIndex()))
         self.ui.actionStart_Simulator.triggered.connect(self.startSimulatorRobot)
+        self.ui.actionConfigure_Robot.triggered.connect(self.configureRobot)
         self.ui.actionReboot.triggered.connect(self.rebootRobot)
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
@@ -488,6 +490,23 @@ class LearnBlock(QtWidgets.QMainWindow):
             if os.path.isfile(os.path.join(os.getenv('HOME'), ".learnblock", "clients", file)) and \
                     os.path.splitext(file)[-1].lower() == ".py":
                 self.ui.clientscomboBox.addItem(os.path.splitext(file)[0])
+
+    def configureRobot(self):
+        client = self.ui.clientscomboBox.currentText()
+        cfgFile = os.path.join(os.getenv('HOME'), ".learnblock", "clients", client+".cfg")
+        if os.path.isfile(cfgFile):
+            with open(cfgFile, "rb") as f:
+                text = f.read()
+            document = json.loads(text)
+            self.dialogConfigRobot = guiJsonEditor(document, self.saveRobotConfiguration)
+            self.dialogConfigRobot.show()
+
+    def saveRobotConfiguration(self):
+        client = self.ui.clientscomboBox.currentText()
+        cfgFile = os.path.join(os.getenv('HOME'), ".learnblock", "clients", client+".cfg")
+        with open(cfgFile, "w") as file:
+            json.dump(self.dialogConfigRobot.model.json(), file, indent=4)                  
+        self.dialogConfigRobot.close()
 
     def updateOpenRecent(self):  # TODO Fixed line lambda
         if self.__fileProject is not None:

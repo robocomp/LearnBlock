@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'Learnblock.ui',
 # licensing of 'Learnblock.ui' applies.
 #
-# Created: Thu Sep 12 16:34:05 2019
+# Created: Sun Sep 15 17:02:53 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -56,6 +56,9 @@ class Ui_MainWindow(object):
         self.addClientPushButton = QtWidgets.QPushButton(self.centralwidget)
         self.addClientPushButton.setObjectName("addClientPushButton")
         self.horizontalLayout_2.addWidget(self.addClientPushButton)
+        self.configRobotPushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.configRobotPushButton.setObjectName("configRobotPushButton")
+        self.horizontalLayout_2.addWidget(self.configRobotPushButton)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.language = QtWidgets.QComboBox(self.centralwidget)
@@ -455,6 +458,8 @@ class Ui_MainWindow(object):
         self.actionSave_Python_Code.setObjectName("actionSave_Python_Code")
         self.actionAdd_Set_of_Blocks = QtWidgets.QAction(MainWindow)
         self.actionAdd_Set_of_Blocks.setObjectName("actionAdd_Set_of_Blocks")
+        self.actionConfigure_Robot = QtWidgets.QAction(MainWindow)
+        self.actionConfigure_Robot.setObjectName("actionConfigure_Robot")
         self.menuFile.addAction(self.actionNew_project)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionOpen_Project)
@@ -482,6 +487,7 @@ class Ui_MainWindow(object):
         self.menuTools_robot.addAction(self.actionShutdown)
         self.menuTools_robot.addSeparator()
         self.menuTools_robot.addAction(self.actionAdd_client_robot)
+        self.menuTools_robot.addAction(self.actionConfigure_Robot)
         self.menuTools_robot.addSeparator()
         self.menuTools_robot.addAction(self.actionDownload_xmls)
         self.menuTools_robot.addAction(self.actionDownload_examples)
@@ -527,7 +533,8 @@ class Ui_MainWindow(object):
         self.addStringpushButton.setToolTip(QtWidgets.QApplication.translate("MainWindow", "Add String", None, -1))
         self.addStringpushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Add String", None, -1))
         self.useEventscheckBox.setText(QtWidgets.QApplication.translate("MainWindow", "Use Events", None, -1))
-        self.addClientPushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Add Client", None, -1))
+        self.addClientPushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Add Robot", None, -1))
+        self.configRobotPushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Configure Robot", None, -1))
         self.language.setItemText(0, QtWidgets.QApplication.translate("MainWindow", "ES", None, -1))
         self.language.setItemText(1, QtWidgets.QApplication.translate("MainWindow", "EN", None, -1))
         self.updatepushButton.setText(QtWidgets.QApplication.translate("MainWindow", "Update", None, -1))
@@ -634,4 +641,5 @@ class Ui_MainWindow(object):
         self.actionLoad_Python_Code.setText(QtWidgets.QApplication.translate("MainWindow", "Load Python Code", None, -1))
         self.actionSave_Python_Code.setText(QtWidgets.QApplication.translate("MainWindow", "Save Python Code", None, -1))
         self.actionAdd_Set_of_Blocks.setText(QtWidgets.QApplication.translate("MainWindow", "Add Set of Blocks", None, -1))
+        self.actionConfigure_Robot.setText(QtWidgets.QApplication.translate("MainWindow", "Configure Robot", None, -1))
 
