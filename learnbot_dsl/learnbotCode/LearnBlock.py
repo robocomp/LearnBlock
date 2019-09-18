@@ -873,9 +873,6 @@ class LearnBlock(QtWidgets.QMainWindow):
                         self.hilo.terminate()
                     except Exception as e:
                         print(e.with_traceback())
-#                subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
-                subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
-                subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 self.hilo = subprocess.Popen(
                     ["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "main_tmp.py")],
                     stdout=subprocess.PIPE)
@@ -910,6 +907,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                 self.hilo = None
                 print("returned value", p)
                 if p!=0:
+                    subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+                    subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
                     name_Client = self.ui.clientscomboBox.currentText()
                     msgBox = QtWidgets.QMessageBox()
                     msgBox.setWindowTitle(self.tr("Warning"))
@@ -1553,20 +1552,9 @@ class LearnBlock(QtWidgets.QMainWindow):
     def stopthread(self):
         if self.hilo is not None:
             try:
-                #subprocess.Popen("killall -9 emotionrecognition2.py aprilTag.py", shell=True, stdout=subprocess.PIPE)
-                #subprocess.Popen("pkill -f emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
-                #subprocess.Popen("pkill -f aprilTag.py", shell=True, stdout=subprocess.PIPE)
-                try:
-                    self.hilo.terminate()
-                except Exception as e:
-                    print(e.with_traceback())
-                #self.generateStopTmpFile()
-                #self.hilo = subprocess.Popen(
-                #    ["python" + sys.version[0], os.path.join(tempfile.gettempdir(), "stop_main_tmp.py")],
-                #    stdout=subprocess.PIPE)
+                self.hilo.terminate()
             except Exception as e:
                 print(e.with_traceback())
-                pass
             finally:
                 self.disablestartButtons(False)
 

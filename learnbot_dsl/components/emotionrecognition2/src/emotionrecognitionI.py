@@ -18,15 +18,15 @@
 #
 from __future__ import print_function, absolute_import
 import sys, os, Ice
-ROBOCOMP = ''
-try:
-	ROBOCOMP = os.environ['ROBOCOMP']
-except:
-	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
-	ROBOCOMP = '/opt/robocomp'
-if len(ROBOCOMP)<1:
-	print('ROBOCOMP environment variable not set! Exiting.')
-	sys.exit()
+#ROBOCOMP = ''
+#try:
+#	ROBOCOMP = os.environ['ROBOCOMP']
+#except:
+#	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
+#	ROBOCOMP = '/opt/robocomp'
+#if len(ROBOCOMP)<1:
+#	print('ROBOCOMP environment variable not set! Exiting.')
+#	sys.exit()
 
 additionalPathStr = ''
 icePaths = [  os.path.dirname(__file__) ]

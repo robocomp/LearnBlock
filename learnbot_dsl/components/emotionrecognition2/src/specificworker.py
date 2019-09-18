@@ -66,7 +66,6 @@ class SpecificWorker(GenericWorker):
             # Get input and output tensors from graph
             self.x_input = self.sess.graph.get_tensor_by_name("input:0")
             self.output = self.sess.graph.get_tensor_by_name("output:0")
-        self.video_capture = cv2.VideoCapture(0)
 
     def setParams(self, params):
         return True

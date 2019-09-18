@@ -20,15 +20,22 @@ from __future__ import print_function, absolute_import
 import sys, Ice, os
 from PySide2 import QtGui, QtCore
 
-ROBOCOMP = ''
-try:
-	ROBOCOMP = os.environ['ROBOCOMP']
-except KeyError:
-	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
-	ROBOCOMP = '/opt/robocomp'
+#ROBOCOMP = ''
+#try:
+#	ROBOCOMP = os.environ['ROBOCOMP']
+#except KeyError:
+#	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
+#	ROBOCOMP = '/opt/robocomp'
 
-preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
-Ice.loadSlice(preStr+"CommonBehavior.ice")
+from learnbot_components import pathInterfaces
+
+if os.path.isfile(os.path.join(pathInterfaces, 'CommonBehavior.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'CommonBehavior.ice')
+	Ice.loadSlice(wholeStr)
+
+
+#preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /opt/robocomp/interfaces/"
+#Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 
 additionalPathStr = ''
