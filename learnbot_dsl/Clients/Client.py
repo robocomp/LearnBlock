@@ -50,7 +50,7 @@ class Client(Thread):
         functions = getFuntions()
         for k, v in iter(functions.items()):
             if v["type"] in cls.devicesAvailables + ["basics"]:
-                print("add ", k)
+                print("add ", k, v["type"])
                 setattr(Client, k, v["function"])
         instance = super(Client, cls).__new__(cls, *args, **kwargs)
         return instance
