@@ -975,6 +975,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             client.load_system_host_keys()
             client.set_missing_host_key_policy(paramiko.WarningPolicy)
             client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
+            stdin, stdout, stderr = client.exec_command("sudo shutdown -h now")
 
     def rebootRobot(self):
         if self.checkConnectionToBot():

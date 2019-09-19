@@ -177,7 +177,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                     edit.setValidator(QtGui.QIntValidator())
                     self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('number')))
                 else:
-                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('text')))
+                    self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('string')))
                 edit.setText(var.defaul)
                 self.tabVar.setCellWidget(i, 1, edit)
             elif var.type == "boolean":
@@ -189,16 +189,19 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 else:
                     combobox.setCurrentIndex(0)
                 self.tabVar.setCellWidget(i, 1, combobox)
+                self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('boolean')))
             elif var.type == "list":
                 values = var.translateValues[getLanguage()]
                 combobox = QtWidgets.QComboBox()
                 combobox.addItems(values)
                 self.tabVar.setCellWidget(i, 1, combobox)
+                self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('list')))
             elif var.type == "apriltext":
                 dictApriText = getAprilTextDict()
                 combobox = QtWidgets.QComboBox()
                 combobox.addItems([x for x in dictApriText])
                 self.tabVar.setCellWidget(i, 1, combobox)
+                self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('apriltext')))
 
             combobox = QtWidgets.QComboBox()
             combobox.addItem(self.tr('Constant'))
