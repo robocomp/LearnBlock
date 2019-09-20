@@ -155,7 +155,7 @@ CONDITION = Group(SIMPLECONDITION + ZeroOrMore(( ORAND | SRMD | COMP ) + SIMPLEC
 ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQUOTE | NUMS))).setResultsName('ASSIGSTRING')
 
 NONEVAR = NONE.setResultsName("NONEVAR")
-VAR = Group(SECTAB + identifier.setResultsName("nameVAR") + (eq | PLUE | MINE | DIVE | MULE) + ( FIELDS | NONEVAR | OPERATION )).setResultsName("VAR")
+VAR = Group(SECTAB + identifier.setResultsName("nameVAR") + (eq | PLUE | MINE | DIVE | MULE) + ( OPERATION | FIELDS | NONEVAR )).setResultsName("VAR")
 
 """-----------------LINEA---------------------------"""
 LINE = Forward()
@@ -238,7 +238,7 @@ def __parserFromString(text):
 list_when = []
 
 def __generatePy(lines):
-    text = ""
+    text = "\n"
     imports = ['"' + x[0] + '"' for x in lines if x.getName() is 'IMPORT']
     if len(imports)>0:
         imports = "imports = [" + ", ".join(imports) + "]"
@@ -364,6 +364,7 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 
 def __processASSIG(line, text="", index=0):
     text += "<TABHERE>" * index + line.nameVAR[0] + " " + line[1] + " " + __process(line[2]) + "\n"
+
     return text
 
 

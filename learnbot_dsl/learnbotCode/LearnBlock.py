@@ -1282,7 +1282,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                                                                  self.tr('Block Project file (*.blockProject)'))
                 self.scene.startAllblocks()
             if file is not None or fileName[0] != "":
-                self.newProject(resetAll=False)
+                self.newProject()#(resetAll=False)
                 if file is None:
                     file = fileName[0]
                 if changeFileName:
