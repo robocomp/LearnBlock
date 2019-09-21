@@ -428,7 +428,7 @@ def when_<NAME>():
     if name != "start":
         text = text.replace("<INIVARIABLES>", "<NAME>_start = time.time()\nstate_<NAME> = False\ntime_<NAME> = 0\n")
         text += "<TABHERE><TABHERE>time_<NAME> = time.time() - <NAME>_start\n" \
-                "<TABHERE>else:\n" \
+                "<TABHERE>if not state_<NAME>:\n" \
                 "<TABHERE><TABHERE>time_<NAME> = 0\n"
             #    "<NAME>_start = time.time()\n" \
             #    "state_<NAME> = False\n" +\
