@@ -178,7 +178,10 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                     self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('number')))
                 else:
                     self.tabVar.setCellWidget(i,3,QtWidgets.QLabel(self.tr('string')))
-                edit.setText(var.defaul)
+                if var.type == "string":
+                    edit.setText(var.defaul.replace('\"', ''))
+                else:
+                    edit.setText(var.defaul)
                 self.tabVar.setCellWidget(i, 1, edit)
             elif var.type == "boolean":
                 combobox = QtWidgets.QComboBox()
