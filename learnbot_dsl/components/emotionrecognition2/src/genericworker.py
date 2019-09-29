@@ -27,7 +27,7 @@ from PySide2 import QtGui, QtCore
 #	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 #	ROBOCOMP = '/opt/robocomp'
 
-from learnbot_components import pathInterfaces
+from learnbot_dsl import PATHINTERFACES as pathInterfaces
 
 if os.path.isfile(os.path.join(pathInterfaces, 'CommonBehavior.ice')):
 	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'CommonBehavior.ice')
