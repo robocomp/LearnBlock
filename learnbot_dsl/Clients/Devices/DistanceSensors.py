@@ -1,9 +1,9 @@
 
 class DistanceSensors():
-    __distanceSensor = {"front": [0],  # The values must be in mm
-                        "left": [0],
-                        "right": [0],
-                        "back": [0]
+    __distanceSensor = {"front": [2000],  # The values must be in mm
+                        "left": [2000],
+                        "right": [2000],
+                        "back": [2000]
                        }
 
     def __init__(self, _readFunction):

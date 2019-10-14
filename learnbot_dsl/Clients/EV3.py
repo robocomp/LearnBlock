@@ -20,7 +20,7 @@ class Robot(Client):
         self.ev3Base = None
         self.connectToRobot()
         self.addBase(Base(_callFunction=self.deviceBaseMove))
-        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadLaser))
+        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensors))
         self.addGyroscope(Gyroscope(_readFunction=self.deviceReadGyroscope, _resetFunction=self.deviceResetGyroscope), "Z_AXIS")
         self.start()
@@ -59,7 +59,7 @@ class Robot(Client):
         #print("rspeed", r_wheel_speed, "lspeed", l_wheel_speed)
         self.ev3Base.on(left_speed=self.ev3Motor.SpeedDPS(l_wheel_speed), right_speed=self.ev3Motor.SpeedDPS(r_wheel_speed))
 
-    def deviceReadLaser(self):
+    def deviceReadSonar(self):
         dist = self.ultrasonic.value()
         return {"front": [dist],  # The values must be in mm
                 "left": [2000],

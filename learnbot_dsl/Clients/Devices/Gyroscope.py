@@ -15,11 +15,14 @@ class Gyroscope():
         self.rot = _rot
 
     def get(self):
+        if self.rot is None:
+            self.read()
         return self.rot
 
     def read(self):
         _rot = self.__readDevice()
-        self.set(_rot)
+        if _rot is not None:
+            self.set(_rot)
 
     def reset(self):
         self.__resetDevice()

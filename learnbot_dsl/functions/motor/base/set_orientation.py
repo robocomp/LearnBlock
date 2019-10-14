@@ -29,7 +29,7 @@ def set_orientation(lbot, angle=0):
             time.sleep(1)
             curAngle = lbot.getGyroscope("Z_AXIS")
             diff = math.fabs(curAngle-angle)
-            if diff>1:
+            if diff>2:
                 s = numpy.sign(angle-curAngle)
                 curVel = 0
             else:

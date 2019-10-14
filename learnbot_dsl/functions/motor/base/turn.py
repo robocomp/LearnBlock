@@ -5,7 +5,7 @@ def turn(lbot, angle=0):
     if lbot.getGyroscope("Z_AXIS") is not None:
         lbot.resetGyroscope("Z_AXIS")
         curAngle = lbot.getGyroscope("Z_AXIS")
-        while curAngle!=0:
+        while curAngle>2:
             curAngle = lbot.getGyroscope("Z_AXIS")
 
         curAngle = lbot.getGyroscope("Z_AXIS")
@@ -42,13 +42,15 @@ def turn(lbot, angle=0):
                 keep_turning = False
             print("angle after stopping", curAngle)
     else:
+        angleVel = angle
         if angle > 0:
             if angle > 20:
                 angleVel = 20
         else:
             if angle < -20:
                 angleVel = -20
-        movingTime = angle/angleVel
-        lbot.setBaseSpeed(0, angleVel)
-        time.sleep(movingTime)
-        lbot.setBaseSpeed(0, 0)        
+        if angleVel!=0:
+            movingTime = angle/angleVel
+            lbot.setBaseSpeed(0, angleVel)
+            time.sleep(movingTime)
+            lbot.setBaseSpeed(0, 0)        
