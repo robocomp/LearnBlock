@@ -17,7 +17,7 @@ import sys
 try:
 <TABHERE>robot = Robot()
 except Exception as e:
-<TABHERE>print("hay un Error")
+<TABHERE>print("Problems creating a robot instance")
 <TABHERE>traceback.print_exc()
 <TABHERE>raise(e)
 
