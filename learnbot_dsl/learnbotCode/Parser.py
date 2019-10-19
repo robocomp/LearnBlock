@@ -256,7 +256,7 @@ def __generatePy(lines):
             continue
         if x.getName() is "LINES":
             for y in x:
-                text = __process(y, list_var, text)
+                text = __process(y, list_var, text) + "\n"
         else:
             text = __process(x, list_var, text)
     if len(list_when) > 0:
@@ -363,8 +363,7 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 # ---------------------------------------
 
 def __processASSIG(line, text="", index=0):
-    text += "<TABHERE>" * index + line.nameVAR[0] + " " + line[1] + " " + __process(line[2]) + "\n"
-
+    text += "<TABHERE>" * index + line.nameVAR[0] + " " + line[1] + " " + __process(line[2])
     return text
 
 
