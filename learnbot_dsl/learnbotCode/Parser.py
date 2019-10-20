@@ -131,7 +131,9 @@ FUNCTION = Group(
         "args") + Suppress(rpar)).setResultsName("FUNCTION")
 
 """-----------------FIELDS---------------------------"""
-FIELDS = Group(Optional(NOT) + (NUMS | TRUE | FALSE | FUNCTION | identifier | CHAINBETTENQUOTE)).setResultsName("FIELD")
+OPERATION = Forward()
+
+FIELDS = Group(Optional(NOT) + (NUMS | TRUE | FALSE | FUNCTION | identifier | Group(Suppress(Literal("(")) + OPERATION + Suppress(Literal(")"))).setResultsName("OPERATIONFIELD") |  CHAINBETTENQUOTE)).setResultsName("FIELD")
 
 """-----------------SIMPLEFUNCTION-------------------------"""
 SIMPLEFUNCTION = Group(identifier.setResultsName('nameDEFFUNCTION') + Suppress(lpar) + Group(
@@ -142,7 +144,7 @@ SIMPLEFUNCTION = Group(identifier.setResultsName('nameDEFFUNCTION') + Suppress(l
 PASS = Group(Literal("pass")).setResultsName("PASS")
 
 """-----------------OPERACIONES---------------------"""
-OPERATION = Group(FIELDS + OneOrMore( (SRMD | ORAND) + FIELDS)).setResultsName("OPERATION")
+OPERATION << Group(FIELDS + OneOrMore( (SRMD | ORAND) + FIELDS)).setResultsName("OPERATION")
 
 """-----------------CONDICIONES---------------------"""
 COMPOP = Group(( OPERATION | FIELDS ) + COMP + ( OPERATION | FIELDS )).setResultsName("COMPOP")
@@ -298,6 +300,8 @@ def __process(line, list_var=[], text="", index=0):
         text = __processASSIG(line, text, index)
     elif TYPE is 'OPERATION':
         text = __processOP(line, text, index)
+    elif TYPE is 'OPERATIONFIELD':
+        text = __processOPF(line, text, index)
     elif TYPE is 'FUNCTION':
         text = __processFUNCTION(line, text, index)
     elif TYPE is 'SIMPLEFUNCTION':
@@ -449,6 +453,11 @@ def __processOP(line, text="", index=0):
     #     text += __process(field) + " "
     return text
 
+def __processOPF(line, text="", index=0):
+    text += "(" + " ".join([__process(field) for field in line]) + ")"
+    # for field in line:
+    #     text += __process(field) + " "
+    return text
 
 def __processCOMPOP(line, text="", index=0):
     for field in line:
