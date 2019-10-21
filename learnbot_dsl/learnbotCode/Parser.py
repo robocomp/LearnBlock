@@ -3,6 +3,7 @@
 from __future__ import print_function, absolute_import
 
 import sys, traceback
+import itertools
 from pyparsing import *
 
 HEADER = """
@@ -406,6 +407,15 @@ def __processWHILE(line, text="", index=0):
     return text
 
 
+def __findUsedVar(var, lines):
+    for l in lines:
+        if type(l) is list:
+            if __findUsedVar(var, l):
+                return True
+        if var in l:
+            return True
+    return False    
+
 def __processWHEN(line, list_var, text="", index=0):
     global ini, list_when
     name = str(line.nameWHEN[0])
@@ -424,6 +434,17 @@ def when_<NAME>():
     variables = list(set([name + "_start", "time_" + name] + __listVariables(line)))
     states = ["state_" + x for x in list_when if x!="start"]
     variables = list_var #variables + states
+
+    globalVariables = list(set([name + "_start", "time_" + name, "state_" + name]))
+    for v in [x for x in list_when if x!="start"]:
+        if __findUsedVar(v, line.asList()):
+            if "time_"+v not in globalVariables:
+                globalVariables.append("time_"+v)
+            if "state_"+v not in globalVariables:
+                globalVariables.append("state_"+v)
+#    print(globalVariables)
+#    print("-----------")
+
     text += whenText.replace("<GLOBALSVARIABLES>", ", ".join(variables))
     for cline in line.content:
         text = __process(cline, [], text, index) + "\n"
