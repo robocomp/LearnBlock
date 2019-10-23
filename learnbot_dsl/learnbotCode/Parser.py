@@ -248,11 +248,12 @@ def __generatePy(lines):
         text = "\n" + imports + loadLibraryCode
     global list_when
     list_when = [x.nameWHEN[0] for x in lines if x.getName() is "WHEN"]
+    global list_var
     list_var=[x.nameVAR[0] for x in lines if x.getName() is 'VAR']
-    for x in list_when:
-        list_var.append("time_" + str(x))
-        list_var.append(str(x) + "_start")
-        list_var.append("state_" + x)
+#    for x in list_when:
+#        list_var.append("time_" + str(x))
+#        list_var.append(str(x) + "_start")
+#        list_var.append("state_" + x)
     global ini
     for x in lines:
         if x.getName() is "MAIN" and len(list_when)>0 or x.getName() is "IMPORT":
@@ -369,6 +370,9 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 
 def __processASSIG(line, text="", index=0):
     text += "<TABHERE>" * index + line.nameVAR[0] + " " + line[1] + " " + __process(line[2])
+    global list_var
+    if line.nameVAR[0] not in list_var:
+        list_var.append(line.nameVAR[0])
     return text
 
 
@@ -431,21 +435,21 @@ def when_<NAME>():
         index += 2
     else:
         index += 1
-    variables = list(set([name + "_start", "time_" + name] + __listVariables(line)))
     states = ["state_" + x for x in list_when if x!="start"]
-    variables = list_var #variables + states
 
     globalVariables = list(set([name + "_start", "time_" + name, "state_" + name]))
-    for v in [x for x in list_when if x!="start"]:
+    for v in [x for x in list_when]:
         if __findUsedVar(v, line.asList()):
             if "time_"+v not in globalVariables:
                 globalVariables.append("time_"+v)
             if "state_"+v not in globalVariables:
                 globalVariables.append("state_"+v)
-#    print(globalVariables)
-#    print("-----------")
 
-    text += whenText.replace("<GLOBALSVARIABLES>", ", ".join(variables))
+    for v in [x for x in list_var]:
+        if __findUsedVar(v, line.asList()) and v not in globalVariables:
+            globalVariables.append(v)
+
+    text += whenText.replace("<GLOBALSVARIABLES>", ", ".join(globalVariables))
     for cline in line.content:
         text = __process(cline, [], text, index) + "\n"
 
