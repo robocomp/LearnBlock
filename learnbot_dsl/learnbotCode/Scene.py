@@ -112,6 +112,7 @@ class MyScene(QtWidgets.QGraphicsScene):
             self.dictVisualItem[id].delete()
         self.dictVisualItem = {}
         self.dicBlockItem = {}
+        self.view.viewport().update()
 
     def startAllblocks(self):
         for id in self.dictVisualItem:
