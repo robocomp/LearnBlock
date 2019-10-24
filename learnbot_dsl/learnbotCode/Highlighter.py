@@ -48,7 +48,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
         self.highlightingRules = [(QtCore.QRegExp(pattern), keywordFormat) for pattern in keywordsOrange]
 
         keywordFormatMagenta = QtGui.QTextCharFormat()
-        keywordFormatMagenta.setForeground(QtGui.QBrush(QtGui.QColor(154, 0, 162, 255)))
+        keywordFormatMagenta.setForeground(QtGui.QBrush(QtGui.QColor(230, 0, 162, 255)))
         keywordsMagenta = [
                       "\\bnot\\b",
                       "\\bTrue\\b",

@@ -73,7 +73,7 @@ OBRACE, CBRACE, SEMI, OPAR, CPAR = map(Literal, "{};()")
 reserved_words = (Keyword('def') | Keyword('=') | Keyword('function') | Keyword('>=') | Keyword('<=') | Keyword(
     '<') | Keyword('>') | Keyword('deactivate') | Keyword('activate') | Keyword('not') | Keyword('True') | Keyword(
     'False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword(
-    'elif') | Keyword('when') | Keyword('while') | Keyword('end'))
+    'elif') | Keyword('when') | Keyword('while') | Keyword('end') | Keyword('None'))
 iden = Word(initChars=alphas, bodyChars=alphanums + "_")
 identifier = Group(~reserved_words + iden).setResultsName("IDENTIFIER")
 
@@ -213,11 +213,24 @@ def __listVariables(tree):
     l = []
     for k in tree:
         if isinstance(k, ParseResults):
-            l += __listVariables(k)
+            lA = __listVariables(k)
+            for x in lA:
+                if x not in l:
+                    l.append(x)
             if len(k) > 0 and not isinstance(k[0], ParseResults) and k.getName() in ["IDENTIFIER", "nameVAR"]:
-                l.append(k[0])
-    l = [x for x in l if not x.startswith("time_")]
+                if k[0] not in l:
+                    l.append(k[0])
     return l
+
+def __findUsedVar(var, lines):
+    for l in lines:
+        if type(l) is list:
+            if __findUsedVar(var, l):
+                return True
+        if var in l:
+            return True
+    return False    
+
 
 def __parserFromFile(file):
     with open(file) as f:
@@ -248,8 +261,7 @@ def __generatePy(lines):
         text = "\n" + imports + loadLibraryCode
     global list_when
     list_when = [x.nameWHEN[0] for x in lines if x.getName() is "WHEN"]
-    global list_var
-    list_var=[x.nameVAR[0] for x in lines if x.getName() is 'VAR']
+    list_var=__listVariables(lines)
 #    for x in list_when:
 #        list_var.append("time_" + str(x))
 #        list_var.append(str(x) + "_start")
@@ -334,7 +346,8 @@ def __processFIELD(line, text="", index=0):
 def __processDEF(line, list_var, text="", index=0):
     text += "\ndef " + line.nameDEFFUNCTION[0] + "():\n"
     for x in list_var:
-        text += "<TABHERE>" * index + "global " + x + "\n"
+        if __findUsedVar(x, line.asList()):
+            text += "<TABHERE>" * index + "global " + x + "\n"
     for field in line.content:
         text = __process(field, [], text, index) + "\n\n"
     return text
@@ -370,9 +383,6 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 
 def __processASSIG(line, text="", index=0):
     text += "<TABHERE>" * index + line.nameVAR[0] + " " + line[1] + " " + __process(line[2])
-    global list_var
-    if line.nameVAR[0] not in list_var:
-        list_var.append(line.nameVAR[0])
     return text
 
 
@@ -410,15 +420,6 @@ def __processWHILE(line, text="", index=0):
     index -= 1
     return text
 
-
-def __findUsedVar(var, lines):
-    for l in lines:
-        if type(l) is list:
-            if __findUsedVar(var, l):
-                return True
-        if var in l:
-            return True
-    return False    
 
 def __processWHEN(line, list_var, text="", index=0):
     global ini, list_when
