@@ -744,8 +744,8 @@
     <message numerus="yes">
         <location filename="../../guis/Learnblock.py" line="527"/>
         <source>MainWindow</source>
-        <translation>
-            <numerusform>Learnblock 2.0</numerusform>
+        <translation type="unfinished">
+            <numerusform>LearnBlock3.0</numerusform>
             <numerusform>%n</numerusform>
         </translation>
     </message>

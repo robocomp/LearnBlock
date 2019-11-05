@@ -4,7 +4,7 @@
 
 ![Learnblock icono](<sharepath>/imgs/Learnbot_ico.png)
 
-Learnblock es una herramienta educativa diseñada para que niños y niñas aprenda a programar a través de la robótica.
+Learnblock es una herramienta educativa diseñada para que niños y niñas aprendan a programar a través de la robótica.
 Incluye diferentes formas de programación:
 
  * Programación visual.

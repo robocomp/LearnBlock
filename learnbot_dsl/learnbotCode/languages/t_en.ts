@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="en" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="en">
 <context>
     <name>Dialog</name>
     <message numerus="yes">
@@ -702,7 +703,7 @@
         <location filename="../../guis/Learnblock.py" line="527"/>
         <source>MainWindow</source>
         <translation>
-            <numerusform>Learnblock 2.0</numerusform>
+            <numerusform>LearnBlock3.0</numerusform>
             <numerusform>%n</numerusform>
         </translation>
     </message>
