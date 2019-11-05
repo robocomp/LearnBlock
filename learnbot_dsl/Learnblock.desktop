@@ -1,9 +1,9 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Learnblock
+Name=LearnBlock
 Comment=
-Exec=/usr/local/bin/Learnblock
+Exec=/usr/local/bin/LearnBlock
 Icon=Learnbot_ico.png
 Path=
 Terminal=false

@@ -4,6 +4,7 @@ from PySide2 import QtGui, QtWidgets, QtCore
 import learnbot_dsl.guis.CreateBlock as CreateBlock
 from learnbot_dsl.blocksConfig.blocks import pathBlocks
 from learnbot_dsl.blocksConfig.parserConfigBlock import pathConfig
+from learnbot_dsl.blocksConfig.parserConfigBlock import getOrigNameBlock
 from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.toQImage import *
 from learnbot_dsl.functions import getFuntions
@@ -17,10 +18,7 @@ for base, dirs, files in os.walk(pathBlocks):
             archivo, extension = os.path.splitext(f)
             if archivo in ["block1", "block3", "block4"]:
                 listBlock.append(os.path.join(base,f))
-                listNameBlocks.append(archivo)
-
-listBlock.sort()
-listNameBlocks.sort()
+                listNameBlocks.append(getOrigNameBlock(archivo))
 
 listTypeBlock = ["express",
                  "motor",

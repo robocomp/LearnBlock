@@ -12,7 +12,7 @@ from learnbot_dsl.learnbotCode.AbstractBlock import *
 from learnbot_dsl.learnbotCode.Button import *
 from learnbot_dsl.learnbotCode.Scene import *
 from learnbot_dsl.learnbotCode.View import *
-from learnbot_dsl.blocksConfig.parserConfigBlock import reload_functions
+from learnbot_dsl.blocksConfig.parserConfigBlock import *
 from learnbot_dsl.blocksConfig import pathConfig
 from learnbot_dsl.learnbotCode.checkFile import compile
 from learnbot_dsl.learnbotCode.dialogAddNumberOrString import *
@@ -63,11 +63,11 @@ class DownloadThread(QtCore.QThread):
 
 
 class DownloadingWindow(QtWidgets.QWidget):
-    def __init__(self, parent, text, titel):
+    def __init__(self, parent, text, title):
         QtWidgets.QWidget.__init__(self)
         self.parent = parent
         vbox = QtWidgets.QVBoxLayout()
-        self.setWindowTitle(titel)
+        self.setWindowTitle(title)
         label = QtWidgets.QLabel(text)
         label.setAlignment(QtCore.Qt.AlignCenter)
         vbox.addWidget(label)
@@ -196,6 +196,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.ui = Learnblock.Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowTitle("LearnBlock3.0")
 
         self.showMaximized()
 
@@ -1034,7 +1035,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.ui.deleteWhenpushButton.setEnabled(False)
             self.ui.deleteVarPushButton.setEnabled(False)
             self.ui.deleteFuntionsPushButton.setEnabled(False)
-            self.setWindowTitle("Learnblock2.0")
+            self.setWindowTitle("LearnBlock3.0")
         else:
             msgBox = QtWidgets.QMessageBox()
             msgBox.setWindowTitle(self.tr("Warning"))
@@ -1069,7 +1070,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         for b in self.listButtons:
             b.updateImg()
         if isinstance(self.__fileProject, str):
-            self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+            self.setWindowTitle("LearnBlock3.0 " + self.__fileProject)
         if self.help is not None:
             del self.help
 
@@ -1190,6 +1191,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 variables.append(Variable(dict=copy.copy(v)))
         funtionType, HUE = type2Values[b["type"]]
         for img in b["img"]:
+            img = renameBlock(img)
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
             table = self.dicTables[b["category"]]
             table.insertRow(table.rowCount())
@@ -1244,7 +1246,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 self.__fileProject = file
                 self.saveInstance()
         else:
-            self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+            self.setWindowTitle("LearnBlock3.0 " + self.__fileProject)
             with open(self.__fileProject, 'wb') as fichero:
                 dic = copy.deepcopy(self.scene.dicBlockItem)
                 for id in dic:
@@ -1292,7 +1294,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                     self.listBackUps = []
                     self.index = -1
                 if self.__fileProject is not None:
-                    self.setWindowTitle("Learnblock2.0 " + self.__fileProject)
+                    self.setWindowTitle("LearnBlock3.0 " + self.__fileProject)
                 with open(file, 'rb') as fichero:
                     d = pickle.load(fichero)
                     # Load Libraries

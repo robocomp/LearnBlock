@@ -53,7 +53,7 @@ setup(name="learnbot_dsl",
       },
       license="GPL",
       scripts=[
-          'learnbot_dsl/learnbotCode/Learnblock',
+          'learnbot_dsl/learnbotCode/LearnBlock',
           'learnbot_dsl/components/apriltag/src/aprilTag.py',
           'learnbot_dsl/components/emotionrecognition2/src/emotionrecognition2.py'],
       packages=find_packages(where=".", exclude=['learnbot_components*']),

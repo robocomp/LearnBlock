@@ -6,6 +6,8 @@ from learnbot_dsl.blocksConfig.blocks import pathBlocks as pathImgBlocks
 
 pathConfig = os.path.dirname(os.path.realpath(__file__))
 
+renamedB = {"blockVertical":"block1", "blockBoth":"block3", "blockLeft":"block4"}
+
 
 def reload_functions(selected_path=None):
     blocks = None
@@ -37,6 +39,16 @@ def reload_functions(selected_path=None):
 #                b["img"][i] = os.path.join(pathImgBlocks, b["img"][i])
 
     return blocks
+
+def renameBlock(name):
+    if name in renamedB.keys():
+        return renamedB[name]
+    return name
+
+def getOrigNameBlock(name):
+    if name in renamedB.values():
+        return list(renamedB.keys())[list(renamedB.values()).index(name)]
+    return name
 
 
 if __name__ == '__main__':
