@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/help.ui',
-# licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/help.ui' applies.
+# Form implementation generated from reading ui file 'help.ui',
+# licensing of 'help.ui' applies.
 #
-# Created: Thu Mar  7 12:39:25 2019
-#      by: pyside2-uic  running on PySide2 5.12.1
+# Created: Thu Nov  7 19:55:19 2019
+#      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -31,7 +31,7 @@ class Ui_Help(object):
         sizePolicy.setHeightForWidth(self.treeWidget.sizePolicy().hasHeightForWidth())
         self.treeWidget.setSizePolicy(sizePolicy)
         self.treeWidget.setObjectName("treeWidget")
-        self.treeWidget.headerItem().setText(0, "1")
+        self.treeWidget.headerItem().setText(0, "Fast guide to LearnBlock")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.splitter)
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
@@ -47,9 +47,9 @@ class Ui_Help(object):
         self.horizontalLayoutButtons.addWidget(self.pushButtonPrevious)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayoutButtons.addItem(spacerItem)
-        self.pushButtoNext = QtWidgets.QPushButton(self.verticalLayoutWidget)
-        self.pushButtoNext.setObjectName("pushButtoNext")
-        self.horizontalLayoutButtons.addWidget(self.pushButtoNext)
+        self.pushButtonNext = QtWidgets.QPushButton(self.verticalLayoutWidget)
+        self.pushButtonNext.setObjectName("pushButtonNext")
+        self.horizontalLayoutButtons.addWidget(self.pushButtonNext)
         self.verticalLayout.addLayout(self.horizontalLayoutButtons)
         self.horizontalLayout.addWidget(self.splitter)
 
@@ -59,5 +59,5 @@ class Ui_Help(object):
     def retranslateUi(self, Help):
         Help.setWindowTitle(QtWidgets.QApplication.translate("Help", "Help", None, -1))
         self.pushButtonPrevious.setText(QtWidgets.QApplication.translate("Help", "Previous", None, -1))
-        self.pushButtoNext.setText(QtWidgets.QApplication.translate("Help", "Next", None, -1))
+        self.pushButtonNext.setText(QtWidgets.QApplication.translate("Help", "Next", None, -1))
 

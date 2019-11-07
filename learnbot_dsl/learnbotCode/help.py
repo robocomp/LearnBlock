@@ -56,6 +56,9 @@ class helper(Ui_Help,QtWidgets.QDialog):
         else:
             self.empty = True
 
+        self.pushButtonPrevious.clicked.connect(self.webView.back)
+        self.pushButtonNext.clicked.connect(self.webView.forward)
+
     def getItems(self,path_):
         listItems = []
         for name in os.listdir(path_):
