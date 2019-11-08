@@ -2,11 +2,11 @@
 
 # Block programming
 
-To create a program using blocks, you have to select the blocks from the lists of the left. Lists of blocks are organized in different categories according to the functionality of the blocks. To select a block from a certain category, just click on the corresponding tag.
+To create a program using blocks, you have to select the blocks from the lists of the left. The lists of blocks are organized in different categories according to the functionality of the blocks. To select a block from a certain category, just click on the corresponding tab. You can also search for a block using the tab "Search".
 
 ![LearnBlock programming GUI](<sharepath>/imgs/block_programming.png)
 
-Once a block has been clicked, it appears on the program editor (central pane). Then, the block can be move to connect it to other block. A right click on the block shows a contextual menu though which the block can be edited, duplicated or deleted.
+Once a block has been clicked, it appears on the program editor (central pane). Then, the block can be move to connect it to other block. A right click on the block shows a contextual menu through which the block can be edited, duplicated or deleted.
 
 ![Contextual menu of block](<sharepath>/imgs/block_operations.png)
 

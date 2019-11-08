@@ -2,7 +2,7 @@
 
 # Programación con bloques
 
-Para crear un programa usando bloques, debes seccionar los bloques de las listas disponibles a la izquierda. Estas listas de bloques están organizadas en diferentes categorías de acuerdo con la funcionalidad de los bloques que contienen. Para seleccionar un bloque de una cierta categoría, haz clic en la pestaña correspondiente.
+Para crear un programa usando bloques, debes seleccionar los bloques de las listas disponibles a la izquierda. Estas listas de bloques están organizadas en diferentes categorías de acuerdo con la funcionalidad de los bloques que contienen. Para seleccionar un bloque de una cierta categoría, haz clic en la pestaña correspondiente. También puedes buscar un bloque utilizando la pestaña "Buscar".
 
 ![LearnBlock programming GUI](<sharepath>/imgs/block_programming_ES.png)
 

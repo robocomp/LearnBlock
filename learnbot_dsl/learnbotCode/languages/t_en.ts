@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="en">
+<!DOCTYPE TS><TS version="2.0" language="en" sourcelanguage="">
 <context>
     <name>Dialog</name>
     <message numerus="yes">
@@ -412,7 +411,7 @@
 <context>
     <name>Help</name>
     <message numerus="yes">
-        <location filename="../../guis/help.py" line="60"/>
+        <location filename="../../guis/help.py" line="59"/>
         <source>Help</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -435,116 +434,124 @@
             <numerusform></numerusform>
         </translation>
     </message>
+    <message numerus="yes">
+        <location filename="../../guis/help.py" line="60"/>
+        <source>Fast guide to LearnBlock</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
 </context>
 <context>
     <name>LearnBlock</name>
     <message>
-        <location filename="../LearnBlock.py" line="590"/>
+        <location filename="../LearnBlock.py" line="591"/>
         <source>The libraries directory will be </source>
         <translation>The libraries directory will be created in </translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="481"/>
+        <location filename="../LearnBlock.py" line="482"/>
         <source>Add Client</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="481"/>
+        <location filename="../LearnBlock.py" line="482"/>
         <source>Python File(*.py)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="624"/>
+        <location filename="../LearnBlock.py" line="625"/>
         <source>Choose workspace directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1861"/>
+        <location filename="../LearnBlock.py" line="1852"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="589"/>
+        <location filename="../LearnBlock.py" line="590"/>
         <source>Workspace is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="568"/>
+        <location filename="../LearnBlock.py" line="569"/>
         <source>The working directory will be created in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="632"/>
+        <location filename="../LearnBlock.py" line="633"/>
         <source>Choose the libraries directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="647"/>
+        <location filename="../LearnBlock.py" line="648"/>
         <source>Donwloading Libraries files please wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="647"/>
+        <location filename="../LearnBlock.py" line="648"/>
         <source>Donwloading Libraries</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="698"/>
+        <location filename="../LearnBlock.py" line="699"/>
         <source>Your computer does not have an internet connection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="667"/>
+        <location filename="../LearnBlock.py" line="668"/>
         <source>Donwloading Examples files please wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="667"/>
+        <location filename="../LearnBlock.py" line="668"/>
         <source>Donwloading Examples</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="687"/>
+        <location filename="../LearnBlock.py" line="688"/>
         <source>Donwloading XML&apos;s files please wait</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="687"/>
+        <location filename="../LearnBlock.py" line="688"/>
         <source>Donwloading XML&apos;s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="742"/>
+        <location filename="../LearnBlock.py" line="743"/>
         <source>Load Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="755"/>
+        <location filename="../LearnBlock.py" line="756"/>
         <source>The library has already been imported.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="756"/>
+        <location filename="../LearnBlock.py" line="757"/>
         <source>Do you want select another library?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1338"/>
+        <location filename="../LearnBlock.py" line="1340"/>
         <source>The document has been modified.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1339"/>
+        <location filename="../LearnBlock.py" line="1341"/>
         <source>Do you want to save your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="844"/>
+        <location filename="../LearnBlock.py" line="845"/>
         <source>You should check connection the physical robot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="900"/>
+        <location filename="../LearnBlock.py" line="898"/>
         <source>Your code has an error. Check it out again</source>
         <translation type="unfinished"></translation>
     </message>
@@ -569,37 +576,37 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1262"/>
+        <location filename="../LearnBlock.py" line="1264"/>
         <source>Save Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1281"/>
+        <location filename="../LearnBlock.py" line="1283"/>
         <source>Block Project file (*.blockProject)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1281"/>
+        <location filename="../LearnBlock.py" line="1283"/>
         <source>Open Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1826"/>
+        <location filename="../LearnBlock.py" line="1817"/>
         <source>Error the name can not be &apos;start&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1863"/>
+        <location filename="../LearnBlock.py" line="1854"/>
         <source>Error Name is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1835"/>
+        <location filename="../LearnBlock.py" line="1826"/>
         <source>This name is reserved</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1854"/>
+        <location filename="../LearnBlock.py" line="1845"/>
         <source>The name can&apos;t start by number</source>
         <translation type="unfinished"></translation>
     </message>
@@ -609,77 +616,77 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1845"/>
+        <location filename="../LearnBlock.py" line="1836"/>
         <source>This name already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1120"/>
+        <location filename="../LearnBlock.py" line="1121"/>
         <source>Select Directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="416"/>
+        <location filename="../LearnBlock.py" line="417"/>
         <source>Not available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="418"/>
+        <location filename="../LearnBlock.py" line="419"/>
         <source>The help is not available for the selected language. We apologize for the inconveniences.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1130"/>
+        <location filename="../LearnBlock.py" line="1131"/>
         <source>The config file </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1130"/>
+        <location filename="../LearnBlock.py" line="1131"/>
         <source> already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1131"/>
+        <location filename="../LearnBlock.py" line="1132"/>
         <source>Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1351"/>
+        <location filename="../LearnBlock.py" line="1353"/>
         <source>Load Block-Text code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1360"/>
+        <location filename="../LearnBlock.py" line="1362"/>
         <source>Block-Text file (*.bt)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1360"/>
+        <location filename="../LearnBlock.py" line="1362"/>
         <source>Save Block-Text code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1371"/>
+        <location filename="../LearnBlock.py" line="1373"/>
         <source>Load Python code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1381"/>
+        <location filename="../LearnBlock.py" line="1383"/>
         <source>Python file (*.py)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1381"/>
+        <location filename="../LearnBlock.py" line="1383"/>
         <source>Save Python code</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1393"/>
+        <location filename="../LearnBlock.py" line="1395"/>
         <source>Select directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../LearnBlock.py" line="1399"/>
+        <location filename="../LearnBlock.py" line="1401"/>
         <source>Select a block configuration file</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1592,42 +1599,42 @@ to load the updates close and reopen the program.</source>
 <context>
     <name>VisualBlock</name>
     <message>
-        <location filename="../VisualBlock.py" line="218"/>
+        <location filename="../VisualBlock.py" line="224"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="223"/>
+        <location filename="../VisualBlock.py" line="229"/>
         <source>Export Block</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="227"/>
+        <location filename="../VisualBlock.py" line="233"/>
         <source>Duplicate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="232"/>
+        <location filename="../VisualBlock.py" line="238"/>
         <source>Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="241"/>
+        <location filename="../VisualBlock.py" line="247"/>
         <source>Select Library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="248"/>
+        <location filename="../VisualBlock.py" line="254"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="250"/>
+        <location filename="../VisualBlock.py" line="256"/>
         <source>This module already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="251"/>
+        <location filename="../VisualBlock.py" line="257"/>
         <source>Do you want to overwrite the changes?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1637,7 +1644,7 @@ to load the updates close and reopen the program.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../VisualBlock.py" line="396"/>
+        <location filename="../VisualBlock.py" line="402"/>
         <source>Constant</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1658,7 +1665,22 @@ to load the updates close and reopen the program.</source>
     </message>
     <message>
         <location filename="../VisualBlock.py" line="180"/>
-        <source>text</source>
+        <source>string</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="195"/>
+        <source>boolean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="201"/>
+        <source>list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../VisualBlock.py" line="207"/>
+        <source>apriltext</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1678,52 +1700,52 @@ to load the updates close and reopen the program.</source>
 <context>
     <name>guiCreateBlock</name>
     <message>
-        <location filename="../guiCreateBlock.py" line="216"/>
+        <location filename="../guiCreateBlock.py" line="214"/>
         <source>This name already exists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="193"/>
+        <location filename="../guiCreateBlock.py" line="191"/>
         <source>Select configuration file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="246"/>
+        <location filename="../guiCreateBlock.py" line="244"/>
         <source>Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="208"/>
+        <location filename="../guiCreateBlock.py" line="206"/>
         <source>Block name is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="224"/>
+        <location filename="../guiCreateBlock.py" line="222"/>
         <source>Images of block is empty</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="232"/>
+        <location filename="../guiCreateBlock.py" line="230"/>
         <source>Name of variable already exists, name is empty or default value is empty.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="240"/>
+        <location filename="../guiCreateBlock.py" line="238"/>
         <source>No valid configuration file was chosen</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="301"/>
+        <location filename="../guiCreateBlock.py" line="299"/>
         <source>Block created</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="303"/>
+        <location filename="../guiCreateBlock.py" line="301"/>
         <source>New Python file created at </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../guiCreateBlock.py" line="248"/>
+        <location filename="../guiCreateBlock.py" line="246"/>
         <source>Block category is empty</source>
         <translation type="unfinished"></translation>
     </message>

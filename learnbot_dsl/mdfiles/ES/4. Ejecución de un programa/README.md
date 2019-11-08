@@ -1,18 +1,18 @@
 <a name="Init"></a>
 
-# Program execution
+# Ejecución de un programa
 
-To run your program you have to select a specific robot from the combo box situated beside the button "Add robot". If the robot in which you want to run the program is not displayed in the list, you can try to add it pressing that button. If the robot is configurable, you can set its attributes using the button "Configure robot".
+Para ejecutar un programa, debe seleccionar un robot específico de la lista situada junto al botón "Añadir robot". Si el robot en el que quiere ejecutar su programa no aparece en la lista, puede intentar añadirlo pulsando sobre dicho botón. Si el robot es configurable, puede cambiar sus atributos utilizando el botón "Configurar robot".
 
- ![Start program](<sharepath>/imgs/start_program.png)
+ ![Start program](<sharepath>/imgs/start_program_ES.png)
 
-Once the robot has been selected, you can start the execution of the program pressing the button "Start". The image bellow shows the execution of the program of the previous image in the simulated EBO robot using the RCIS simulator.
+Después de seleccionar un robot concreto, puede iniciar la ejecución del programa pulsando sobre el botón "Iniciar". La siguiente imagen muestra un instante de la ejecución del programa mostrado previamente en el robot EBO simulado bajo RCIS .
 
  ![Program running](<sharepath>/imgs/program_running.png)
  
- The program can be stopped when desired by pressing the button "Stop". It makes the program ends and stops the base of the robot to prevent it from any damage. The program execution can be resumed at any moment by clicking again on the "Start" button.
+ El programa puede interrumpirse cuando se desee pulsando sobre el botón "Parar". Con esto se consigue, no sólo que el programa finalice, sino tambien que la base del robot se pare para evitar posibles daños. La ejecución del programa puede reanudarse en cualquier momento pulsando de nuevo sobre el botón "Iniciar".
  
- ![Stop program](<sharepath>/imgs/stop_program.png) 
+ ![Stop program](<sharepath>/imgs/stop_program_ES.png) 
  
 [Init^](#Init)
 

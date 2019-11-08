@@ -18,7 +18,7 @@ LearnBlock es independiente de la plataforma, es decir, puede usarse para progra
  * Thymio
  * EV3
  
-Asimismo,  LearBlock puede usarse con versiones de EBO y EV3 bajo los simuladores RCIS y V-REP, respectivamente.
+Asimismo,  LearBlock puede usarse con versiones simuladas de EBO y EV3 bajo los simuladores RCIS y V-REP, respectivamente.
  
 [Init^](#Init)
 

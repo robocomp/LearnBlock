@@ -34,7 +34,7 @@
       </property>
       <column>
        <property name="text">
-        <string notr="true">Fast guide to LearnBlock</string>
+        <string>Fast guide to LearnBlock</string>
        </property>
       </column>
      </widget>

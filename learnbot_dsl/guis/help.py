@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'help.ui',
 # licensing of 'help.ui' applies.
 #
-# Created: Thu Nov  7 19:55:19 2019
+# Created: Fri Nov  8 18:48:53 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -31,7 +31,6 @@ class Ui_Help(object):
         sizePolicy.setHeightForWidth(self.treeWidget.sizePolicy().hasHeightForWidth())
         self.treeWidget.setSizePolicy(sizePolicy)
         self.treeWidget.setObjectName("treeWidget")
-        self.treeWidget.headerItem().setText(0, "Fast guide to LearnBlock")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.splitter)
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
@@ -58,6 +57,7 @@ class Ui_Help(object):
 
     def retranslateUi(self, Help):
         Help.setWindowTitle(QtWidgets.QApplication.translate("Help", "Help", None, -1))
+        self.treeWidget.headerItem().setText(0, QtWidgets.QApplication.translate("Help", "Fast guide to LearnBlock", None, -1))
         self.pushButtonPrevious.setText(QtWidgets.QApplication.translate("Help", "Previous", None, -1))
         self.pushButtonNext.setText(QtWidgets.QApplication.translate("Help", "Next", None, -1))
 

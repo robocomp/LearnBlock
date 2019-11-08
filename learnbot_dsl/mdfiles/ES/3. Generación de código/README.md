@@ -1,6 +1,6 @@
 <a name="Init"></a>
 
-# Code generation
+# Generación de código
 
 Una vez que el programa de bloques se ha creado, es posible generar el código textual equivalente utilizando el botón "Convertir bloques a texto" o la opción correspondiente del menú "Proyecto". Los programas obtenidos en Block-Text y Python pueden visualizarse seleccionando las pestañas correspondientes.
 
