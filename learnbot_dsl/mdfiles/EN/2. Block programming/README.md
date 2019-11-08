@@ -2,7 +2,7 @@
 
 # Block programming
 
-To create a program using blocks, you have to select the blocks from the lists of the left. Lists of blocks are organized in different categories according to the functionality of the block. To select a block from a certain category, just click on the corresponding tag.
+To create a program using blocks, you have to select the blocks from the lists of the left. Lists of blocks are organized in different categories according to the functionality of the blocks. To select a block from a certain category, just click on the corresponding tag.
 
 ![LearnBlock programming GUI](<sharepath>/imgs/block_programming.png)
 
@@ -14,6 +14,13 @@ The edit option of the contextual menu is used to specify values of the paramete
 
 ![Block edition](<sharepath>/imgs/block_edition.png)
 
+The "Block" menu provides different options to select the sets of blocks that will be used for programming. Among the different options, one can select the visible blocks for the available categories using the option "Select visible blocks". In addition, it is possible to save the current sets of blocks or load them from file.
+
+![Block menu](<sharepath>/imgs/block_menu.png)
+
+Besides these options, it is possible to create a new block from a Python function using the option "Create a new block". In addition to writing the code of the block from the dialog, you will need to specify different attributes of the new block for its configuration (name of the function, name of the block, parameters, block shapes, ...)
+
+![Block menu](<sharepath>/imgs/create_new_block.png)
  
 [Init^](#Init)
 

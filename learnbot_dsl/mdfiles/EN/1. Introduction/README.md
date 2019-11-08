@@ -14,12 +14,12 @@ Robots can be programmed using different forms of programming:
 LearnBlock is robot-agnostic, i.e., it can be used to program different robots. Currently, the 
 following physical robots can be used with Learnblock:
 
- * EBO (and its simulator)
+ * EBO
  * Cozmo
  * Thymio
  * EV3
  
- In addition, LearnBlock can be used to program simulated versions of EBO and EV3 under RCIS and V-REP.
+ In addition, LearnBlock can be used to program simulated versions of EBO and EV3 under RCIS and V-REP, respectively.
  
 [Init^](#Init)
 
