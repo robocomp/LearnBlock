@@ -223,6 +223,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
         self.ui.SearchlineEdit.textChanged.connect(lambda: self.searchUpdate(self.ui.SearchlineEdit.text()))
         self.ui.addClientPushButton.clicked.connect(self.addClient)
+        self.ui.configRobotPushButton.clicked.connect(self.configureRobot)
         # Actions
         self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
         self.ui.actionSave.triggered.connect(self.saveInstance)
@@ -479,10 +480,13 @@ class LearnBlock(QtWidgets.QMainWindow):
             tempfile.tempdir = aux
 
     def addClient(self):
-        file, ext = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Add Client'), os.getenv('HOME'),
+        file, ext = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Add Client'), PATHCLIENT,
                                                           self.tr('Python File(*.py)'))
         if file != "":
             shutil.copyfile(file, os.path.join(os.getenv('HOME'), ".learnblock", "clients", os.path.basename(file)))
+            cfgFile = os.path.splitext(file)[0] + ".cfg"
+            if os.path.isfile(cfgFile):
+                shutil.copyfile(cfgFile, os.path.join(os.getenv('HOME'), ".learnblock", "clients", os.path.basename(cfgFile)))
             self.updateClients()
 
     def updateClients(self):
