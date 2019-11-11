@@ -3,44 +3,29 @@
 
 ---
 
-# _We suggest using the version-2 branch_
-[Learnbot v 2.0](http://robocomp.org)
+[LearnBlock v 3.0](http://robocomp.org)
 ===============================
-LearnBot is a social low cost robot that has been designed in to  the  area  of  educational  robotics  for  promoting  the  development of  computational  thinking  in  diferent  educational  stages,  specically through the learning of the Python language. It has being entirely built using a robotics framework developed by our Robotic Laboratory.
+LearnBlock is an educational programming tool for programming learning. It has been designed to facilitate the learning process starting with a visual programming language and progressing towards a professional programming language.
 
-But Learnbot is part of a more ambitious ecosystem, Learnblock, which is being  created  as  a  facilitator  environment  to  encourage  current  teacher swith out programming knowledge to learn the basics of programming, it is a IDE similar to Scrach, at least into a level where they can introduce their students into the digital world.
+LearnBlock is robot-agnostic, i.e. the same program can be executed in several robots. Clients for new robots can be easily created adding device interfaces and implementing hardware access methods for those interfaces. Examples of existing clients can be found [here](https://github.com/robocomp/LearnBlock/tree/version-3/learnbot_dsl/Clients)
 
-# Project aims
+# Main features
 
-The mains aims of the project are the follows:
+Among other features, LearnBlock includes the following:
 
-* To teach to kids:
-    * Programing.
-    * Math.
-    * Logic.
-    * Emotions.
-    * Robotics.
-    * Languages.
-    * Physics.
+* Available for different physical robots (EBO, Cozmo, Thymio and EV3) and simulated ones (EBO under RCIS and EV3 under V-REP).
+* Robots can be programmed using different languages: visual language, Block-Text (textual representation of the visual language) and Python.
+* New blocks can be created from code (Python) using the tool itself or external tools.
+* A program can be run and stopped at any moment. When a program is interrupted the robot is properly stopped and disconnected. 
     
 
-# Manuals Learnbot!
-1. [Documentation](../../wiki)
-2. Enjoy!
+# Installation
 
-# Citting
-1. Code2bot: Una propuesta de comunidad de aprendizaje de la programación basada en robots. JM Haut, N García, M Paoletti, P Bustos. XXIII Jornadas de Tecnologías Educativas, JUTE. Badajoz, 2015.
-
-# Publications
-1. Code2bot: Una propuesta de comunidad de aprendizaje de la programación basada en robots. JM Haut, N García, M Paoletti, P Bustos. XXIII Jornadas de Tecnologías Educativas, JUTE. Badajoz, 2015.
-2. Code2Bot, a social robot for the classroom. JM Haut, P Bustos, M Paoletti, N Garcia. Conference of the Spanish Association for Artificial Intelligence, CAEPIA. Albacete, 2015.
-3. LearnBot: aprendizaje colaborativo con robots. E Paoletti, M Paoletti, JM Haut, N García, P Bustos. Workshop: Investigar en Ciencias. Badajoz, 2016.
-4. LearnBot: aprendiendo el pasado con nuevas tecnologías. E Paoletti, M Paoletti, JM Haut, N García, P Bustos. Workshop: Investigar en Ciencias. Badajoz, 2016.
 
 
 # Contributing
 Thanks for your interest in contributing code!
-If you find an error or some improvement, I'd appreciate you told me. Please, use [this template](https://github.com/robocomp/learnbot/blob/91275d466a7d4269f8451047b3928c9c65d3f363/PULL_REQUEST_TEMPLATE)
+If you find an error or some improvement, I'd appreciate you told me. Please, use [this template](https://github.com/robocomp/LearnBlock/blob/91275d466a7d4269f8451047b3928c9c65d3f363/PULL_REQUEST_TEMPLATE)
 
 ---------------------------------------------------------------------
 Drop comments and ask questions in:
@@ -48,7 +33,7 @@ Drop comments and ask questions in:
 - https://groups.google.com/forum/?hl=es#!forum/robocomp-dev
 - https://gitter.im/robocomp/robocomp
 
-Please, report any bugs to pbustos@unex.es
+Please, report any bugs to pilarb@unex.es
 
 
 
