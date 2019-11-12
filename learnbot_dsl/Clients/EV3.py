@@ -26,7 +26,11 @@ class Robot(Client):
         self.start()
 
     def connectToRobot(self):
-        self. conn = rpyc.classic.connect('192.168.0.113')  # host name or IP address of the EV3
+        configRobot = {}
+        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "EV3.cfg"), "rb") as f:
+            configRobot = json.loads(f.read())
+        robotIP = configRobot["RobotIP"]
+        self. conn = rpyc.classic.connect(robotIP)  # host name or IP address of the EV3
         self.ev3Motor = self.conn.modules['ev3dev2.motor']  # import ev3dev.ev3 remotely
         LEFT_MOTOR = self.ev3Motor.OUTPUT_B
         RIGHT_MOTOR = self.ev3Motor.OUTPUT_D
