@@ -140,13 +140,13 @@ class Robot(Client):
     def deviceMove(self, SAdv, SRot):
         SRot_rad = math.radians(SRot)
         if SRot_rad != 0.:
-            Rrot = SAdv / math.tan(SRot_rad)
+            Rrot = SAdv / SRot_rad
 
             Rl = Rrot - (L / 2)
-            l_wheel_speed = SRot_rad * Rl * K
+            l_wheel_speed = SRot_rad * Rl * 2
 
             Rr = Rrot + (L / 2)
-            r_wheel_speed = SRot_rad * Rr * K
+            r_wheel_speed = SRot_rad * Rr * 2
         else:
             l_wheel_speed = SAdv * K
             r_wheel_speed = SAdv * K
