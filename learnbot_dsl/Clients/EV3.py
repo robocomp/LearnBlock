@@ -44,7 +44,7 @@ class Robot(Client):
 
 
     def disconnect(self):
-        self.ev3Base.on(left_speed=0, right_speed=0)
+        self.ev3Base.stop()
 
     def deviceBaseMove(self, SAdv, SRot):
         SRot_rad = math.radians(SRot)        
