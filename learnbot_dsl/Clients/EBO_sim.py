@@ -253,8 +253,6 @@ class Face(threading.Thread):
 
 class Robot(Client):
 
-    devicesAvailables = ["base", "camera", "display", "distancesensors", "jointmotor"]
-
     def __init__(self):
         self.connectToRobot()
         Client.__init__(self)

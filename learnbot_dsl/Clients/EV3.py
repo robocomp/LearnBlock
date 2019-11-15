@@ -11,8 +11,6 @@ MAXSPEED = 1000
 
 class Robot(Client):
 
-    devicesAvailables = ["base","distancesensors", "groundsensors", "gyroscope"]
-
     def __init__(self):
         Client.__init__(self, _miliseconds=100)
         self.ev3Motor = None

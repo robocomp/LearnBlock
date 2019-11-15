@@ -72,7 +72,6 @@ class Robot(Client):
         'base':  'V_LEGO_EV3'
     }
 
-    devicesAvailables = ["base","distancesensors", "groundsensors", "gyroscope"]
 
     def __init__(self):
         Client.__init__(self, _miliseconds=100)

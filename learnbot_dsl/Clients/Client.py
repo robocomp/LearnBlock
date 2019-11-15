@@ -42,20 +42,34 @@ def connectComponent(stringProxy, _class, tries=4):
                 time.sleep(1.5)
     return proxy
 
-class Client(Thread):
+class MetaClient(type):
+    def __call__(cls, *args, **kwargs):
+        print("__call__")
+        obj = cls.__new__(cls, *args, **kwargs)
+        if "availableFunctions" in kwargs:
+            del kwargs["availableFunctions"]
+        obj.__init__(*args, **kwargs)
+        return obj
 
-    devicesAvailables = []
+class Client(Thread, metaclass=MetaClient):
 
     def __new__(cls, *args, **kwargs):
+        print("__new__")
+        usedFuncts = []
+        if "availableFunctions" in kwargs:
+            usedFuncts = kwargs.pop('availableFunctions')
+        print("availableFunctions", usedFuncts)
         functions = getFuntions()
         for k, v in iter(functions.items()):
-            if v["type"] in cls.devicesAvailables + ["basics"]:
+            if not usedFuncts or k in usedFuncts:
+#            if v["type"] in cls.devicesAvailables + ["basics"]:
                 print("add ", k, v["type"])
                 setattr(Client, k, v["function"])
         instance = super(Client, cls).__new__(cls, *args, **kwargs)
         return instance
 
     def __init__(self,_miliseconds=100):
+        print("__init__")
         Thread.__init__(self)
         self.__stop_event = Event()
 

@@ -15,8 +15,10 @@ from <Client> import Robot
 import signal
 import sys
 
+usedFunctions = <USEDFUNCTIONS>
+
 try:
-<TABHERE>robot = Robot()
+<TABHERE>robot = Robot(availableFunctions = usedFunctions)
 except Exception as e:
 <TABHERE>print("Problems creating a robot instance")
 <TABHERE>traceback.print_exc()
@@ -252,8 +254,11 @@ def __parserFromString(text):
         print(pe)
 
 list_when = []
+usedFunctions = []
 
 def __generatePy(lines):
+    global usedFunctions
+    usedFunctions = []
     text = "\n"
     imports = ['"' + x[0] + '"' for x in lines if x.getName() is 'IMPORT']
     if len(imports)>0:
@@ -356,6 +361,9 @@ def __processDEF(line, list_var, text="", index=0):
 def __processFUNCTION(line, text="", index=0):
     if text is not "":
         text += "<TABHERE>" * index
+    global usedFunctions
+    if line.nameFUNCTION[0] not in usedFunctions:
+        usedFunctions.append(line.nameFUNCTION[0])
     text += "robot." + line.nameFUNCTION[0] + "("
     text += ",".join([__process(x) for x in line.args])
     # for x in line.args:
@@ -570,6 +578,8 @@ def parserLearntBotCodeOnlyUserFuntion(code):
     return text
 
 def parserLearntBotCode(inputFile, outputFile, client_name):
+    global usedFunctions
+
     try:
         tree = __parserFromFile(inputFile)
     except Exception as e:
@@ -581,7 +591,7 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
     text += endOfProgram
     text = cleanCode(_code=text)
 
-    header = HEADER.replace('<Client>', client_name)
+    header = HEADER.replace('<Client>', client_name).replace("<USEDFUNCTIONS>", str(usedFunctions))
     header = cleanCode(_code=header)
     if text is not "":
         with open(outputFile, 'w') as f:
@@ -592,6 +602,8 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
         return False
 
 def parserLearntBotCodeFromCode(code, name_client):
+    global usedFunctions
+
     try:
         tree = __parserFromString(code)
     except Exception as e:
@@ -602,8 +614,9 @@ def parserLearntBotCodeFromCode(code, name_client):
     text += __generatePy(tree)
     text += endOfProgram
     text = cleanCode(_code=text)
-    header = HEADER.replace('<Client>', name_client)
+    header = HEADER.replace('<Client>', name_client).replace("<USEDFUNCTIONS>", str(usedFunctions))
     header = cleanCode(_code=header)
+
     if text is not "":
         return header + text
     else:

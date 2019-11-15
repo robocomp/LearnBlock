@@ -110,8 +110,6 @@ print("Name of the file is:", name_thymiohandlers)
 
 class Robot(Client):
 
-    devicesAvailables = ["base", "display", "distancesensors", "groundsensors","acelerometer"]
-
     def __init__(self):
         Client.__init__(self, _miliseconds=100)
         self.lastCommand = False
