@@ -1194,7 +1194,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             for v in b["variables"]:
                 variables.append(Variable(dict=copy.copy(v)))
         funtionType, HUE = type2Values[b["type"]]
-        for img in b["img"]:
+        for img in b["shape"]:
             img = renameBlock(img)
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
             table = self.dicTables[b["category"]]

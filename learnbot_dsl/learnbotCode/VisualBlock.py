@@ -274,7 +274,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 dictBlock = {}
                 dictBlock["name"] = self.parentBlock.name
                 dictBlock["type"] = "library"
-                dictBlock["img"] = ["block1"]
+                dictBlock["shape"] = ["blockVertical"]
                 with open(os.path.join(path, self.parentBlock.name + ".conf"),'w') as f:
                     json.dump([dictBlock], f)
                 # Save script learnCode

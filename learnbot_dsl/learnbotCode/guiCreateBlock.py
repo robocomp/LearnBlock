@@ -268,7 +268,7 @@ class guiCreateBlock(QtWidgets.QDialog):
             listImgs = []
             for img in self.listImg:
                 listImgs.append(img)
-            dictBlock["img"] = listImgs
+            dictBlock["shape"] = listImgs
             
             if self.ui.tableWidgetlanguages.rowCount() is not 0:
                 dictLanguages = {}

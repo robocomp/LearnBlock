@@ -59,7 +59,7 @@ class Library(QtWidgets.QWidget):
             variables = []
             funtionType = LIBRARY
             HUE = HUE_LIBRARY
-            for img in b["img"]:
+            for img in b["shape"]:
                 img = os.path.join(imgPath, img)
                 blockType, connections = loadConfigBlock(img)
                 table = self.ui.tableLibrary
