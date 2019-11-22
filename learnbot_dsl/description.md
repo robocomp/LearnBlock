@@ -24,6 +24,6 @@ To use all the features of LearnBlock, you will need to install additional softw
     
 Then, you can easily install LearnBlock by running the following command:
 
-    sudo pip install learnbot-dsl
+    sudo pip install learnblock
     
 

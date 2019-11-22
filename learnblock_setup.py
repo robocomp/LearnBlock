@@ -112,7 +112,7 @@ setup(name="learnblock",
           'future>=0.16.0'
           ],
       )
-if os.path.exists("build.learnbot_dsl"):
-    shutil.rmtree("build.learnbot_dsl")
+if os.path.exists("build.learnblock"):
+    shutil.rmtree("build.learnblock")
 if os.path.exists("build"):
-    shutil.move("build", 'build.learnbot_dsl')
+    shutil.move("build", 'build.learnblock')
