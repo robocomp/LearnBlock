@@ -55,8 +55,9 @@ setup(name="learnblock",
       scripts=[
           'learnbot_dsl/learnbotCode/LearnBlock'#,
 #          'learnbot_dsl/components/apriltag/src/aprilTag.py',
-#          'learnbot_dsl/components/emotionrecognition2/src/emotionrecognition2.py'],
-      packages=find_packages(where=".", exclude=['learnbot_components*', 'learnbot_dsl/components*']),
+#          'learnbot_dsl/components/emotionrecognition2/src/emotionrecognition2.py'
+      ],
+      packages=find_packages(where=".", exclude=['learnbot_components*', '*assets*']),
       include_package_data=True,
       package_data={'': ["*"], 'learnbot_dsl': ["*", "interfaces/*", "*.md"]},
       data_files=data_files,
