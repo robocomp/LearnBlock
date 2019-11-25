@@ -75,7 +75,7 @@ class Client(Thread, metaclass=MetaClient):
 
         # Variables of Emotion Recognition
         self.__emotion_current_exist = False
-        self.__currents_emotions = []
+        self.__current_emotions = []
         self.__currentEmotion = Emotions.NoneEmotion
         self.__Acelerometers = {}
         self.__Bases = {}
@@ -400,9 +400,9 @@ class Client(Thread, metaclass=MetaClient):
             frame.height = img.shape[1]
             frame.depth = img.shape[2]
             frame.image = np.fromstring(img, np.uint8)
-            self.currents_emotions = self.__emotionrecognition_proxy.processimage(frame)
+            self.__current_emotions = self.__emotionrecognition_proxy.processimage(frame)
             self.__emotion_current_exist = True
-        return self.currents_emotions
+        return self.__current_emotions
 
     def __del__(self):
             self.active = False
