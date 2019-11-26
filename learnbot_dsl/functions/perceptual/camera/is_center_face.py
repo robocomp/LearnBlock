@@ -8,7 +8,8 @@ import visual_auxiliary as va
 
 def is_center_face(lbot):
     frame = lbot.getImage()
-    mat = va.detect_face(frame)
-    if mat[1][1] is not 0:
-        return True
+    if frame is not None:
+        mat = va.detect_face(frame)
+        if mat[1][1] is not 0:
+            return True
     return False

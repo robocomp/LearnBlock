@@ -1,3 +1,7 @@
 
 def is_moving_straight(lbot):
-	return lbot.getRot() is 0 and lbot.getAdv() > 0
+	rot = lbot.getRot()
+	adv = lbot.getAdv()
+	if rot is not None and adv is not None:
+		return rot is 0 and adv > 0
+	return False

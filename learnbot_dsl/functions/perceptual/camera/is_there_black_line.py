@@ -8,7 +8,8 @@ import numpy as np
 
 def is_there_black_line(lbot):
     frame = lbot.getImage()
-    rois = va.detect_black_line(frame)
-    if rois[np.argmax(rois)] > 20:
-        return True
+    if frame is not None:
+        rois = va.detect_black_line(frame)
+        if rois[np.argmax(rois)] > 20:
+            return True
     return False

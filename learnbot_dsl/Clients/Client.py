@@ -259,8 +259,6 @@ class Client(Thread, metaclass=MetaClient):
         if _keyBase in self.__Bases:
             time.sleep(0)
             self.__Bases[_keyBase].move(vAdvance, vRotation)
-        else:
-            return None
 
     def getAdv(self, _keyBase = "ROBOT"):
         if _keyBase in self.__Bases:
@@ -281,8 +279,6 @@ class Client(Thread, metaclass=MetaClient):
             time.sleep(0)
             self.__currentEmotion = _keyEmotion
             self.__Displays[_keyDisplay].setEmotion(_keyEmotion)
-        else:
-            return None
 
     def getCurrentEmotion(self):
         time.sleep(0)
@@ -292,22 +288,16 @@ class Client(Thread, metaclass=MetaClient):
         if _keyDisplay in self.__Displays:
             time.sleep(0)
             self.__Displays[_keyDisplay].setImage(_img)
-        else:
-            return None
 
     def setJointAngle(self, _angle, _keyJoint = "ROBOT"):
         if _keyJoint in self.__JointMotors:
             time.sleep(0)
             self.__JointMotors.get(_keyJoint).sendAngle(_angle)
-        else:
-            return None
 
     def setLedState(self, _status, _keyLed = "ROBOT"):
         if _keyLed in self.__Leds:
             time.sleep(0)
             self.__Leds.get(_keyLed).setState(_status)
-        else:
-            return None
 
     def getAcelerometer(self, _keyAcel = "ROBOT"):
         if _keyAcel in self.__Acelerometers:
@@ -327,22 +317,16 @@ class Client(Thread, metaclass=MetaClient):
         if _keyGyro in self.__Gyroscopes:
             time.sleep(0)
             self.__Gyroscopes[_keyGyro].reset()
-        else:
-            return None
 
     def speakText(self,_text, _keySpeaker = "ROBOT"):
         if _keySpeaker in self.__Speakers:
             time.sleep(0)
             self.__Speakers[_keySpeaker].sendText(_text)
-        else:
-            return None
 
     def sendAudio(self, _audioData, _keySpeaker = "ROBOT"):
         if _keySpeaker in self.__Speakers:
             time.sleep(0)
             self.__Speakers[_keySpeaker].sendAudio(_audioData)
-        else:
-            return None
 
     def getImage(self, _keyCam = "ROBOT"):
         if _keyCam in self.__Cameras:
@@ -388,7 +372,8 @@ class Client(Thread, metaclass=MetaClient):
         else:
             return None
 
-    def listTags(self):
+    def listTags(self, _keyCam="ROBOT"):
+        self.__detectAprilTags(_keyCam)
         return self.__listAprilIDs
 
     def getEmotions(self, _keyCam = "ROBOT"):

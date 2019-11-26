@@ -7,7 +7,8 @@ import visual_auxiliary as va
 
 def is_down_face(lbot):
     frame = lbot.getImage()
-    mat = va.detect_face(frame)
-    if mat[2][0] is not 0 or mat[2][1] is not 0 or mat[2][2] is not 0:
-        return True
+    if frame is not None:
+        mat = va.detect_face(frame)
+        if mat[2][0] is not 0 or mat[2][1] is not 0 or mat[2][2] is not 0:
+            return True
     return False

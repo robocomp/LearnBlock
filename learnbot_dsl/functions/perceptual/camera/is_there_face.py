@@ -7,9 +7,10 @@ import visual_auxiliary as va
 
 def is_there_face(lbot):
     frame = lbot.getImage()
-    mat = va.detect_face(frame)
-    for row in mat:
-        for cell in row:
-            if cell == 1:
-                return True
+    if frame is not None:
+        mat = va.detect_face(frame)
+        for row in mat:
+            for cell in row:
+                if cell == 1:
+                    return True
     return False

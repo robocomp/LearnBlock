@@ -8,7 +8,8 @@ import numpy as np
 
 def is_there_red_line(lbot):
     frame = lbot.getImage()
-    rois = va.detect_red_line(frame)
-    if rois[np.argmax(rois)]>20:
-        return True
+    if frame is not None:
+        rois = va.detect_red_line(frame)
+        if rois[np.argmax(rois)]>20:
+            return True
     return False
