@@ -2,26 +2,36 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 from threading import Thread, Lock, Event
-import numpy as np, copy, sys, time, Ice, os, subprocess, psutil, json
+import numpy as np, copy, sys, time, os, subprocess, json
 from learnbot_dsl.Clients.Devices import *
 from learnbot_dsl import PATHINTERFACES
 from datetime import timedelta
 from learnbot_dsl.functions import getFuntions
 from learnbot_dsl.learnbotCode import getAprilTextDict
-__ICEs = ["EmotionRecognition.ice", "Apriltag.ice" ]
-__icePaths = []
-path = os.path.dirname(os.path.realpath(__file__))
-__icePaths.append(PATHINTERFACES)
 
-for ice in __ICEs:
-    for p in __icePaths:
-        if os.path.isfile(os.path.join(p, ice)):
-            wholeStr = ' -I' + p + " --all " + os.path.join(p, ice)
-            Ice.loadSlice(wholeStr)
-            break
+global IceLoaded
 
-import RoboCompEmotionRecognition
-import RoboCompApriltag
+try:
+    import Ice
+    IceLoaded = True
+except ImportError as e:
+    IceLoaded = False
+
+if IceLoaded:    
+    __ICEs = ["EmotionRecognition.ice", "Apriltag.ice" ]
+    __icePaths = []
+    path = os.path.dirname(os.path.realpath(__file__))
+    __icePaths.append(PATHINTERFACES)
+
+    for ice in __ICEs:
+        for p in __icePaths:
+            if os.path.isfile(os.path.join(p, ice)):
+                wholeStr = ' -I' + p + " --all " + os.path.join(p, ice)
+                Ice.loadSlice(wholeStr)
+                break
+
+    import RoboCompEmotionRecognition
+    import RoboCompApriltag
 
 
 def connectComponent(stringProxy, _class, tries=4):
@@ -91,30 +101,36 @@ class Client(Thread, metaclass=MetaClient):
         self.__apriltag_current_exist = False
         self.__listAprilIDs = []
         self.__posAprilTags = {}
+        self.aprilTextDict = getAprilTextDict()
 
-        self.__apriltagRunning = True
-        self.__emotionRecRunning = True
-
+        self.__apriltagRunning = False
+        self.__emotionRecRunning = False
 
         self.__period = timedelta(milliseconds=_miliseconds)
-        try:
-            subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
-        except Exception as e:
-            self.__apriltagRunning = False
 
-        try:
-            subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
-        except Exception as e:
-            self.__emotionRecRunning = False
+    def __launchComponents(self):
+        global IceLoaded
 
-        # Remote object connection for EmotionRecognition
-        if self.__emotionRecRunning:
-            self.__emotionrecognition_proxy = connectComponent("emotionrecognition:tcp -h localhost -p 10006", RoboCompEmotionRecognition.EmotionRecognitionPrx)
-        # Remote object connection for AprilTag
-        if self.__apriltagRunning:
-            self.__apriltagProxy = connectComponent("apriltag:tcp -h localhost -p 25000", RoboCompApriltag.ApriltagPrx)
-        # self.start()
-        self.aprilTextDict = getAprilTextDict()
+        if IceLoaded:
+            try:
+                subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
+                self.__apriltagRunning = True
+            except Exception as e:
+                self.__apriltagRunning = False
+
+            try:
+                subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+                self.__emotionRecRunning = True
+            except Exception as e:
+                self.__emotionRecRunning = False
+
+            # Remote object connection for EmotionRecognition
+            if self.__emotionRecRunning:
+                self.__emotionrecognition_proxy = connectComponent("emotionrecognition:tcp -h localhost -p 10006", RoboCompEmotionRecognition.EmotionRecognitionPrx)
+            # Remote object connection for AprilTag
+            if self.__apriltagRunning:
+                self.__apriltagProxy = connectComponent("apriltag:tcp -h localhost -p 25000", RoboCompApriltag.ApriltagPrx)
+
 
     def disconnect(self):
         raise NotImplementedError()
@@ -145,6 +161,9 @@ class Client(Thread, metaclass=MetaClient):
             raise Exception("_Camera is of type "+ type(_Camera) + " and must be of type Camera")
         else:
             self.__Cameras[_key] = _Camera
+            if not self.__apriltagRunning or not self.__emotionRecRunning:
+                self.__launchComponents()
+
 
     def addDisplay(self, _Display, _key = "ROBOT"):
 
