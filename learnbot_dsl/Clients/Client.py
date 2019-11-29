@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 from threading import Thread, Lock, Event
-import numpy as np, copy, sys, time, Ice, os, subprocess, json
+import numpy as np, copy, sys, time, Ice, os, subprocess, psutil, json
 from learnbot_dsl.Clients.Devices import *
 from learnbot_dsl import PATHINTERFACES
 from datetime import timedelta
@@ -92,19 +92,27 @@ class Client(Thread, metaclass=MetaClient):
         self.__listAprilIDs = []
         self.__posAprilTags = {}
 
+        self.__apriltagRunning = True
+        self.__emotionRecRunning = True
+
+
         self.__period = timedelta(milliseconds=_miliseconds)
         try:
             subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
         except Exception as e:
-            print("Error aprilTag.py", e)
+            self.__apriltagRunning = False
+
         try:
             subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
         except Exception as e:
-            print("Error aprilTag.py", e)
+            self.__emotionRecRunning = False
+
         # Remote object connection for EmotionRecognition
-        self.__emotionrecognition_proxy = connectComponent("emotionrecognition:tcp -h localhost -p 10006", RoboCompEmotionRecognition.EmotionRecognitionPrx)
+        if self.__emotionRecRunning:
+            self.__emotionrecognition_proxy = connectComponent("emotionrecognition:tcp -h localhost -p 10006", RoboCompEmotionRecognition.EmotionRecognitionPrx)
         # Remote object connection for AprilTag
-        self.__apriltagProxy = connectComponent("apriltag:tcp -h localhost -p 25000", RoboCompApriltag.ApriltagPrx)
+        if self.__apriltagRunning:
+            self.__apriltagProxy = connectComponent("apriltag:tcp -h localhost -p 25000", RoboCompApriltag.ApriltagPrx)
         # self.start()
         self.aprilTextDict = getAprilTextDict()
 
@@ -337,7 +345,7 @@ class Client(Thread, metaclass=MetaClient):
 
     def __detectAprilTags(self, _keyCam = "ROBOT"):
         if _keyCam in self.__Cameras:
-            if not self.__apriltag_current_exist:
+            if self.__apriltagRunning and not self.__apriltag_current_exist:
                 img = self.__Cameras[_keyCam].getImage()
                 frame = RoboCompApriltag.TImage()
                 frame.width = img.shape[0]
@@ -377,7 +385,7 @@ class Client(Thread, metaclass=MetaClient):
         return self.__listAprilIDs
 
     def getEmotions(self, _keyCam = "ROBOT"):
-        if not self.__emotion_current_exist and _keyCam in self.__Cameras:
+        if self.__emotionRecRunning and not self.__emotion_current_exist and _keyCam in self.__Cameras:
             time.sleep(0)
             img = self.__Cameras[_keyCam].getImage()
             frame = RoboCompEmotionRecognition.TImage()
