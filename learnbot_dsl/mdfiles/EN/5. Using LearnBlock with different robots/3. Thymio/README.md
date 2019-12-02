@@ -2,9 +2,19 @@
 
 # Thymio
 
-To use EBO, you will need to install RoboComp (https://github.com/robocomp/robocomp).
+Using Thymio with LearnBlock requires for the installation of gobject and aseba. For Python3 gobject can be installed as follows:
 
-After installing RoboComp and powering on the robot, you will need to connect your computer to the wifi network of the robot (SSID: Learnbot02 ; Password: Learnbot02). Once the connection is established, EBO is available to run a program created using LearnBlock (see the section [Program execution](<hidepath>/EN/4. Program execution/README.html).
+    sudo pip3 install PyGObject
+
+To install aseba, you can run the following command:
+
+    sudo apt-get install aseba
+
+Be sure that the dongle of the robot is properly attached to a USB port of your computer. Then run the following command on a terminal:
+
+    sudo asebamedulla "ser:name=Thymio-II" 
+
+After that you can run programs created with LearnBlock on the Thymio robot (see the section [Program execution](<hidepath>/EN/4. Program execution/README.html)).
  
 [Init^](#Init)
 
