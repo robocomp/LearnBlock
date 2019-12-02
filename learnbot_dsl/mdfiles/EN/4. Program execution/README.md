@@ -16,4 +16,4 @@ Once the robot has been selected, you can start the execution of the program pre
  
 [Init^](#Init)
 
-[< Prev >](<hidepath>/EN/3. Code generation/README.html)
+[< Prev ](<hidepath>/EN/3. Code generation/README.html), [Next >](<hidepath>/EN/5. Using LearnBlock with different robots/README.html)
