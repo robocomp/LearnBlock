@@ -20,4 +20,4 @@ Tanto el programa Block-Text como el programa Python pueden modificarse desde lo
  
 [Init^](#Init)
 
-[< Prev ](<hidepath>/ES/2. Programación con bloques/README.html), [Next >](<hidepath>/ES/4. Ejecución de un programa/README.html)
+[< Prev ](<hidepath>/ES/2. Programar con bloques en LearnBlock/README.html), [Next >](<hidepath>/ES/4. Ejecutar un programa desde LearnBlock/README.html)

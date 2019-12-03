@@ -20,10 +20,10 @@ Among other features, Learnblock includes the following:
 
 To use all the features of LearnBlock, you will need to install additional software by executing the following command:
 
-    sudo apt-get install python3-zeroc-ice
+    sudo apt install python3-zeroc-ice
     
 Then, you can easily install LearnBlock by running the following command:
 
-    sudo pip install learnblock
+    sudo pip3 install learnblock
     
 

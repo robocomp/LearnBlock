@@ -333,6 +333,11 @@ class LearnBlock(QtWidgets.QMainWindow):
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                 f.write("")
 
+        new_sizes = self.ui.splitter.sizes()
+        size = sum(new_sizes)
+        self.ui.splitter.setSizes([233, size - 233])
+        self.pre_sizes = self.ui.splitter.sizes()
+
         self.confBlocksPath = None
         self.loadConfigFile()
         self.menuOpenRecent = QtWidgets.QMenu()
@@ -351,11 +356,6 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.client = None
         self.isOpen = True
         self.savetmpProject()
-
-        new_sizes = self.ui.splitter.sizes()
-        size = sum(new_sizes)
-        self.ui.splitter.setSizes([233, size - 233])
-        self.pre_sizes = self.ui.splitter.sizes()
 
         # Execute the application
         # subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)

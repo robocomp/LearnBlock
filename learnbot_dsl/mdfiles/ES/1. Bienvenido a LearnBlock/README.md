@@ -22,4 +22,4 @@ Asimismo,  LearBlock puede usarse con versiones simuladas de EBO y EV3 bajo los 
  
 [Init^](#Init)
 
-[< Next >](<hidepath>/ES/2. Programación con bloques/README.html)
+[< Next >](<hidepath>/ES/2. Programar con bloques en LearnBlock/README.html)

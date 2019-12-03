@@ -16,4 +16,4 @@ Después de seleccionar un robot concreto, puede iniciar la ejecución del progr
  
 [Init^](#Init)
 
-[< Prev >](<hidepath>/ES/3. Generación de código/README.html)
+[< Prev >](<hidepath>/ES/3. De bloques a texto/README.html)

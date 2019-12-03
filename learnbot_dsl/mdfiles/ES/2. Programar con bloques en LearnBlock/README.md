@@ -24,4 +24,4 @@ Además de estas opciones, LearnBlock permite crear un nuevo bloque a partir de 
  
 [Init^](#Init)
 
-[< Prev ](<hidepath>/ES/1. Introducción/README.html) , [Next >](<hidepath>/ES/3. Generación de código/README.html)
+[< Prev ](<hidepath>/ES/1. Bienvenido a LearnBlock/README.html) , [Next >](<hidepath>/ES/3. De bloques a texto/README.html)
