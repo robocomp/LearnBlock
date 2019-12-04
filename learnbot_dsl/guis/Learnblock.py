@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'Learnblock.ui',
 # licensing of 'Learnblock.ui' applies.
 #
-# Created: Sun Sep 15 17:02:53 2019
+# Created: Wed Dec  4 13:45:15 2019
 #      by: pyside2-uic  running on PySide2 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -519,6 +519,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuHelp.menuAction())
 
         self.retranslateUi(MainWindow)
+        self.language.setCurrentIndex(1)
         self.Tabwi.setCurrentIndex(2)
         self.functions.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)

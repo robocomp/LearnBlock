@@ -562,7 +562,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             with open(self.confFile, 'wb') as confFile:
                 while True:
                     self.workSpace = QtWidgets.QFileDialog.getExistingDirectory(self,
-                                                                                self.tr('Choose workspace directory'),
+                                                                                self.tr('Choose a workspace directory'),
                                                                                 os.environ.get('HOME'),
                                                                                 QtWidgets.QFileDialog.ShowDirsOnly)
                     if self.workSpace is "":
@@ -571,13 +571,13 @@ class LearnBlock(QtWidgets.QMainWindow):
                         msgBox.setIcon(QtWidgets.QMessageBox.Warning)
                         msgBox.setText(self.tr("Workspace is empty"))
                         msgBox.setInformativeText(
-                            self.tr("The working directory will be created in") + os.path.join(os.environ.get('HOME'),
-                                                                                               "learnbotWorkSpace"))
+                            self.tr("The workspace directory will be created in") + os.path.join(os.environ.get('HOME'),
+                                                                                               "learnblockWorkSpace"))
                         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
                         msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
                         ret = msgBox.exec_()
                         if ret == QtWidgets.QMessageBox.Ok:
-                            self.workSpace = os.path.join(os.environ.get('HOME'), "learnbotWorkSpace")
+                            self.workSpace = os.path.join(os.environ.get('HOME'), "learnblockWorkSpace")
                             os.mkdir(self.workSpace)
                             break
                     else:
@@ -585,14 +585,14 @@ class LearnBlock(QtWidgets.QMainWindow):
                         break
                 while True:
                     self.libraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr(
-                        'Choose the libraries directory'), os.environ.get('HOME'),
+                        'Choose a directory for libraries'), os.environ.get('HOME'),
                                                                                   QtWidgets.QFileDialog.ShowDirsOnly)
                     if self.libraryPath is "":
                         msgBox = QtWidgets.QMessageBox()
                         msgBox.setWindowTitle(self.tr("Warning"))
                         msgBox.setIcon(QtWidgets.QMessageBox.Warning)
                         msgBox.setText(self.tr("Workspace is empty"))
-                        msgBox.setInformativeText(self.tr("The libraries directory will be ") + os.environ.get('HOME'))
+                        msgBox.setInformativeText(self.tr("The directory for libraries will be ") + os.environ.get('HOME'))
                         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
                         msgBox.setDefaultButton(QtWidgets.QMessageBox.Cancel)
                         ret = msgBox.exec_()
@@ -626,7 +626,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
 
     def changeWorkSpace(self):
-        newworkSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose workspace directory'),
+        newworkSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose a workspace directory'),
                                                                   self.workSpace,
                                                                   QtWidgets.QFileDialog.ShowDirsOnly)
         if newworkSpace is "":
@@ -634,7 +634,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.workSpace = newworkSpace
 
     def changeLibraryPath(self):
-        newlibraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose the libraries directory'),
+        newlibraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose a directory for libraries'),
                                                                     self.libraryPath,
                                                                     QtWidgets.QFileDialog.ShowDirsOnly)
         if newlibraryPath is "":

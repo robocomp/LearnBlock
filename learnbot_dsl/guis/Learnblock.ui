@@ -145,6 +145,9 @@
           <height>16777215</height>
          </size>
         </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
         <item>
          <property name="text">
           <string>ES</string>
