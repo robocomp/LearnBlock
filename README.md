@@ -35,7 +35,7 @@ If you want to install LearnBlock from sources, the following packages must be i
 
     git clone https://github.com/robocomp/LearnBlock.git
 
-Edit your ~/.bashrc file
+Edit your ~/.bashrc file:
 
     gedit ~/.bashrc
 
