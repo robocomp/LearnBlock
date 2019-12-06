@@ -25,7 +25,9 @@ LearnBlock can be installed from PyPi or from sources. To install the last relea
 
 If you want to install LearnBlock from sources, the following packages must be installed:
 
-    sudo apt install cmake python3-zeroc-ice
+    sudo apt update
+
+    sudo apt install python3-pip cmake python3-zeroc-ice
 
     sudo pip3 install apriltag requests pyunpack opencv-python-headless imutils six tensorflow dlib paramiko Pillow paho_mqtt PySide2 pyparsing qdarkstyle future
 
@@ -47,7 +49,7 @@ Update the bash process by typing:
 
 Copy the following files to /usr/local/bin:
 
-    sudo cp -p ~/LearnBlock/learnbot\_dsl/learnbotCode/LearnBlock ~/LearnBlock/learnbot\_dsl/components/apriltag/src/aprilTag.py ~/LearnBlock/learnbot\_dsl/components/emotionrecognition2/src/emotionrecognition2.py /usr/local/bin
+    sudo cp -p ~/LearnBlock/learnbot_dsl/learnbotCode/LearnBlock ~/LearnBlock/learnbot_dsl/components/apriltag/src/aprilTag.py ~/LearnBlock/learnbot_dsl/components/emotionrecognition2/src/emotionrecognition2.py /usr/local/bin
 
 You can now start LearnBlock by typing *LearnBlock*
 
