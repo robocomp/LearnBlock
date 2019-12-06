@@ -1,8 +1,8 @@
 <a name="Init"></a>
 
-# Simulated EBO under RCIS
+# EBO simulado en RCIS
 
-To used the simulated version of EBO, you will need to install [RoboComp](https://github.com/robocomp/robocomp). Then, you can directly start the simulator using the option “Start EBO Simulator” of the menu “Robot Tools” of LearnBlock. Simulated scenes for EBO can be downloaded using the option “Download xmls” from the “Robot Tools” menu. Once the simulator is running, you can test programs created with LearnBlock in the simulated version of EBO (ver la sección [Ejecutar un programa desde LearnBlock](<hidepath>/ES/4. Ejecutar un programa desde LearnBlock/README.html)).
+Para utilizar la versión simulada del robot EBO, es necesario que instale [RoboComp](https://github.com/robocomp/robocomp). Una vez que se haya completado la instalación, puede iniciar el simulador desde LearnBlock seleccionando la opción "Arrancar el Simulador de EBO" del menu "Herramientas". Puede descargar diferentes escenarios simulados para EBO mediante la opción "Descargar xmls" del menú "Herramientas". Una vez iniciado el simulador, puede probar a ejecutar programas desde LearnBlock en la versión simulada de EBO (ver la sección [Ejecutar un programa desde LearnBlock](<hidepath>/ES/4. Ejecutar un programa desde LearnBlock/README.html)).
  
 [Init^](#Init)
 

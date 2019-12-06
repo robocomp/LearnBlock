@@ -2,11 +2,11 @@
 
 # EV3
 
-To use EV3 with LearnBlock you need to install ev3dev on your EV3 robot. The required steps for that can be found in [https://www.ev3dev.org/docs/getting-started/](https://www.ev3dev.org/docs/getting-started/).
+Para utilizar el robot EV3 con LearnBlock, es necesario que instale el sistema *ev3dev* en su robot. Los pasos necesarios para ello están disponibles en el siguiente enlace: [https://www.ev3dev.org/docs/getting-started/](https://www.ev3dev.org/docs/getting-started/).
 
-For remote communication between your computer and the robot, you will need to install RPyC following the steps described in [https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/rpyc.html](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/rpyc.html).
+Para resolver la comunicación remota entre su ordenador y el robot, es necesario que instale *RPyC* en ambos, tal y como se describe en [https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/rpyc.html](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/rpyc.html).
 
-Be sure that both, the robot and your computer, are connected to the same wifi network. Then, run LearnBlock and, after adding the robot EV3 using the option “Add Robot”, click on the button “Configure Robot” and set the attribute “RobotIP” to the IP address displayed on the screen of the EV3 robot. Now, the robot is ready for running programs created from LearnBlock (ver la sección [Ejecutar un programa desde LearnBlock](<hidepath>/ES/4. Ejecutar un programa desde LearnBlock/README.html)).
+Asegurese de que tanto el robot como el ordenador están conectados a la misma red wifi. Ejecute LearnBlock y, tras añadir el robot EV3 utilizando la opción "Añadir Robot", pulse sobre el botón "Configurar Robot" e indique, en el atributo "RobotIP", la dirección IP que se muestra en la pantalla del robot. Una vez que haya completado estos pasos, el robot estará disponible para ejecutar programas creados desde LearnBlock (ver la sección [Ejecutar un programa desde LearnBlock](<hidepath>/ES/4. Ejecutar un programa desde LearnBlock/README.html)).
  
 [Init^](#Init)
 

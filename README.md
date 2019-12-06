@@ -5,7 +5,7 @@
 
 [LearnBlock v 3.0](http://robocomp.org)
 ===============================
-LearnBlock is an educational programming tool for programming learning. It has been designed to facilitate the learning process starting with a visual programming language and progressing towards a professional programming language.
+LearnBlock is an educational programming tool for learning programming. It has been designed to facilitate the learning process starting with a visual programming language and progressing towards a professional programming language.
 
 LearnBlock is robot-agnostic, i.e. the same program can be executed in several robots. Clients for new robots can be easily created adding device interfaces and implementing hardware access methods for those interfaces. Examples of existing clients can be found [here](https://github.com/robocomp/LearnBlock/tree/version-3/learnbot_dsl/Clients)
 
@@ -21,7 +21,35 @@ Among other features, LearnBlock includes the following:
 
 # Installation
 
+LearnBlock can be installed from PyPi or from sources. To install the last release of LearnBlock, you can follow the steps described in [https://pypi.org/project/learnblock/](https://pypi.org/project/learnblock/)
 
+If you want to install LearnBlock from sources, the following packages must be installed:
+
+    sudo apt install cmake python3-zeroc-ice
+
+    sudo pip3 install apriltag requests pyunpack opencv-python-headless imutils six tensorflow dlib paramiko Pillow paho_mqtt PySide2 pyparsing qdarkstyle future
+
+*cd* to your home directory and type:
+
+    git clone https://github.com/robocomp/LearnBlock.git
+
+Edit your ~/.bashrc file
+
+    gedit ~/.bashrc
+
+Add these lines at the end:
+
+    export PYTHONPATH="${PYTHONPATH}:~/LearnBlock"
+
+Update the bash process by typing:
+
+    source ~/.bashrc
+
+Copy the following files to /usr/local/bin:
+
+    sudo cp -p ~/LearnBlock/learnbot\_dsl/learnbotCode/LearnBlock ~/LearnBlock/learnbot\_dsl/components/apriltag/src/aprilTag.py ~/LearnBlock/learnbot\_dsl/components/emotionrecognition2/src/emotionrecognition2.py /usr/local/bin
+
+You can now start LearnBlock by typing *LearnBlock*
 
 # Contributing
 Thanks for your interest in contributing code!
@@ -33,7 +61,7 @@ Drop comments and ask questions in:
 - https://groups.google.com/forum/?hl=es#!forum/robocomp-dev
 - https://gitter.im/robocomp/robocomp
 
-Please, report any bugs to pilarb@unex.es
+Please, report any bug to pilarb@unex.es
 
 
 

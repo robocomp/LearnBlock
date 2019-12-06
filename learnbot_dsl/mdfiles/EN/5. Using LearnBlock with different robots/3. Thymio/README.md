@@ -2,11 +2,11 @@
 
 # Thymio
 
-Using Thymio with LearnBlock requires for the installation of gobject and aseba. For Python3 gobject can be installed as follows:
+Using Thymio with LearnBlock requires for the installation of *gobject* and *aseba*. For Python3, *gobject* can be installed as follows:
 
     sudo pip3 install PyGObject
 
-To install aseba, you can run the following command:
+To install *aseba*, you can run the following command:
 
     sudo apt-get install aseba
 

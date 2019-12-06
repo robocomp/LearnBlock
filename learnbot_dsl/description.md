@@ -3,7 +3,7 @@
 
 # LearnBlock
 
-LearnBlock is an educational programming tool for programming learning. It has been designed to facilitate the learning process starting with a visual programming language and progressing towards a professional programming language. 
+LearnBlock is an educational programming tool for learning programming. It has been designed to facilitate the learning process starting with a visual programming language and progressing towards a professional programming language. 
 
 LearnBlock is robot-agnostic, i.e. the same program can be executed in several robots. Clients for new robots can be easily created adding device interfaces and implementing hardware access methods for those interfaces. Examples of existing clients can be found [here](https://github.com/robocomp/LearnBlock/tree/version-3/learnbot_dsl/Clients)
 
@@ -18,7 +18,11 @@ Among other features, Learnblock includes the following:
 
 ## Installation
 
-To use all the features of LearnBlock, you will need to install additional software by executing the following command:
+Before installing LearnBlock, some dependencies must be satisfied as follows:
+
+    sudo apt install cmake
+
+To use all the features of LearnBlock, you will also need to install additional software by executing the following command:
 
     sudo apt install python3-zeroc-ice
     
@@ -26,4 +30,4 @@ Then, you can easily install LearnBlock by running the following command:
 
     sudo pip3 install learnblock
     
-
+The first time you execute *LearnBlock*, you will be asked for the creation of a workspace directory, where your projects will be saved by default. Once you specify a directory, you can start using LearnBlock and create programs for your favorite robot.

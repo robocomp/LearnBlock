@@ -2,19 +2,19 @@
 
 # Thymio
 
-Using Thymio with LearnBlock requires for the installation of gobject and aseba. For Python3 gobject can be installed as follows:
+El uso de Thymio con LearnBlock requiere de la instalación previa de los paquetes *gobject* y *aseba*. Para Python3, *gobject* puede instalarse con el siguiente comando:
 
     sudo pip3 install PyGObject
 
-To install aseba, you can run the following command:
+Para instalar *aseba*, ejecute el siguiente comando:
 
     sudo apt-get install aseba
 
-Be sure that the dongle of the robot is properly attached to a USB port of your computer. Then run the following command on a terminal:
+Debe asegurarse de que el *dongle* del robot está conectado al puerto USB de su ordenador y que el robot está encendido. Para iniciar la comunicación con el robot, ejecute el comando:
 
     sudo asebamedulla "ser:name=Thymio-II" 
 
-After that you can run programs created with LearnBlock on the Thymio robot (ver la sección [Ejecutar un programa desde LearnBlock](<hidepath>/ES/4. Ejecutar un programa desde LearnBlock/README.html)).
+Tras esto, puede ejecutar programas creados desde LearnBlock en el robot Thymio (ver la sección [Ejecutar un programa desde LearnBlock](<hidepath>/ES/4. Ejecutar un programa desde LearnBlock/README.html)).
  
 [Init^](#Init)
 
