@@ -578,13 +578,15 @@ class LearnBlock(QtWidgets.QMainWindow):
                         ret = msgBox.exec_()
                         if ret == QtWidgets.QMessageBox.Ok:
                             self.workSpace = os.path.join(os.environ.get('HOME'), "learnblockWorkSpace")
-                            os.mkdir(self.workSpace)
+                            if not os.path.exists(self.workSpace):
+                                os.mkdir(self.workSpace)
                             break
                     else:
                         self.workSpace = os.path.join(self.workSpace)
                         break
                 self.libraryPath = os.path.join(self.workSpace, "libraries")
-                os.mkdir(self.libraryPath)
+                if not os.path.exists(self.libraryPath):
+                    os.mkdir(self.libraryPath)
 
                 self.saveConfigFile()
 
