@@ -79,7 +79,7 @@ class MyScene(QtWidgets.QGraphicsScene):
         visualItem.activeUpdateConections()
         super(MyScene, self).addItem(visualItem)
         pos = self.view.mapToScene(self.view.viewport().rect().center())
-        visualItem.setPos(pos)
+        visualItem.moveToPos(pos)
         self.dicBlockItem[id] = blockItem
         self.dictVisualItem[id] = visualItem
         self.nextIdItem += 1

@@ -53,6 +53,7 @@ setup(name="learnblock",
       },
       license="GPL",
       scripts=[
+          'learnbot_dsl/learnbotCode/learnblock',
           'learnbot_dsl/learnbotCode/LearnBlock',
           'learnbot_dsl/components/apriltag/src/aprilTag.py',
           'learnbot_dsl/components/emotionrecognition2/src/emotionrecognition2.py'
