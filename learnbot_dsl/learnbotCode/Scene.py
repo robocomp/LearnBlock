@@ -69,7 +69,7 @@ class MyScene(QtWidgets.QGraphicsScene):
     def setTable(self, table):
         self.table = table
 
-    def addItem(self, blockItem, shouldstart = True, saveTmp=True):
+    def addItem(self, blockItem, shouldstart = True, saveTmp=True, iniPos=True):
         id = str(self.nextIdItem)
         # poner ide del bloque
         blockItem.setId(id)
@@ -78,8 +78,9 @@ class MyScene(QtWidgets.QGraphicsScene):
             visualItem.start()
         visualItem.activeUpdateConections()
         super(MyScene, self).addItem(visualItem)
-        pos = self.view.mapToScene(self.view.viewport().rect().center())
-        visualItem.moveToPos(pos)
+        if iniPos:
+            pos = self.view.mapToScene(self.view.viewport().rect().center())
+            visualItem.moveToPos(pos)
         self.dicBlockItem[id] = blockItem
         self.dictVisualItem[id] = visualItem
         self.nextIdItem += 1

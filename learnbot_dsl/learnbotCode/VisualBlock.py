@@ -297,7 +297,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
     def duplicate(self, old_id=None, id=None, connection=None):
         blockDuplicate = self.parentBlock.copy()
         blockDuplicate.setPos(self.parentBlock.pos + QtCore.QPointF(50, 50))
-        self.scene.addItem(blockDuplicate, False, False)
+        self.scene.addItem(blockDuplicate, False, False, False)
         id_new = blockDuplicate.id
         new_connection = None
         for c in blockDuplicate.connections:
