@@ -609,13 +609,16 @@ def parserLearntBotCodeFromCode(code, name_client):
     except Exception as e:
         traceback.print_exc()
         raise e
-    text = elapsedTimeFunction
-    text += signalHandlerFunction
-    text += __generatePy(tree)
-    text += endOfProgram
-    text = cleanCode(_code=text)
-    header = HEADER.replace('<Client>', name_client).replace("<USEDFUNCTIONS>", str(usedFunctions))
-    header = cleanCode(_code=header)
+    if not tree:
+        text = ""
+    else:
+        text = elapsedTimeFunction
+        text += signalHandlerFunction
+        text += __generatePy(tree)
+        text += endOfProgram
+        text = cleanCode(_code=text)
+        header = HEADER.replace('<Client>', name_client).replace("<USEDFUNCTIONS>", str(usedFunctions))
+        header = cleanCode(_code=header)
 
     if text is not "":
         return header + text

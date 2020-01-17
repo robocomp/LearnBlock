@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="2.0" language="es_ES" sourcelanguage="">
+<!DOCTYPE TS>
+<TS version="2.1" language="es_ES">
 <context>
     <name>Dialog</name>
     <message numerus="yes">
@@ -495,7 +496,7 @@
     <message>
         <location filename="../LearnBlock.py" line="1863"/>
         <source>Warning</source>
-        <translation>Peligro</translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <location filename="../LearnBlock.py" line="594"/>
@@ -655,7 +656,7 @@
     <message>
         <location filename="../LearnBlock.py" line="922"/>
         <source>You should check the connection to </source>
-        <translation>Revisa la conexión a</translation>
+        <translation>Revisa la conexión a </translation>
     </message>
     <message>
         <location filename="../LearnBlock.py" line="1847"/>

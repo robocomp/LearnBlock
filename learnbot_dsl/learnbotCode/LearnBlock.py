@@ -639,7 +639,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.dw = DownloadingWindow(self, self.tr("Donwloading Libraries files please wait"),
                                         self.tr("Donwloading Libraries"))
             self.dw.show()
-            self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/Libraries.zip", pathzip, self.dw)
+            self.dwTh = DownloadThread("https://github.com/robocomp/LearnBlock/archive/Libraries.zip", pathzip, self.dw)
             self.dwTh.start()
             self.dwTh.finished.connect(lambda: self.unzip(pathzip, tempLibraries, self.libraryPath))
 
@@ -659,7 +659,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.dw = DownloadingWindow(self, self.tr("Donwloading Examples files please wait"),
                                         self.tr("Donwloading Examples"))
             self.dw.show()
-            self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/examples.zip", pathzip, self.dw)
+            self.dwTh = DownloadThread("https://github.com/robocomp/LearnBlock/archive/examples.zip", pathzip, self.dw)
             self.dwTh.start()
             self.dwTh.finished.connect(lambda: self.unzip(pathzip, tempExamples, self.workSpace))
 
@@ -679,7 +679,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.dw = DownloadingWindow(self, self.tr("Donwloading XML's files please wait"),
                                         self.tr("Donwloading XML's"))
             self.dw.show()
-            self.dwTh = DownloadThread("https://github.com/robocomp/learnbot/archive/xmls.zip", pathzip, self.dw)
+            self.dwTh = DownloadThread("https://github.com/robocomp/LearnBlock/archive/xmls.zip", pathzip, self.dw)
             self.dwTh.start()
             self.dwTh.finished.connect(lambda: self.unzip(pathzip, tempXMLs, os.environ.get('HOME')))
 
@@ -877,7 +877,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                msgBox.setText(self.tr("You should check the connection to " + name_Client))
+                msgBox.setText(self.tr("You should check the connection to ") + name_Client)
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
@@ -905,7 +905,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                     msgBox = QtWidgets.QMessageBox()
                     msgBox.setWindowTitle(self.tr("Warning"))
                     msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                    msgBox.setText(self.tr("You should check the connection to " + name_Client))
+                    msgBox.setText(self.tr("You should check the connection to ") + name_Client)
                     msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                     msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                     msgBox.exec_()
@@ -916,6 +916,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         textCode = self.ui.textCode.toPlainText()
         try:
             code = parserLearntBotCodeFromCode(textCode, name_Client)
+            self.ui.pythonCode.clear()
             if not code:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
@@ -924,8 +925,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
-            self.ui.pythonCode.clear()
-            self.ui.pythonCode.setText(code)
+            else:
+                self.ui.pythonCode.setText(code)
             return code
         except ParseException as e:
             traceback.print_exc()
@@ -949,8 +950,8 @@ class LearnBlock(QtWidgets.QMainWindow):
     def startSimulatorRobot(self):
         self.scene.stopAllblocks()
         path = os.environ.get('HOME')
-        if os.path.exists(os.path.join(os.environ.get('HOME'), "learnbot-xmls")):
-            path = os.path.join(os.environ.get('HOME'), "learnbot-xmls")
+        if os.path.exists(os.path.join(os.environ.get('HOME'), "LearnBlock-xmls")):
+            path = os.path.join(os.environ.get('HOME'), "LearnBlock-xmls")
         fileName = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open xml'), path,
                                                          self.tr('Rcis file (*.xml)'))
         self.scene.startAllblocks()
