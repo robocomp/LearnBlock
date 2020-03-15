@@ -3,7 +3,7 @@ from PySide2 import QtGui, QtCore
 reserved_words = ['def', '=', 'function', '>=', '<=',
     '<', '>', 'deactivate', 'activate', 'not', 'True',
     'False', 'or', 'and', 'main', 'if', 'else',
-    'elif', 'when', 'while', 'end']
+    'elif', 'when', 'while', 'repeat', 'end']
 
 # darkOrange = ["\\bdef\\b",
 #               "\\bmain\\b",
@@ -19,7 +19,8 @@ reserved_words = ['def', '=', 'function', '>=', '<=',
 #               "\\belif\\b",
 #               "\\belse\\b",
 #               "\\bwhen\\b",
-#               "\\bwhile\\b"
+#               "\\bwhile\\b",
+#               "\\brepeat\\b"
 #               ]
 class Highlighter(QtGui.QSyntaxHighlighter):
     def __init__(self, parent=None):
@@ -42,6 +43,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                       "\\belse\\b",
                       "\\bwhen\\b",
                       "\\bwhile\\b",
+                      "\\brepeat\\b",
                       "\\bend\\b",
                       "\\b,\\b",
                       ]

@@ -75,7 +75,7 @@ OBRACE, CBRACE, SEMI, OPAR, CPAR = map(Literal, "{};()")
 reserved_words = (Keyword('def') | Keyword('=') | Keyword('function') | Keyword('>=') | Keyword('<=') | Keyword(
     '<') | Keyword('>') | Keyword('deactivate') | Keyword('activate') | Keyword('not') | Keyword('True') | Keyword(
     'False') | Keyword('or') | Keyword('and') | Keyword('main') | Keyword('if') | Keyword('else') | Keyword(
-    'elif') | Keyword('when') | Keyword('while') | Keyword('end') | Keyword('None'))
+    'elif') | Keyword('when') | Keyword('while') | Keyword('repeat') | Keyword('end') | Keyword('None'))
 iden = Word(initChars=alphas, bodyChars=alphanums + "_")
 identifier = Group(~reserved_words + iden).setResultsName("IDENTIFIER")
 
@@ -184,6 +184,11 @@ BLOQUEWHILE = Group(
     SECTAB + Suppress(Literal("while")) + Group(CONDITION).setResultsName('condition') + COLONS + LINES.setResultsName(
         'content') + Suppress(Literal("end"))).setResultsName("WHILE")
 
+"""-----------------REPEAT LOOP----------------------------"""
+BLOQUEREPEAT = Group(
+    SECTAB + Suppress(Literal("repeat")) + Group(CONDITION).setResultsName('times') + COLONS + LINES.setResultsName(
+        'content') + Suppress(Literal("end"))).setResultsName("REPEAT")
+
 """-----------------WHEN+CONDICION------------------"""
 BLOQUEWHENCOND = Group(SECTAB + Suppress(Literal("when")) + identifier.setResultsName("nameWHEN") + Optional(
     Suppress(eq) + Group(CONDITION).setResultsName('condition')) + COLONS + LINES.setResultsName('content') + Literal(
@@ -194,7 +199,7 @@ ACTIVATE = Group(Suppress(Literal("activate")) + identifier.setResultsName("name
 DEACTIVATE = Group(Suppress(Literal("deactivate")) + identifier.setResultsName("nameWHEN")).setResultsName("DEACTIVATE")
 
 """-----------------LINEA---------------------------"""
-LINE << (SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | VAR | ACTIVATE | DEACTIVATE | PASS)
+LINE << (SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | BLOQUEREPEAT | VAR | ACTIVATE | DEACTIVATE | PASS)
 
 """-----------------DEF----------------------------"""
 DEF = Group(Suppress(Literal("def ")) + identifier.setResultsName("nameDEFFUNCTION") + Suppress(lpar) + Suppress(
@@ -305,6 +310,8 @@ def __process(line, list_var=[], text="", index=0):
         text = __processWHEN(line, list_var, text)
     elif TYPE is 'WHILE':
         text = __processWHILE(line, text, index)
+    elif TYPE is 'REPEAT':
+        text = __processREPEAT(line, text, index)
     elif TYPE is 'IF':
         text = __processIF(line, text, index)
     elif TYPE is 'ELIF':
@@ -420,6 +427,20 @@ def __processWHILE(line, text="", index=0):
     for c in line.condition:
         text += __process(line.condition[0])
     text += ":\n"
+
+    index += 1
+    for field in line.content:
+        text = __process(field, [], text, index) + "\n"
+
+    index -= 1
+    return text
+
+
+def __processREPEAT(line, text="", index=0):
+    text += "\n" + "<TABHERE>" * index + "for _ in range(0, "
+    for c in line.times:
+        text += __process(line.times[0])
+    text += "):\n"
 
     index += 1
     for field in line.content:
