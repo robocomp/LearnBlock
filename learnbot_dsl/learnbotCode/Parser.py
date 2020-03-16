@@ -186,7 +186,7 @@ BLOQUEWHILE = Group(
 
 """-----------------REPEAT LOOP----------------------------"""
 BLOQUEREPEAT = Group(
-    SECTAB + Suppress(Literal("repeat")) + Group(CONDITION).setResultsName('times') + COLONS + LINES.setResultsName(
+    SECTAB + Suppress(Literal("repeat")) + Group(NUMS).setResultsName('times') + COLONS + LINES.setResultsName(
         'content') + Suppress(Literal("end"))).setResultsName("REPEAT")
 
 """-----------------WHEN+CONDICION------------------"""
