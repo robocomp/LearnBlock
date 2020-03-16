@@ -437,10 +437,10 @@ def __processWHILE(line, text="", index=0):
 
 
 def __processREPEAT(line, text="", index=0):
-    text += "\n" + "<TABHERE>" * index + "for _ in range(0, "
+    text += "\n" + "<TABHERE>" * index + "for _ in range(0, int("
     for c in line.times:
         text += __process(line.times[0])
-    text += "):\n"
+    text += ")):\n"
 
     index += 1
     for field in line.content:
