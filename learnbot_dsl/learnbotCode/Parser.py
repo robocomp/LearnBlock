@@ -87,14 +87,11 @@ plus = Literal("+")
 minus = Literal("-")
 mult = Literal("*")
 div = Literal("/")
-lpar = Literal("(")
-rpar = Literal(")")
 TRUE = Group(Literal("True")).setResultsName('TRUE')
 FALSE = Group(Literal("False")).setResultsName('FALSE')
 NONE = Group(Literal("None")).setResultsName('NONE')
 eq = Literal("=")
 point = Literal('.')
-coma = Literal(",")
 COLONS = Suppress(Literal(":"))
 SEMICOL = Literal(";")
 plusorminus = Literal('+') | Literal('-')
@@ -136,18 +133,18 @@ FUNCTION = Group(
         Suppress(Literal("function"))
         + Suppress(point)
         + identifier.setResultsName('nameFUNCTION')
-        + Suppress(lpar)
+        + Suppress(OPAR)
         + Group(Optional(delimitedList(FUNCTION_FIELDS))).setResultsName("args")
-        + Suppress(rpar)
+        + Suppress(CPAR)
     ).setResultsName("FUNCTION")
 
 """-----------------FIELDS---------------------------"""
 OPERATION = Forward()
 
 PARENSOP = Group(
-        Suppress(lpar)
+        Suppress(OPAR)
         + OPERATION
-        + Suppress(rpar)
+        + Suppress(CPAR)
     ).setResultsName("OPERATIONFIELD")
 
 FIELDS = Group(
@@ -159,9 +156,9 @@ FIELDS = Group(
 
 SIMPLEFUNCTION = Group(
         identifier.setResultsName('nameDEFFUNCTION')
-        + Suppress(lpar)
+        + Suppress(OPAR)
         + Group(Optional(delimitedList(FIELDS))).setResultsName("args")
-        + Suppress(rpar)
+        + Suppress(CPAR)
     ).setResultsName("SIMPLEFUNCTION")
 
 """-----------------PASS-------------------------"""
@@ -253,8 +250,8 @@ LINE << (SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | VAR | ACTIVATE | DEACTIV
 DEF = Group(Suppress(
         Literal("def"))
         + identifier.setResultsName("nameDEFFUNCTION")
-        + Suppress(lpar)
-        + Suppress(rpar)
+        + Suppress(OPAR)
+        + Suppress(CPAR)
         + COLONS
         + LINES.setResultsName('content')
         + Suppress(END)
