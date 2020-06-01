@@ -169,22 +169,8 @@ PASS = Group(Literal("pass")).setResultsName("PASS")
 """-----------------OPERACIONES---------------------"""
 OPERATION << Group(
         FIELDS
-        + OneOrMore((SRMD | ORAND) + FIELDS)
+        + OneOrMore((SRMD | ORAND | COMP) + FIELDS)
     ).setResultsName("OPERATION")
-
-"""-----------------CONDICIONES---------------------"""
-COMPOP = Group(
-        (OPERATION | FIELDS)
-        + COMP
-        + (OPERATION | FIELDS)
-    ).setResultsName("COMPOP")
-
-OPTIONCONDITION = FUNCTION | SIMPLEFUNCTION | TRUE | FALSE | COMPOP | identifier
-SIMPLECONDITION = Group(Optional(NOT) + OPTIONCONDITION).setResultsName("SIMPLECONDITION")
-CONDITION = Group(
-        SIMPLECONDITION
-        + ZeroOrMore(( ORAND | SRMD | COMP ) + SIMPLECONDITION)
-    ).setResultsName("CONDITION")
 
 """-----------------asignacion-VARIABLES------------"""
 
@@ -209,7 +195,7 @@ ELSEIF = Forward()
 ELSEIF << Group(
         SECTAB
         + Suppress(Literal("elif"))
-        + Group(CONDITION).setResultsName('condition')
+        + Group(OPERATION | FIELDS).setResultsName('condition')
         + COLONS
         + LINES.setResultsName('content')
     ).setResultsName("ELIF")
@@ -224,7 +210,7 @@ ELSE << Group(
 IF = Group(
         SECTAB
         + Suppress(Literal("if"))
-        + Group(CONDITION).setResultsName('condition')
+        + Group(OPERATION | FIELDS).setResultsName('condition')
         + COLONS
         + LINES.setResultsName('content')
         + Group(ZeroOrMore(ELSEIF) + Optional(ELSE)).setResultsName("OPTIONAL")
@@ -235,7 +221,7 @@ IF = Group(
 BLOQUEWHILE = Group(
         SECTAB
         + Suppress(Literal("while"))
-        + Group(CONDITION).setResultsName('condition')
+        + Group(OPERATION | FIELDS).setResultsName('condition')
         + COLONS
         + LINES.setResultsName('content')
         + Suppress(Literal("end"))
@@ -248,7 +234,7 @@ BLOQUEWHENCOND = Group(
         + identifier.setResultsName("nameWHEN")
         + Optional(
             Suppress(eq)
-            + Group(CONDITION).setResultsName('condition')
+            + Group(OPERATION | FIELDS).setResultsName('condition')
         )
         + COLONS
         + LINES.setResultsName('content')
@@ -402,19 +388,15 @@ def __process(line, list_var=[], text="", index=0):
         text = __processFUNCTION(line, text, index)
     elif TYPE is 'SIMPLEFUNCTION':
         text = __processSIMPLEFUNCTION(line, text, index)
-    elif TYPE is 'CONDITION':
-        text = __processCONDITION(line, text, index)
     elif TYPE is 'ASSIGSTRING':
         text = __processASSIGSTRING(line, text, index)
-    elif TYPE is 'SIMPLECONDITION':
-        text = __processSIMPLECONDITION(line, text, index)
     elif TYPE is 'PASS':
         text += "<TABHERE>" * index + "pass\n"
     elif TYPE is 'NONEVAR':
         text += "None"
     elif TYPE is 'STRING':
         text += '"' + line[0] + '"'
-    elif TYPE in ['FALSE', 'TRUE', 'IDENTIFIER', 'SRMD', 'ORAND', "NUMBER","NOT"]:
+    elif TYPE in ['FALSE', 'TRUE', 'IDENTIFIER', 'SRMD', 'ORAND', 'COMP', "NUMBER","NOT"]:
         text = line[0]
     else:
         print("The type is ", TYPE , line)
@@ -582,32 +564,6 @@ def __processCOMPOP(line, text="", index=0):
         else:
             print("__processCOMPOP", TYPE)
     return text
-
-
-def __processSIMPLECONDITION(line, text="", index=0):
-    for field in line:
-        TYPE = field.getName()
-        if TYPE is 'NOT':
-            text += "not "
-        elif TYPE in ['IDENTIFIER', 'SIMPLEFUNCTION', 'FUNCTION', 'TRUE', 'FALSE']:
-            text += __process(field)
-        elif TYPE is "COMPOP":
-            text += __processCOMPOP(field)
-    return text
-
-
-def __processCONDITION(line, text="", index=0):
-    for field in line:
-        if field.getName() is 'SIMPLECONDITION':
-            text += __process(field) + " "
-        elif field.getName() is 'ORAND':
-            text += field[0] + " "
-        elif field.getName() is 'SRMD':
-            text += field[0] + " "
-        elif field.getName() is 'COMP':
-            text += field[0] + " "
-    return text
-
 
 def __processELIF(line, text="", index=0):
     text += "<TABHERE>" * index + "elif "
