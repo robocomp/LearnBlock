@@ -125,69 +125,135 @@ ORAND = Group(OR | AND).setResultsName('ORAND')
 """-----------------OPERADORES----------------------"""
 SRMD = Group(plus | minus | mult | div).setResultsName("SRMD")
 
-FUNCTION_FIELDS = Group(Optional(NOT) + (NUMS | TRUE | FALSE | identifier | CHAINBETTENQUOTE)).setResultsName("FIELD")
+FUNCTION_FIELDS = Group(
+        Optional(NOT)
+        + (NUMS | TRUE | FALSE | identifier | CHAINBETTENQUOTE)
+    ).setResultsName("FIELD")
 
 """-----------------FUNCTION-------------------------"""
 FUNCTION = Group(
-    Suppress(Literal("function")) + Suppress(point) + identifier.setResultsName('nameFUNCTION') + Suppress(lpar) + Group(
-        Optional(FUNCTION_FIELDS) + ZeroOrMore(Suppress(coma) + (FUNCTION_FIELDS))).setResultsName(
-        "args") + Suppress(rpar)).setResultsName("FUNCTION")
+        Suppress(Literal("function"))
+        + Suppress(point)
+        + identifier.setResultsName('nameFUNCTION')
+        + Suppress(lpar)
+        + Group(Optional(delimitedList(FUNCTION_FIELDS))).setResultsName("args")
+        + Suppress(rpar)
+    ).setResultsName("FUNCTION")
 
 """-----------------FIELDS---------------------------"""
 OPERATION = Forward()
 
-FIELDS = Group(Optional(NOT) + (NUMS | TRUE | FALSE | FUNCTION | identifier | Group(Suppress(Literal("(")) + OPERATION + Suppress(Literal(")"))).setResultsName("OPERATIONFIELD") |  CHAINBETTENQUOTE)).setResultsName("FIELD")
+PARENSOP = Group(
+        Suppress(lpar)
+        + OPERATION
+        + Suppress(rpar)
+    ).setResultsName("OPERATIONFIELD")
+
+FIELDS = Group(
+        Optional(NOT)
+        + (NUMS | TRUE | FALSE | FUNCTION | identifier | PARENSOP | CHAINBETTENQUOTE)
+    ).setResultsName("FIELD")
 
 """-----------------SIMPLEFUNCTION-------------------------"""
-SIMPLEFUNCTION = Group(identifier.setResultsName('nameDEFFUNCTION') + Suppress(lpar) + Group(
-    Optional(FIELDS) + ZeroOrMore(Suppress(coma) + (FIELDS))).setResultsName("args") + Suppress(
-    rpar)).setResultsName("SIMPLEFUNCTION")
+
+SIMPLEFUNCTION = Group(
+        identifier.setResultsName('nameDEFFUNCTION')
+        + Suppress(lpar)
+        + Group(Optional(delimitedList(FIELDS))).setResultsName("args")
+        + Suppress(rpar)
+    ).setResultsName("SIMPLEFUNCTION")
 
 """-----------------PASS-------------------------"""
 PASS = Group(Literal("pass")).setResultsName("PASS")
 
 """-----------------OPERACIONES---------------------"""
-OPERATION << Group(FIELDS + OneOrMore( (SRMD | ORAND) + FIELDS)).setResultsName("OPERATION")
+OPERATION << Group(
+        FIELDS
+        + OneOrMore((SRMD | ORAND) + FIELDS)
+    ).setResultsName("OPERATION")
 
 """-----------------CONDICIONES---------------------"""
-COMPOP = Group(( OPERATION | FIELDS ) + COMP + ( OPERATION | FIELDS )).setResultsName("COMPOP")
+COMPOP = Group(
+        (OPERATION | FIELDS)
+        + COMP
+        + (OPERATION | FIELDS)
+    ).setResultsName("COMPOP")
+
 OPTIONCONDITION = FUNCTION | SIMPLEFUNCTION | TRUE | FALSE | COMPOP | identifier
 SIMPLECONDITION = Group(Optional(NOT) + OPTIONCONDITION).setResultsName("SIMPLECONDITION")
-CONDITION = Group(SIMPLECONDITION + ZeroOrMore(( ORAND | SRMD | COMP ) + SIMPLECONDITION)).setResultsName("CONDITION")
+CONDITION = Group(
+        SIMPLECONDITION
+        + ZeroOrMore(( ORAND | SRMD | COMP ) + SIMPLECONDITION)
+    ).setResultsName("CONDITION")
 
 """-----------------asignacion-VARIABLES------------"""
 
-ASSIGSTRING = Group((CHAINBETTENQUOTE | NUMS) + ZeroOrMore(SRMD + (CHAINBETTENQUOTE | NUMS))).setResultsName('ASSIGSTRING')
+ASSIGSTRING = Group(OneOrMore(SRMD + (CHAINBETTENQUOTE | NUMS))).setResultsName('ASSIGSTRING')
 
 NONEVAR = NONE.setResultsName("NONEVAR")
-VAR = Group(SECTAB + identifier.setResultsName("nameVAR") + (eq | PLUE | MINE | DIVE | MULE) + ( OPERATION | FIELDS | NONEVAR )).setResultsName("VAR")
+VAR = Group(
+        SECTAB
+        + identifier.setResultsName("nameVAR")
+        + (eq | PLUE | MINE | DIVE | MULE)
+        + (OPERATION | FIELDS | NONEVAR)
+    ).setResultsName("VAR")
 
 """-----------------LINEA---------------------------"""
 LINE = Forward()
-LINES = Group(LINE + ZeroOrMore(LINE)).setResultsName('LINES')
+LINES = Group(OneOrMore(LINE)).setResultsName('LINES')
 
 """-----------------bloque-IF-----------------------"""
 ELSE = Forward()
 ELSEIF = Forward()
 
 ELSEIF << Group(
-    SECTAB + Suppress(Literal("elif")) + Group(CONDITION).setResultsName('condition') + COLONS + LINES.setResultsName(
-        'content')).setResultsName("ELIF")
-ELSE << Group(SECTAB + Suppress(Literal("else")) + COLONS + LINES.setResultsName('content')).setResultsName("ELSE")
+        SECTAB
+        + Suppress(Literal("elif"))
+        + Group(CONDITION).setResultsName('condition')
+        + COLONS
+        + LINES.setResultsName('content')
+    ).setResultsName("ELIF")
+
+ELSE << Group(
+        SECTAB
+        + Suppress(Literal("else"))
+        + COLONS
+        + LINES.setResultsName('content')
+    ).setResultsName("ELSE")
+
 IF = Group(
-    SECTAB + Suppress(Literal("if")) + Group(CONDITION).setResultsName('condition') + COLONS + LINES.setResultsName(
-        'content') + Group(ZeroOrMore(ELSEIF) + Optional(ELSE)).setResultsName("OPTIONAL") + Suppress(
-        END)).setResultsName("IF")
+        SECTAB
+        + Suppress(Literal("if"))
+        + Group(CONDITION).setResultsName('condition')
+        + COLONS
+        + LINES.setResultsName('content')
+        + Group(ZeroOrMore(ELSEIF) + Optional(ELSE)).setResultsName("OPTIONAL")
+        + Suppress(END)
+    ).setResultsName("IF")
 
 """-----------------LOOP----------------------------"""
 BLOQUEWHILE = Group(
-    SECTAB + Suppress(Literal("while")) + Group(CONDITION).setResultsName('condition') + COLONS + LINES.setResultsName(
-        'content') + Suppress(Literal("end"))).setResultsName("WHILE")
+        SECTAB
+        + Suppress(Literal("while"))
+        + Group(CONDITION).setResultsName('condition')
+        + COLONS
+        + LINES.setResultsName('content')
+        + Suppress(Literal("end"))
+    ).setResultsName("WHILE")
 
 """-----------------WHEN+CONDICION------------------"""
-BLOQUEWHENCOND = Group(SECTAB + Suppress(Literal("when")) + identifier.setResultsName("nameWHEN") + Optional(
-    Suppress(eq) + Group(CONDITION).setResultsName('condition')) + COLONS + LINES.setResultsName('content') + Literal(
-    "end")).setResultsName("WHEN")
+BLOQUEWHENCOND = Group(
+        SECTAB
+        + Suppress(Literal("when"))
+        + identifier.setResultsName("nameWHEN")
+        + Optional(
+            Suppress(eq)
+            + Group(CONDITION).setResultsName('condition')
+        )
+        + COLONS
+        + LINES.setResultsName('content')
+        + END
+    ).setResultsName("WHEN")
 
 """-----------------ACTIVATE-CONDITION----------------"""
 ACTIVATE = Group(Suppress(Literal("activate")) + identifier.setResultsName("nameWHEN")).setResultsName("ACTIVATE")
@@ -197,15 +263,26 @@ DEACTIVATE = Group(Suppress(Literal("deactivate")) + identifier.setResultsName("
 LINE << (SIMPLEFUNCTION | FUNCTION | IF | BLOQUEWHILE | VAR | ACTIVATE | DEACTIVATE | PASS)
 
 """-----------------DEF----------------------------"""
-DEF = Group(Suppress(Literal("def ")) + identifier.setResultsName("nameDEFFUNCTION") + Suppress(lpar) + Suppress(
-    rpar) + COLONS + LINES.setResultsName('content') + Suppress(Literal("end"))).setResultsName("DEF")
+DEF = Group(Suppress(
+        Literal("def"))
+        + identifier.setResultsName("nameDEFFUNCTION")
+        + Suppress(lpar)
+        + Suppress(rpar)
+        + COLONS
+        + LINES.setResultsName('content')
+        + Suppress(END)
+    ).setResultsName("DEF")
 
 """-----------------IMPORT----------------------------"""
 IMPORT = Group(Suppress(Literal("import")) + QuotedString('"')).setResultsName("IMPORT")
 
 """-----------------MAIN----------------------------"""
-MAIN = Group(Suppress(Literal("main")) + COLONS + LINES.setResultsName('content')).setResultsName("MAIN") + Suppress(
-    Literal("end"))
+MAIN = Group(
+        Suppress(Literal("main"))
+        + COLONS
+        + LINES.setResultsName('content')
+    ).setResultsName("MAIN") + Suppress(Literal("end"))
+
 LB = ZeroOrMore(IMPORT) + ZeroOrMore(LINES) + ZeroOrMore(DEF) + (MAIN | ZeroOrMore(BLOQUEWHENCOND))
 LB.ignore(pythonStyleComment)
 
@@ -636,40 +713,12 @@ def cleanCode(_code):
 if __name__ == "__main__":
     textprueba = """
 
+x = None
 
-when hay_alguien_triste = function.is_there_somebody_sad():
-	if 1 < time_hay_alguien_triste:
-		function.expressSadness()
-	end
-end
-
-when start:
-	function.look_up()
-	function.expressNeutral()
-end
-
-when hay_alguien_sorprendido = function.is_there_somebody_surprised():
-	if 1 < time_hay_alguien_sorprendido:
-		function.expressSurprise()
-	end
-end
-
-when hay_alguien_enfadado = function.is_there_somebody_angry():
-	if 1 < time_hay_alguien_enfadado:
-		function.expressAnger()
-	end
-end
-
-when hay_alguien_neutral = function.is_there_somebody_neutral():
-	if 1 < time_hay_alguien_neutral:
-		function.expressNeutral()
-	end
-end
-
-when hay_alguien_alegre = function.is_there_somebody_happy():
-	if 1 < time_hay_alguien_alegre:
-		function.expressJoy()
-	end
+main:
+    x = 0
+    x + = 32
+    x += 32
 end
 
 """
