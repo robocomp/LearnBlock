@@ -123,7 +123,8 @@ COMP = Group(L | NL | LE | NLE | E | NE).setResultsName("COMP")
 ORAND = Group(OR | AND).setResultsName('ORAND')
 
 """-----------------OPERADORES----------------------"""
-SRMD = Group(plus | minus | mult | div).setResultsName("SRMD")
+SR = Group(plus | minus).setResultsName("SR")
+MD = Group(mult | div).setResultsName("MD")
 
 FUNCTION_FIELDS = Group(
         Optional(NOT)
@@ -167,21 +168,21 @@ SIMPLEFUNCTION = Group(
 PASS = Group(Literal("pass")).setResultsName("PASS")
 
 """-----------------OPERACIONES---------------------"""
-OPERATION << Group(
-        FIELDS
-        + OneOrMore((SRMD | ORAND | COMP) + FIELDS)
-    ).setResultsName("OPERATION")
+LVL0OP = FIELDS | NONE
+LVL1OP = Group(LVL0OP + MD + LVL0OP).setResultsName("LVL1OP") | LVL0OP
+LVL2OP = Group(LVL1OP + SR + LVL1OP).setResultsName("LVL2OP") | LVL1OP
+LVL3OP = Group(LVL2OP + COMP + LVL2OP).setResultsName("LVL3OP") | LVL2OP
+LVL4OP = Group(LVL3OP + ORAND + LVL3OP).setResultsName("LVL4OP") | LVL3OP
+
+OPERATION << Group(LVL4OP).setResultsName("OPERATION")
 
 """-----------------asignacion-VARIABLES------------"""
 
-ASSIGSTRING = Group(OneOrMore(SRMD + (CHAINBETTENQUOTE | NUMS))).setResultsName('ASSIGSTRING')
-
-NONEVAR = NONE.setResultsName("NONEVAR")
 VAR = Group(
         SECTAB
         + identifier.setResultsName("nameVAR")
         + (eq | PLUE | MINE | DIVE | MULE)
-        + (OPERATION | FIELDS | NONEVAR)
+        + OPERATION
     ).setResultsName("VAR")
 
 """-----------------LINEA---------------------------"""
@@ -380,7 +381,7 @@ def __process(line, list_var=[], text="", index=0):
         text = __processDEACTIVATE(line, text, index)
     elif TYPE is 'VAR':
         text = __processASSIG(line, text, index)
-    elif TYPE is 'OPERATION':
+    elif TYPE in ['OPERATION', 'LVL4OP', 'LVL3OP', 'LVL2OP', 'LVL1OP']:
         text = __processOP(line, text, index)
     elif TYPE is 'OPERATIONFIELD':
         text = __processOPF(line, text, index)
@@ -388,15 +389,11 @@ def __process(line, list_var=[], text="", index=0):
         text = __processFUNCTION(line, text, index)
     elif TYPE is 'SIMPLEFUNCTION':
         text = __processSIMPLEFUNCTION(line, text, index)
-    elif TYPE is 'ASSIGSTRING':
-        text = __processASSIGSTRING(line, text, index)
     elif TYPE is 'PASS':
         text += "<TABHERE>" * index + "pass\n"
-    elif TYPE is 'NONEVAR':
-        text += "None"
     elif TYPE is 'STRING':
         text += '"' + line[0] + '"'
-    elif TYPE in ['FALSE', 'TRUE', 'IDENTIFIER', 'SRMD', 'ORAND', 'COMP', "NUMBER","NOT"]:
+    elif TYPE in ['FALSE', 'TRUE', 'NONE', 'IDENTIFIER', 'SR', 'MD', 'ORAND', 'COMP', "NUMBER","NOT"]:
         text = line[0]
     else:
         print("The type is ", TYPE , line)
@@ -450,17 +447,6 @@ def __processSIMPLEFUNCTION(line, text="", index=0):
 
 def __processASSIG(line, text="", index=0):
     text += "<TABHERE>" * index + line.nameVAR[0] + " " + line[1] + " " + __process(line[2])
-    return text
-
-
-def __processASSIGSTRING(line, text="", index=0):
-    for field in line:
-        if field.getName() is 'STRING':
-            text += "\"" + field[0] + "\" "
-        elif field.getName() is 'NUMBER':
-            text += "str(" + field[0] + ") "
-        else:
-            text += field[0] + " "
     return text
 
 
@@ -550,19 +536,6 @@ def __processOPF(line, text="", index=0):
     text += "(" + " ".join([__process(field) for field in line]) + ")"
     # for field in line:
     #     text += __process(field) + " "
-    return text
-
-def __processCOMPOP(line, text="", index=0):
-    for field in line:
-        TYPE = field.getName()
-        if TYPE is 'OPERATION':
-            text += __process(field)
-        elif TYPE is 'COMP':
-            text += field[0] + " "
-        elif TYPE is "FIELD":
-            text += __process(field[0]) + " "
-        else:
-            print("__processCOMPOP", TYPE)
     return text
 
 def __processELIF(line, text="", index=0):
@@ -673,12 +646,16 @@ x = None
 
 main:
     x = 0
-    x + = 32
-    x += 32
+    x = 1
+    x = a + b
+    x = a + b * c
+    x = a + (b * c)
 end
 
 """
     try:
+        import pprint
+        pprint.pprint(__parserFromString(textprueba).asList(), indent=4)
         print(__parserFromString(textprueba))
         text = __generatePy(__parserFromString(textprueba))
         text = cleanCode(_code=text)
