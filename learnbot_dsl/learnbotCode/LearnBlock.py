@@ -918,7 +918,25 @@ class LearnBlock(QtWidgets.QMainWindow):
             code, errors = parserLearntBotCodeFromCode(textCode, name_Client)
             self.ui.pythonCode.clear()
             if errors:
-                errorList = '\n'.join(map(lambda error: '- ' + error, errors))
+
+                # TODO: move somewhere else more visible than in the middle of this method
+                def formatError(error):
+                    level = error['level']
+                    message = error['message']
+                    start, end = error['span']
+
+                    if (start == None and end == None):
+                        spanMsg = "somewhere"
+                    elif (end == None):
+                        spanMsg = f"from line {start}"
+                    elif (start == end):
+                        spanMsg = f"line {start}"
+                    else:
+                        spanMsg = f"lines {start}-{end}"
+
+                    return f"{level}: {message} ({spanMsg})"
+
+                errorList = '\n'.join(map(formatError, errors))
                 errorMsg = f"Your code is empty or is not correct. The following errors were found:\n\n{errorList}"
 
                 msgBox = QtWidgets.QMessageBox()

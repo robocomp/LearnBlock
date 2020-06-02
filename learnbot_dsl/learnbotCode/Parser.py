@@ -590,7 +590,11 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
 
     try:
         tree = __parserFromFile(inputFile)
-        errors.append("Parse error (somewhere)")
+        errors.append({
+            'level': 'error',
+            'message': "Parse error",
+            'span': (None, None),
+        })
     except Exception as e:
         traceback.print_exc()
         raise e
@@ -622,7 +626,11 @@ def parserLearntBotCodeFromCode(code, name_client):
         raise e
     if not tree:
         text = ""
-        errors.append("Parse error (somewhere)")
+        errors.append({
+            'level': 'error',
+            'message': "Parse error",
+            'span': (None, None),
+        })
     else:
         text = elapsedTimeFunction
         text += signalHandlerFunction
