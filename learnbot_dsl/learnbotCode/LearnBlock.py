@@ -915,13 +915,16 @@ class LearnBlock(QtWidgets.QMainWindow):
     def textCodeToPython(self, name_Client):
         textCode = self.ui.textCode.toPlainText()
         try:
-            code = parserLearntBotCodeFromCode(textCode, name_Client)
+            code, errors = parserLearntBotCodeFromCode(textCode, name_Client)
             self.ui.pythonCode.clear()
-            if not code:
+            if errors:
+                errorList = '\n'.join(map(lambda error: '- ' + error, errors))
+                errorMsg = f"Your code is empty or is not correct. The following errors were found:\n\n{errorList}"
+
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                msgBox.setText(self.tr("Your code is empty or is not correct"))
+                msgBox.setText(self.tr(errorMsg))
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
