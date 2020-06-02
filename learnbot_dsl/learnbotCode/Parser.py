@@ -317,6 +317,9 @@ def __parserFromString(text):
 list_when = []
 usedFunctions = []
 
+def __typecheckParseTree():
+    pass
+
 def __generatePy(lines):
     global usedFunctions
     usedFunctions = []
@@ -583,8 +586,11 @@ def parserLearntBotCodeOnlyUserFuntion(code):
 def parserLearntBotCode(inputFile, outputFile, client_name):
     global usedFunctions
 
+    errors = []
+
     try:
         tree = __parserFromFile(inputFile)
+        errors.append("Parse error (somewhere)")
     except Exception as e:
         traceback.print_exc()
         raise e
@@ -600,12 +606,14 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
         with open(outputFile, 'w') as f:
             f.write(header)
             f.write(text)
-        return True
+        return header + text, errors
     else:
-        return False
+        return False, errors
 
 def parserLearntBotCodeFromCode(code, name_client):
     global usedFunctions
+
+    errors = []
 
     try:
         tree = __parserFromString(code)
@@ -614,6 +622,7 @@ def parserLearntBotCodeFromCode(code, name_client):
         raise e
     if not tree:
         text = ""
+        errors.append("Parse error (somewhere)")
     else:
         text = elapsedTimeFunction
         text += signalHandlerFunction
@@ -624,9 +633,9 @@ def parserLearntBotCodeFromCode(code, name_client):
         header = cleanCode(_code=header)
 
     if text is not "":
-        return header + text
+        return header + text, errors
     else:
-        return False
+        return False, errors
 
 def cleanCode(_code):
     newcode = _code.replace(" :", ":").replace("  ", " ").replace("\n\n\n", "\n\n")
