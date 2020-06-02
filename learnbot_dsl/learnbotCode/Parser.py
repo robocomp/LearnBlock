@@ -305,14 +305,19 @@ def __parserFromFile(file):
 def __parserFromString(text):
     global ini
     ini = []
+
+    ret = None
+
     try:
         LB.ignore(pythonStyleComment)
-        ret = LB.parseString(text)
-        return ret
+        tree = LB.parseString(text, parseAll=True)
+        return True, tree
     except ParseException as pe:
         print(pe.line)
         print(' ' * (pe.col - 1) + '^')
         print(pe)
+
+        return False, pe
 
 list_when = []
 usedFunctions = []
@@ -574,8 +579,9 @@ def __processIF(line, text="", index=0):
 
 def parserLearntBotCodeOnlyUserFuntion(code):
     text = ""
+    # TODO: check for errors
     try:
-        tree = __parserFromString(code)
+        _, tree = __parserFromString(code)
 
         text = __generatePy(tree)
         text = cleanCode(_code=text)
@@ -589,30 +595,33 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
     errors = []
 
     try:
-        tree = __parserFromFile(inputFile)
-        errors.append({
-            'level': 'error',
-            'message': "Parse error",
-            'span': (None, None),
-        })
+        success, output = __parserFromFile(inputFile)
     except Exception as e:
         traceback.print_exc()
         raise e
-    text = elapsedTimeFunction
-    text += signalHandlerFunction
-    text += __generatePy(tree)
-    text += endOfProgram
-    text = cleanCode(_code=text)
+    if not success:
+        errors.append({
+            'level': 'error',
+            'message': "Parse error",
+            'span': (output.lineno, None),
+        })
 
-    header = HEADER.replace('<Client>', client_name).replace("<USEDFUNCTIONS>", str(usedFunctions))
-    header = cleanCode(_code=header)
-    if text is not "":
+        return False, errors
+    else:
+        text = elapsedTimeFunction
+        text += signalHandlerFunction
+        text += __generatePy(output)
+        text += endOfProgram
+        text = cleanCode(_code=text)
+
+        header = HEADER.replace('<Client>', client_name).replace("<USEDFUNCTIONS>", str(usedFunctions))
+        header = cleanCode(_code=header)
+
         with open(outputFile, 'w') as f:
             f.write(header)
             f.write(text)
-        return header + text, errors
-    else:
-        return False, errors
+
+        return header, errors
 
 def parserLearntBotCodeFromCode(code, name_client):
     global usedFunctions
@@ -620,30 +629,28 @@ def parserLearntBotCodeFromCode(code, name_client):
     errors = []
 
     try:
-        tree = __parserFromString(code)
+        success, output = __parserFromString(code)
     except Exception as e:
         traceback.print_exc()
         raise e
-    if not tree:
-        text = ""
+    if not success:
         errors.append({
             'level': 'error',
             'message': "Parse error",
-            'span': (None, None),
+            'span': (output.lineno, None),
         })
+
+        return False, errors
     else:
         text = elapsedTimeFunction
         text += signalHandlerFunction
-        text += __generatePy(tree)
+        text += __generatePy(output)
         text += endOfProgram
         text = cleanCode(_code=text)
         header = HEADER.replace('<Client>', name_client).replace("<USEDFUNCTIONS>", str(usedFunctions))
         header = cleanCode(_code=header)
 
-    if text is not "":
         return header + text, errors
-    else:
-        return False, errors
 
 def cleanCode(_code):
     newcode = _code.replace(" :", ":").replace("  ", " ").replace("\n\n\n", "\n\n")
@@ -669,9 +676,9 @@ end
 """
     try:
         import pprint
-        pprint.pprint(__parserFromString(textprueba).asList(), indent=4)
-        print(__parserFromString(textprueba))
-        text = __generatePy(__parserFromString(textprueba))
+        pprint.pprint(__parserFromString(textprueba)[1].asList(), indent=4)
+        print(__parserFromString(textprueba)[1])
+        text = __generatePy(__parserFromString(textprueba)[1])
         text = cleanCode(_code=text)
         print("----------------\n\n", text)
     except ParseException as pe:
