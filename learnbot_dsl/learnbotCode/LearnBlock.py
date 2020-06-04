@@ -33,7 +33,7 @@ from learnbot_dsl.learnbotCode.guiTabLibrary import Library
 from learnbot_dsl.learnbotCode.Highlighter import *
 from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
-from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode, cleanCode
+from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode
 from learnbot_dsl import PATHCLIENT
 from learnbot_dsl.learnbotCode.editDictionaryTags import EditDictionaryTags
 import keyword
@@ -1561,7 +1561,6 @@ class LearnBlock(QtWidgets.QMainWindow):
         name_client = self.ui.clientscomboBox.currentText()
         text = HEADER.replace('<Client>', name_client)
         text += '\nrobot.stop_bot()'
-        text = cleanCode(text)
         with open(os.path.join(tempfile.gettempdir(), "stop_main_tmp.py"), "w+") as fh:
             fh.writelines(text)
 
