@@ -938,12 +938,13 @@ class LearnBlock(QtWidgets.QMainWindow):
                     return f"{level}: {message} ({spanMsg})"
 
                 errorList = '\n'.join(map(formatError, errors))
-                errorMsg = f"Your code is empty or is not correct. The following errors were found:\n\n{errorList}"
+                errorMsg = f"Your code is not correct"
 
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
                 msgBox.setText(self.tr(errorMsg))
+                msgBox.setDetailedText(errorList)
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()

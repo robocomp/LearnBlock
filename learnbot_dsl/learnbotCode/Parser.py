@@ -917,7 +917,6 @@ def parserLearntBotCodeFromCode(code, name_client):
 if __name__ == "__main__":
     textprueba = """
 
-?
 x = None
 sum = None
 result = None
