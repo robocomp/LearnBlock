@@ -213,8 +213,8 @@ CALL = (
     + Suppress(DOT)
     + IDENTIFIER
     + OPAR
-    + Group(Optional(delimitedList(OPERATION)))
-    + CPAR
+    - Group(Optional(delimitedList(OPERATION)))
+    - CPAR
 ).setParseAction(Call)
 
 """-----------------SIMPLECALL-------------------------"""
@@ -239,8 +239,8 @@ class SimpleCall(Node):
 SIMPLECALL = Group(
         IDENTIFIER
         + OPAR
-        + Group(Optional(delimitedList(OPERATION)))
-        + CPAR
+        - Group(Optional(delimitedList(OPERATION)))
+        - CPAR
     ).setParseAction(SimpleCall)
 
 """-----------------OPERACIONES---------------------"""
@@ -355,7 +355,7 @@ VAR = (
     INDENT
     + IDENTIFIER
     + (ASSIGN | PLUA | MINA | DIVA | MULA)
-    + OPERATION
+    - OPERATION
 ).setParseAction(Var)
 
 """-----------------LINEA---------------------------"""
@@ -454,26 +454,26 @@ ELSEIF = Forward()
 ELSEIF << (
     INDENT
     + Suppress(Literal('elif'))
-    + OPERATION
-    + COLON
-    + LINES
+    - OPERATION
+    - COLON
+    - LINES
 ).setParseAction(ElseIf)
 
 ELSE << (
     INDENT
     + Suppress(Literal('else'))
-    + COLON
-    + LINES
+    - COLON
+    - LINES
 ).setParseAction(Else)
 
 IF = (
     INDENT
     + Suppress(Literal('if'))
-    + OPERATION
-    + COLON
-    + LINES
-    + Group(ZeroOrMore(ELSEIF) + Optional(ELSE))
-    + END
+    - OPERATION
+    - COLON
+    - LINES
+    - Group(ZeroOrMore(ELSEIF) + Optional(ELSE))
+    - END
 ).setParseAction(If)
 
 """-----------------LOOP----------------------------"""
@@ -509,10 +509,10 @@ class While(Node):
 BLOQUEWHILE = (
     INDENT
     + Suppress(Literal('while'))
-    + OPERATION
-    + COLON
-    + LINES
-    + END
+    - OPERATION
+    - COLON
+    - LINES
+    - END
 ).setParseAction(While)
 
 """-----------------WHEN+CONDICION------------------"""
@@ -577,14 +577,14 @@ class When(Node):
 BLOQUEWHENCOND = (
     INDENT
     + Suppress(Literal('when'))
-    + IDENTIFIER
-    + Optional(
+    - IDENTIFIER
+    - Optional(
         Suppress(ASSIGN)
-        + OPERATION
+        - OPERATION
     )
-    + COLON
-    + LINES
-    + END
+    - COLON
+    - LINES
+    - END
 ).setParseAction(When)
 
 """-----------------ACTIVATE-CONDITION----------------"""
@@ -654,12 +654,12 @@ class Def(Node):
 
 DEF = (
     Suppress(Literal('def'))
-    + IDENTIFIER
-    + OPAR
-    + CPAR
-    + COLON
-    + LINES
-    + END
+    - IDENTIFIER
+    - OPAR
+    - CPAR
+    - COLON
+    - LINES
+    - END
 ).setParseAction(Def)
 
 """-----------------IMPORT----------------------------"""
@@ -701,9 +701,9 @@ class Main(Node):
 
 MAIN = (
     Suppress(Literal('main'))
-    + COLON
-    + LINES
-    + END
+    - COLON
+    - LINES
+    - END
 ).setParseAction(Main)
 
 class Program(Node):
@@ -731,9 +731,9 @@ class Program(Node):
 
 LB = (
     Group(ZeroOrMore(IMPORT))
-    + Group(ZeroOrMore(LINE))
-    + Group(ZeroOrMore(DEF))
-    + Group(MAIN | ZeroOrMore(BLOQUEWHENCOND))
+    - Group(ZeroOrMore(LINE))
+    - Group(ZeroOrMore(DEF))
+    - Group(MAIN | ZeroOrMore(BLOQUEWHENCOND))
 ).setParseAction(Program)
 
 LB.ignore(pythonStyleComment)
@@ -850,8 +850,7 @@ def parserLearntBotCodeOnlyUserFuntion(code):
     text = ""
     # TODO: check for errors
     try:
-        _, tree = Parser.parse_str(code)
-
+        tree = Parser.parse_str(code)
         text = PythonGenerator.generate(tree)
     except Exception as e:
         traceback.print_exc()
@@ -882,7 +881,7 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
         errors.append({
             'level': 'error',
             'message': "Parse error",
-            'from': (output.lineno, output.col),
+            'from': (e.lineno, e.col),
             'to': None,
         })
 
@@ -909,7 +908,7 @@ def parserLearntBotCodeFromCode(code, name_client):
         errors.append({
             'level': 'error',
             'message': "Parse error",
-            'from': (output.lineno, output.col),
+            'from': (e.lineno, e.col),
             'to': None,
         })
 
@@ -918,6 +917,7 @@ def parserLearntBotCodeFromCode(code, name_client):
 if __name__ == "__main__":
     textprueba = """
 
+?
 x = None
 sum = None
 result = None
@@ -975,7 +975,7 @@ end
         print()
         print(PythonGenerator.generate(tree))
         print()
-    except ParseException as pe:
+    except Exception as pe:
         print(pe.line)
         print(' ' * (pe.col - 1) + '^')
         print(pe)
