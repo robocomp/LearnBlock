@@ -923,16 +923,17 @@ class LearnBlock(QtWidgets.QMainWindow):
                 def formatError(error):
                     level = error['level']
                     message = error['message']
-                    start, end = error['span']
+                    start = error['from']
+                    end = error['to']
 
                     if (start == None and end == None):
                         spanMsg = "somewhere"
                     elif (end == None):
-                        spanMsg = f"from line {start}"
+                        spanMsg = f"from {start[0]}:{start[1]}"
                     elif (start == end):
-                        spanMsg = f"line {start}"
+                        spanMsg = f"at {start[0]}:{start[1]}"
                     else:
-                        spanMsg = f"lines {start}-{end}"
+                        spanMsg = f"from {start[0]}:{start[1]} to {end[0]}{end[1]}"
 
                     return f"{level}: {message} ({spanMsg})"
 

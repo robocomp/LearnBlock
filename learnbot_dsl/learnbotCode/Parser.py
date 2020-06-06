@@ -882,7 +882,8 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
         errors.append({
             'level': 'error',
             'message': "Parse error",
-            'span': (output.lineno, None),
+            'from': (output.lineno, output.col),
+            'to': None,
         })
 
         return None, errors
@@ -908,7 +909,8 @@ def parserLearntBotCodeFromCode(code, name_client):
         errors.append({
             'level': 'error',
             'message': "Parse error",
-            'span': (output.lineno, None),
+            'from': (output.lineno, output.col),
+            'to': None,
         })
 
         return None, errors
