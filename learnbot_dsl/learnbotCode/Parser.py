@@ -383,7 +383,18 @@ class Var(Node):
         return f'{var} {self.operator} {right}'
 
     def typecheck(self, ctx):
-        # TODO: check that the right hand side matches the variable type
+        # TODO: check also inputs
+        var = self.var.to_python(None)
+
+        _, vo = ctx.lookup(var)
+        _, ro = self.right.signature(ctx)
+
+        uo = ctx.unify(self.right, ro, vo)
+
+        if uo:
+            signature = [], uo
+            ctx.update_signature(var, signature)
+
         return self.right.typecheck(ctx)
 
     @property
@@ -825,6 +836,7 @@ LB.enablePackrat()
 class Context:
     def __init__(self, operators):
         self.operators = operators
+        self.globals = {}
 
     def precedence_of(self, name, klass):
         """Find the binding precedence of a given operator in the operator table"""
@@ -845,12 +857,26 @@ class Context:
         entry = self.lookup_operator(name, klass)
         return entry[4], entry[5]
 
+    def is_global(self, name):
+        """Tells whether a variable is in the global context or not"""
+
+        return name in self.globals
+
+    def lookup(self, name):
+        """Returns the signature associated with the given variable"""
+
+        return self.globals[name]
+
+    def update_signature(self, name, signature):
+        """Updates the signature associated with the given variable"""
+
+        self.globals[name] = signature
+
 class PythonGenerator(Context):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.imports = []
-        self.globals = set()
         self.whens = []
         self.level = 0
 
@@ -869,11 +895,6 @@ class PythonGenerator(Context):
 
         return '<TABHERE>' * self.level
 
-    def is_global(self, name):
-        """Tells whether a variable is in the global context or not"""
-
-        return name in self.globals
-
     @staticmethod
     def generate(tree):
         instance = PythonGenerator(OPTABLE)
@@ -882,7 +903,7 @@ class PythonGenerator(Context):
         # will be found in this list. However this can change in the future,
         # so we won't assume every variable usage is global (although we'll
         # make it happen for now). Future-proofing!
-        instance.globals = tree.used_vars
+        instance.globals = {var: ([], True) for var in tree.used_vars}
         instance.whens = {node.name.to_python(instance): node
                           for node in tree.blocks
                           if isinstance(node, When)}
@@ -928,7 +949,6 @@ class Typechecker(Context):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.globals = []
         self.mismatches = []
 
     def unify(self, node, a, b):
@@ -945,6 +965,12 @@ class Typechecker(Context):
     @staticmethod
     def check(tree):
         instance = Typechecker(OPTABLE)
+
+        # Right now all variables are global, so any variable used in the code
+        # will be found in this list. However this can change in the future,
+        # so we won't assume every variable usage is global (although we'll
+        # make it happen for now). Future-proofing!
+        instance.globals = {var: ([], True) for var in tree.used_vars}
         tree.typecheck(instance)
 
         return instance.mismatches
