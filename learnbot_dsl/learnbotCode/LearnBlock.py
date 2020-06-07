@@ -926,14 +926,14 @@ class LearnBlock(QtWidgets.QMainWindow):
                     start = error['from']
                     end = error['to']
 
-                    if (start == None and end == None):
+                    if start == None and end == None:
                         spanMsg = "somewhere"
-                    elif (end == None):
+                    elif end == None:
                         spanMsg = f"from {start[0]}:{start[1]}"
-                    elif (start == end):
+                    elif start == end:
                         spanMsg = f"at {start[0]}:{start[1]}"
                     else:
-                        spanMsg = f"from {start[0]}:{start[1]} to {end[0]}{end[1]}"
+                        spanMsg = f"from {start[0]}:{start[1]} to {end[0]}:{end[1]}"
 
                     return f"{level}: {message} ({spanMsg})"
 

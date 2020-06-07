@@ -76,15 +76,16 @@ class Node:
         c = col(location, src)
 
         self.start = l, c
-        self.line = line(location, src)
+
+    def signature(self, ctx):
+        return [], True
+
+    def typecheck(self, ctx):
+        return True
 
     @property
     def used_vars(self):
         return set()
-
-    @property
-    def span(self):
-        return len(self.line)
 
 KEYWORDS = (
     Keyword('def')
@@ -178,6 +179,16 @@ class Value(Node):
     def to_python(self, gen, *_):
         return repr(self.value)
 
+    def signature(self, ctx):
+        if type(self.value) == int:
+            output = float
+        elif self.value == None:
+            output = True
+        else:
+            output = type(self.value)
+
+        return [], output
+
 VALUE = (
     NUMBER
     | TRUE
@@ -202,6 +213,10 @@ class Call(Node):
         args = [arg.to_python(gen) for arg in self.args]
 
         return f'robot.{function}({", ".join(args)})'
+
+    def typecheck(self, ctx):
+        # TODO: check that the arguments match the function signature
+        return all((node.typecheck(ctx) for node in self.args))
 
     @property
     def used_vars(self):
@@ -230,6 +245,10 @@ class SimpleCall(Node):
         args = [arg.to_python(gen) for arg in self.args]
 
         return f'{function}({", ".join(args)})'
+
+    def typecheck(self, ctx):
+        # TODO: check that the arguments match the function signature
+        return all((node.typecheck(ctx) for node in self.args))
 
     @property
     def used_vars(self):
@@ -269,6 +288,15 @@ class UnaryOp(Node):
             operand = self.operand.to_python(gen)
             return f'({self.operator}{sep}{operand})'
 
+    def typecheck(self, ctx):
+        [input], _ = self.signature(ctx)
+        _, output = self.operand.signature(ctx)
+
+        return ctx.unify(self.operand, output, input) and self.operand.typecheck(ctx)
+
+    def signature(self, ctx):
+        return ctx.operator_signature(self.operator, BinaryOp)
+
     @property
     def used_vars(self):
         return self.operand.used_vars
@@ -298,6 +326,16 @@ class BinaryOp(Node):
 
             return f'({left} {self.operator} {right})'
 
+    def typecheck(self, ctx):
+        [li, ri], _ = self.signature(ctx)
+        _, lo = self.left.signature(ctx)
+        _, ro = self.right.signature(ctx)
+
+        return ctx.unify(self.left, lo, li) and ctx.unify(self.right, ro, ri) and self.left.typecheck(ctx) and self.right.typecheck(ctx)
+
+    def signature(self, ctx):
+        return ctx.operator_signature(self.operator, BinaryOp)
+
     @property
     def used_vars(self):
         vars = self.left.used_vars
@@ -306,15 +344,15 @@ class BinaryOp(Node):
         return vars
 
 OPTABLE = [
-    # operator parser   arity  associativity  class
-    (PLUS | MINUS,      1,     opAssoc.RIGHT, UnaryOp),
-    (NOT,               1,     opAssoc.RIGHT, UnaryOp),
-    (TIMES | OVER,      2,     opAssoc.LEFT,  BinaryOp),
-    (PLUS | MINUS,      2,     opAssoc.LEFT,  BinaryOp),
-    (LT | GT | LE | GE, 2,     opAssoc.LEFT,  BinaryOp),
-    (EQ | NE,           2,     opAssoc.LEFT,  BinaryOp),
-    (AND,               2,     opAssoc.LEFT,  BinaryOp),
-    (OR,                2,     opAssoc.LEFT,  BinaryOp),
+    # operator parser   arity  associativity  class,    input type      output type
+    (PLUS | MINUS,      1,     opAssoc.RIGHT, UnaryOp,  [float],        float),
+    (NOT,               1,     opAssoc.RIGHT, UnaryOp,  [bool],         bool),
+    (TIMES | OVER,      2,     opAssoc.LEFT,  BinaryOp, [float, float], float),
+    (PLUS | MINUS,      2,     opAssoc.LEFT,  BinaryOp, [float, float], float),
+    (LT | GT | LE | GE, 2,     opAssoc.LEFT,  BinaryOp, [bool, bool],   bool),
+    (EQ | NE,           2,     opAssoc.LEFT,  BinaryOp, [True, True],   True),
+    (AND,               2,     opAssoc.LEFT,  BinaryOp, [bool, bool],   bool),
+    (OR,                2,     opAssoc.LEFT,  BinaryOp, [bool, bool],   bool),
 ]
 
 OPERATION << infixNotation(VALUE | IDENTIFIER | CALL, OPTABLE, OPAR, CPAR)
@@ -343,6 +381,10 @@ class Var(Node):
         right = self.right.to_python(gen)
 
         return f'{var} {self.operator} {right}'
+
+    def typecheck(self, ctx):
+        # TODO: check that the right hand side matches the variable type
+        return self.right.typecheck(ctx)
 
     @property
     def used_vars(self):
@@ -387,6 +429,11 @@ class If(Node):
 
         return output
 
+    def typecheck(self, ctx):
+        _, co = self.condition.signature(ctx)
+
+        return ctx.unify(self.condition, co, bool) and all((node.typecheck(ctx) for node in self.body))
+
     @property
     def used_vars(self):
         vars = {var for node in self.body + self.alternatives
@@ -416,6 +463,11 @@ class ElseIf(Node):
 
         return output
 
+    def typecheck(self, ctx):
+        _, co = self.condition.signature(ctx)
+
+        return ctx.unify(self.condition, co, bool) and all((node.typecheck(ctx) for node in self.body))
+
     @property
     def used_vars(self):
         vars = {var for node in self.body
@@ -442,6 +494,9 @@ class Else(Node):
         gen.dedent()
 
         return output
+
+    def typecheck(self, ctx):
+        return all((node.typecheck(ctx) for node in self.body))
 
     @property
     def used_vars(self):
@@ -496,6 +551,11 @@ class While(Node):
         gen.dedent()
 
         return output
+
+    def typecheck(self, ctx):
+        _, co = self.condition.signature(ctx)
+
+        return ctx.unify(self.condition, co, bool) and all((node.typecheck(ctx) for node in self.body))
 
     @property
     def used_vars(self):
@@ -574,6 +634,11 @@ class When(Node):
 
         return output.strip()
 
+    def typecheck(self, ctx):
+        _, co = self.right.signature(ctx)
+
+        return ctx.unify(self.right, co, bool) and all((node.typecheck(ctx) for node in self.body))
+
 BLOQUEWHENCOND = (
     INDENT
     + Suppress(Literal('when'))
@@ -647,6 +712,9 @@ class Def(Node):
 
         return output
 
+    def typecheck(self, ctx):
+        return all((node.typecheck(ctx) for node in self.body))
+
     @property
     def used_vars(self):
         return {var for node in self.body
@@ -694,6 +762,9 @@ class Main(Node):
 
         return output
 
+    def typecheck(self, ctx):
+        return all((node.typecheck(ctx) for node in self.body))
+
     @property
     def used_vars(self):
         return {var for node in self.body
@@ -716,18 +787,24 @@ class Program(Node):
         self.blocks = tokens[3].asList()
 
     def to_python(self, gen, *_):
-        nodes = self.imports + self.inits + self.defs + self.blocks
         output = ''
 
-        for node in nodes:
+        for node in self.nodes:
             output += gen.tabs() + node.to_python(gen) + '\n'
 
         return output
+
+    def typecheck(self, ctx):
+        return all((node.typecheck(ctx) for node in self.nodes))
 
     @property
     def used_vars(self):
         return {var for node in self.inits + self.defs + self.blocks
                     for var in node.used_vars}
+
+    @property
+    def nodes(self):
+        return self.imports + self.inits + self.defs + self.blocks
 
 LB = (
     Group(ZeroOrMore(IMPORT))
@@ -745,9 +822,33 @@ LB.ignore(pythonStyleComment)
 # See: github.com/pyparsing/pyparsing/wiki/Performance-Tips
 LB.enablePackrat()
 
-class PythonGenerator:
+class Context:
     def __init__(self, operators):
         self.operators = operators
+
+    def precedence_of(self, name, klass):
+        """Find the binding precedence of a given operator in the operator table"""
+
+        entry = self.lookup_operator(name, klass)
+        return self.operators.index(entry)
+
+    def lookup_operator(self, name, klass):
+        """Lookup an operator in the operator table"""
+
+        return next(entry for entry in self.operators
+                          if entry[3] == klass
+                          and entry[0].searchString(name))
+
+    def operator_signature(self, name, klass):
+        """Return the inputs and output type of the given operator"""
+
+        entry = self.lookup_operator(name, klass)
+        return entry[4], entry[5]
+
+class PythonGenerator(Context):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.imports = []
         self.globals = set()
         self.whens = []
@@ -759,18 +860,9 @@ class PythonGenerator:
         self.level += 1
 
     def dedent(self):
-        """Exit an indentation level"""
+        """Leave an indentation level"""
 
         self.level -= 1
-
-    def precedence_of(self, name, klass):
-        """Find the binding precedence of a given operator in the operator table"""
-
-        entry = next(entry for entry in self.operators
-                           if entry[3] == klass
-                           and entry[0].searchString(name))
-                        
-        return self.operators.index(entry)
 
     def tabs(self):
         """Returns the current indentation level as tabs"""
@@ -832,6 +924,31 @@ class PythonGenerator:
                 .strip()
                 .replace('<TABHERE>', '\t'))
 
+class Typechecker(Context):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.globals = []
+        self.mismatches = []
+
+    def unify(self, node, a, b):
+        if a == True:
+            return b
+        elif b == True:
+            return a
+        elif a and b and a == b:
+            return a
+        else:
+            self.mismatches.append((node, a, b))
+            return None
+
+    @staticmethod
+    def check(tree):
+        instance = Typechecker(OPTABLE)
+        tree.typecheck(instance)
+
+        return instance.mismatches
+
 class Parser:
     @staticmethod
     def parse_str(text):
@@ -863,10 +980,22 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
 
     try:
         output = Parser.parse_file(inputFile)
+        mismatches = Typechecker.check(output)
+
         text = elapsedTimeFunction.replace("<TABHERE>", '\t')
         text += signalHandlerFunction.replace("<TABHERE>", '\t')
         text += PythonGenerator.generate(output)
         text += endOfProgram
+
+        for mismatch in mismatches:
+            node, found, expected = mismatch
+
+            errors.append({
+                'level': 'warning',
+                'message': f'type mismatch: expected {expected.__name__}, got {found.__name__}',
+                'from': node.start,
+                'to': None,
+            })
 
         header = HEADER.replace('<Client>', client_name).replace("<USEDCALLS>", str(usedFunctions)).replace("<TABHERE>", '\t')
 
@@ -880,7 +1009,7 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
 
         errors.append({
             'level': 'error',
-            'message': "Parse error",
+            'message': "parse error",
             'from': (e.lineno, e.col),
             'to': None,
         })
@@ -894,6 +1023,7 @@ def parserLearntBotCodeFromCode(code, name_client):
 
     try:
         output = Parser.parse_str(code)
+        mismatches = Typechecker.check(output)
 
         text = elapsedTimeFunction.replace("<TABHERE>", '\t')
         text += signalHandlerFunction.replace("<TABHERE>", '\t')
@@ -901,13 +1031,23 @@ def parserLearntBotCodeFromCode(code, name_client):
         text += endOfProgram
         header = HEADER.replace('<Client>', name_client).replace("<USEDCALLS>", str(usedFunctions)).replace("<TABHERE>", '\t')
 
+        for mismatch in mismatches:
+            node, found, expected = mismatch
+
+            errors.append({
+                'level': 'warning',
+                'message': f'type mismatch: expected {expected.__name__}, got {found.__name__}',
+                'from': node.start,
+                'to': None,
+            })
+
         return header + text, errors
     except Exception as e:
         traceback.print_exc()
 
         errors.append({
             'level': 'error',
-            'message': "Parse error",
+            'message': "parse error",
             'from': (e.lineno, e.col),
             'to': None,
         })
@@ -925,7 +1065,7 @@ chainedOps = None
 stressTest = None
 
 def foo():
-    x = 3
+    x = 3 or False
     function.sayHello("Hello. I said: \\"Hello\\".")
 end
 
@@ -973,6 +1113,19 @@ end
         print("=============")
         print()
         print(PythonGenerator.generate(tree))
+        print()
+
+        print("Typechecks?")
+        print("==========")
+        print()
+        mismatches = Typechecker.check(tree)
+        print(not mismatches)
+        print()
+
+        print("Type mismatches")
+        print("===============")
+        print()
+        print(mismatches)
         print()
     except Exception as pe:
         print(pe.line)
