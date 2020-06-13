@@ -71,11 +71,12 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 class Node:
-    def __init__(self, src, location):
+    def __init__(self, src, location, tokens):
         l = lineno(location, src)
         c = col(location, src)
 
         self.start = l, c
+        self.end = None
 
     def signature(self, ctx):
         return [], True
@@ -154,7 +155,7 @@ NUMBER = Combine(
 
 class Identifier(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
         self.name = tokens[0]
 
     def to_python(self, gen, *_):
@@ -173,7 +174,7 @@ STRING = QuotedString('"', escChar = '\\', unquoteResults = False)
 
 class Value(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
         self.value = eval(tokens[0])
 
     def to_python(self, gen, *_):
@@ -203,7 +204,7 @@ OPERATION = Forward()
 """-----------------CALL-------------------------"""
 class Call(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.function = tokens[0]
         self.args = tokens[1].asList()
@@ -235,7 +236,7 @@ CALL = (
 """-----------------SIMPLECALL-------------------------"""
 class SimpleCall(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.function = tokens[0]
         self.args = tokens[1].asList()
@@ -265,7 +266,7 @@ SIMPLECALL = Group(
 """-----------------OPERACIONES---------------------"""
 class UnaryOp(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.operator = tokens[0][0]
         self.operand = tokens[0][1]
@@ -303,7 +304,7 @@ class UnaryOp(Node):
 
 class BinaryOp(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
         [[*rest, op, last]] = tokens
 
         # NOTE: this assumes left associativity. This is fine for us, as we
@@ -370,7 +371,7 @@ PASS = Literal('pass').setParseAction(Pass)
 """-----------------asignacion-VARIABLES------------"""
 class Var(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.var = tokens[0]
         self.operator = tokens[1]
@@ -418,7 +419,7 @@ LINES = Group(OneOrMore(LINE))
 """-----------------bloque-IF-----------------------"""
 class If(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -456,7 +457,7 @@ class If(Node):
 
 class ElseIf(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -490,7 +491,7 @@ class ElseIf(Node):
 
 class Else(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.body = tokens[0].asList()
 
@@ -545,7 +546,7 @@ IF = (
 """-----------------LOOP----------------------------"""
 class While(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -589,7 +590,7 @@ BLOQUEWHILE = (
 """-----------------WHEN+CONDICION------------------"""
 class When(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.name = tokens[0]
         self.right = tokens[1] if len(tokens) == 3 else None
@@ -666,7 +667,7 @@ BLOQUEWHENCOND = (
 """-----------------ACTIVATE-CONDITION----------------"""
 class Activate(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.name = tokens[0]
 
@@ -699,7 +700,7 @@ LINE << (
 """-----------------DEF----------------------------"""
 class Def(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.name = tokens[0]
         self.body = tokens[1].asList()
@@ -744,7 +745,7 @@ DEF = (
 """-----------------IMPORT----------------------------"""
 class Import(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.path = tokens[0][0]
 
@@ -761,7 +762,7 @@ IMPORT = (
 """-----------------MAIN----------------------------"""
 class Main(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.body = tokens[0].asList()
 
@@ -790,7 +791,7 @@ MAIN = (
 
 class Program(Node):
     def __init__(self, src, location, tokens):
-        super().__init__(src, location)
+        super().__init__(src, location, tokens)
 
         self.imports = tokens[0].asList()
         self.inits = tokens[1].asList()
@@ -1020,7 +1021,7 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
                 'level': 'warning',
                 'message': f'type mismatch: expected {expected.__name__}, got {found.__name__}',
                 'from': node.start,
-                'to': None,
+                'to': node.end,
             })
 
         header = HEADER.replace('<Client>', client_name).replace("<USEDCALLS>", str(usedFunctions)).replace("<TABHERE>", '\t')
@@ -1064,7 +1065,7 @@ def parserLearntBotCodeFromCode(code, name_client):
                 'level': 'warning',
                 'message': f'type mismatch: expected {expected.__name__}, got {found.__name__}',
                 'from': node.start,
-                'to': None,
+                'to': node.end,
             })
 
         return header + text, errors
