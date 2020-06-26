@@ -33,7 +33,7 @@ from learnbot_dsl.learnbotCode.guiTabLibrary import Library
 from learnbot_dsl.learnbotCode.Highlighter import *
 from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
-from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode, cleanCode
+from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode
 from learnbot_dsl import PATHCLIENT
 from learnbot_dsl.learnbotCode.editDictionaryTags import EditDictionaryTags
 import keyword
@@ -915,13 +915,36 @@ class LearnBlock(QtWidgets.QMainWindow):
     def textCodeToPython(self, name_Client):
         textCode = self.ui.textCode.toPlainText()
         try:
-            code = parserLearntBotCodeFromCode(textCode, name_Client)
+            code, errors = parserLearntBotCodeFromCode(textCode, name_Client)
             self.ui.pythonCode.clear()
-            if not code:
+            if errors:
+
+                # TODO: move somewhere else more visible than in the middle of this method
+                def formatError(error):
+                    level = error['level']
+                    message = error['message']
+                    start = error['from']
+                    end = error['to']
+
+                    if start == None and end == None:
+                        spanMsg = "somewhere"
+                    elif end == None:
+                        spanMsg = f"from {start[0]}:{start[1]}"
+                    elif start == end:
+                        spanMsg = f"at {start[0]}:{start[1]}"
+                    else:
+                        spanMsg = f"from {start[0]}:{start[1]} to {end[0]}:{end[1]}"
+
+                    return f"{level}: {message} ({spanMsg})"
+
+                errorList = '\n'.join(map(formatError, errors))
+                errorMsg = f"Your code is not correct"
+
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                msgBox.setText(self.tr("Your code is empty or is not correct"))
+                msgBox.setText(self.tr(errorMsg))
+                msgBox.setDetailedText(errorList)
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
@@ -1540,7 +1563,6 @@ class LearnBlock(QtWidgets.QMainWindow):
         name_client = self.ui.clientscomboBox.currentText()
         text = HEADER.replace('<Client>', name_client)
         text += '\nrobot.stop_bot()'
-        text = cleanCode(text)
         with open(os.path.join(tempfile.gettempdir(), "stop_main_tmp.py"), "w+") as fh:
             fh.writelines(text)
 
