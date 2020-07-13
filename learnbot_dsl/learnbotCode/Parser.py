@@ -75,7 +75,7 @@ class Node:
         l = lineno(location, src)
         c = col(location, src)
 
-        self.start = l, c
+        self.start = l, c, location
         self.end = None
 
     def signature(self, ctx):
@@ -834,6 +834,11 @@ LB.ignore(pythonStyleComment)
 # See: github.com/pyparsing/pyparsing/wiki/Performance-Tips
 LB.enablePackrat()
 
+# So that location-based indexing in the source code works (without this, the
+# `loc` parameter expands tabs, so positions are moved to the right when a tab
+# is found)
+LB.parseWithTabs()
+
 class Context:
     def __init__(self, operators):
         self.operators = operators
@@ -1036,8 +1041,8 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
 
         errors.append({
             'level': 'error',
-            'message': "parse error",
-            'from': (e.lineno, e.col),
+            'message': "cannot parse the source code",
+            'from': (e.lineno, e.col, e.loc),
             'to': None,
         })
 
@@ -1074,8 +1079,8 @@ def parserLearntBotCodeFromCode(code, name_client):
 
         errors.append({
             'level': 'error',
-            'message': "parse error",
-            'from': (e.lineno, e.col),
+            'message': "cannot parse the source code",
+            'from': (e.lineno, e.col, e.loc),
             'to': None,
         })
 

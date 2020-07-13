@@ -302,7 +302,10 @@
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="textCode"/>
+           <widget class="QSplitter" name="splitter">
+            <widget class="QTextEdit" name="textCode"/>
+            <widget class="QListWidget" name="errorList"/>
+           </widget>
           </item>
          </layout>
         </item>
@@ -816,7 +819,10 @@
    <addaction name="menuTools_robot"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <widget class="QLabel" name="position"/>
+   </widget>
+  </widget>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>

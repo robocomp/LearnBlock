@@ -162,6 +162,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     index = -1
     pre_sizes = [0, 0]
     dicTables = {}
+    errors = []
 
     def __init__(self):
         global signal
@@ -224,6 +225,14 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.SearchlineEdit.textChanged.connect(lambda: self.searchUpdate(self.ui.SearchlineEdit.text()))
         self.ui.addClientPushButton.clicked.connect(self.addClient)
         self.ui.configRobotPushButton.clicked.connect(self.configureRobot)
+
+        self.ui.Tabwi.currentChanged.connect(self.tabChanged)
+        self.ui.errorList.itemDoubleClicked.connect(self.errorPressed)
+        self.ui.textCode.cursorPositionChanged.connect(lambda: self.updateLineCol(self.ui.textCode))
+        self.ui.pythonCode.cursorPositionChanged.connect(lambda: self.updateLineCol(self.ui.pythonCode))
+
+        self.tabChanged(self.ui.Tabwi.currentIndex())
+
         # Actions
         self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
         self.ui.actionSave.triggered.connect(self.saveInstance)
@@ -367,6 +376,42 @@ class LearnBlock(QtWidgets.QMainWindow):
 
         r = self.app.exec_()
         sys.exit(r)
+
+    def errorPressed(self, item):
+        index = self.ui.errorList.indexFromItem(item).row()
+        error = self.errors[index]
+        cursor = self.ui.textCode.textCursor()
+
+        start = error['from'][2] if error['from'] else None
+        end = error['to'][2] if error['to'] else None
+        self.ui.textCode.setFocus()
+
+        if start == None and end == None:
+            pass
+        elif end == None:
+            cursor.setPosition(start)
+        elif start == end:
+            cursor.setPosition(start)
+        else:
+            cursor.setPosition(start)
+            cursor.setPosition(end, QtGui.QTextCursor.KeepAnchor)
+
+        self.ui.textCode.setTextCursor(cursor)
+
+    def updateLineCol(self, textArea):
+        pos = textArea.textCursor()
+        line = pos.blockNumber()
+        col = pos.columnNumber()
+
+        self.ui.position.setText(f"{line+1}:{col+1}")
+
+    def tabChanged(self, index):
+        if (index == 0): # Python tab
+            self.updateLineCol(self.ui.pythonCode)
+        elif (index == 1): # Block-Text tab
+            self.updateLineCol(self.ui.textCode)
+        elif (index == 2): # Visual Block tab
+            self.ui.position.setText('-- VISUAL --')
 
     def editDictTags(self):
         if not hasattr(self, "editDictionaryTagsUI"):
@@ -910,34 +955,32 @@ class LearnBlock(QtWidgets.QMainWindow):
                     msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                     msgBox.exec_()
 
+    def formatError(self, error):
+        level = error['level']
+        message = error['message']
+        start = error['from']
+        end = error['to']
 
+        if start == None and end == None:
+            spanMsg = "somewhere"
+        elif end == None:
+            spanMsg = f"from {start[0]}:{start[1]}"
+        elif start == end:
+            spanMsg = f"at {start[0]}:{start[1]}"
+        else:
+            spanMsg = f"from {start[0]}:{start[1]} to {end[0]}:{end[1]}"
+
+        return f"{level}: {message} ({spanMsg})"
 
     def textCodeToPython(self, name_Client):
         textCode = self.ui.textCode.toPlainText()
         try:
             code, errors = parserLearntBotCodeFromCode(textCode, name_Client)
+            self.errors = errors
             self.ui.pythonCode.clear()
             if errors:
 
-                # TODO: move somewhere else more visible than in the middle of this method
-                def formatError(error):
-                    level = error['level']
-                    message = error['message']
-                    start = error['from']
-                    end = error['to']
-
-                    if start == None and end == None:
-                        spanMsg = "somewhere"
-                    elif end == None:
-                        spanMsg = f"from {start[0]}:{start[1]}"
-                    elif start == end:
-                        spanMsg = f"at {start[0]}:{start[1]}"
-                    else:
-                        spanMsg = f"from {start[0]}:{start[1]} to {end[0]}:{end[1]}"
-
-                    return f"{level}: {message} ({spanMsg})"
-
-                errorList = '\n'.join(map(formatError, errors))
+                errorList = '\n'.join(map(self.formatError, errors))
                 errorMsg = f"Your code is not correct"
 
                 msgBox = QtWidgets.QMessageBox()
@@ -948,6 +991,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
+
+                self.updateErrors()
             else:
                 self.ui.pythonCode.setText(code)
             return code
@@ -969,6 +1014,20 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
         return False
+
+    def updateErrors(self):
+        nErr = 0
+        nWarn = 0
+
+        self.ui.errorList.clear()
+
+        for error in self.errors:
+            if (error['level'] == 'error'):
+                nErr += 1
+            elif (error['level'] == 'warning'):
+                nWarn += 1
+
+            self.ui.errorList.addItem(self.formatError(error))
 
     def startSimulatorRobot(self):
         self.scene.stopAllblocks()
