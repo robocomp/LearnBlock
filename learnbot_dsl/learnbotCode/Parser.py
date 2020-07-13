@@ -71,12 +71,18 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 class Node:
-    def __init__(self, src, location, tokens):
-        l = lineno(location, src)
-        c = col(location, src)
+    def __init__(self, src, start, tokens):
+        end = tokens[-1]
+        del tokens[-1]
 
-        self.start = l, c, location
-        self.end = None
+        sl = lineno(start, src)
+        sc = col(start, src)
+
+        el = lineno(end, src)
+        ec = col(end, src)
+
+        self.start = sl, sc, start
+        self.end = el, ec, end
 
     def signature(self, ctx):
         return [], True
@@ -112,6 +118,8 @@ KEYWORDS = (
     | Keyword('end')
     | Keyword('None')
 )
+
+ENDLOC = Empty().leaveWhitespace().setParseAction(lambda s, loc, t: loc)
 
 NAME = Word(initChars = alphas, bodyChars = alphanums + '_')
 
@@ -154,8 +162,8 @@ NUMBER = Combine(
 )
 
 class Identifier(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.name = tokens[0]
 
     def to_python(self, gen, *_):
@@ -165,7 +173,7 @@ class Identifier(Node):
     def used_vars(self):
         return {self.name}
 
-IDENTIFIER = (~KEYWORDS + NAME).setParseAction(Identifier)
+IDENTIFIER = (~KEYWORDS + NAME + ENDLOC).setParseAction(Identifier)
 
 TRUE = Literal('True')
 FALSE = Literal('False')
@@ -173,8 +181,8 @@ NONE = Literal('None')
 STRING = QuotedString('"', escChar = '\\', unquoteResults = False)
 
 class Value(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.value = eval(tokens[0])
 
     def to_python(self, gen, *_):
@@ -190,21 +198,21 @@ class Value(Node):
 
         return [], output
 
-VALUE = (
+VALUE = ((
     NUMBER
     | TRUE
     | FALSE
     | NONE
     | STRING
-).setParseAction(Value)
+) + ENDLOC).setParseAction(Value)
 
 """-----------------OPERATION-----------------"""
 OPERATION = Forward()
 
 """-----------------CALL-------------------------"""
 class Call(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.function = tokens[0]
         self.args = tokens[1].asList()
@@ -231,12 +239,13 @@ CALL = (
     + OPAR
     - Group(Optional(delimitedList(OPERATION)))
     - CPAR
+    + ENDLOC
 ).setParseAction(Call)
 
 """-----------------SIMPLECALL-------------------------"""
 class SimpleCall(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.function = tokens[0]
         self.args = tokens[1].asList()
@@ -256,20 +265,26 @@ class SimpleCall(Node):
         return {var for arg in self.args
                     for var in arg.used_vars}
 
-SIMPLECALL = Group(
+SIMPLECALL = (Group(
         IDENTIFIER
         + OPAR
         - Group(Optional(delimitedList(OPERATION)))
         - CPAR
-    ).setParseAction(SimpleCall)
+    ) + ENDLOC).setParseAction(SimpleCall)
 
 """-----------------OPERACIONES---------------------"""
 class UnaryOp(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        [[operator, operand]] = tokens
 
-        self.operator = tokens[0][0]
-        self.operand = tokens[0][1]
+        self.operator = operator
+        self.operand = operand
+
+        sl = lineno(start, src)
+        sc = col(start, src)
+
+        self.start = sl, sc, start
+        self.end = operand.end
 
     def to_python(self, gen, max_precedence = float('inf'), *_):
         precedence = gen.precedence_of(self.operator, UnaryOp)
@@ -303,15 +318,20 @@ class UnaryOp(Node):
         return self.operand.used_vars
 
 class BinaryOp(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
         [[*rest, op, last]] = tokens
 
         # NOTE: this assumes left associativity. This is fine for us, as we
-        # don't have any right-binding operators
-        self.left = BinaryOp(src, location, [rest]) if len(rest) > 1 else rest[0]
+        # don't have any right-associative operators
+        self.left = BinaryOp(src, start, [rest]) if len(rest) > 1 else rest[0]
         self.operator = op
         self.right = last
+
+        sl = lineno(start, src)
+        sc = col(start, src)
+
+        self.start = sl, sc, start
+        self.end = last.end
 
     def to_python(self, gen, max_precedence = float('inf'), *_):
         precedence = gen.precedence_of(self.operator, BinaryOp)
@@ -360,18 +380,18 @@ OPERATION << infixNotation(VALUE | IDENTIFIER | CALL, OPTABLE, OPAR, CPAR)
 
 """-----------------PASS-------------------------"""
 class Pass(Node):
-    def __init__(self, src, location, tokens):
-        self.location = location
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
     def to_python(self, gen, *_):
         return 'pass'
 
-PASS = Literal('pass').setParseAction(Pass)
+PASS = (Literal('pass') + ENDLOC).setParseAction(Pass)
 
 """-----------------asignacion-VARIABLES------------"""
 class Var(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.var = tokens[0]
         self.operator = tokens[1]
@@ -410,6 +430,7 @@ VAR = (
     + IDENTIFIER
     + (ASSIGN | PLUA | MINA | DIVA | MULA)
     - OPERATION
+    + ENDLOC
 ).setParseAction(Var)
 
 """-----------------LINEA---------------------------"""
@@ -418,8 +439,8 @@ LINES = Group(OneOrMore(LINE))
 
 """-----------------bloque-IF-----------------------"""
 class If(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -456,8 +477,8 @@ class If(Node):
         return vars
 
 class ElseIf(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -490,8 +511,8 @@ class ElseIf(Node):
         return vars
 
 class Else(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.body = tokens[0].asList()
 
@@ -524,6 +545,7 @@ ELSEIF << (
     - OPERATION
     - COLON
     - LINES
+    + ENDLOC
 ).setParseAction(ElseIf)
 
 ELSE << (
@@ -531,6 +553,7 @@ ELSE << (
     + Suppress(Literal('else'))
     - COLON
     - LINES
+    + ENDLOC
 ).setParseAction(Else)
 
 IF = (
@@ -541,12 +564,13 @@ IF = (
     - LINES
     - Group(ZeroOrMore(ELSEIF) + Optional(ELSE))
     - END
+    + ENDLOC
 ).setParseAction(If)
 
 """-----------------LOOP----------------------------"""
 class While(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -585,12 +609,13 @@ BLOQUEWHILE = (
     - COLON
     - LINES
     - END
+    + ENDLOC
 ).setParseAction(While)
 
 """-----------------WHEN+CONDICION------------------"""
 class When(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.name = tokens[0]
         self.right = tokens[1] if len(tokens) == 3 else None
@@ -662,28 +687,37 @@ BLOQUEWHENCOND = (
     - COLON
     - LINES
     - END
+    + ENDLOC
 ).setParseAction(When)
 
 """-----------------ACTIVATE-CONDITION----------------"""
 class Activate(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
-
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.name = tokens[0]
 
     def to_python(self, gen, *_):
         return f'state_{self.name} = True'
 
 class Deactivate(Node):
-    def __init__(self, src, location, tokens):
-        self.location = location
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.name = tokens[0]
 
     def to_python(self, gen, *_):
         return f'state_{self.name} = False'
 
-ACTIVATE = Suppress(Literal('activate')) + IDENTIFIER
-DEACTIVATE = Suppress(Literal('deactivate')) + IDENTIFIER
+ACTIVATE = (
+    Suppress(Literal('activate'))
+    + IDENTIFIER
+    + ENDLOC
+).setParseAction(Activate)
+
+DEACTIVATE = (
+    Suppress(Literal('activate'))
+    + IDENTIFIER
+    + ENDLOC
+).setParseAction(Deactivate)
 
 """-----------------LINEA---------------------------"""
 LINE << (
@@ -699,8 +733,8 @@ LINE << (
 
 """-----------------DEF----------------------------"""
 class Def(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.name = tokens[0]
         self.body = tokens[1].asList()
@@ -740,13 +774,13 @@ DEF = (
     - COLON
     - LINES
     - END
+    + ENDLOC
 ).setParseAction(Def)
 
 """-----------------IMPORT----------------------------"""
 class Import(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
-
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.path = tokens[0][0]
 
     def to_python(self, gen, *_):
@@ -756,14 +790,14 @@ class Import(Node):
 
 IMPORT = (
     Suppress(Literal('import'))
-    + STRING
+    - STRING
+    + ENDLOC
 ).setParseAction(Import)
 
 """-----------------MAIN----------------------------"""
 class Main(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
-
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.body = tokens[0].asList()
 
     def to_python(self, gen, *_):
@@ -787,11 +821,12 @@ MAIN = (
     - COLON
     - LINES
     - END
+    + ENDLOC
 ).setParseAction(Main)
 
 class Program(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.imports = tokens[0].asList()
         self.inits = tokens[1].asList()
@@ -823,6 +858,7 @@ LB = (
     - Group(ZeroOrMore(LINE))
     - Group(ZeroOrMore(DEF))
     - Group(MAIN | ZeroOrMore(BLOQUEWHENCOND))
+    + ENDLOC
 ).setParseAction(Program)
 
 LB.ignore(pythonStyleComment)
