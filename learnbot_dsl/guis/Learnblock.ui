@@ -302,9 +302,22 @@
            </widget>
           </item>
           <item>
-           <widget class="QSplitter" name="splitter">
+           <widget class="QSplitter" name="textCodeSplitter">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
             <widget class="QTextEdit" name="textCode"/>
-            <widget class="QListWidget" name="errorList"/>
+            <widget class="QListWidget" name="notificationList">
+             <property name="autoScroll">
+              <bool>false</bool>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <property name="verticalScrollMode">
+              <enum>QAbstractItemView::ScrollPerPixel</enum>
+             </property>
+            </widget>
            </widget>
           </item>
          </layout>
@@ -820,7 +833,7 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
-   <widget class="QLabel" name="position"/>
+   <widget class="QLabel" name="position">
    </widget>
   </widget>
   <action name="actionExit">

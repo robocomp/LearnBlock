@@ -31,6 +31,7 @@ from learnbot_dsl.learnbotCode.parserConfig import configSSH
 from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.learnbotCode.guiTabLibrary import Library
 from learnbot_dsl.learnbotCode.Highlighter import *
+from learnbot_dsl.learnbotCode.Notification import *
 from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
 from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode
@@ -162,7 +163,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     index = -1
     pre_sizes = [0, 0]
     dicTables = {}
-    errors = []
+    notifications = []
 
     def __init__(self):
         global signal
@@ -227,7 +228,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.configRobotPushButton.clicked.connect(self.configureRobot)
 
         self.ui.Tabwi.currentChanged.connect(self.tabChanged)
-        self.ui.errorList.itemDoubleClicked.connect(self.errorPressed)
+        self.ui.notificationList.itemDoubleClicked.connect(self.errorPressed)
         self.ui.textCode.cursorPositionChanged.connect(lambda: self.updateLineCol(self.ui.textCode))
         self.ui.pythonCode.cursorPositionChanged.connect(lambda: self.updateLineCol(self.ui.pythonCode))
 
@@ -378,12 +379,12 @@ class LearnBlock(QtWidgets.QMainWindow):
         sys.exit(r)
 
     def errorPressed(self, item):
-        index = self.ui.errorList.indexFromItem(item).row()
-        error = self.errors[index]
+        index = self.ui.notificationList.indexFromItem(item).row()
+        notification = self.notifications[index]
         cursor = self.ui.textCode.textCursor()
 
-        start = error['from'][2] if error['from'] else None
-        end = error['to'][2] if error['to'] else None
+        start = notification.start[2]
+        end = notification.end[2] if notification.end else None
         self.ui.textCode.setFocus()
 
         if start == None and end == None:
@@ -595,7 +596,6 @@ class LearnBlock(QtWidgets.QMainWindow):
         font.setFixedPitch(True)
         font.setPointSize(self.ui.spinBoxLeterSize.value())
         self.ui.textCode.setFont(font)
-        self.ui.textCode.setTextColor(QtCore.Qt.white)
         self.ui.textCode.setCursorWidth(2)
         p = self.ui.textCode.palette()
         p.setColor(self.ui.textCode.viewport().backgroundRole(), QtGui.QColor(51, 51, 51, 255))
@@ -955,44 +955,22 @@ class LearnBlock(QtWidgets.QMainWindow):
                     msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                     msgBox.exec_()
 
-    def formatError(self, error):
-        level = error['level']
-        message = error['message']
-        start = error['from']
-        end = error['to']
-
-        if start == None and end == None:
-            spanMsg = "somewhere"
-        elif end == None:
-            spanMsg = f"from {start[0]}:{start[1]}"
-        elif start == end:
-            spanMsg = f"at {start[0]}:{start[1]}"
-        else:
-            spanMsg = f"from {start[0]}:{start[1]} to {end[0]}:{end[1]}"
-
-        return f"{level}: {message} ({spanMsg})"
-
     def textCodeToPython(self, name_Client):
         textCode = self.ui.textCode.toPlainText()
         try:
-            code, errors = parserLearntBotCodeFromCode(textCode, name_Client)
-            self.errors = errors
+            code, notifications = parserLearntBotCodeFromCode(textCode, name_Client)
+            self.notifications = notifications
             self.ui.pythonCode.clear()
-            if errors:
-
-                errorList = '\n'.join(map(self.formatError, errors))
-                errorMsg = f"Your code is not correct"
-
+            if notifications:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Warning"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-                msgBox.setText(self.tr(errorMsg))
-                msgBox.setDetailedText(errorList)
+                msgBox.setText(self.tr("Your code is not correct"))
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
 
-                self.updateErrors()
+                self.updateNotifications()
             else:
                 self.ui.pythonCode.setText(code)
             return code
@@ -1015,19 +993,18 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox.exec_()
         return False
 
-    def updateErrors(self):
+    def updateNotifications(self):
         nErr = 0
-        nWarn = 0
+        nInfo = 0
 
-        self.ui.errorList.clear()
+        self.ui.notificationList.clear()
 
-        for error in self.errors:
-            if (error['level'] == 'error'):
-                nErr += 1
-            elif (error['level'] == 'warning'):
-                nWarn += 1
+        for notification in self.notifications:
+            item = QtWidgets.QListWidgetItem(self.ui.notificationList)
+            item.setSizeHint(notification.sizeHint())
 
-            self.ui.errorList.addItem(self.formatError(error))
+            self.ui.notificationList.addItem(item)
+            self.ui.notificationList.setItemWidget(item, notification)
 
     def startSimulatorRobot(self):
         self.scene.stopAllblocks()
