@@ -15,6 +15,8 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QPixmap, QRadialGradient)
 from PySide2.QtWidgets import *
 
+from learnbot_dsl.learnbotCode.CodeEdit import CodeEdit
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -213,7 +215,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_18.addWidget(self.label_4)
 
-        self.pythonCode = QTextEdit(self.tab)
+        self.pythonCode = CodeEdit(self.tab)
         self.pythonCode.setObjectName(u"pythonCode")
 
         self.verticalLayout_18.addWidget(self.pythonCode)
@@ -284,11 +286,13 @@ class Ui_MainWindow(object):
         self.textCodeSplitter = QSplitter(self.program_text)
         self.textCodeSplitter.setObjectName(u"textCodeSplitter")
         self.textCodeSplitter.setOrientation(Qt.Vertical)
-        self.textCode = QTextEdit(self.textCodeSplitter)
+        self.textCode = CodeEdit(self.textCodeSplitter)
         self.textCode.setObjectName(u"textCode")
         self.textCodeSplitter.addWidget(self.textCode)
         self.notificationList = QListWidget(self.textCodeSplitter)
         self.notificationList.setObjectName(u"notificationList")
+        self.notificationList.setAutoScroll(False)
+        self.notificationList.setAlternatingRowColors(True)
         self.notificationList.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
         self.textCodeSplitter.addWidget(self.notificationList)
 
@@ -588,6 +592,7 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName(u"statusbar")
         self.position = QLabel(self.statusbar)
         self.position.setObjectName(u"position")
+        self.position.setGeometry(QRect(0, 0, 100, 30))
         MainWindow.setStatusBar(self.statusbar)
 
         self.menubar.addAction(self.menuFile.menuAction())

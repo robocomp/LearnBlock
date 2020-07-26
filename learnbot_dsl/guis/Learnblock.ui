@@ -209,7 +209,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="pythonCode"/>
+           <widget class="CodeEdit" name="pythonCode"/>
           </item>
          </layout>
         </item>
@@ -306,7 +306,7 @@
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
-            <widget class="QTextEdit" name="textCode"/>
+            <widget class="CodeEdit" name="textCode"/>
             <widget class="QListWidget" name="notificationList">
              <property name="autoScroll">
               <bool>false</bool>
@@ -834,6 +834,14 @@
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <widget class="QLabel" name="position">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>100</width>
+      <height>30</height>
+     </rect>
+    </property>
    </widget>
   </widget>
   <action name="actionExit">
@@ -1127,6 +1135,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CodeEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>learnbot_dsl.learnbotCode.CodeEdit</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

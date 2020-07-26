@@ -584,9 +584,9 @@ class LearnBlock(QtWidgets.QMainWindow):
         font.setFixedPitch(True)
         font.setPointSize(self.ui.spinBoxPythonSize.value())
         self.ui.pythonCode.setFont(font)
-        self.ui.pythonCode.setTextColor(QtCore.Qt.white)
         self.ui.pythonCode.setCursorWidth(2)
         p = self.ui.pythonCode.palette()
+        p.setColor(self.ui.pythonCode.viewport().foregroundRole(), QtCore.Qt.white)
         p.setColor(self.ui.pythonCode.viewport().backgroundRole(), QtGui.QColor(51, 51, 51, 255))
         self.ui.pythonCode.setPalette(p)
 
@@ -598,8 +598,18 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.textCode.setFont(font)
         self.ui.textCode.setCursorWidth(2)
         p = self.ui.textCode.palette()
+        p.setColor(self.ui.textCode.viewport().foregroundRole(), QtCore.Qt.white)
         p.setColor(self.ui.textCode.viewport().backgroundRole(), QtGui.QColor(51, 51, 51, 255))
         self.ui.textCode.setPalette(p)
+
+        for notification in self.notifications:
+            notification.snippet.setFont(font)
+            notification.snippet.setCursorWidth(2)
+            p = notification.snippet.palette()
+            p.setColor(notification.snippet.viewport().foregroundRole(), QtCore.Qt.white)
+            p.setColor(notification.snippet.viewport().backgroundRole(), QtGui.QColor(51, 51, 51, 255))
+            notification.snippet.setPalette(p)
+            notification.fitSnippetToContent()
 
     def loadConfigFile(self):
         self.confFile = os.path.join(tempfile.gettempdir(), ".learnblock.conf")
@@ -870,7 +880,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         blocks = self.scene.getListInstructions()
         code = self.parserBlocks(blocks, self.toLBotPy)
         self.ui.textCode.clear()
-        self.ui.textCode.setText(text + code)
+        self.ui.textCode.setPlainText(text + code)
 
     def checkConnectionToBot(self, showWarning=False):
         r = os.system("ping -c 1 -W 1 " + configSSH["ip"])
@@ -972,7 +982,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
                 self.updateNotifications()
             else:
-                self.ui.pythonCode.setText(code)
+                self.ui.pythonCode.setPlainText(code)
             return code
         except ParseException as e:
             traceback.print_exc()
@@ -994,17 +1004,25 @@ class LearnBlock(QtWidgets.QMainWindow):
         return False
 
     def updateNotifications(self):
-        nErr = 0
-        nInfo = 0
-
+        self.ui.textCode.clearErrorHighlight()
         self.ui.notificationList.clear()
 
         for notification in self.notifications:
             item = QtWidgets.QListWidgetItem(self.ui.notificationList)
-            item.setSizeHint(notification.sizeHint())
+            notification.resized.connect(lambda: item.setSizeHint(notification.sizeHint()))
 
+            start = notification.start[2]
+
+            if notification.end:
+                end = notification.end[2]
+            else:
+                end = len(notification.src)
+
+            self.ui.textCode.addErrorHighlight(start, end)
             self.ui.notificationList.addItem(item)
             self.ui.notificationList.setItemWidget(item, notification)
+
+        self.updateTextCodeStyle()
 
     def startSimulatorRobot(self):
         self.scene.stopAllblocks()
@@ -1406,7 +1424,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             f = open(fileName, "r")
             code = f.read()
             self.ui.textCode.clear()
-            self.ui.textCode.setText(code)
+            self.ui.textCode.setPlainText(code)
             f.close()
 
     def saveBlockTextCode(self):
@@ -1416,7 +1434,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             if extension == "":
                 fileName += ".bt"
             f = open(fileName, "w")
-            code = self.ui.textCode.toPlainText()
+            code = self.ui.textCode.document().toPlainText()
             f.write(code)
             f.close()
 
@@ -1426,7 +1444,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             f = open(fileName, "r")
             code = f.read()
             self.ui.pythonCode.clear()
-            self.ui.pythonCode.setText(code)
+            self.ui.pythonCode.setPlainText(code)
             f.close()
 
 

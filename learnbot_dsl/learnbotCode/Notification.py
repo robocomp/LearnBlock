@@ -1,3 +1,4 @@
+from learnbot_dsl.learnbotCode.CodeEdit import *
 from learnbot_dsl.learnbotCode.Highlighter import *
 from enum import Enum, auto
 from PySide2 import QtWidgets
@@ -6,22 +7,11 @@ class Severity(Enum):
     WARNING = auto()
     ERROR = auto()
 
-MESSAGE_STYLE = '''
-font-weight: bold;
-'''
-
-POSITION_STYLE = '''
-font-style: italic;
-'''
-
-SNIPPET_STYLE = '''
-font-family: Courier, monospace;
-color: white;
-'''
-
 class Notification(QtWidgets.QWidget):
-    def __init__(self, src, start, end = None, parent = None):
-        super().__init__(parent)
+    resized = QtCore.Signal()
+
+    def __init__(self, src, start, end = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.src = src
 
@@ -37,23 +27,52 @@ class Notification(QtWidgets.QWidget):
 
         self.message = QtWidgets.QLabel()
         self.message.setWordWrap(True)
-        self.message.setStyleSheet(MESSAGE_STYLE)
+        font = self.message.font()
+        font.setBold(True)
+        self.message.setFont(font)
         self.summaryLayout.addWidget(self.message)
 
         self.position = QtWidgets.QLabel()
-        self.position.setStyleSheet(POSITION_STYLE)
+        font = self.position.font()
+        font.setItalic(True)
+        self.position.setFont(font)
         self.vLayout.addWidget(self.position)
 
-        self.snippet = QtWidgets.QTextEdit()
+        self.snippet = CodeEdit()
         self.snippet.setReadOnly(True)
-        self.snippet.setStyleSheet(SNIPPET_STYLE)
-        p = self.snippet.palette()
-        p.setColor(self.snippet.viewport().backgroundRole(), QtGui.QColor(51, 51, 51, 255))
-        self.snippet.setPalette(p)
+        font = QtGui.QFont()
+        font.setFamily('Courier')
+        font.setFixedPitch(True)
+        self.snippet.setFont(font)
+        self.snippet.setReadOnly(True)
+        self.snippet.setOffset(start[1]-1)
         self.vLayout.addWidget(self.snippet)
 
-        self.highlighter = Highlighter(self.snippet)
+        self.hints = QtWidgets.QVBoxLayout()
+        self.vLayout.addLayout(self.hints)
+
+        self.highlighter = Highlighter(self.snippet.document())
         self.setPosition(start, end)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.fitSnippetToContent()
+
+    def fitSnippetToContent(self):
+        margins = self.snippet.contentsMargins()
+        height = self.snippet.document().documentMargin() * 2 \
+                + margins.top() \
+                + margins.bottom()
+
+        for line in range(self.snippet.blockCount()):
+            block = self.snippet.document().findBlock(line)
+            height += self.snippet.blockBoundingRect(block).height()
+
+        if self.snippet.horizontalScrollBar().isVisible():
+            height += self.snippet.horizontalScrollBar().height()
+
+        self.snippet.setFixedHeight(height)
+        self.resized.emit()
 
     def setSeverity(self, severity):
         if severity == Severity.ERROR:
@@ -79,29 +98,44 @@ class Notification(QtWidgets.QWidget):
             params = (start[0], start[1])
             lines = 1
             position = self.tr('at %s:%s') % params
-            snippet = '\n'.join(self.src.split('\n')[start[0]-1])
+            snippet = self.src.split('\n')[start[0]-1]
 
         self.position.setText(position)
-        self.snippet.setText(snippet)
+        self.snippet.setPlainText(snippet)
 
-        snippetDoc = self.snippet.document()
-        metrics = QtGui.QFontMetrics(snippetDoc.defaultFont())
-        margins = self.snippet.contentsMargins()
-        height = metrics.lineSpacing() * lines \
-                + snippetDoc.documentMargin() * 2 \
-                + margins.top() \
-                + margins.bottom()
+    def setHints(self, hints):
+        for _ in range(self.hints.count()):
+            self.vLayout.itemAt().widget().setParent(None)
 
-        self.snippet.setFixedHeight(height)
+        for hint in hints:
+               item = QtWidgets.QLabel(self)
+               item.setText(self.tr('<b>Hint:</b> ') + hint)
+               self.hints.addWidget(item)
 
 class ParseError(Notification):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # TODO
+        hints = [
+            self.tr('did you forget something while typing the <code>%s</code>?') % 'TODO',
+        ]
+
         self.setSeverity(Severity.ERROR)
         self.setMessage(self.tr('Parse error'))
+        self.setHints(hints)
 
 class TypeMismatch(Notification):
     def __init__(self, expected, got, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        hints = [
+            self.tr('check the marked expression: does it really return a value of type <code>%s</code>?') % expected,
+            self.tr('did you make a typo while writing the expression? Check the operators!'),
+            self.tr('be careful with operator precedence!'),
+        ]
+
         self.setSeverity(Severity.WARNING)
         self.setMessage(self.tr('Type mismatch: expected %s, got %s') % (expected, got))
+        self.setHints(hints)

@@ -1082,14 +1082,15 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
                 f.write(text)
 
             return header + text, notifications
-        except ParseException as e:
+        except (ParseException, ParseSyntaxException) as pe:
             traceback.print_exc()
 
             notifications.append(ParseError(
                 src = code,
-                start = (e.lineno, e.col, e.loc)
+                start = (pe.lineno, pe.col, pe.loc)
             ))
 
+        finally:
             return None, notifications
 
 def parserLearntBotCodeFromCode(code, name_client):
@@ -1119,13 +1120,14 @@ def parserLearntBotCodeFromCode(code, name_client):
             ))
 
         return header + text, notifications
-    except ParseException as pe:
+    except (ParseException, ParseSyntaxException) as pe:
         traceback.print_exc()
         notifications.append(ParseError(
             src = code,
-            start = (e.lineno, e.col, e.loc)
+            start = (pe.lineno, pe.col, pe.loc)
         ))
 
+    finally:
         return None, notifications
 
 if __name__ == "__main__":
