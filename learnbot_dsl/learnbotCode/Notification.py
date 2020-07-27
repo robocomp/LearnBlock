@@ -112,8 +112,7 @@ class Notification(QtWidgets.QWidget):
                item.setText(self.tr('<b>Hint:</b> ') + hint)
                self.hints.addWidget(item)
 
-class ParseError(Notification):
-
+class SyntaxError(Notification):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -123,7 +122,7 @@ class ParseError(Notification):
         ]
 
         self.setSeverity(Severity.ERROR)
-        self.setMessage(self.tr('Parse error'))
+        self.setMessage(self.tr('Invalid syntax'))
         self.setHints(hints)
 
 class TypeMismatch(Notification):

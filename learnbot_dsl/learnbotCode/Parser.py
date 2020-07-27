@@ -1085,7 +1085,7 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
         except (ParseException, ParseSyntaxException) as pe:
             traceback.print_exc()
 
-            notifications.append(ParseError(
+            notifications.append(InvalidSyntax(
                 src = code,
                 start = (pe.lineno, pe.col, pe.loc)
             ))
@@ -1122,7 +1122,7 @@ def parserLearntBotCodeFromCode(code, name_client):
         return header + text, notifications
     except (ParseException, ParseSyntaxException) as pe:
         traceback.print_exc()
-        notifications.append(ParseError(
+        notifications.append(InvalidSyntax(
             src = code,
             start = (pe.lineno, pe.col, pe.loc)
         ))
