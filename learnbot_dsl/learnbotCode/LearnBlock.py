@@ -979,10 +979,10 @@ class LearnBlock(QtWidgets.QMainWindow):
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 msgBox.exec_()
-
-                self.updateNotifications()
             else:
                 self.ui.pythonCode.setPlainText(code)
+
+            self.updateNotifications()
             return code
         except ParseException as e:
             traceback.print_exc()

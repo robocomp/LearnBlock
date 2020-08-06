@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.1" language="es_ES">
+<!DOCTYPE TS><TS version="2.0" language="es_ES" sourcelanguage="">
 <context>
     <name>Dialog</name>
     <message numerus="yes">
@@ -474,6 +473,19 @@
             <numerusform>Guía rápida de LearnBlock</numerusform>
             <numerusform>%n</numerusform>
         </translation>
+    </message>
+</context>
+<context>
+    <name>InvalidSyntax</name>
+    <message>
+        <location filename="../Notification.py" line="122"/>
+        <source>did you forget something while typing the &lt;code&gt;%s&lt;/code&gt;?</source>
+        <translation type="unfinished">¿has olvidado algo al escribir el &lt;code&gt;%s&lt;/code&gt;?</translation>
+    </message>
+    <message>
+        <location filename="../Notification.py" line="126"/>
+        <source>Invalid syntax</source>
+        <translation type="unfinished">Sintaxis inválida</translation>
     </message>
 </context>
 <context>
@@ -1487,19 +1499,24 @@
 <context>
     <name>Notification</name>
     <message>
-        <location filename="../Notification.py" line="95"/>
-        <source>at %s:%sâ%s:%s</source>
+        <location filename="../Notification.py" line="97"/>
+        <source>at %s:%s&#xe2;&#x80;&#x94;%s:%s</source>
         <translation>entre %s:%sâ%s:%s</translation>
     </message>
     <message>
-        <location filename="../Notification.py" line="100"/>
+        <location filename="../Notification.py" line="102"/>
         <source>at %s:%s</source>
         <translation>en %s:%s</translation>
     </message>
     <message>
         <location filename="../Notification.py" line="112"/>
         <source>&lt;b&gt;Hint:&lt;/b&gt; </source>
-        <translation>&lt;b&gt;Pista:&lt;/b&gt; </translation>
+        <translation type="obsolete">&lt;b&gt;Pista:&lt;/b&gt; </translation>
+    </message>
+    <message>
+        <location filename="../Notification.py" line="16"/>
+        <source>Hint</source>
+        <translation>Pista</translation>
     </message>
 </context>
 <context>
@@ -1520,33 +1537,33 @@
     <message>
         <location filename="../Notification.py" line="121"/>
         <source>did you forget something while typing the &lt;code&gt;%s&lt;/code&gt;?</source>
-        <translation>¿has olvidado algo al escribir el &lt;code&gt;%s&lt;/code&gt;?</translation>
+        <translation type="obsolete">¿has olvidado algo al escribir el &lt;code&gt;%s&lt;/code&gt;?</translation>
     </message>
     <message>
         <location filename="../Notification.py" line="125"/>
         <source>Invalid syntax</source>
-        <translation>Sintaxis inválida</translation>
+        <translation type="obsolete">Sintaxis inválida</translation>
     </message>
 </context>
 <context>
     <name>TypeMismatch</name>
     <message>
-        <location filename="../Notification.py" line="139"/>
+        <location filename="../Notification.py" line="140"/>
         <source>Type mismatch: expected %s, got %s</source>
         <translation>Tipos incompatibles: se esperaba un %s, pero se obtuvo un %s</translation>
     </message>
     <message>
-        <location filename="../Notification.py" line="133"/>
+        <location filename="../Notification.py" line="134"/>
         <source>check the marked expression: does it really return a value of type &lt;code&gt;%s&lt;/code&gt;?</source>
         <translation>comprueba la expresión resaltada: ¿seguro que devuelve un valor de tipo &lt;code&gt;%s&lt;/code&gt;?</translation>
     </message>
     <message>
-        <location filename="../Notification.py" line="134"/>
+        <location filename="../Notification.py" line="135"/>
         <source>did you make a typo while writing the expression? Check the operators!</source>
         <translation>¿has cometido algún error al escribir la expresión? ¡Comprueba los operadores!</translation>
     </message>
     <message>
-        <location filename="../Notification.py" line="135"/>
+        <location filename="../Notification.py" line="136"/>
         <source>be careful with operator precedence!</source>
         <translation>¡ten cuidado con la precedencia de operadores!</translation>
     </message>
@@ -1717,7 +1734,7 @@ to load the updates close and reopen the program.</source>
     <message>
         <location filename="../guiCreateBlock.py" line="192"/>
         <source>Select configuration file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Seleccionar fichero de configuración</translation>
     </message>
     <message>
         <location filename="../guiCreateBlock.py" line="245"/>

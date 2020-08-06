@@ -13,6 +13,7 @@ class Notification(QtWidgets.QWidget):
     def __init__(self, src, start, end = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.HINT = self.tr('Hint')
         self.src = src
 
         self.vLayout = QtWidgets.QVBoxLayout()
@@ -43,6 +44,7 @@ class Notification(QtWidgets.QWidget):
         font = QtGui.QFont()
         font.setFamily('Courier')
         font.setFixedPitch(True)
+
         self.snippet.setFont(font)
         self.snippet.setReadOnly(True)
         self.snippet.setOffset(start[1]-1)
@@ -109,16 +111,15 @@ class Notification(QtWidgets.QWidget):
 
         for hint in hints:
                item = QtWidgets.QLabel(self)
-               item.setText(self.tr('<b>Hint:</b> ') + hint)
+               item.setText('<b>' + self.HINT + '</b>: ' + hint)
                self.hints.addWidget(item)
 
-class SyntaxError(Notification):
-    def __init__(self, *args, **kwargs):
+class InvalidSyntax(Notification):
+    def __init__(self, rule, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # TODO
         hints = [
-            self.tr('did you forget something while typing the <code>%s</code>?') % 'TODO',
+            self.tr('did you forget something while typing the <code>%s</code>?') % rule.__name__,
         ]
 
         self.setSeverity(Severity.ERROR)

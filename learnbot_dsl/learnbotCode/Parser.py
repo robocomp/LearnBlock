@@ -72,7 +72,11 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 class Node:
+    last_stmt = None
+
     def __init__(self, src, start, tokens):
+        global last_parsed
+
         end = tokens[-1]
         del tokens[-1]
 
@@ -94,6 +98,14 @@ class Node:
     @property
     def used_vars(self):
         return set()
+
+    @classmethod
+    def set_last_statement(cls, last):
+        cls.last_stmt = last
+
+    @classmethod
+    def last_statement(cls, last):
+        return cls.last_stmt
 
 KEYWORDS = (
     Keyword('def')
@@ -233,19 +245,8 @@ class Call(Node):
         return {var for arg in self.args
                     for var in arg.used_vars}
 
-    """
-    @staticmethod
-    def parse_failed(src, location, expr, error):
-        print('+--------------+')
-        print('| Parse error! |')
-        print('+--------------+')
-        print(f'  line {lineno(location, src)}')
-        print(f'  col {col(location, src)}')
-        raise ParseFatalException
-    """
-
 CALL = (
-    Suppress(Literal('function'))
+    Suppress(Literal('function')).addParseAction(lambda: Node.set_last_statement(Call))
     - Suppress(DOT)
     - IDENTIFIER
     - OPAR
@@ -278,7 +279,7 @@ class SimpleCall(Node):
                     for var in arg.used_vars}
 
 SIMPLECALL = (Group(
-        IDENTIFIER
+        IDENTIFIER.addParseAction(lambda: Node.set_last_statement(SimpleCall))
         + OPAR
         - Group(Optional(delimitedList(OPERATION)))
         - CPAR
@@ -440,7 +441,7 @@ class Var(Node):
 VAR = (
     INDENT
     + IDENTIFIER
-    + (ASSIGN | PLUA | MINA | DIVA | MULA)
+    + (ASSIGN | PLUA | MINA | DIVA | MULA).addParseAction(lambda: Node.set_last_statement(Var))
     - OPERATION
     + ENDLOC
 ).setParseAction(Var)
@@ -553,31 +554,31 @@ ELSEIF = Forward()
 
 ELSEIF << (
     INDENT
-    + Suppress(Literal('elif'))
+    + Suppress(Literal('elif')).addParseAction(lambda: Node.set_last_statement(ElseIf))
     - OPERATION
     - COLON
     - LINES
     + ENDLOC
-).setParseAction(ElseIf).setResultsName('ELSEIF')
+).setParseAction(ElseIf)
 
 ELSE << (
     INDENT
-    + Suppress(Literal('else'))
+    + Suppress(Literal('else')).addParseAction(lambda: Node.set_last_statement(Else))
     - COLON
     - LINES
     + ENDLOC
-).setParseAction(Else).setResultsName('ELSE')
+).setParseAction(Else)
 
 IF = (
     INDENT
-    + Suppress(Literal('if'))
+    + Suppress(Literal('if')).addParseAction(lambda: Node.set_last_statement(If))
     - OPERATION
     - COLON
     - LINES
     - Group(ZeroOrMore(ELSEIF) + Optional(ELSE))
     - END
     + ENDLOC
-).setParseAction(If).setResultsName('IF')
+).setParseAction(If)
 
 """-----------------LOOP----------------------------"""
 class While(Node):
@@ -616,7 +617,7 @@ class While(Node):
 
 BLOQUEWHILE = (
     INDENT
-    + Suppress(Literal('while'))
+    + Suppress(Literal('while')).addParseAction(lambda: Node.set_last_statement(While))
     - OPERATION
     - COLON
     - LINES
@@ -690,7 +691,7 @@ class When(Node):
 
 BLOQUEWHENCOND = (
     INDENT
-    + Suppress(Literal('when'))
+    + Suppress(Literal('when')).addParseAction(lambda: Node.set_last_statement(When))
     - IDENTIFIER
     - Optional(
         Suppress(ASSIGN)
@@ -720,14 +721,14 @@ class Deactivate(Node):
         return f'state_{self.name} = False'
 
 ACTIVATE = (
-    Suppress(Literal('activate'))
-    + IDENTIFIER
+    Suppress(Literal('activate')).addParseAction(lambda: Node.set_last_statement(Activate))
+    - IDENTIFIER
     + ENDLOC
 ).setParseAction(Activate)
 
 DEACTIVATE = (
-    Suppress(Literal('activate'))
-    + IDENTIFIER
+    Suppress(Literal('deactivate')).addParseAction(lambda: Node.set_last_statement(Deactivate))
+    - IDENTIFIER
     + ENDLOC
 ).setParseAction(Deactivate)
 
@@ -779,7 +780,7 @@ class Def(Node):
                     for var in node.used_vars}
 
 DEF = (
-    Suppress(Literal('def'))
+    Suppress(Literal('def')).addParseAction(lambda: Node.set_last_statement(Def))
     - IDENTIFIER
     - OPAR
     - CPAR
@@ -801,7 +802,7 @@ class Import(Node):
         return ''
 
 IMPORT = (
-    Suppress(Literal('import'))
+    Suppress(Literal('import')).addParseAction(lambda: Node.set_last_statement(Import))
     - STRING
     + ENDLOC
 ).setParseAction(Import)
@@ -829,7 +830,7 @@ class Main(Node):
                     for var in node.used_vars}
 
 MAIN = (
-    Suppress(Literal('main'))
+    Suppress(Literal('main')).addParseAction(lambda: Node.set_last_statement(Main))
     - COLON
     - LINES
     - END
@@ -1082,15 +1083,26 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
                 f.write(text)
 
             return header + text, notifications
-        except (ParseException, ParseSyntaxException) as pe:
+        except ParseSyntaxException as pe:
+            traceback.print_exc()
+
+            print("=================================")
+            print("ParseSyntaxException 1")
+            print("=================================")
+            print(pe.__dict__)
+
+            notifications.append(InvalidSyntax(
+                src = code,
+                start = (pe.lineno, pe.col, pe.loc)
+            ))
+            return None, notifications
+        except ParseException as pe:
             traceback.print_exc()
 
             notifications.append(InvalidSyntax(
                 src = code,
                 start = (pe.lineno, pe.col, pe.loc)
             ))
-
-        finally:
             return None, notifications
 
 def parserLearntBotCodeFromCode(code, name_client):
@@ -1120,14 +1132,22 @@ def parserLearntBotCodeFromCode(code, name_client):
             ))
 
         return header + text, notifications
-    except (ParseException, ParseSyntaxException) as pe:
+    except ParseSyntaxException as pe:
+        traceback.print_exc()
+
+        notifications.append(InvalidSyntax(
+            src = code,
+            start = (pe.lineno, pe.col, pe.loc),
+            rule = Node.last_statement()
+        ))
+        return None, notifications
+    except ParseException as pe:
         traceback.print_exc()
         notifications.append(InvalidSyntax(
             src = code,
-            start = (pe.lineno, pe.col, pe.loc)
+            start = (pe.lineno, pe.col, pe.loc),
+            rule = Node.last_statement()
         ))
-
-    finally:
         return None, notifications
 
 if __name__ == "__main__":
@@ -1135,12 +1155,11 @@ if __name__ == "__main__":
 
 
 main:
-    function x()
+    x = 2
 end
 
 """
     try:
-        """
         print("Original source code")
         print("====================")
         print()
@@ -1178,7 +1197,6 @@ end
         print()
         print(mismatches)
         print()
-        """
         parserLearntBotCodeFromCode(textprueba, "robots")
     except Exception as pe:
         print(pe.line)
