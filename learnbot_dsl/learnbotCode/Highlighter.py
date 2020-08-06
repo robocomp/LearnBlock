@@ -22,8 +22,10 @@ reserved_words = ['def', '=', 'function', '>=', '<=',
 #               "\\bwhile\\b"
 #               ]
 class Highlighter(QtGui.QSyntaxHighlighter):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, errors=[]):
         super(Highlighter, self).__init__(parent)
+
+        self.errors = errors
 
         keywordFormat = QtGui.QTextCharFormat()
         keywordFormat.setForeground(QtGui.QBrush(QtGui.QColor(220, 140, 0, 255)))

@@ -4,6 +4,7 @@ from __future__ import print_function, absolute_import
 
 import sys, traceback
 import itertools
+from learnbot_dsl.learnbotCode.Notification import *
 from pyparsing import *
 
 HEADER = """
@@ -71,12 +72,22 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 class Node:
-    def __init__(self, src, location, tokens):
-        l = lineno(location, src)
-        c = col(location, src)
+    last_stmt = None
 
-        self.start = l, c
-        self.end = None
+    def __init__(self, src, start, tokens):
+        global last_parsed
+
+        end = tokens[-1]
+        del tokens[-1]
+
+        sl = lineno(start, src)
+        sc = col(start, src)
+
+        el = lineno(end, src)
+        ec = col(end, src)
+
+        self.start = sl, sc, start
+        self.end = el, ec, end
 
     def signature(self, ctx):
         return [], True
@@ -87,6 +98,14 @@ class Node:
     @property
     def used_vars(self):
         return set()
+
+    @classmethod
+    def set_last_statement(cls, last):
+        cls.last_stmt = last
+
+    @classmethod
+    def last_statement(cls, last):
+        return cls.last_stmt
 
 KEYWORDS = (
     Keyword('def')
@@ -112,6 +131,8 @@ KEYWORDS = (
     | Keyword('end')
     | Keyword('None')
 )
+
+ENDLOC = Empty().leaveWhitespace().setParseAction(lambda s, loc, t: loc)
 
 NAME = Word(initChars = alphas, bodyChars = alphanums + '_')
 
@@ -154,8 +175,8 @@ NUMBER = Combine(
 )
 
 class Identifier(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.name = tokens[0]
 
     def to_python(self, gen, *_):
@@ -165,7 +186,7 @@ class Identifier(Node):
     def used_vars(self):
         return {self.name}
 
-IDENTIFIER = (~KEYWORDS + NAME).setParseAction(Identifier)
+IDENTIFIER = (~KEYWORDS + NAME + ENDLOC).setParseAction(Identifier)
 
 TRUE = Literal('True')
 FALSE = Literal('False')
@@ -173,8 +194,8 @@ NONE = Literal('None')
 STRING = QuotedString('"', escChar = '\\', unquoteResults = False)
 
 class Value(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.value = eval(tokens[0])
 
     def to_python(self, gen, *_):
@@ -190,21 +211,21 @@ class Value(Node):
 
         return [], output
 
-VALUE = (
+VALUE = ((
     NUMBER
     | TRUE
     | FALSE
     | NONE
     | STRING
-).setParseAction(Value)
+) + ENDLOC).setParseAction(Value)
 
 """-----------------OPERATION-----------------"""
 OPERATION = Forward()
 
 """-----------------CALL-------------------------"""
 class Call(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.function = tokens[0]
         self.args = tokens[1].asList()
@@ -217,7 +238,7 @@ class Call(Node):
 
     def typecheck(self, ctx):
         # TODO: check that the arguments match the function signature
-        return all((node.typecheck(ctx) for node in self.args))
+        return all([node.typecheck(ctx) for node in self.args])
 
     @property
     def used_vars(self):
@@ -225,18 +246,19 @@ class Call(Node):
                     for var in arg.used_vars}
 
 CALL = (
-    Suppress(Literal('function'))
-    + Suppress(DOT)
-    + IDENTIFIER
-    + OPAR
+    Suppress(Literal('function')).addParseAction(lambda: Node.set_last_statement(Call))
+    - Suppress(DOT)
+    - IDENTIFIER
+    - OPAR
     - Group(Optional(delimitedList(OPERATION)))
     - CPAR
+    + ENDLOC
 ).setParseAction(Call)
 
 """-----------------SIMPLECALL-------------------------"""
 class SimpleCall(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.function = tokens[0]
         self.args = tokens[1].asList()
@@ -249,27 +271,33 @@ class SimpleCall(Node):
 
     def typecheck(self, ctx):
         # TODO: check that the arguments match the function signature
-        return all((node.typecheck(ctx) for node in self.args))
+        return all([node.typecheck(ctx) for node in self.args])
 
     @property
     def used_vars(self):
         return {var for arg in self.args
                     for var in arg.used_vars}
 
-SIMPLECALL = Group(
-        IDENTIFIER
+SIMPLECALL = (Group(
+        IDENTIFIER.addParseAction(lambda: Node.set_last_statement(SimpleCall))
         + OPAR
         - Group(Optional(delimitedList(OPERATION)))
         - CPAR
-    ).setParseAction(SimpleCall)
+    ) + ENDLOC).setParseAction(SimpleCall)
 
 """-----------------OPERACIONES---------------------"""
 class UnaryOp(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        [[operator, operand]] = tokens
 
-        self.operator = tokens[0][0]
-        self.operand = tokens[0][1]
+        self.operator = operator
+        self.operand = operand
+
+        sl = lineno(start, src)
+        sc = col(start, src)
+
+        self.start = sl, sc, start
+        self.end = operand.end
 
     def to_python(self, gen, max_precedence = float('inf'), *_):
         precedence = gen.precedence_of(self.operator, UnaryOp)
@@ -303,15 +331,20 @@ class UnaryOp(Node):
         return self.operand.used_vars
 
 class BinaryOp(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
         [[*rest, op, last]] = tokens
 
         # NOTE: this assumes left associativity. This is fine for us, as we
-        # don't have any right-binding operators
-        self.left = BinaryOp(src, location, [rest]) if len(rest) > 1 else rest[0]
+        # don't have any right-associative operators
+        self.left = BinaryOp(src, start, [rest]) if len(rest) > 1 else rest[0]
         self.operator = op
         self.right = last
+
+        sl = lineno(start, src)
+        sc = col(start, src)
+
+        self.start = sl, sc, start
+        self.end = last.end
 
     def to_python(self, gen, max_precedence = float('inf'), *_):
         precedence = gen.precedence_of(self.operator, BinaryOp)
@@ -360,18 +393,18 @@ OPERATION << infixNotation(VALUE | IDENTIFIER | CALL, OPTABLE, OPAR, CPAR)
 
 """-----------------PASS-------------------------"""
 class Pass(Node):
-    def __init__(self, src, location, tokens):
-        self.location = location
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
     def to_python(self, gen, *_):
         return 'pass'
 
-PASS = Literal('pass').setParseAction(Pass)
+PASS = (Literal('pass') + ENDLOC).setParseAction(Pass)
 
 """-----------------asignacion-VARIABLES------------"""
 class Var(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.var = tokens[0]
         self.operator = tokens[1]
@@ -408,8 +441,9 @@ class Var(Node):
 VAR = (
     INDENT
     + IDENTIFIER
-    + (ASSIGN | PLUA | MINA | DIVA | MULA)
+    + (ASSIGN | PLUA | MINA | DIVA | MULA).addParseAction(lambda: Node.set_last_statement(Var))
     - OPERATION
+    + ENDLOC
 ).setParseAction(Var)
 
 """-----------------LINEA---------------------------"""
@@ -418,8 +452,8 @@ LINES = Group(OneOrMore(LINE))
 
 """-----------------bloque-IF-----------------------"""
 class If(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -444,7 +478,7 @@ class If(Node):
     def typecheck(self, ctx):
         _, co = self.condition.signature(ctx)
 
-        return ctx.unify(self.condition, co, bool) and all((node.typecheck(ctx) for node in self.body))
+        return ctx.unify(self.condition, co, bool) and all([node.typecheck(ctx) for node in self.body])
 
     @property
     def used_vars(self):
@@ -456,8 +490,8 @@ class If(Node):
         return vars
 
 class ElseIf(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -478,7 +512,7 @@ class ElseIf(Node):
     def typecheck(self, ctx):
         _, co = self.condition.signature(ctx)
 
-        return ctx.unify(self.condition, co, bool) and all((node.typecheck(ctx) for node in self.body))
+        return ctx.unify(self.condition, co, bool) and all([node.typecheck(ctx) for node in self.body])
 
     @property
     def used_vars(self):
@@ -490,8 +524,8 @@ class ElseIf(Node):
         return vars
 
 class Else(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.body = tokens[0].asList()
 
@@ -508,7 +542,7 @@ class Else(Node):
         return output
 
     def typecheck(self, ctx):
-        return all((node.typecheck(ctx) for node in self.body))
+        return all([node.typecheck(ctx) for node in self.body])
 
     @property
     def used_vars(self):
@@ -520,33 +554,36 @@ ELSEIF = Forward()
 
 ELSEIF << (
     INDENT
-    + Suppress(Literal('elif'))
+    + Suppress(Literal('elif')).addParseAction(lambda: Node.set_last_statement(ElseIf))
     - OPERATION
     - COLON
     - LINES
+    + ENDLOC
 ).setParseAction(ElseIf)
 
 ELSE << (
     INDENT
-    + Suppress(Literal('else'))
+    + Suppress(Literal('else')).addParseAction(lambda: Node.set_last_statement(Else))
     - COLON
     - LINES
+    + ENDLOC
 ).setParseAction(Else)
 
 IF = (
     INDENT
-    + Suppress(Literal('if'))
+    + Suppress(Literal('if')).addParseAction(lambda: Node.set_last_statement(If))
     - OPERATION
     - COLON
     - LINES
     - Group(ZeroOrMore(ELSEIF) + Optional(ELSE))
     - END
+    + ENDLOC
 ).setParseAction(If)
 
 """-----------------LOOP----------------------------"""
 class While(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.condition = tokens[0]
         self.body = tokens[1].asList()
@@ -567,7 +604,7 @@ class While(Node):
     def typecheck(self, ctx):
         _, co = self.condition.signature(ctx)
 
-        return ctx.unify(self.condition, co, bool) and all((node.typecheck(ctx) for node in self.body))
+        return ctx.unify(self.condition, co, bool) and all([node.typecheck(ctx) for node in self.body])
 
     @property
     def used_vars(self):
@@ -580,17 +617,18 @@ class While(Node):
 
 BLOQUEWHILE = (
     INDENT
-    + Suppress(Literal('while'))
+    + Suppress(Literal('while')).addParseAction(lambda: Node.set_last_statement(While))
     - OPERATION
     - COLON
     - LINES
     - END
+    + ENDLOC
 ).setParseAction(While)
 
 """-----------------WHEN+CONDICION------------------"""
 class When(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.name = tokens[0]
         self.right = tokens[1] if len(tokens) == 3 else None
@@ -649,11 +687,11 @@ class When(Node):
     def typecheck(self, ctx):
         _, co = self.right.signature(ctx)
 
-        return ctx.unify(self.right, co, bool) and all((node.typecheck(ctx) for node in self.body))
+        return ctx.unify(self.right, co, bool) and all([node.typecheck(ctx) for node in self.body])
 
 BLOQUEWHENCOND = (
     INDENT
-    + Suppress(Literal('when'))
+    + Suppress(Literal('when')).addParseAction(lambda: Node.set_last_statement(When))
     - IDENTIFIER
     - Optional(
         Suppress(ASSIGN)
@@ -662,28 +700,37 @@ BLOQUEWHENCOND = (
     - COLON
     - LINES
     - END
+    + ENDLOC
 ).setParseAction(When)
 
 """-----------------ACTIVATE-CONDITION----------------"""
 class Activate(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
-
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.name = tokens[0]
 
     def to_python(self, gen, *_):
         return f'state_{self.name} = True'
 
 class Deactivate(Node):
-    def __init__(self, src, location, tokens):
-        self.location = location
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.name = tokens[0]
 
     def to_python(self, gen, *_):
         return f'state_{self.name} = False'
 
-ACTIVATE = Suppress(Literal('activate')) + IDENTIFIER
-DEACTIVATE = Suppress(Literal('deactivate')) + IDENTIFIER
+ACTIVATE = (
+    Suppress(Literal('activate')).addParseAction(lambda: Node.set_last_statement(Activate))
+    - IDENTIFIER
+    + ENDLOC
+).setParseAction(Activate)
+
+DEACTIVATE = (
+    Suppress(Literal('deactivate')).addParseAction(lambda: Node.set_last_statement(Deactivate))
+    - IDENTIFIER
+    + ENDLOC
+).setParseAction(Deactivate)
 
 """-----------------LINEA---------------------------"""
 LINE << (
@@ -699,8 +746,8 @@ LINE << (
 
 """-----------------DEF----------------------------"""
 class Def(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.name = tokens[0]
         self.body = tokens[1].asList()
@@ -725,7 +772,7 @@ class Def(Node):
         return output
 
     def typecheck(self, ctx):
-        return all((node.typecheck(ctx) for node in self.body))
+        return all([node.typecheck(ctx) for node in self.body])
 
     @property
     def used_vars(self):
@@ -733,20 +780,20 @@ class Def(Node):
                     for var in node.used_vars}
 
 DEF = (
-    Suppress(Literal('def'))
+    Suppress(Literal('def')).addParseAction(lambda: Node.set_last_statement(Def))
     - IDENTIFIER
     - OPAR
     - CPAR
     - COLON
     - LINES
     - END
+    + ENDLOC
 ).setParseAction(Def)
 
 """-----------------IMPORT----------------------------"""
 class Import(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
-
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.path = tokens[0][0]
 
     def to_python(self, gen, *_):
@@ -755,15 +802,15 @@ class Import(Node):
         return ''
 
 IMPORT = (
-    Suppress(Literal('import'))
-    + STRING
+    Suppress(Literal('import')).addParseAction(lambda: Node.set_last_statement(Import))
+    - STRING
+    + ENDLOC
 ).setParseAction(Import)
 
 """-----------------MAIN----------------------------"""
 class Main(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
-
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
         self.body = tokens[0].asList()
 
     def to_python(self, gen, *_):
@@ -775,7 +822,7 @@ class Main(Node):
         return output
 
     def typecheck(self, ctx):
-        return all((node.typecheck(ctx) for node in self.body))
+        return all([node.typecheck(ctx) for node in self.body])
 
     @property
     def used_vars(self):
@@ -783,15 +830,16 @@ class Main(Node):
                     for var in node.used_vars}
 
 MAIN = (
-    Suppress(Literal('main'))
+    Suppress(Literal('main')).addParseAction(lambda: Node.set_last_statement(Main))
     - COLON
     - LINES
     - END
+    + ENDLOC
 ).setParseAction(Main)
 
 class Program(Node):
-    def __init__(self, src, location, tokens):
-        super().__init__(src, location, tokens)
+    def __init__(self, src, start, tokens):
+        super().__init__(src, start, tokens)
 
         self.imports = tokens[0].asList()
         self.inits = tokens[1].asList()
@@ -807,7 +855,7 @@ class Program(Node):
         return output
 
     def typecheck(self, ctx):
-        return all((node.typecheck(ctx) for node in self.nodes))
+        return all([node.typecheck(ctx) for node in self.nodes])
 
     @property
     def used_vars(self):
@@ -823,6 +871,7 @@ LB = (
     - Group(ZeroOrMore(LINE))
     - Group(ZeroOrMore(DEF))
     - Group(MAIN | ZeroOrMore(BLOQUEWHENCOND))
+    + ENDLOC
 ).setParseAction(Program)
 
 LB.ignore(pythonStyleComment)
@@ -833,6 +882,11 @@ LB.ignore(pythonStyleComment)
 #
 # See: github.com/pyparsing/pyparsing/wiki/Performance-Tips
 LB.enablePackrat()
+
+# So that location-based indexing in the source code works (without this, the
+# `loc` parameter expands tabs, so positions are moved to the right when a tab
+# is found)
+LB.parseWithTabs()
 
 class Context:
     def __init__(self, operators):
@@ -981,18 +1035,12 @@ class Parser:
     def parse_str(text):
         return LB.parseString(text, parseAll = True)[0]
 
-    @staticmethod
-    def parse_file(file):
-        with open(file) as f:
-            text = f.read()
-            return Parser.parse_str(text)
-
 # ini = []
 usedFunctions = []
 
 def parserLearntBotCodeOnlyUserFuntion(code):
     text = ""
-    # TODO: check for errors
+    # TODO: check for notifications
     try:
         tree = Parser.parse_str(code)
         text = PythonGenerator.generate(tree)
@@ -1003,50 +1051,64 @@ def parserLearntBotCodeOnlyUserFuntion(code):
 def parserLearntBotCode(inputFile, outputFile, client_name):
     global usedFunctions
 
-    errors = []
+    notifications = []
 
-    try:
-        output = Parser.parse_file(inputFile)
-        mismatches = Typechecker.check(output)
+    with open(inputFile) as f:
+        code = f.read()
 
-        text = elapsedTimeFunction.replace("<TABHERE>", '\t')
-        text += signalHandlerFunction.replace("<TABHERE>", '\t')
-        text += PythonGenerator.generate(output)
-        text += endOfProgram
+        try:
+            output = Parser.parse_str(code)
+            mismatches = Typechecker.check(output)
 
-        for mismatch in mismatches:
-            node, found, expected = mismatch
+            text = elapsedTimeFunction.replace("<TABHERE>", '\t')
+            text += signalHandlerFunction.replace("<TABHERE>", '\t')
+            text += PythonGenerator.generate(output)
+            text += endOfProgram
 
-            errors.append({
-                'level': 'warning',
-                'message': f'type mismatch: expected {expected.__name__}, got {found.__name__}',
-                'from': node.start,
-                'to': node.end,
-            })
+            for mismatch in mismatches:
+                node, got, expected = mismatch
 
-        header = HEADER.replace('<Client>', client_name).replace("<USEDCALLS>", str(usedFunctions)).replace("<TABHERE>", '\t')
+                notifications.append(TypeMismatch(
+                    src = code,
+                    start = node.start,
+                    end = node.end,
+                    expected = expected.__name__,
+                    got = got.__name__
+                ))
 
-        with open(outputFile, 'w') as f:
-            f.write(header)
-            f.write(text)
+            header = HEADER.replace('<Client>', client_name).replace("<USEDCALLS>", str(usedFunctions)).replace("<TABHERE>", '\t')
 
-        return header + text, errors
-    except Exception as e:
-        traceback.print_exc()
+            with open(outputFile, 'w') as f:
+                f.write(header)
+                f.write(text)
 
-        errors.append({
-            'level': 'error',
-            'message': "parse error",
-            'from': (e.lineno, e.col),
-            'to': None,
-        })
+            return header + text, notifications
+        except ParseSyntaxException as pe:
+            traceback.print_exc()
 
-        return None, errors
+            print("=================================")
+            print("ParseSyntaxException 1")
+            print("=================================")
+            print(pe.__dict__)
+
+            notifications.append(InvalidSyntax(
+                src = code,
+                start = (pe.lineno, pe.col, pe.loc)
+            ))
+            return None, notifications
+        except ParseException as pe:
+            traceback.print_exc()
+
+            notifications.append(InvalidSyntax(
+                src = code,
+                start = (pe.lineno, pe.col, pe.loc)
+            ))
+            return None, notifications
 
 def parserLearntBotCodeFromCode(code, name_client):
     global usedFunctions
 
-    errors = []
+    notifications = []
 
     try:
         output = Parser.parse_str(code)
@@ -1059,60 +1121,41 @@ def parserLearntBotCodeFromCode(code, name_client):
         header = HEADER.replace('<Client>', name_client).replace("<USEDCALLS>", str(usedFunctions)).replace("<TABHERE>", '\t')
 
         for mismatch in mismatches:
-            node, found, expected = mismatch
+            node, got, expected = mismatch
 
-            errors.append({
-                'level': 'warning',
-                'message': f'type mismatch: expected {expected.__name__}, got {found.__name__}',
-                'from': node.start,
-                'to': node.end,
-            })
+            notifications.append(TypeMismatch(
+                src = code,
+                start = node.start,
+                end = node.end,
+                expected = expected.__name__,
+                got = got.__name__
+            ))
 
-        return header + text, errors
-    except Exception as e:
+        return header + text, notifications
+    except ParseSyntaxException as pe:
         traceback.print_exc()
 
-        errors.append({
-            'level': 'error',
-            'message': "parse error",
-            'from': (e.lineno, e.col),
-            'to': None,
-        })
-
-        return None, errors
+        notifications.append(InvalidSyntax(
+            src = code,
+            start = (pe.lineno, pe.col, pe.loc),
+            rule = Node.last_statement()
+        ))
+        return None, notifications
+    except ParseException as pe:
+        traceback.print_exc()
+        notifications.append(InvalidSyntax(
+            src = code,
+            start = (pe.lineno, pe.col, pe.loc),
+            rule = Node.last_statement()
+        ))
+        return None, notifications
 
 if __name__ == "__main__":
     textprueba = """
 
-x = None
-sum = None
-result = None
-otherResult = None
-chainedOps = None
-stressTest = None
-
-def foo():
-    x = 3 or False
-    function.sayHello("Hello. I said: \\"Hello\\".")
-end
 
 main:
-	function.look_floor()
-	while True:
-		if function.is_center_red_line():
-			function.move_straight()
-			function.expressJoy()
-		elif function.is_right_red_line():
-			function.move_right()
-			function.expressJoy()
-		elif function.is_left_red_line():
-			function.move_left()
-			function.expressJoy()
-		else:
-			function.slow_down()
-			function.expressSadness()
-		end
-	end
+    x = 2
 end
 
 """
@@ -1154,6 +1197,7 @@ end
         print()
         print(mismatches)
         print()
+        parserLearntBotCodeFromCode(textprueba, "robots")
     except Exception as pe:
         print(pe.line)
         print(' ' * (pe.col - 1) + '^')

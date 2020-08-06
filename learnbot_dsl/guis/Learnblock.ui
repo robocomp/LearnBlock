@@ -209,7 +209,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="pythonCode"/>
+           <widget class="CodeEdit" name="pythonCode"/>
           </item>
          </layout>
         </item>
@@ -302,7 +302,23 @@
            </widget>
           </item>
           <item>
-           <widget class="QTextEdit" name="textCode"/>
+           <widget class="QSplitter" name="textCodeSplitter">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <widget class="CodeEdit" name="textCode"/>
+            <widget class="QListWidget" name="notificationList">
+             <property name="autoScroll">
+              <bool>false</bool>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+             <property name="verticalScrollMode">
+              <enum>QAbstractItemView::ScrollPerPixel</enum>
+             </property>
+            </widget>
+           </widget>
           </item>
          </layout>
         </item>
@@ -816,7 +832,18 @@
    <addaction name="menuTools_robot"/>
    <addaction name="menuHelp"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <widget class="QLabel" name="position">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>100</width>
+      <height>30</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
@@ -1108,6 +1135,13 @@
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CodeEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>learnbot_dsl.learnbotCode.CodeEdit</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
