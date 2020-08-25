@@ -15,10 +15,12 @@ class KeyPressEater(QtCore.QObject):
             return True
         return False
 
-def toLBotPy(inst, ntab=1):
+def toLBotPy(inst, ntab=1, offset=0):
     text = inst[0]
-    if inst[1]["TYPE"] is USERFUNCTION:
+    if inst[1]["TYPE"] in [USERFUNCTION, LIBRARY]:
         text = inst[0] + "()"
+    else:
+        inst[1]["VISUALBLOCK"].startOffset = offset
     if inst[1]["TYPE"] is CONTROL:
         if inst[1]["VARIABLES"] is not None:
             text = inst[0] + "("
@@ -41,16 +43,22 @@ def toLBotPy(inst, ntab=1):
                 text += var
 
     if inst[1]["RIGHT"] is not None:
-        text += " " + toLBotPy(inst[1]["RIGHT"])
+        text += " "
+        text += toLBotPy(inst[1]["RIGHT"], ntab, len(text) + offset)
     if inst[1]["BOTTOMIN"] is not None:
-        text += ":\n" + "\t" * ntab + toLBotPy(inst[1]["BOTTOMIN"], ntab + 1)
-    if inst[0] == "while":
+        text += ":\n" + "\t" * ntab
+        text += toLBotPy(inst[1]["BOTTOMIN"], ntab + 1, len(text) + offset)
+    if inst[0] in ["while", "while True"]:
         text += "\n\t" * (ntab - 1) + "end"
     if inst[0] == "else" or (inst[0] in ["if", "elif"] and (inst[1]["BOTTOM"] is None or (
             inst[1]["BOTTOM"] is not None and inst[1]["BOTTOM"][0] not in ["elif", "else"]))):
         text += "\n" + "\t" * (ntab - 1) + "end"
+
+    inst[1]["VISUALBLOCK"].endOffset = len(text)-1 + offset
+
     if inst[1]["BOTTOM"] is not None:
-        text += "\n" + "\t" * (ntab - 1) + toLBotPy(inst[1]["BOTTOM"], ntab)
+        text += "\n" + "\t" * (ntab - 1)
+        text += toLBotPy(inst[1]["BOTTOM"], ntab, len(text) + offset)
     return text
 
 def EuclideanDist(p1, p2):
@@ -74,11 +82,14 @@ class VarGui(QtWidgets.QDialog, EditVar.Ui_Dialog):
 class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
     def __init__(self, parentBlock, parent=None, scene=None):
+        self.startOffset = None
+        self.endOffset = None
         self.parentBlock = parentBlock
         self.__typeBlock = self.parentBlock.typeBlock
         self.__type = self.parentBlock.type
         self.id = self.parentBlock.id
         self.connections = self.parentBlock.connections
+        self.highlighted = False
 
         for c in self.connections:
             c.setParent(self.parentBlock)
@@ -91,6 +102,9 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         QtWidgets.QGraphicsPixmapItem.__init__(self)
         QtWidgets.QWidget.__init__(self)
 
+        def foo(x):
+            return 32
+
         # Load Image of block
         im = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
         r, g, b, a = cv2.split(im)
@@ -98,7 +112,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
         h, s, v = cv2.split(hsv)
         h = h + self.parentBlock.hue
-        s = s + 130
+        s = s + 160
         hsv = cv2.merge((h, s, v))
         im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
         r, g, b = cv2.split(im)
@@ -106,9 +120,25 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
         # if self.parentBlock.type is VARIABLE:
         #     self.showtext = self.parentBlock.name + " "+ self.showtext
+
         img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
                             self.parentBlock.nameControl)
         qImage = toQImage(img)
+
+        # Al multiplicar por 0 obtenemos facilmente un ndarray inicializado a 0
+        # similar al original
+        h = 0 * h + 130
+        hsv = cv2.merge((h, s, v))
+        im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+        r, g, b = cv2.split(im)
+        self.cvShinyImg = cv2.merge((r, g, b, a))
+        self.cvShinyImg = np.require(self.cvShinyImg, np.uint8, 'C')
+        # if self.parentBlock.type is VARIABLE:
+        #     self.showtext = self.parentBlock.name + " "+ self.showtext
+
+        img = generateBlock(self.cvShinyImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
+                            self.parentBlock.nameControl)
+        qShinyImage = toQImage(img)
         try:
             self.header = copy.copy(self.cvImg[0:39, 0:149])
             self.foot = copy.copy(self.cvImg[69:104, 0:149])
@@ -116,6 +146,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             pass
 
         self.img = QtGui.QPixmap(qImage)
+        self.shinyImg = QtGui.QPixmap(qShinyImage)
 
         self.scene = scene
 
@@ -123,7 +154,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.setZValue(1)
         self.setPos(self.parentBlock.pos)
         self.scene.activeShouldSave()
-        self.setPixmap(self.img)
+        self.updatePixmap()
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
@@ -135,6 +166,17 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         self.sizeIn = 0
         self.shouldUpdateConnections = False
+
+    def highlight(self):
+        self.highlighted = True
+        self.updatePixmap()
+
+    def unhighlight(self):
+        self.highlighted = False
+        self.updatePixmap()
+
+    def updatePixmap(self):
+        self.setPixmap(self.img if not self.highlighted else self.shinyImg)
 
     def create_dialogs(self):
 
@@ -430,6 +472,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         dic["BOTTOMIN"] = instBottomIn
         dic["VARIABLES"] = self.getVars()
         dic["TYPE"] = self.__type
+        dic["VISUALBLOCK"] = self
         return self.getNameFuntion(), dic
 
     def getId(self):
@@ -455,7 +498,11 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 im = cv2.merge((r, g, b, a))
             qImage = toQImage(im)
             self.img = QtGui.QPixmap(qImage)
-            self.setPixmap(self.img)
+            im = generateBlock(self.cvShinyImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
+                               self.parentBlock.nameControl)
+            qImage = toQImage(im)
+            self.shinyImg = QtGui.QPixmap(qImage)
+            self.updatePixmap()
             for c in self.connections:
                 if c.getType() is BOTTOM:
                     c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
@@ -614,6 +661,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.DialogVar.close()
         del self.cvImg
         del self.img
+        del self.shinyImg
         del self.foot
         del self.header
         del self.timer
