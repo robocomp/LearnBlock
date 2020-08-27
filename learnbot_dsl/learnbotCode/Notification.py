@@ -126,7 +126,7 @@ class Notification(QtWidgets.QWidget):
                self.hintsWidget.addWidget(item)
 
     def simpleHtml(self):
-        tooltip = '<b><u>' + self._message + '</u></b>'
+        tooltip = '<h2>' + self._message + '</h2>'
         tooltip += '<ul>'
 
         for hint in self._hints:

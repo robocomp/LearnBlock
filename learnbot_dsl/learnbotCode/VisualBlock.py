@@ -49,7 +49,7 @@ def toLBotPy(inst, ntab=1, offset=0):
         text += ":\n" + "\t" * ntab
         text += toLBotPy(inst[1]["BOTTOMIN"], ntab + 1, len(text) + offset)
     if inst[0] in ["while", "while True"]:
-        text += "\n\t" * (ntab - 1) + "end"
+        text += "\n" + "\t" * (ntab - 1) + "end"
     if inst[0] == "else" or (inst[0] in ["if", "elif"] and (inst[1]["BOTTOM"] is None or (
             inst[1]["BOTTOM"] is not None and inst[1]["BOTTOM"][0] not in ["elif", "else"]))):
         text += "\n" + "\t" * (ntab - 1) + "end"
@@ -94,7 +94,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         for c in self.connections:
             c.setParent(self.parentBlock)
-        self.dicTrans = parentBlock.dicTrans
+        self.dicTrans = parentBlock.dicTran<style>QTooltip { background-color: #ff00ff }</style>s
         self.shouldUpdate = True
         if len(self.dicTrans) is 0:
             self.showtext = self.parentBlock.name
