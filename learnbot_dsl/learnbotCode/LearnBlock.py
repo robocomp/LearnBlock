@@ -1642,6 +1642,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def clearHighlightBlock(self, block):
         block[1]["VISUALBLOCK"].unhighlight()
+        block[1]["VISUALBLOCK"].clearNotifications()
 
         if block[1]["RIGHT"]:
             self.clearHighlightBlock(block[1]["RIGHT"])
@@ -1657,15 +1658,22 @@ class LearnBlock(QtWidgets.QMainWindow):
         l_inside = block_start >= notification.start[2]
         r_inside = block_end <= notification.end[2] if notification.end else True
 
-        if l_inside and r_inside:
-            block[1]["VISUALBLOCK"].highlight()
+        r_colored = bi_colored = b_colored = False
 
         if block[1]["RIGHT"]:
-            self.highlightNotificationBlock(block[1]["RIGHT"], notification)
+            r_colored = self.highlightNotificationBlock(block[1]["RIGHT"], notification)
         if block[1]["BOTTOMIN"]:
-            self.highlightNotificationBlock(block[1]["BOTTOMIN"], notification)
+            bi_colored = self.highlightNotificationBlock(block[1]["BOTTOMIN"], notification)
         if block[1]["BOTTOM"]:
-            self.highlightNotificationBlock(block[1]["BOTTOM"], notification)
+            b_colored = self.highlightNotificationBlock(block[1]["BOTTOM"], notification)
+
+        color_partial = r_colored or bi_colored or b_colored
+
+        if l_inside and r_inside or r_inside and color_partial:
+            block[1]["VISUALBLOCK"].addNotification(notification)
+            block[1]["VISUALBLOCK"].highlight()
+
+        return l_inside and r_inside
 
     def parserBlocks(self, blocks, function, start = 0):
         text = self.parserUserFuntions(blocks, function, start)

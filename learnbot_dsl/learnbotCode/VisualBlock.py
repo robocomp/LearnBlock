@@ -84,6 +84,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
     def __init__(self, parentBlock, parent=None, scene=None):
         self.startOffset = None
         self.endOffset = None
+        self._notifications = []
         self.parentBlock = parentBlock
         self.__typeBlock = self.parentBlock.typeBlock
         self.__type = self.parentBlock.type
@@ -166,6 +167,24 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         self.sizeIn = 0
         self.shouldUpdateConnections = False
+
+    def addNotification(self, notification):
+        tooltip = self.toolTip()
+
+        if tooltip:
+            tooltip += '<hr />'
+
+        tooltip += notification.simpleHtml()
+
+        self.setToolTip(tooltip)
+        self._notifications.append(notification)
+
+    def clearNotifications(self):
+        self._notifications = []
+        self.setToolTip('')
+
+    def notifications(self):
+        return self._notifications
 
     def highlight(self):
         self.highlighted = True
