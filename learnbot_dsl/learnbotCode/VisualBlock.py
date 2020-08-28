@@ -510,17 +510,18 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             qImage = toQImage(im)
             self.img = QtGui.QPixmap(qImage)
             self.updatePixmap()
-            for c in self.connections:
-                if c.getType() is BOTTOM:
-                    c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
-                    if c.getIdItem() is not None:
-                        self.scene.getVisualItem(c.getIdItem()).moveToPos(
-                            self.pos() + QtCore.QPointF(0, self.img.height() - 5))
-                if c.getType() is RIGHT:
-                    c.setPoint(QtCore.QPointF(im.shape[1] - 5, c.getPoint().y()))
-                    if c.getIdItem() is not None:
-                        self.scene.getVisualItem(c.getIdItem()).moveToPos(
-                            self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
+            if self.sizeIn != size:
+                for c in self.connections:
+                    if c.getType() is BOTTOM:
+                        c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
+                        if c.getIdItem() is not None:
+                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                                self.pos() + QtCore.QPointF(0, self.img.height() - 5))
+                    if c.getType() is RIGHT:
+                        c.setPoint(QtCore.QPointF(im.shape[1] - 5, c.getPoint().y()))
+                        if c.getIdItem() is not None:
+                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                                self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
         self.shouldUpdate = False
 
     def updateVarValues(self):
