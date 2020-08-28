@@ -94,7 +94,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         for c in self.connections:
             c.setParent(self.parentBlock)
-        self.dicTrans = parentBlock.dicTran<style>QTooltip { background-color: #ff00ff }</style>s
+        self.dicTrans = parentBlock.dicTrans
         self.shouldUpdate = True
         if len(self.dicTrans) is 0:
             self.showtext = self.parentBlock.name
@@ -128,18 +128,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         # Al multiplicar por 0 obtenemos facilmente un ndarray inicializado a 0
         # similar al original
-        h = 0 * h + 130
-        hsv = cv2.merge((h, s, v))
-        im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
-        r, g, b = cv2.split(im)
-        self.cvShinyImg = cv2.merge((r, g, b, a))
-        self.cvShinyImg = np.require(self.cvShinyImg, np.uint8, 'C')
-        # if self.parentBlock.type is VARIABLE:
-        #     self.showtext = self.parentBlock.name + " "+ self.showtext
 
-        img = generateBlock(self.cvShinyImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
-                            self.parentBlock.nameControl)
-        qShinyImage = toQImage(img)
         try:
             self.header = copy.copy(self.cvImg[0:39, 0:149])
             self.foot = copy.copy(self.cvImg[69:104, 0:149])
@@ -147,7 +136,6 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             pass
 
         self.img = QtGui.QPixmap(qImage)
-        self.shinyImg = QtGui.QPixmap(qShinyImage)
 
         self.scene = scene
 
@@ -188,14 +176,16 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
     def highlight(self):
         self.highlighted = True
+        self.updateImg(force=True)
         self.updatePixmap()
 
     def unhighlight(self):
         self.highlighted = False
+        self.updateImg(force=True)
         self.updatePixmap()
 
     def updatePixmap(self):
-        self.setPixmap(self.img if not self.highlighted else self.shinyImg)
+        self.setPixmap(self.img)
 
     def create_dialogs(self):
 
@@ -497,7 +487,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
     def getId(self):
         return self.parentBlock.id
 
-    def updateImg(self):
+    def updateImg(self, force=False):
         if self.__typeBlock is COMPLEXBLOCK:
             nSubBlock, size = self.getNumSub()
         else:
@@ -505,10 +495,12 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         if size is 0:
             size = 34
-        if self.sizeIn != size or self.shouldUpdate:
+        if self.sizeIn != size or self.shouldUpdate or force:
             self.sizeIn = size
             im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
                                self.parentBlock.nameControl)
+            if self.highlighted:
+                im = generate_error_block(im)
             if not self.isEnabled():
                 r, g, b, a = cv2.split(im)
                 im = cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY)
@@ -517,10 +509,6 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 im = cv2.merge((r, g, b, a))
             qImage = toQImage(im)
             self.img = QtGui.QPixmap(qImage)
-            im = generateBlock(self.cvShinyImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
-                               self.parentBlock.nameControl)
-            qImage = toQImage(im)
-            self.shinyImg = QtGui.QPixmap(qImage)
             self.updatePixmap()
             for c in self.connections:
                 if c.getType() is BOTTOM:
@@ -595,6 +583,9 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             self.updateConnections()
 
     def moveToPos(self, pos, connect=False):
+        if self.highlighted:
+            self.unhighlight()
+            self.clearNotifications()
         if connect is False and self.posmouseinItem is not None:
             pos = pos - self.posmouseinItem
         self.setPos(pos)
@@ -680,7 +671,6 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.DialogVar.close()
         del self.cvImg
         del self.img
-        del self.shinyImg
         del self.foot
         del self.header
         del self.timer
