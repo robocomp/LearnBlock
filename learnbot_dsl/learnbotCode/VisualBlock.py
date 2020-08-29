@@ -510,7 +510,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             qImage = toQImage(im)
             self.img = QtGui.QPixmap(qImage)
             self.updatePixmap()
-            if self.sizeIn != size:
+            if self.sizeIn != size or self.shouldUpdate:
                 for c in self.connections:
                     if c.getType() is BOTTOM:
                         c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
