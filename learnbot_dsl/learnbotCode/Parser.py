@@ -104,7 +104,7 @@ class Node:
         cls.last_stmt = last
 
     @classmethod
-    def last_statement(cls, last):
+    def last_statement(cls):
         return cls.last_stmt
 
 KEYWORDS = (

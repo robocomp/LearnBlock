@@ -32,6 +32,7 @@ from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.learnbotCode.guiTabLibrary import Library
 from learnbot_dsl.learnbotCode.Highlighter import *
 from learnbot_dsl.learnbotCode.Notification import *
+from learnbot_dsl.learnbotCode.VisualBlock import toLBotPy
 from learnbot_dsl.learnbotCode.help import helper
 from future.standard_library import install_aliases
 from learnbot_dsl.learnbotCode.Parser import HEADER, parserLearntBotCodeFromCode
@@ -404,7 +405,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         line = pos.blockNumber()
         col = pos.columnNumber()
 
-        self.ui.position.setText(f"{line+1}:{col+1}")
+        self.ui.position.setText(f"{line+1}:{col+1} (offset={pos.position()})")
 
     def tabChanged(self, index):
         if (index == 0): # Python tab
@@ -865,6 +866,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         name_Client = self.ui.clientscomboBox.currentText()
         self.blocksToTextCode()
         self.textCodeToPython(name_Client)
+        self.highlightNotification()
 
     def btToPython(self):
         name_Client = self.ui.clientscomboBox.currentText()
@@ -878,7 +880,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             for name in self.listNameVars:
                 text += name + " = None\n"
         blocks = self.scene.getListInstructions()
-        code = self.parserBlocks(blocks, self.toLBotPy)
+        code = self.parserBlocks(blocks, toLBotPy)
         self.ui.textCode.clear()
         self.ui.textCode.setPlainText(text + code)
 
@@ -1629,84 +1631,103 @@ class LearnBlock(QtWidgets.QMainWindow):
             finally:
                 self.disablestartButtons(False)
 
-    def parserBlocks(self, blocks, function):
-        text = self.parserUserFuntions(blocks, function)
+    def highlightNotification(self):
+        blocks = self.scene.getListInstructions()
+
+        for block in blocks:
+            self.clearHighlightBlock(block)
+
+            for notification in self.notifications:
+                self.highlightNotificationBlock(block, notification)
+
+    def clearHighlightBlock(self, block):
+        block[1]["VISUALBLOCK"].unhighlight()
+        block[1]["VISUALBLOCK"].clearNotifications()
+
+        if block[1]["RIGHT"]:
+            self.clearHighlightBlock(block[1]["RIGHT"])
+        if block[1]["BOTTOMIN"]:
+            self.clearHighlightBlock(block[1]["BOTTOMIN"])
+        if block[1]["BOTTOM"]:
+            self.clearHighlightBlock(block[1]["BOTTOM"])
+
+    def highlightNotificationBlock(self, block, notification):
+        block_start = block[1]["VISUALBLOCK"].startOffset
+        block_end = block[1]["VISUALBLOCK"].endOffset
+
+        l_inside = block_start >= notification.start[2]
+        r_inside = block_end <= notification.end[2] if notification.end else True
+
+        r_colored = bi_colored = b_colored = False
+
+        if block[1]["RIGHT"]:
+            r_colored = self.highlightNotificationBlock(block[1]["RIGHT"], notification)
+        if block[1]["BOTTOMIN"]:
+            bi_colored = self.highlightNotificationBlock(block[1]["BOTTOMIN"], notification)
+        if block[1]["BOTTOM"]:
+            b_colored = self.highlightNotificationBlock(block[1]["BOTTOM"], notification)
+
+        color_partial = r_colored or bi_colored or b_colored
+
+        if l_inside and r_inside or r_inside and color_partial:
+            block[1]["VISUALBLOCK"].addNotification(notification)
+            block[1]["VISUALBLOCK"].highlight()
+
+        return l_inside and r_inside
+
+    def parserBlocks(self, blocks, function, start = 0):
+        text = self.parserUserFuntions(blocks, function, start)
         text += "\n\n"
         if self.ui.useEventscheckBox.isChecked():
-            text += self.parserWhenBlocks(blocks, function)
+            text += self.parserWhenBlocks(blocks, function, len(text))
         else:
-            text += self.parserOtherBlocks(blocks, function)
+            text += self.parserOtherBlocks(blocks, function, len(text))
         return text
 
-    def parserUserFuntions(self, blocks, function):
+    def parserUserFuntions(self, blocks, function, start = 0):
         text = ""
         for b in [block for block in blocks if block[1]["TYPE"] is USERFUNCTION]:
-            text += "def " + function(b, 1)
-            text += "\nend\n\n"
+            b[1]["VISUALBLOCK"].startOffset = len(text) + start
+            text += "def "
+            text += function(b, 1, len(text) + start)
+            text += "\nend"
+            b[1]["VISUALBLOCK"].endOffset = len(text)-1 + start
+            text += "\n\n"
         return text
 
-    def parserWhenBlocks(self, blocks, function):
+    def parserWhenBlocks(self, blocks, function, start = 0):
         text = ""
         for b in [block for block in blocks if block[0] == "when"]:
+            b[1]["VISUALBLOCK"].startOffset = len(text) + start
             text += "when " + b[1]['NAMECONTROL']
             if b[1]['RIGHT'] is not None:
-                text += " = " + function(b[1]['RIGHT'], 0)
+                text += " = "
+                text += function(b[1]['RIGHT'], 0, len(text) + start)
             text += ":\n"
 
             if b[1]['BOTTOMIN'] is not None:
-                text += "\t" + function(b[1]['BOTTOMIN'], 2) + "\n"
+                text += "\t"
+                text += function(b[1]['BOTTOMIN'], 2, len(text) + start) + "\n"
             else:
                 text += "pass\n"
-            text += "end\n\n"
+            text += "end"
+            b[1]["VISUALBLOCK"].endOffset = len(text)-1 + start
+            text += "\n\n"
         return text
 
-    def parserOtherBlocks(self, blocks, function):
+    def parserOtherBlocks(self, blocks, function, start = 0):
         text = ""
         for b in [block for block in blocks if "main" == block[0]]:
+            b[1]["VISUALBLOCK"].startOffset = len(text) + start
             text += b[0] + ":\n"
             if b[1]["BOTTOMIN"] is not None:
-                text += "\t" + function(b[1]["BOTTOMIN"], 2)
+                text += "\t"
+                text += function(b[1]["BOTTOMIN"], 2, len(text) + start)
             else:
                 text += "pass"
-            text += "\nend\n\n"
-        return text
-
-    def toLBotPy(self, inst, ntab=1):
-        text = inst[0]
-        if inst[1]["TYPE"] in [USERFUNCTION, LIBRARY]:
-            text = inst[0] + "()"
-        if inst[1]["TYPE"] is CONTROL:
-            if inst[1]["VARIABLES"] is not None:
-                text = inst[0] + "("
-                for var in inst[1]["VARIABLES"]:
-                    text += var + ", "
-                text = text[0:-2] + ""
-                text += ")"
-        if inst[1]["TYPE"] is FUNTION:
-            text = "function." + inst[0] + "("
-            if inst[1]["VARIABLES"] is not None:
-                for var in inst[1]["VARIABLES"]:
-                    text += var + ", "
-                text = text[0:-2] + ""
-            text += ")"
-        elif inst[1]["TYPE"] is VARIABLE:
-            text = inst[0]
-            if inst[1]["VARIABLES"] is not None:
-                text += " = "
-                for var in inst[1]["VARIABLES"]:
-                    text += var
-
-        if inst[1]["RIGHT"] is not None:
-            text += " " + self.toLBotPy(inst[1]["RIGHT"])
-        if inst[1]["BOTTOMIN"] is not None:
-            text += ":\n" + "\t" * ntab + self.toLBotPy(inst[1]["BOTTOMIN"], ntab + 1)
-        if inst[0] in ["while", "while True"]:
-            text += "\n" + "\t" * (ntab - 1) + "end"
-        if inst[0] == "else" or (inst[0] in ["if", "elif"] and (inst[1]["BOTTOM"] is None or (
-                inst[1]["BOTTOM"] is not None and inst[1]["BOTTOM"][0] not in ["elif", "else"]))):
-            text += "\n" + "\t" * (ntab - 1) + "end"
-        if inst[1]["BOTTOM"] is not None:
-            text += "\n" + "\t" * (ntab - 1) + self.toLBotPy(inst[1]["BOTTOM"], ntab)
+            text += "\nend"
+            b[1]["VISUALBLOCK"].endOffset = len(text)-1 + start
+            text += "\n\n"
         return text
 
     def newVariable(self):

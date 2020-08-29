@@ -175,6 +175,18 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
                     c.getPoint().setX(im.shape[1] - 5)
     return im
 
+def generate_error_block(img):
+    img_border = cv2.copyMakeBorder(img, 10, 10, 10, 10, cv2.BORDER_CONSTANT, None, (0,0,0,0))
+    a = img_border[:,:,3]
+    kernel = np.ones((15, 15), np.uint8)
+    a2 = cv2.erode(a, kernel, iterations=1)
+    mask = cv2.blur(a-a2,(7,7))
+    mask = mask[10:-10,10:-10]
+    other_c = np.zeros_like(mask, np.uint8)
+    result_img = np.dstack((other_c, other_c, mask))
+    img_error = cv2.addWeighted(img[:,:,0:3], 1, result_img, 1, 0)
+    img_error = np.concatenate((img_error, np.expand_dims(img[:,:,3],axis=-1)), axis=2)
+    return img_error
 
 def loadConfigBlock(img):
     fh = open(img, "r")
@@ -208,3 +220,10 @@ def loadConfigBlock(img):
                 type = LEFT
             connections.append((QtCore.QPointF(int(c[0]), int(c[1])), type))
     return blockType, connections
+
+
+if __name__ == '__main__':
+    img = cv2.imread("/home/ivan/robocomp/components/LearnBlock/learnbot_dsl/blocksConfig/blocks/block7.png", -1)
+    img_error = generate_error_block(img)
+    cv2.imshow("img_error", img_error)
+    cv2.waitKey(0)

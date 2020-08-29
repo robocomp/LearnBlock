@@ -26,12 +26,13 @@ class Notification(QtWidgets.QWidget):
         self.icon.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Ignored)
         self.summaryLayout.addWidget(self.icon)
 
-        self.message = QtWidgets.QLabel()
-        self.message.setWordWrap(True)
-        font = self.message.font()
+        self._message = ''
+        self.messageWidget = QtWidgets.QLabel()
+        self.messageWidget.setWordWrap(True)
+        font = self.messageWidget.font()
         font.setBold(True)
-        self.message.setFont(font)
-        self.summaryLayout.addWidget(self.message)
+        self.messageWidget.setFont(font)
+        self.summaryLayout.addWidget(self.messageWidget)
 
         self.position = QtWidgets.QLabel()
         font = self.position.font()
@@ -50,8 +51,9 @@ class Notification(QtWidgets.QWidget):
         self.snippet.setOffset(start[1]-1)
         self.vLayout.addWidget(self.snippet)
 
-        self.hints = QtWidgets.QVBoxLayout()
-        self.vLayout.addLayout(self.hints)
+        self._hints = []
+        self.hintsWidget = QtWidgets.QVBoxLayout()
+        self.vLayout.addLayout(self.hintsWidget)
 
         self.highlighter = Highlighter(self.snippet.document())
         self.setPosition(start, end)
@@ -84,8 +86,12 @@ class Notification(QtWidgets.QWidget):
 
         self.icon.setPixmap(icon.pixmap(QtCore.QSize(16, 16)))
 
+    def message(self):
+        return self._message
+
     def setMessage(self, message):
-        self.message.setText(message)
+        self._message = message
+        self.messageWidget.setText(message)
 
     def setPosition(self, start, end = None):
         self.start = start
@@ -105,21 +111,36 @@ class Notification(QtWidgets.QWidget):
         self.position.setText(position)
         self.snippet.setPlainText(snippet)
 
+    def hints(self):
+        return self._hints
+
     def setHints(self, hints):
-        for _ in range(self.hints.count()):
+        self._hints = hints
+
+        for _ in range(self.hintsWidget.count()):
             self.vLayout.itemAt().widget().setParent(None)
 
         for hint in hints:
                item = QtWidgets.QLabel(self)
                item.setText('<b>' + self.HINT + '</b>: ' + hint)
-               self.hints.addWidget(item)
+               self.hintsWidget.addWidget(item)
+
+    def simpleHtml(self):
+        tooltip = '<h3>' + self._message + '</h3>'
+        tooltip += '<ul>'
+
+        for hint in self._hints:
+            tooltip += self.tr('<li><b>Hint:</b> ') + hint + '</li>'
+
+        tooltip += '</ul>'
+        return tooltip
 
 class InvalidSyntax(Notification):
     def __init__(self, rule, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         hints = [
-            self.tr('did you forget something while typing the <code>%s</code>?') % rule.__name__,
+            self.tr('did you forget something while making the <code>%s</code>?') % rule.__name__,
         ]
 
         self.setSeverity(Severity.ERROR)
@@ -132,7 +153,7 @@ class TypeMismatch(Notification):
 
         hints = [
             self.tr('check the marked expression: does it really return a value of type <code>%s</code>?') % expected,
-            self.tr('did you make a typo while writing the expression? Check the operators!'),
+            self.tr('did you make a typo while making the expression? Check the operators!'),
             self.tr('be careful with operator precedence!'),
         ]
 

@@ -15,10 +15,12 @@ class KeyPressEater(QtCore.QObject):
             return True
         return False
 
-def toLBotPy(inst, ntab=1):
+def toLBotPy(inst, ntab=1, offset=0):
     text = inst[0]
-    if inst[1]["TYPE"] is USERFUNCTION:
+    if inst[1]["TYPE"] in [USERFUNCTION, LIBRARY]:
         text = inst[0] + "()"
+    else:
+        inst[1]["VISUALBLOCK"].startOffset = offset
     if inst[1]["TYPE"] is CONTROL:
         if inst[1]["VARIABLES"] is not None:
             text = inst[0] + "("
@@ -41,16 +43,22 @@ def toLBotPy(inst, ntab=1):
                 text += var
 
     if inst[1]["RIGHT"] is not None:
-        text += " " + toLBotPy(inst[1]["RIGHT"])
+        text += " "
+        text += toLBotPy(inst[1]["RIGHT"], ntab, len(text) + offset)
     if inst[1]["BOTTOMIN"] is not None:
-        text += ":\n" + "\t" * ntab + toLBotPy(inst[1]["BOTTOMIN"], ntab + 1)
-    if inst[0] == "while":
-        text += "\n\t" * (ntab - 1) + "end"
+        text += ":\n" + "\t" * ntab
+        text += toLBotPy(inst[1]["BOTTOMIN"], ntab + 1, len(text) + offset)
+    if inst[0] in ["while", "while True"]:
+        text += "\n" + "\t" * (ntab - 1) + "end"
     if inst[0] == "else" or (inst[0] in ["if", "elif"] and (inst[1]["BOTTOM"] is None or (
             inst[1]["BOTTOM"] is not None and inst[1]["BOTTOM"][0] not in ["elif", "else"]))):
         text += "\n" + "\t" * (ntab - 1) + "end"
+
+    inst[1]["VISUALBLOCK"].endOffset = len(text)-1 + offset
+
     if inst[1]["BOTTOM"] is not None:
-        text += "\n" + "\t" * (ntab - 1) + toLBotPy(inst[1]["BOTTOM"], ntab)
+        text += "\n" + "\t" * (ntab - 1)
+        text += toLBotPy(inst[1]["BOTTOM"], ntab, len(text) + offset)
     return text
 
 def EuclideanDist(p1, p2):
@@ -74,11 +82,15 @@ class VarGui(QtWidgets.QDialog, EditVar.Ui_Dialog):
 class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
     def __init__(self, parentBlock, parent=None, scene=None):
+        self.startOffset = None
+        self.endOffset = None
+        self._notifications = []
         self.parentBlock = parentBlock
         self.__typeBlock = self.parentBlock.typeBlock
         self.__type = self.parentBlock.type
         self.id = self.parentBlock.id
         self.connections = self.parentBlock.connections
+        self.highlighted = False
 
         for c in self.connections:
             c.setParent(self.parentBlock)
@@ -91,6 +103,9 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         QtWidgets.QGraphicsPixmapItem.__init__(self)
         QtWidgets.QWidget.__init__(self)
 
+        def foo(x):
+            return 32
+
         # Load Image of block
         im = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
         r, g, b, a = cv2.split(im)
@@ -98,7 +113,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
         h, s, v = cv2.split(hsv)
         h = h + self.parentBlock.hue
-        s = s + 130
+        s = s + 160
         hsv = cv2.merge((h, s, v))
         im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
         r, g, b = cv2.split(im)
@@ -106,9 +121,14 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
         # if self.parentBlock.type is VARIABLE:
         #     self.showtext = self.parentBlock.name + " "+ self.showtext
+
         img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
                             self.parentBlock.nameControl)
         qImage = toQImage(img)
+
+        # Al multiplicar por 0 obtenemos facilmente un ndarray inicializado a 0
+        # similar al original
+
         try:
             self.header = copy.copy(self.cvImg[0:39, 0:149])
             self.foot = copy.copy(self.cvImg[69:104, 0:149])
@@ -123,7 +143,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.setZValue(1)
         self.setPos(self.parentBlock.pos)
         self.scene.activeShouldSave()
-        self.setPixmap(self.img)
+        self.updatePixmap()
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
@@ -135,6 +155,37 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         self.sizeIn = 0
         self.shouldUpdateConnections = False
+
+    def addNotification(self, notification):
+        tooltip = self.toolTip()
+
+        if tooltip:
+            tooltip += '<hr />'
+
+        tooltip += notification.simpleHtml()
+
+        self.setToolTip(tooltip)
+        self._notifications.append(notification)
+
+    def clearNotifications(self):
+        self._notifications = []
+        self.setToolTip('')
+
+    def notifications(self):
+        return self._notifications
+
+    def highlight(self):
+        self.highlighted = True
+        self.updateImg(force=True)
+        self.updatePixmap()
+
+    def unhighlight(self):
+        self.highlighted = False
+        self.updateImg(force=True)
+        self.updatePixmap()
+
+    def updatePixmap(self):
+        self.setPixmap(self.img)
 
     def create_dialogs(self):
 
@@ -430,12 +481,13 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         dic["BOTTOMIN"] = instBottomIn
         dic["VARIABLES"] = self.getVars()
         dic["TYPE"] = self.__type
+        dic["VISUALBLOCK"] = self
         return self.getNameFuntion(), dic
 
     def getId(self):
         return self.parentBlock.id
 
-    def updateImg(self):
+    def updateImg(self, force=False):
         if self.__typeBlock is COMPLEXBLOCK:
             nSubBlock, size = self.getNumSub()
         else:
@@ -443,10 +495,12 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         if size is 0:
             size = 34
-        if self.sizeIn != size or self.shouldUpdate:
+        if self.sizeIn != size or self.shouldUpdate or force:
             self.sizeIn = size
             im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
                                self.parentBlock.nameControl)
+            if self.highlighted:
+                im = generate_error_block(im)
             if not self.isEnabled():
                 r, g, b, a = cv2.split(im)
                 im = cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY)
@@ -455,18 +509,19 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                 im = cv2.merge((r, g, b, a))
             qImage = toQImage(im)
             self.img = QtGui.QPixmap(qImage)
-            self.setPixmap(self.img)
-            for c in self.connections:
-                if c.getType() is BOTTOM:
-                    c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
-                    if c.getIdItem() is not None:
-                        self.scene.getVisualItem(c.getIdItem()).moveToPos(
-                            self.pos() + QtCore.QPointF(0, self.img.height() - 5))
-                if c.getType() is RIGHT:
-                    c.setPoint(QtCore.QPointF(im.shape[1] - 5, c.getPoint().y()))
-                    if c.getIdItem() is not None:
-                        self.scene.getVisualItem(c.getIdItem()).moveToPos(
-                            self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
+            self.updatePixmap()
+            if self.sizeIn != size or self.shouldUpdate:
+                for c in self.connections:
+                    if c.getType() is BOTTOM:
+                        c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
+                        if c.getIdItem() is not None:
+                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                                self.pos() + QtCore.QPointF(0, self.img.height() - 5))
+                    if c.getType() is RIGHT:
+                        c.setPoint(QtCore.QPointF(im.shape[1] - 5, c.getPoint().y()))
+                        if c.getIdItem() is not None:
+                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
+                                self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
         self.shouldUpdate = False
 
     def updateVarValues(self):
@@ -529,6 +584,9 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             self.updateConnections()
 
     def moveToPos(self, pos, connect=False):
+        if self.highlighted:
+            self.unhighlight()
+            self.clearNotifications()
         if connect is False and self.posmouseinItem is not None:
             pos = pos - self.posmouseinItem
         self.setPos(pos)
