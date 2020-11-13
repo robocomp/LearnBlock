@@ -1,0 +1,12 @@
+image:
+  robocomp_pip_twine_18.04
+branches:
+  - pip-release
+matrix:
+  - env: SCRIPT="Learnblock_testing"
+
+deploy:
+# Wheel generation from setup
+  - python3 learnblock_setup.py sdist bdist_wheel --universal
+# Upload to pip repository 
+  - python3 -m twine upload --skip-existing --repository testpypi dist/*
