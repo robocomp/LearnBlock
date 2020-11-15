@@ -31,7 +31,7 @@ import sys, os, Ice
 additionalPathStr = ''
 icePaths = [  os.path.dirname(__file__) ]
 # try:
-# 	icePaths.append('/home/robocomp/robocomp/learnbot_components/learnbot/interfaces/')
+# 	icePaths.append('/home/robocomp/robocomp/EBO_components/learnbot/interfaces/')
 # 	SLICE_PATH = os.environ['SLICE_PATH'].split(':')
 # 	for p in SLICE_PATH:
 # 		icePaths.append(p)
