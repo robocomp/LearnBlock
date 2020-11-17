@@ -1151,60 +1151,9 @@ def parserLearntBotCodeFromCode(code, name_client):
         return None, notifications
 
 if __name__ == "__main__":
-    textprueba = """
-
-
-main:
-    x = 2
-end
-
-"""
-    try:
-        print("Original source code")
-        print("====================")
-        print()
-        print(textprueba)
-        print()
-
-        print("Parse tree")
-        print("==========")
-        print()
-        tree = Parser.parse_str(textprueba)
-        print(tree.__dict__)
-        print()
-
-        print("Global variables")
-        print("================")
-        print()
-        print(tree.used_vars)
-        print()
-
-        print("Python result")
-        print("=============")
-        print()
-        print(PythonGenerator.generate(tree))
-        print()
-
-        print("Typechecks?")
-        print("==========")
-        print()
-        mismatches = Typechecker.check(tree)
-        print(not mismatches)
-        print()
-
-        print("Type mismatches")
-        print("===============")
-        print()
-        print(mismatches)
-        print()
-        parserLearntBotCodeFromCode(textprueba, "robots")
-    except Exception as pe:
-        print(pe.line)
-        print(' ' * (pe.col - 1) + '^')
-        print(pe)
 
     argv = sys.argv[1:]
-    if len(argv) is not 3:
+    if len(argv) != 3:
         print(bcolors.FAIL + "You must give 2 arguments")
         print("\timputfile\tFile to parser")
         print("\toutputfile\tFile to parser")
