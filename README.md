@@ -27,7 +27,7 @@ If you want to install LearnBlock from sources, the following packages must be i
 
     sudo apt update
 
-    sudo apt install python3-pip cmake python3-zeroc-ice
+    sudo apt install python3-pip cmake python3-zeroc-ice libnss3 libxcomposite1 libxcursor1 libxi6 libxkbcommon0 libasound2
 
     sudo pip3 install apriltag requests pyunpack opencv-python-headless imutils six tensorflow dlib paramiko Pillow paho_mqtt PySide2 pyparsing qdarkstyle future
 
