@@ -880,7 +880,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             for name in self.listNameVars:
                 text += name + " = None\n"
         blocks = self.scene.getListInstructions()
-        code = self.parserBlocks(blocks, toLBotPy)
+        code = self.parserBlocks(blocks, toLBotPy, self.ui.useEventscheckBox.isChecked())
         self.ui.textCode.clear()
         self.ui.textCode.setPlainText(text + code)
 
@@ -1675,16 +1675,18 @@ class LearnBlock(QtWidgets.QMainWindow):
 
         return l_inside and r_inside
 
-    def parserBlocks(self, blocks, function, start = 0):
-        text = self.parserUserFuntions(blocks, function, start)
+    @staticmethod
+    def parserBlocks(blocks, function, start = 0, are_events=False):
+        text = LearnBlock.parserUserFuntions(blocks, function, start)
         text += "\n\n"
-        if self.ui.useEventscheckBox.isChecked():
-            text += self.parserWhenBlocks(blocks, function, len(text))
+        if are_events:
+            text += LearnBlock.parserWhenBlocks(blocks, function, len(text))
         else:
-            text += self.parserOtherBlocks(blocks, function, len(text))
+            text += LearnBlock.parserOtherBlocks(blocks, function, len(text))
         return text
 
-    def parserUserFuntions(self, blocks, function, start = 0):
+    @staticmethod
+    def parserUserFuntions(blocks, function, start = 0):
         text = ""
         for b in [block for block in blocks if block[1]["TYPE"] is USERFUNCTION]:
             b[1]["VISUALBLOCK"].startOffset = len(text) + start
@@ -1695,7 +1697,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             text += "\n\n"
         return text
 
-    def parserWhenBlocks(self, blocks, function, start = 0):
+    @staticmethod
+    def parserWhenBlocks(blocks, function, start = 0):
         text = ""
         for b in [block for block in blocks if block[0] == "when"]:
             b[1]["VISUALBLOCK"].startOffset = len(text) + start
@@ -1715,7 +1718,8 @@ class LearnBlock(QtWidgets.QMainWindow):
             text += "\n\n"
         return text
 
-    def parserOtherBlocks(self, blocks, function, start = 0):
+    @staticmethod
+    def parserOtherBlocks(blocks, function, start = 0):
         text = ""
         for b in [block for block in blocks if "main" == block[0]]:
             b[1]["VISUALBLOCK"].startOffset = len(text) + start

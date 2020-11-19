@@ -12,5 +12,5 @@ tensorflow>=1.15.2
 numpy>=1.13.3
 Ice>=0.0.2
 Pillow>=5.3.0
-PySide>=1.2.4
+PySide2>=1
 paho_mqtt>=1.4.0

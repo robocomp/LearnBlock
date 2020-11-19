@@ -1,12 +1,15 @@
 image:
   robocomp_pip_twine_18.04
-branches:
-  - pip-release
+install:
+  - sudo apt update
+  - sudo apt install -y python3-pip cmake python3-zeroc-ice libnss3 libxcomposite1 libxcursor1 libxi6 libxkbcommon0 libasound2
+  - sudo python3 -mpip install --upgrade pip
+  - sudo python3 -mpip install apriltag requests pyunpack opencv-python-headless imutils six tensorflow dlib paramiko Pillow paho_mqtt PySide2 pyparsing qdarkstyle future
+  - sudo python3 -mpip install --use-feature=2020-resolver --upgrade -r requirements.txt
 matrix:
   - env: SCRIPT="Learnblock_testing"
-
+script:
+  - python3 -m unittest discover -s test
 deploy:
-# Wheel generation from setup
-  - python3 learnblock_setup.py sdist bdist_wheel --universal
-# Upload to pip repository 
-  - python3 -m twine upload --skip-existing --repository testpypi dist/*
+  - sh deployment.sh
+

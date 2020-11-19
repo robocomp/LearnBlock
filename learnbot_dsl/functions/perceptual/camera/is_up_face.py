@@ -9,6 +9,6 @@ def is_up_face(lbot):
     frame = lbot.getImage()
     if frame is not None:
         mat = va.detect_face(frame)
-        if mat[0][0] is not 0 or mat[0][1] is not 0 or mat[0][2] is not 0:
+        if mat[0][0] != 0 or mat[0][1] != 0 or mat[0][2] != 0:
             return True
     return False

@@ -1,0 +1,22 @@
+
+
+main:
+	function.look_floor()
+	while True:
+		if function.is_center_red_line():
+			function.move_straight()
+			function.expressJoy()
+		elif function.is_right_red_line():
+			function.move_right()
+			function.expressJoy()
+		elif function.is_left_red_line():
+			function.move_left()
+			function.expressJoy()
+		else:
+			function.slow_down()
+			function.expressSadness()
+		end
+	end
+end
+
+

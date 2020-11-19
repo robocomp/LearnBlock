@@ -9,6 +9,6 @@ def is_right_face(lbot):
     frame = lbot.getImage()
     if frame is not None:
         mat = va.detect_face(frame)
-        if mat[0][2] is not 0 or mat[1][2] is not 0 or mat[2][2] is not 0:
+        if mat[0][2] != 0 or mat[1][2] != 0 or mat[2][2] != 0:
             return True
     return False
