@@ -637,6 +637,8 @@ class When(Node):
     def to_python(self, gen, *_):
         name = self.name.to_python(gen)
 
+        print(name, self.used_vars)
+
         if name != 'start':
             output = f'{name}_start = time.time()\n'
             output += gen.tabs() + f'state_{name} = False\n'
@@ -648,10 +650,15 @@ class When(Node):
         globals = {var for var in self.used_vars
                        if gen.is_global(var)}
 
+        globals.add(f'time_{name}')
+        globals.add(f'state_{name}')
+        globals.add(f'{name}_start')
+
         for when in gen.whens:
-            if when in self.used_vars:
+            if when in self.used_vars and when not in globals:
                 globals.add(f'time_{when}')
                 globals.add(f'state_{when}')
+                globals.add(f'{when}_start')
 
         gen.indent()
 
@@ -685,9 +692,22 @@ class When(Node):
         return output.strip()
 
     def typecheck(self, ctx):
-        _, co = self.right.signature(ctx)
+        if self.right is None:
+            return True
+        else:
+            _, co = self.right.signature(ctx)
 
-        return ctx.unify(self.right, co, bool) and all([node.typecheck(ctx) for node in self.body])
+            return ctx.unify(self.right, co, bool) and all([node.typecheck(ctx) for node in self.body])
+ 
+    @property
+    def used_vars(self):
+        vars = {var for node in self.body
+                    for var in node.used_vars}
+
+#        vars = vars.union(self.condition.used_vars)
+
+        return vars
+
 
 BLOQUEWHENCOND = (
     INDENT

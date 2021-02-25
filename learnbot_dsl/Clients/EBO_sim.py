@@ -323,11 +323,13 @@ class Robot(Client):
         return image, True
 
     def deviceReadRealCamera(self):
-        print("capturing")
-        ret, frame = self.cap.read()
+        if self.cap.isOpened():
+            ret, frame = self.cap.read()
 
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = cv2.resize(frame, (320, 240)) 
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            image = cv2.resize(frame, (320, 240)) 
+        else:
+            image = np.zeros((320, 240, 3), dtype=np.uint8)
 
         return image, True
 
@@ -354,7 +356,11 @@ class Robot(Client):
         self.jointmotor_proxy.setPosition(goal)
 
     def getEmotions(self):
-        return super().getEmotions(_keyCam="REAL_CAMERA")
+        if self.cap.isOpened():
+            key = "REAL_CAMERA"
+        else:
+            key = "ROBOT"
+        return super().getEmotions(_keyCam=key)
 
 if __name__ == '__main__':
     ebo = Robot()
