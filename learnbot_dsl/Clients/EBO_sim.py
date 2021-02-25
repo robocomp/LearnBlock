@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw
 from random import randint
 from learnbot_dsl import path as Learnblock_Path
 from learnbot_dsl import PATHINTERFACES
-
+import cv2
 
 
 ROBOCOMP = ''
@@ -261,9 +261,12 @@ class Robot(Client):
         self.newImage = False
         self.addDistanceSensors(Devices.DistanceSensors(_readFunction=self.deviceReadLaser))
         self.addCamera(Devices.Camera(_readFunction=self.deviceReadCamera))
+        self.addCamera(Devices.Camera(_readFunction=self.deviceReadRealCamera), "REAL_CAMERA")
         self.addBase(Devices.Base(_callFunction=self.deviceMove))
         self.addDisplay(Devices.Display(_setEmotion=self.deviceSendEmotion, _setImage=None))
         self.addJointMotor(Devices.JointMotor(_callDevice=self.deviceSendAngleHead, _readDevice=None), "CAMERA")
+        self.cap = cv2.VideoCapture(0)
+
         self.start()
 
     def connectToRobot(self):
@@ -312,11 +315,20 @@ class Robot(Client):
     def deviceMove(self, _adv, _rot):
         self.differentialrobot_proxy.setSpeedBase(_adv, math.radians(_rot))
 
-    def deviceReadCamera(self, ):
+    def deviceReadCamera(self):
         color, depth, headState, baseState = self.rgbd_proxy.getData()
         if (len(color) == 0) or (len(depth) == 0):
             print('Error retrieving images!')
         image = np.fromstring(color, dtype=np.uint8).reshape((240, 320, 3))
+        return image, True
+
+    def deviceReadRealCamera(self):
+        print("capturing")
+        ret, frame = self.cap.read()
+
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        image = cv2.resize(frame, (320, 240)) 
+
         return image, True
 
     def deviceSendEmotion(self, _emotion):
@@ -341,6 +353,8 @@ class Robot(Client):
         goal.position = -math.radians(_angle)
         self.jointmotor_proxy.setPosition(goal)
 
+    def getEmotions(self):
+        return super().getEmotions(_keyCam="REAL_CAMERA")
 
 if __name__ == '__main__':
     ebo = Robot()
