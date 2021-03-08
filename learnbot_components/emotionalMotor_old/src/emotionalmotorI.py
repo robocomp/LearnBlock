@@ -41,13 +41,22 @@ if not ice_EmotionalMotor:
 	sys.exit(-1)
 from RoboCompEmotionalMotor import *
 ice_Display = False
-for p in icePaths:
-	if os.path.isfile(p+'/Display.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
-		wholeStr = preStr+"Display.ice"
-		Ice.loadSlice(wholeStr)
-		ice_Display = True
-		break
+
+# for p in icePaths:
+# 	if os.path.isfile(p+'/Display.ice'):
+# 		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
+# 		wholeStr = preStr+"Display.ice"
+# 		Ice.loadSlice(wholeStr)
+# 		ice_Display = True
+# 		break
+
+if os.path.isfile(os.path.join(pathInterfaces,'Display.ice')):
+	#preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
+	#wholeStr = preStr+"Display.ice"
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'Display.ice')
+	Ice.loadSlice(wholeStr)
+	ice_Display = True
+
 if not ice_Display:
 	print('Couldn\'t load Display')
 	sys.exit(-1)

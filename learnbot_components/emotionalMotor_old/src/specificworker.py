@@ -19,7 +19,7 @@
 
 import sys, os, traceback, time, copy, json
 
-from PySide import QtGui, QtCore
+from PySide2 import QtGui, QtCore
 from learnbot_components.emotionalMotor.src.genericworker import *
 from PIL import Image, ImageDraw
 # If RoboComp was compiled with Python bindings you can use InnerModel in Python
@@ -152,6 +152,7 @@ class Face():
 class SpecificWorker(GenericWorker):
 	def __init__(self, proxy_map):
 		super(SpecificWorker, self).__init__(proxy_map)
+		print("specificworker")
 		self.timer.timeout.connect(self.compute)
 		self.Period = 66
 		self.timer.start(self.Period)
@@ -167,6 +168,7 @@ class SpecificWorker(GenericWorker):
 	@QtCore.Slot()
 	def compute(self):
 		path = self.face.render()
+		print("compute")
 		# if path is not None:
 			# self.display_proxy.setImageFromFile(path)
 		return True

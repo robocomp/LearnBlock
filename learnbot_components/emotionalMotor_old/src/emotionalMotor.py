@@ -63,7 +63,7 @@ else:
 # Ctrl+c handling
 import signal
 
-from PySide import QtGui, QtCore
+from PySide2 import QtGui, QtCore
 
 from learnbot_components.emotionalMotor.src.specificworker import *
 
@@ -113,11 +113,13 @@ if __name__ == '__main__':
 	try:
 		proxyString = ic.getProperties().getProperty('DisplayProxy')
 		tries = 0
+		print(proxyString)
 		while tries<4:
 			try:
 				basePrx = ic.stringToProxy(proxyString)
 				display_proxy = DisplayPrx.checkedCast(basePrx)
 				mprx["DisplayProxy"] = display_proxy
+				break
 			except Ice.Exception:
 				tries+=1
 				# print('Cannot connect to the remote object (Display)', proxyString)

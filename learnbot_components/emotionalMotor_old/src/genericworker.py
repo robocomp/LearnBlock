@@ -17,23 +17,25 @@
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys, Ice, os
-from PySide import QtGui, QtCore
+from PySide2 import QtGui, QtCore
 
 ROBOCOMP = ''
 try:
 	ROBOCOMP = os.environ['ROBOCOMP']
-except KeyError:
+except KeyError: 
 	print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
 	ROBOCOMP = '/opt/robocomp'
 
-preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /home/pi/learnbot/interfaces/"
+from learnbot_components import pathInterfaces
+
+#preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all /home/pi/learnbot/interfaces/"
+preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all " + pathInterfaces + "/"
 Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 
-from learnbot_components import pathInterfaces
 ice_EmotionalMotor = False
-if os.path.isfile(os.path.join(pathInterfaces,+'EmotionalMotor.ice')):
-	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,+'EmotionalMotor.ice')
+if os.path.isfile(os.path.join(pathInterfaces,'EmotionalMotor.ice')):
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces,'EmotionalMotor.ice')
 	Ice.loadSlice(wholeStr)
 	ice_EmotionalMotor = True
 
@@ -42,13 +44,20 @@ if not ice_EmotionalMotor:
 	sys.exit(-1)
 from RoboCompEmotionalMotor import *
 ice_Display = False
-for p in icePaths:
-	if os.path.isfile(p+'/Display.ice'):
-		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
-		wholeStr = preStr+"Display.ice"
-		Ice.loadSlice(wholeStr)
-		ice_Display = True
-		break
+# for p in icePaths:
+# 	if os.path.isfile(p+'/Display.ice'):
+# 		preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
+# 		wholeStr = preStr+"Display.ice"
+# 		Ice.loadSlice(wholeStr)
+# 		ice_Display = True
+# 		break
+if os.path.isfile(os.path.join(pathInterfaces,'Display.ice')):
+	#preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ " + additionalPathStr + " --all "+p+'/'
+	#wholeStr = preStr+"Display.ice"
+	wholeStr = "-I" + pathInterfaces + " --all "+os.path.join(pathInterfaces, 'Display.ice')
+	Ice.loadSlice(wholeStr)
+	ice_Display = True
+
 if not ice_Display:
 	print('Couln\'t load Display')
 	sys.exit(-1)
