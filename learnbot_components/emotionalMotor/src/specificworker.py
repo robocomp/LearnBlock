@@ -308,11 +308,11 @@ class Face(threading.Thread):
         if self.t <= 1 and self.config_target is not None:
             config = self.config = getBecierConfig(self.old_config, self.config_target, self.t)
             self.t += OFFSET
-            self.drawConfig(config)
-            img = np.array(self.img)
-            img = cv2.flip(img, 1)
-            cv2.imwrite("/tmp/ebofaceimg.png",img)
-            return "/tmp/ebofaceimg.png"
+            # self.drawConfig(config)
+            # img = np.array(self.img)
+            # img = cv2.flip(img, 1)
+            # cv2.imwrite("/tmp/ebofaceimg.png",img)
+            # return "/tmp/ebofaceimg.png"
         elif self.config_target is not None:
             # with self.mutex:
             self.old_config = self.config_target

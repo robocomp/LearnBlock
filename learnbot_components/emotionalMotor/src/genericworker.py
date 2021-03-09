@@ -30,7 +30,7 @@ preStr = "-I/opt/robocomp/interfaces/ -I"+ROBOCOMP+"/interfaces/ --all "+ROBOCOM
 Ice.loadSlice(preStr+"CommonBehavior.ice")
 import RoboCompCommonBehavior
 
-from learnbot_components import pathInterfaces
+pathInterfaces = os.path.join(os.path.dirname(__file__),'../../interfaces')
 additionalPathStr = ""
 icePaths = [ '/home/pi/learnbot/interfaces/', pathInterfaces]
 try:
