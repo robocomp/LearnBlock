@@ -225,15 +225,52 @@ class Face(threading.Thread):
         sec = randint(2,6)
         while not self.stopped:
             time.sleep(0)
+            pestaneoFlag = False
             #print(time.time() - start, sec)
             if time.time() - start > sec:
-                self.pestaneo()
+                #self.pestaneo()
+                pestaneoFlag = True
                 sec = randint(2, 6)
                 start = time.time()
                 # print("entro")
+            self.moveFace(pestaneoFlag, True)
             path = self.render()
             if path is not None:
                 self.display_proxy.setImageFromFile(path)
+
+    def moveFace(self, pestaneoFlag, moveMouthFlag):
+        if not pestaneoFlag and not moveMouthFlag:
+            return
+
+        configaux = copy.copy(self.config)
+
+        # PESTAÑEO
+        value1 = copy.copy((configaux["ojoD"]["Radio2"]["Value"]))
+        value2 = copy.copy((configaux["ojoI"]["Radio2"]["Value"]))
+
+        # BOCA
+        value2x = copy.copy((configaux["boca"]["P2"]["x"]))
+        value2y = copy.copy((configaux["boca"]["P2"]["y"]))
+
+        value5x = copy.copy((configaux["boca"]["P5"]["x"]))
+        value5y = copy.copy((configaux["boca"]["P5"]["y"]))
+
+        for t in [(x+1)/5. for x in range(5)] + sorted([(x)/5. for x in range(5)], reverse=True):
+
+            if pestaneoFlag:
+                configaux["ojoD"]["Radio2"]["Value"] = bezier((value1,0), (0,0), t)[0]
+                configaux["ojoI"]["Radio2"]["Value"] = bezier((value2, 0), (0, 0), t)[0]
+
+            if moveMouthFlag:
+                configaux["boca"]["P2"]["y"] = bezier((value2x, value2y), (value2x, value2y - 15), t)[1]         
+                configaux["boca"]["P5"]["y"] = bezier((value5x, value5y), (value5x, value5y + 15), t)[1]                       
+            # config1 = getBecierConfig(configaux, configPestaneo, t)
+            self.drawConfig(configaux)
+            img = np.array(self.img)
+            img = cv2.flip(img, 1)
+            cv2.imwrite("/tmp/ebofaceimg.png", img)
+            self.display_proxy.setImageFromFile("/tmp/ebofaceimg.png")
+
 
     def pestaneo(self):
         configaux = copy.copy(self.config)
@@ -279,7 +316,7 @@ class Face(threading.Thread):
         elif self.config_target is not None:
             # with self.mutex:
             self.old_config = self.config_target
-            self.config_target = None
+        #     self.config_target = None
         return None
 
     def renderPupila(self, points):
