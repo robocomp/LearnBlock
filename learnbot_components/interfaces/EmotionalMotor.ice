@@ -19,6 +19,7 @@ module RoboCompEmotionalMotor
 		void expressAnger ();
 		void expressDisgust ();
 		void expressNeutral ();
+		void talking (bool setTalk);
 	};
 };
 

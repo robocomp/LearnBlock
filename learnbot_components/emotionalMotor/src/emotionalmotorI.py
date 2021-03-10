@@ -84,3 +84,5 @@ class EmotionalMotorI(EmotionalMotor):
 		return self.worker.expressDisgust()
 	def expressJoy(self, c):
 		return self.worker.expressJoy()
+	def talking(self, t):
+		self.worker.talking(t)

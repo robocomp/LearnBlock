@@ -219,6 +219,7 @@ class Face(threading.Thread):
         self.config_target = DEFAULTCONFIGNEUTRAL
         self.display_proxy = display_proxy
         self.stopped = False
+        self.isTalking = False
 
     def run(self):
         start = time.time()
@@ -233,7 +234,7 @@ class Face(threading.Thread):
                 sec = randint(2, 6)
                 start = time.time()
                 # print("entro")
-            self.moveFace(pestaneoFlag, True)
+            self.moveFace(pestaneoFlag, self.isTalking)
             path = self.render()
             if path is not None:
                 self.display_proxy.setImageFromFile(path)
@@ -376,6 +377,10 @@ class Face(threading.Thread):
         self.old_config = self.config
         self.t = 0.06666666666666667
         # self.start()
+    
+    def setTalking(self, t):
+        self.isTalking = t
+
 
     def stop(self):
         self.stopped = True
@@ -480,4 +485,7 @@ class SpecificWorker(GenericWorker):
 	def expressNeutral(self):
 		self.face.setConfig(self.configEmotions["Neutral"])
 		# self.display_proxy.setImageFromFile("/home/robocomp/learnbot/learnbot_components/emotionalMotor/imgs/frameBuffer/SinEmocion2.fb")
+
+	def talking(self, t):
+		self.face.setTalking(t)
 
