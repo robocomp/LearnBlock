@@ -118,12 +118,12 @@ class Client(Thread, metaclass=MetaClient):
             except Exception as e:
                 self.__apriltagRunning = False
 
-            try:
-                subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
-                self.__emotionRecRunning = True
-            except Exception as e:
-                self.__emotionRecRunning = False
-
+            # try:
+            #     subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
+            #     self.__emotionRecRunning = True
+            # except Exception as e:
+            #     self.__emotionRecRunning = False
+            self.__emotionRecRunning = False
             # Remote object connection for EmotionRecognition
             if self.__emotionRecRunning:
                 self.__emotionrecognition_proxy = connectComponent("emotionrecognition:tcp -h localhost -p 10006", RoboCompEmotionRecognition.EmotionRecognitionPrx)

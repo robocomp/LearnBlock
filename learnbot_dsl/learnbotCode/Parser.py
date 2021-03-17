@@ -727,7 +727,7 @@ BLOQUEWHENCOND = (
 class Activate(Node):
     def __init__(self, src, start, tokens):
         super().__init__(src, start, tokens)
-        self.name = tokens[0]
+        self.name = tokens[0].name
 
     def to_python(self, gen, *_):
         return f'state_{self.name} = True'
@@ -735,7 +735,7 @@ class Activate(Node):
 class Deactivate(Node):
     def __init__(self, src, start, tokens):
         super().__init__(src, start, tokens)
-        self.name = tokens[0]
+        self.name = tokens[0].name
 
     def to_python(self, gen, *_):
         return f'state_{self.name} = False'
@@ -1046,6 +1046,7 @@ class Typechecker(Context):
         # so we won't assume every variable usage is global (although we'll
         # make it happen for now). Future-proofing!
         instance.globals = {var: ([], True) for var in tree.used_vars}
+        print("GLOBALS", instance.globals)
         tree.typecheck(instance)
 
         return instance.mismatches
@@ -1078,7 +1079,7 @@ def parserLearntBotCode(inputFile, outputFile, client_name):
 
         try:
             output = Parser.parse_str(code)
-            mismatches = Typechecker.check(output)
+            mismatches = [] #Typechecker.check(output)
 
             text = elapsedTimeFunction.replace("<TABHERE>", '\t')
             text += signalHandlerFunction.replace("<TABHERE>", '\t')
@@ -1132,7 +1133,7 @@ def parserLearntBotCodeFromCode(code, name_client):
 
     try:
         output = Parser.parse_str(code)
-        mismatches = Typechecker.check(output)
+        mismatches = [] #Typechecker.check(output)
 
         text = elapsedTimeFunction.replace("<TABHERE>", '\t')
         text += signalHandlerFunction.replace("<TABHERE>", '\t')

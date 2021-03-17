@@ -354,6 +354,14 @@ class Robot(Client):
         goal.name = 'servo'
         goal.position = -math.radians(_angle)
         self.jointmotor_proxy.setPosition(goal)
+        
+    def __detectAprilTags(self):        
+        if self.cap.isOpened():
+            key = "REAL_CAMERA"
+        else:
+            key = "ROBOT"
+        return super().__detectAprilTags(_keyCam=key)
+
 
     def getEmotions(self):
         if self.cap.isOpened():
