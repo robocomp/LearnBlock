@@ -637,8 +637,6 @@ class When(Node):
     def to_python(self, gen, *_):
         name = self.name.to_python(gen)
 
-        print(name, self.used_vars)
-
         if name != 'start':
             output = f'{name}_start = time.time()\n'
             output += gen.tabs() + f'state_{name} = False\n'
@@ -680,11 +678,11 @@ class When(Node):
 
         if name != 'start':
             output += gen.tabs() + f'time_{name} = time.time() - {name}_start\n'
+            gen.dedent()
             output += gen.tabs() + f'if not state_{name}:\n'
 
             gen.indent()
             output += gen.tabs() + f'time_{name} = 0\n'
-            gen.dedent()
             gen.dedent()
 
         gen.dedent()
@@ -731,6 +729,11 @@ class Activate(Node):
 
     def to_python(self, gen, *_):
         return f'state_{self.name} = True'
+    
+    @property
+    def used_vars(self):
+        return {f'state_{self.name}'}
+
 
 class Deactivate(Node):
     def __init__(self, src, start, tokens):
@@ -739,6 +742,11 @@ class Deactivate(Node):
 
     def to_python(self, gen, *_):
         return f'state_{self.name} = False'
+
+    @property
+    def used_vars(self):
+        return {f'state_{self.name}'}
+
 
 ACTIVATE = (
     Suppress(Literal('activate')).addParseAction(lambda: Node.set_last_statement(Activate))
