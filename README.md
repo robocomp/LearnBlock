@@ -21,9 +21,25 @@ Among other features, LearnBlock includes the following:
 
 # Installation
 
-LearnBlock can be installed from PyPi or from sources. To install the last release of LearnBlock, you can follow the steps described in [https://pypi.org/project/learnblock/](https://pypi.org/project/learnblock/)
+LearnBlock can be installed from PyPi or from sources. 
 
-If you want to install LearnBlock from sources, the following packages must be installed:
+## If you want to install LearnBlock from Pypi:
+
+Before installing LearnBlock, some dependencies must be satisfied as follows:
+    
+    sudo apt install cmake
+    
+To use all the features of LearnBlock, you will also need to install additional software by executing the following command:
+
+    sudo apt install python3-zeroc-ice
+
+Then, you can easily install LearnBlock by running the following command:
+
+    sudo pip3 install learnblock
+
+The first time you execute LearnBlock, you will be asked for the creation of a workspace directory, where your projects will be saved by default. Once you specify a directory, you can start using LearnBlock and create programs for your favorite robot.
+
+## If you want to install LearnBlock from sources, the following packages must be installed:
 
     sudo apt update
 
