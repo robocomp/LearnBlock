@@ -120,7 +120,7 @@ def on_message(client, userdata, message):
     except:
         pass
 
-languageCategories = ["control","operator","variables","functions"]
+functionsCategories = ["control","operator","variables","functions"]
 
 text4Categories = {"ES": {"motor": "Motor",
                 "perceptual": "Percepción",
@@ -222,7 +222,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.createFunctionsPushButton.clicked.connect(self.newUserFunctions)
         self.ui.deleteFuntionsPushButton.clicked.connect(self.deleteUserFunctions)
         self.ui.savepushButton.clicked.connect(self.saveInstance)
-        self.ui.useEventscheckBox.stateChanged.connect(lambda: self.avtiveEvents(self.ui.useEventscheckBox.isChecked()))
+        self.ui.useEventscheckBox.stateChanged.connect(lambda: self.activeEvents(self.ui.useEventscheckBox.isChecked()))
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
         self.ui.SearchlineEdit.textChanged.connect(lambda: self.searchUpdate(self.ui.SearchlineEdit.text()))
         self.ui.addClientPushButton.clicked.connect(self.addClient)
@@ -357,7 +357,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.updateOpenRecent()
         self.updateClients()
         self.load_blockConfigurations(self.confBlocksPath)
-        self.avtiveEvents(False)
+        self.activeEvents(False)
         self.pmlast = None
         self.cameraScene = QtWidgets.QGraphicsScene()
         self.ui.cameragraphicsView.setScene(self.cameraScene)
@@ -1057,7 +1057,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             client.connect(configSSH["ip"], port=22, username=configSSH["user"], password=configSSH["pass"])
             stdin, stdout, stderr = client.exec_command("sudo reboot 0")
 
-    def avtiveEvents(self, isChecked):
+    def activeEvents(self, isChecked):
         self.scene.useEvents(isChecked)
         self.ui.addWhenpushButton.setEnabled(isChecked)
         if not self.scene.thereisMain() and (self.mainButton is not None):
@@ -1159,7 +1159,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         lang = getLanguage()
         self.visibleBlockLists = {}
         for cat in self.blocksInCategories.keys():
-            if not cat in languageCategories:
+            if not cat in functionsCategories:
                 newList = []
                 for b, visible in self.blocksInCategories[cat]:
                     if "languages" in b.keys():
@@ -1192,7 +1192,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         blocks_path = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr("Select Directory"), str(pathlib.Path.home()), QtWidgets.QFileDialog.ShowDirsOnly | QtWidgets.QFileDialog.DontResolveSymlinks)
         if blocks_path!="":
             for cat in self.blocksInCategories.keys():
-                if not cat in languageCategories:
+                if not cat in functionsCategories:
                     configFile = os.path.join(blocks_path, cat+".conf")
                     saveConfig = True
                     if os.path.isfile(configFile):
@@ -1223,7 +1223,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             table.setRowCount(0)
         kBlocks = list(self.dicTables.keys())
         for k in kBlocks:
-            if not k in languageCategories:
+            if not k in functionsCategories:
                 indTab = self.ui.functions.indexOf(self.dicTables[k])
                 self.ui.functions.removeTab(indTab)
                 del self.dicTables[k]
