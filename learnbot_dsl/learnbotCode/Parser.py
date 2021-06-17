@@ -595,7 +595,7 @@ class While(Node):
         gen.indent()
 
         for node in self.body:
-            output += gen.tabs() + node.to_python(gen)
+            output += gen.tabs() + node.to_python(gen) + '\n'
 
         gen.dedent()
 
