@@ -96,6 +96,7 @@ class Client(Thread, metaclass=MetaClient):
         self.__Gyroscopes = {}
         self.__JointMotors = {}
         self.__Leds = {}
+        self.__RGBLeds = {}
         self.__Speakers = {}
         # Variables of AprilTag
         self.__apriltag_current_exist = False
@@ -215,9 +216,17 @@ class Client(Thread, metaclass=MetaClient):
         if _key in self.__Leds:
             raise Exception("The key " + _key + "already exist")
         elif not isinstance(_Led, Led):
-            raise Exception("_JointMotor is of type "+ type(_Led) + " and must be of type Led")
+            raise Exception("_Led is of type "+ type(_Led) + " and must be of type Led")
         else:
             self.__Leds[_key] = _Led
+
+    def addRGBLed(self, _Led, _key = "ROBOT"):
+        if _key in self.__RGBLeds:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Led, RGBLed):
+            raise Exception("_RGBLed is of type "+ type(_Led) + " and must be of type Led")
+        else:
+            self.__RGBLeds[_key] = _Led
 
     def addSpeaker(self, _Speaker, _key = "ROBOT"):
 
@@ -325,6 +334,15 @@ class Client(Thread, metaclass=MetaClient):
         if _keyLed in self.__Leds:
             time.sleep(0)
             self.__Leds.get(_keyLed).setState(_status)
+        else:
+            print(_keyLed," no esta registrada")
+
+    def setLedColorState(self, _r,_g,_b, _keyLed = "ROBOT"):
+        if _keyLed in self.__RGBLeds:
+            time.sleep(0)
+            self.__RGBLeds.get(_keyLed).setColorState(_r,_g,_b)
+        else:
+            print(_keyLed," no esta registrada")
 
     def getAcelerometer(self, _keyAcel = "ROBOT"):
         if _keyAcel in self.__Acelerometers:
