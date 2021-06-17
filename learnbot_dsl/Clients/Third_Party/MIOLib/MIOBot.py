@@ -159,14 +159,16 @@ class MIOBot():
     
     '''
     Desc:Enviará el comando para hacer sonar el buzzer con sonidos predefinidos:
-        tones ={"Do":2,"Re":3,"Mi":4,"Fa":5,"Sol":6,"La":7,"Si":8,"Warm":9,"Like":8,
-                "Curious":11,"Surprised":12,"Angry":13,"Tired":15,"Mio!":16,
-                "Doreaemon":17,"London bridge":18, "Merry christmas":19,"Smurfs":20,"Stop":21}
+        "Do","Re","Mi","Fa","Sol","La","Si","Warm","Like","Curious","Surprised","Angry","Tired","Mio!",
+        "Doreaemon","London bridge", "Merry christmas","Smurfs","Stop"
     Pre: Sonido in tones
     '''
     def doBuzzer(self,sonido):
-        print("write")
-        self.__writePackage( bytearray([0xff,0x55,0x5,0x0,0x2,0xe,0x0,sonido]))
+        print("sound: ",sonido)
+        tones ={"Do":2,"Re":3,"Mi":4,"Fa":5,"Sol":6,"La":7,"Si":8,"Warm":9,"Like":8,
+                "Curious":11,"Surprised":12,"Angry":13,"Tired":15,"Mio!":16,
+                "Doreaemon":17,"London bridge":18, "Merry christmas":19,"Smurfs":20,"Stop":21}
+        self.__writePackage( bytearray([0xff,0x55,0x5,0x0,0x2,0xe,0x0,tones.get(sonido)]))
     
     '''
     Desc:Enviará el comando para escribir word en la matriz de leds, 
@@ -392,6 +394,7 @@ class MIOBot():
         else:
             m=getattr(obj,callback)
             self.__selectors["callback_"+str(extID)] = m
+
     def float2bytes(self,fval):
         val = struct.pack("f",fval)
         return [ord(val[0]),ord(val[1]),ord(val[2]),ord(val[3])]

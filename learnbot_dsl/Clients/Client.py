@@ -98,6 +98,7 @@ class Client(Thread, metaclass=MetaClient):
         self.__Leds = {}
         self.__RGBLeds = {}
         self.__Speakers = {}
+        self.__Matrix = {}
         # Variables of AprilTag
         self.__apriltag_current_exist = False
         self.__listAprilIDs = []
@@ -236,6 +237,15 @@ class Client(Thread, metaclass=MetaClient):
             raise Exception("_Speaker is of type "+ type(_Speaker) + " and must be of type Speaker")
         else:
             self.__Speakers[_key] = _Speaker
+    
+    def addMatrix(self, _Matrix, _key = "ROBOT"):
+
+        if _key in self.__Matrix:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Matrix, Matrix):
+            raise Exception("_Matrix is of type "+ type(_Matrix) + " and must be of type Speaker")
+        else:
+            self.__Matrix[_key] = _Matrix
 
 
     def __readDevices(self):
@@ -334,15 +344,26 @@ class Client(Thread, metaclass=MetaClient):
         if _keyLed in self.__Leds:
             time.sleep(0)
             self.__Leds.get(_keyLed).setState(_status)
-        else:
-            print(_keyLed," no esta registrada")
 
     def setLedColorState(self, _r,_g,_b, _keyLed = "ROBOT"):
         if _keyLed in self.__RGBLeds:
             time.sleep(0)
             self.__RGBLeds.get(_keyLed).setColorState(_r,_g,_b)
-        else:
-            print(_keyLed," no esta registrada")
+
+    def setNumber(self,_number,_shine, _keyMatrix = "ROBOT"):
+        if _keyMatrix in self.__Matrix:
+            time.sleep(0)
+            self.__Matrix.get(_keyMatrix).setNumber(_number,_shine)
+
+    def setText(self,_text,_shine,_column, _keyMatrix = "ROBOT"):
+        if _keyMatrix in self.__Matrix:
+            time.sleep(0)
+            self.__Matrix.get(_keyMatrix).setText(_text,_shine,_column)
+
+    def setState(self,_icon,_shine, _keyMatrix = "ROBOT"):
+        if _keyMatrix in self.__Matrix:
+            time.sleep(0)
+            self.__Matrix.get(_keyMatrix).setState(_icon,_shine)
 
     def getAcelerometer(self, _keyAcel = "ROBOT"):
         if _keyAcel in self.__Acelerometers:

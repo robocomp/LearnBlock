@@ -27,19 +27,21 @@ class Robot(Client):
         #Añadiendo dispositivos
         print("Registrando dispositivos")
         self.addBase(Base(_callFunction=self.deviceBaseMove))
-       # self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
+        #self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedDown),"Down")
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedLeft),"Left")
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedCentre),"Centre")
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedRight),"Right")
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedUp),"Up")
+        self.addSpeaker(Speaker(_sendAudio=self.devicePlaySound))
+        self.addMatrix(Matrix(_setState=self.deviceMatrixIcon,_setNumber=self.deviceMatrixNum,_setText=self.deviceMatrixText))
         
         #self.addGroundSensors(GroundSensors(_readFunction=deviceReadGroundSensors))
         print("Dispositivos Registrados")
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB2")
+        self.bot.startWithSerial("/dev/ttyUSB1")
         time.sleep(4)
     def disconnect(self):
         self.bot.doMove(0,0) #parar la base
@@ -51,10 +53,8 @@ class Robot(Client):
         SRot_rad = math.radians(SRot)
         rot=0
         if SRot != 0.:
-                        
             rot = SRot_rad*L/2
 
-        
         l_wheel_speed = SAdv * CONSVEL+rot*CONSGIRO
         r_wheel_speed = SAdv * CONSVEL-rot*CONSGIRO
         self.bot.doMove(round(l_wheel_speed),round(r_wheel_speed))
@@ -76,6 +76,19 @@ class Robot(Client):
     def deviceRGBLedUp(self, r, g, b):
         self.bot.doRGBLedOnBoard(5,r,g,b)
 
+    def devicePlaySound(self,sound):
+        self.bot.doBuzzer(sound)
+
+    def deviceMatrixNum(self,number,shine):
+        print(number, " on matrix")
+        self.bot.doMatrixNumber(1,number,shine)
+
+    def deviceMatrixText(self,text,shine,column):
+        self.bot.doMatrixWord(1,text,column,shine)
+
+    def deviceMatrixIcon(self,routeIcon,shine):
+        pass
+
     def deviceReadGroundSensors(self):
         self.bot.requestLineFollower(self.bot,3,callbackGroundSensor)
         return{"left": 100 if bin(ground)[0]==1 else 0,  
@@ -85,8 +98,8 @@ class Robot(Client):
     def deviceReadSonar(self):  
         self.bot.requestUltrasonicSensor(2,callbackSonar)
         time.sleep(0.1)
-        print( distance)
-        return {"front": [ distance],  # The values must be in mm
+        print(distance)
+        return {"front": [distance],  # The values must be in mm
                 "left": [2000],
                 "right": [2000],
                 "back": [2000]}

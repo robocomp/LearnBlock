@@ -8,11 +8,12 @@ from learnbot_dsl.Clients.Devices.JointMotor import JointMotor
 from learnbot_dsl.Clients.Devices.Display import Display
 from learnbot_dsl.Clients.Devices.Led import Led, LedStatus, RGBLed
 from learnbot_dsl.Clients.Devices.Speaker import Speaker
+from learnbot_dsl.Clients.Devices.Matrix import Matrix
 
 from enum import Enum
 
 
-__all__ = ['Display', 'Base', 'DistanceSensors', 'GroundSensors', 'Gyroscope', 'Acelerometer', 'Camera', 'Emotions', 'JointMotor', 'Speaker', 'Led', 'RGBLed', 'LedStatus']
+__all__ = ['Display', 'Base', 'DistanceSensors', 'GroundSensors', 'Gyroscope', 'Acelerometer', 'Camera', 'Emotions', 'JointMotor', 'Speaker', 'Led', 'RGBLed', 'LedStatus','Matrix']
 
 class Emotions(Enum):
     NoneEmotion = -1
