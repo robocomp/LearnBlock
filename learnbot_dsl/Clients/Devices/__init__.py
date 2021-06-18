@@ -9,11 +9,11 @@ from learnbot_dsl.Clients.Devices.Display import Display
 from learnbot_dsl.Clients.Devices.Led import Led, LedStatus, RGBLed
 from learnbot_dsl.Clients.Devices.Speaker import Speaker
 from learnbot_dsl.Clients.Devices.Matrix import Matrix
-
+from learnbot_dsl.Clients.Devices.MP3 import MP3
 from enum import Enum
 
 
-__all__ = ['Display', 'Base', 'DistanceSensors', 'GroundSensors', 'Gyroscope', 'Acelerometer', 'Camera', 'Emotions', 'JointMotor', 'Speaker', 'Led', 'RGBLed', 'LedStatus','Matrix']
+__all__ = ['Display', 'Base', 'DistanceSensors', 'GroundSensors', 'Gyroscope', 'Acelerometer', 'Camera', 'Emotions', 'JointMotor', 'Speaker', 'Led', 'RGBLed', 'LedStatus','Matrix','MP3']
 
 class Emotions(Enum):
     NoneEmotion = -1

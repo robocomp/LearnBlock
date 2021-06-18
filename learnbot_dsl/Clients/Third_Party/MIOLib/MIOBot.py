@@ -251,29 +251,32 @@ class MIOBot():
     '''
     Desc:Enviará el comando para interactuar con el reproductor        
         port:Puerto conexionado en la placa mediante el rj12
-        action={"Play":1,"Previous":4,"Next":3,"Stop":0xe,"Pause":0xf}
+        action: "Play","Previous","Next","Stop","Pause"
     Pre:0<port<5 && action en la lista
     '''
-    def doMusicAction(self,port, action):      
-        self.__writePackage(bytearray([0xff,0x55,0x5,0x0,0x2,0x21,port,action]))
+    def doMusicAction(self,port, action): 
+        diAction={"Play":1,"Previous":4,"Next":3,"Stop":0xe,"Pause":0xf}     
+        self.__writePackage(bytearray([0xff,0x55,0x5,0x0,0x2,0x21,port,diAction.get(action)]))
     
     '''
     Desc:Enviará el comando para modificar el EQ        
         port:Puerto conexionado en la placa mediante el rj12
-        EQ={"No":0,"Pop":1,"Rock":2,"Jazz":3,"Classic":4,"Bass":5}}
+        EQ:"No","Pop","Rock","Jazz","Classic","Bass"
     Pre:0<port<5 && EQ en la lista
     '''
-    def doMusicEQ(self,port, EQ):      
-        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,port,0x32,EQ]))    
+    def doMusicEQ(self,port, EQ):   
+        diEQ={"No":0,"Pop":1,"Rock":2,"Jazz":3,"Classic":4,"Bass":5}
+        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,port,0x32,diEQ.get(EQ)]))    
 
     '''
     Desc:Enviará el comando para modificar el orden de reproducción de archivos       
         port:Puerto conexionado en la placa mediante el rj12
-        typeloop={"Loop all":0,"Loop folder":1,"Loop single":2,"Ramdom":3,"Single":4}
+        type: "Loop all","Loop folder","Loop single","Ramdom","Single"
     Pre:0<port<5 && typeloop en la lista
     '''
-    def doMusicLoop(self,port, typeLoop):      
-        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,port,0x33,typeLoop]))  
+    def doMusicLoop(self,port, typeLoop):
+        typeloop={"Loop all":0,"Loop folder":1,"Loop single":2,"Ramdom":3,"Single":4}     
+        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,port,0x33,typeloop.get(typeLoop)]))  
 
     def doSevSegDisplay(self,port,display):
         self.__writePackage(bytearray([0xff,0x55,0x8,0x0,0x2,0x9,port]+self.float2bytes(display)))

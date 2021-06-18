@@ -26,8 +26,8 @@ class Robot(Client):
 
         #Añadiendo dispositivos
         print("Registrando dispositivos")
+        #Actuadores
         self.addBase(Base(_callFunction=self.deviceBaseMove))
-        #self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedDown),"Down")
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedLeft),"Left")
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedCentre),"Centre")
@@ -35,32 +35,34 @@ class Robot(Client):
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedUp),"Up")
         self.addSpeaker(Speaker(_sendAudio=self.devicePlaySound))
         self.addMatrix(Matrix(_setState=self.deviceMatrixIcon,_setNumber=self.deviceMatrixNum,_setText=self.deviceMatrixText))
-        
+        self.addMP3(MP3(_sendAudio = self.deviceMP3Audio,_sendAction = self.deviceMP3Action,_modifyVolume = self.deviceMP3Volume, _modifyEQ = self.deviceMP3EQ,_modifyLoop = self.deviceMP3Loop))
+        #Sensores
+        #self.addIR(...)
+        #self.addLigth(...)
+        #self.addControlerBotom(...)
         #self.addGroundSensors(GroundSensors(_readFunction=deviceReadGroundSensors))
+        #self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         print("Dispositivos Registrados")
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB1")
+        self.bot.startWithSerial("/dev/ttyUSB3")
         time.sleep(4)
     def disconnect(self):
         self.bot.doMove(0,0) #parar la base
+        self.bot.doMusicAction(4,"Stop")
         
         
-
-    def deviceBaseMove(self, SAdv, SRot):
-    
+    ###############################ACTUADORES###########################3
+    def deviceBaseMove(self, SAdv, SRot): 
         SRot_rad = math.radians(SRot)
         rot=0
         if SRot != 0.:
             rot = SRot_rad*L/2
-
         l_wheel_speed = SAdv * CONSVEL+rot*CONSGIRO
         r_wheel_speed = SAdv * CONSVEL-rot*CONSGIRO
         self.bot.doMove(round(l_wheel_speed),round(r_wheel_speed))
-    
 
-    #############Funciones Led#################
     def deviceRGBLedDown(self, r, g, b):
         self.bot.doRGBLedOnBoard(1,r,g,b)
 
@@ -84,11 +86,47 @@ class Robot(Client):
         self.bot.doMatrixNumber(1,number,shine)
 
     def deviceMatrixText(self,text,shine,column):
+        print(text, " on matrix")
         self.bot.doMatrixWord(1,text,column,shine)
 
     def deviceMatrixIcon(self,routeIcon,shine):
-        pass
+        matriz=[]
+        fichero = open("../../Documentos/Robolab/LearnBlock/learnbot_dsl/Clients/Third_Party/MIOLib/icon/"+routeIcon+".txt", 'r')
+        i = 0
+        #Lectura de fichero y traspase a la matriz
+        for lineas in fichero:
+            if i < 8:
+                matriz.append([])
+            #Remplazamos los retornos de carro por ","
+            lineas = lineas.replace('\n', ',')
+            #Remplazamos las comillas por separadores
+            lineas_separadas = lineas.split(',')
+            #Cargamos en la matriz
+            for elemento in lineas_separadas:
+                if(elemento.isdigit()):
+                    elemento_entero = int(elemento)
+                    matriz[i].append(elemento_entero)
+            i += 1
+        print (matriz)
+        self.bot.MatrixIcon(1,matriz,shine)
 
+
+    def deviceMP3Audio(self,folder,audio):
+        self.bot.doMusicSelect(4,folder,audio)
+    
+    def deviceMP3Volume(self,volume):
+        self.bot.doMusicVol(4,volume)
+
+    def deviceMP3Action(self,action):
+        self.bot.doMusicAction(4,action)
+
+    def deviceMP3EQ(self,EQ):
+        self.bot.doMusicEQ(4,EQ)
+
+    def deviceMP3Loop(self,loop):
+        self.bot.doMusicLoop(4,loop)
+
+    ##################SENSORES############################
     def deviceReadGroundSensors(self):
         self.bot.requestLineFollower(self.bot,3,callbackGroundSensor)
         return{"left": 100 if bin(ground)[0]==1 else 0,  

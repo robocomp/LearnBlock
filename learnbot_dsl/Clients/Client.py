@@ -99,6 +99,7 @@ class Client(Thread, metaclass=MetaClient):
         self.__RGBLeds = {}
         self.__Speakers = {}
         self.__Matrix = {}
+        self.__MP3 = {}
         # Variables of AprilTag
         self.__apriltag_current_exist = False
         self.__listAprilIDs = []
@@ -243,10 +244,19 @@ class Client(Thread, metaclass=MetaClient):
         if _key in self.__Matrix:
             raise Exception("The key " + _key + "already exist")
         elif not isinstance(_Matrix, Matrix):
-            raise Exception("_Matrix is of type "+ type(_Matrix) + " and must be of type Speaker")
+            raise Exception("_Matrix is of type "+ type(_Matrix) + " and must be of type Matrix")
         else:
             self.__Matrix[_key] = _Matrix
 
+    def addMP3(self, _MP3, _key = "ROBOT"):
+
+        if _key in self.__MP3:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_MP3, MP3):
+            raise Exception("MP3 is of type "+ type(_MP3) + " and must be of type MP3")
+        else:
+            self.__MP3[_key] = _MP3
+            print("add MP3")
 
     def __readDevices(self):
         if bool(self.__Acelerometers):
@@ -364,6 +374,31 @@ class Client(Thread, metaclass=MetaClient):
         if _keyMatrix in self.__Matrix:
             time.sleep(0)
             self.__Matrix.get(_keyMatrix).setState(_icon,_shine)
+
+    def setMP3Audio(self,_folder,_audio, _keyMP3 = "ROBOT"): 
+        if _keyMP3 in self.__MP3:
+            time.sleep(0)
+            self.__MP3.get(_keyMP3).sendAudio(_folder,_audio)   
+    
+    def setMP3Action(self,_action, _keyMP3 = "ROBOT"):
+        if _keyMP3 in self.__MP3:
+            time.sleep(0)
+            self.__MP3.get(_keyMP3).sendAction(_action)   
+    
+    def setMP3Volume(self,_volume, _keyMP3 = "ROBOT"):
+        if _keyMP3 in self.__MP3:
+            time.sleep(0)
+            self.__MP3.get(_keyMP3).modifyVolume(_volume)   
+
+    def setMP3EQ(self,_EQ, _keyMP3 = "ROBOT"):
+        if _keyMP3 in self.__MP3:
+            time.sleep(0)
+            self.__MP3.get(_keyMP3).modifyEQ(_EQ)   
+
+    def setMP3Loop(self,_loop, _keyMP3 = "ROBOT"):
+        if _keyMP3 in self.__MP3:
+            time.sleep(0)
+            self.__MP3.get(_keyMP3).modifyLoop(_loop)  
 
     def getAcelerometer(self, _keyAcel = "ROBOT"):
         if _keyAcel in self.__Acelerometers:
