@@ -1,4 +1,8 @@
 
+from multiprocessing import Value
+from signal import ITIMER_REAL
+
+from numpy import append
 from learnbot_dsl.Clients.Client import *
 from learnbot_dsl.Clients.Devices import *
 from learnbot_dsl.functions import getFuntions
@@ -19,9 +23,12 @@ class Robot(Client):
     def __init__(self):
         Client.__init__(self, _miliseconds=100)
         
-        self.bot=MIOBot()
-        self.groundSensor=0
-        self.SonarSensor=0
+        self.bot=MIOBot(self)
+        self.groundSensor={}
+        self.distanceSensor=0
+        self.lightSensor=0
+        self.IRSensor=0
+        self.controllerSensor={}
         self.connectToRobot()
 
         #Añadiendo dispositivos
@@ -37,16 +44,16 @@ class Robot(Client):
         self.addMatrix(Matrix(_setState=self.deviceMatrixIcon,_setNumber=self.deviceMatrixNum,_setText=self.deviceMatrixText))
         self.addMP3(MP3(_sendAudio = self.deviceMP3Audio,_sendAction = self.deviceMP3Action,_modifyVolume = self.deviceMP3Volume, _modifyEQ = self.deviceMP3EQ,_modifyLoop = self.deviceMP3Loop))
         #Sensores
-        #self.addIR(...)
-        #self.addLigth(...)
-        #self.addControlerBotom(...)
-        #self.addGroundSensors(GroundSensors(_readFunction=deviceReadGroundSensors))
-        #self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
+        self.addIR(IR(_readFunction=self.deviceReadIRSensor))
+        self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
+       # self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
+        self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensor))
+        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         print("Dispositivos Registrados")
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB3")
+        self.bot.startWithSerial("/dev/ttyUSB0")
         time.sleep(4)
     def disconnect(self):
         self.bot.doMove(0,0) #parar la base
@@ -91,7 +98,7 @@ class Robot(Client):
 
     def deviceMatrixIcon(self,routeIcon,shine):
         matriz=[]
-        fichero = open("../../Documentos/Robolab/LearnBlock/learnbot_dsl/Clients/Third_Party/MIOLib/icon/"+routeIcon+".txt", 'r')
+        fichero = open("/home/alfith/Documentos/Robolab/LearnBlock/learnbot_dsl/Clients/Third_Party/MIOLib/icon/"+routeIcon+".txt", 'r')
         i = 0
         #Lectura de fichero y traspase a la matriz
         for lineas in fichero:
@@ -107,8 +114,8 @@ class Robot(Client):
                     elemento_entero = int(elemento)
                     matriz[i].append(elemento_entero)
             i += 1
-        print (matriz)
-        self.bot.MatrixIcon(1,matriz,shine)
+        #print (matriz)
+        self.bot.doMatrixIcon(1,matriz,shine)
 
 
     def deviceMP3Audio(self,folder,audio):
@@ -127,54 +134,76 @@ class Robot(Client):
         self.bot.doMusicLoop(4,loop)
 
     ##################SENSORES############################
-    def deviceReadGroundSensors(self):
-        self.bot.requestLineFollower(self.bot,3,callbackGroundSensor)
-        return{"left": 100 if bin(ground)[0]==1 else 0,  
-                 "central": 100 if bin(ground)[1]==1 else 0,
-                 "right":100 if bin(ground)[2]==1 else 0}
-
-    def deviceReadSonar(self):  
-        self.bot.requestUltrasonicSensor(2,callbackSonar)
-        time.sleep(0.1)
-        print(distance)
-        return {"front": [distance],  # The values must be in mm
-                "left": [2000],
-                "right": [2000],
-                "back": [2000]}
-    '''
     def callbackSonar(self,value):
-        print (value)
         self.distanceSensor=math.trunc(float(value)*10.0) 
 
     def deviceReadSonar(self):  
-        self.bot.requestUltrasonicSensor(2,"callbackSonar",self)
+        self.bot.requestUltrasonicSensor(2,"callbackSonar")
         time.sleep(0.1)
         print( self.distanceSensor)
         return {"front": [ self.distanceSensor],  # The values must be in mm
                 "left": [2000],
                 "right": [2000],
-                "back": [2000]}
-     '''
-'''
-def callBack(method):
-    return method()   
+                "back": [2000]}   
 
-def callBack3(value):
-    return value
+    def callbackGroundSensor(self,value):
+        print(value)
+        groundSensorBin={}
+        valBin=bin(value)
+        valBin=valBin.reverse()
+        #bin() devuelve 0b... hay que rellenar los ceros que no haya
+        for x in range(3):
+            if x>=valBin-2:
+               groundSensorBin.append(0)
+            else:
+                groundSensorBin.append(valBin[x+2])
+        self.groundSensor=groundSensorBin    
 
-def callBack2(o,method):
-    m=getattr(o,method)
-    return m             
-'''
-def callbackSonar(value):
-    global distance
-    print (value)
-    distance=math.trunc(float(value)*10.0)
+    def deviceReadGroundSensor(self):  
+        self.bot.requestLineFollower(3,"callbackGroundSensor")
+        time.sleep(0.1)
+        print( self.groundSensor)
+        #cuidado porque utilizamos la funcion bin() y esta tiene en sus 
+        # dos primeras posiciones "0b"
+        return {"left": [ self.groundSensor[2]],  
+                "central": [self.groundSensor[3]],
+                "right": [self.groundSensor[4]]}  
+
+    def callbackLightSensor(self,value):
+        self.lightSensor=value
+
+    def deviceReadLightSensor(self):  
+        self.bot.requestLight("callbackLightSensor")
+        time.sleep(0.1)
+        print( self.lightSensor)
+        return self.lightSensor  
+
+    def callbackIR(self,value):
+        self.IRSensor=value
+
+    def deviceReadIRSensor(self):  
+        self.bot.requestIROnBoard("callbackIR")
+        time.sleep(0.1)
+        print( self.IRSensor)
+        return self.IRSensor 
+
+    def callbackController(self,value):
+        print(value)
+        self.controllerSensor=bin(value)
         
 
-def callbackGroundSensor(value):
-    global ground
-    ground=value
+    def deviceReadControllerSensor(self):  
+        self.bot.requestButton(4,"callbackController")
+        time.sleep(0.1)
+        print( self.controllerSensor)
+        return {"lUp": self.controllerSensor[0], 
+                "lLeft": self.controllerSensor[1],
+                "lRight": self.controllerSensor[2],
+                "lback": self.controllerSensor[3],
+                "rUp": self.controllerSensor[4], 
+                "rLeft": self.controllerSensor[5],
+                "rRight": self.controllerSensor[6],
+                "rback": self.controllerSensor[7]}              
 
 if __name__ == '__main__':
     try:

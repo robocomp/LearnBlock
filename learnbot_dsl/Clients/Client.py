@@ -100,6 +100,9 @@ class Client(Thread, metaclass=MetaClient):
         self.__Speakers = {}
         self.__Matrix = {}
         self.__MP3 = {}
+        self.__IR = {}
+        self.__LightSensors = {}
+        self.__Controllers = {}
         # Variables of AprilTag
         self.__apriltag_current_exist = False
         self.__listAprilIDs = []
@@ -256,7 +259,33 @@ class Client(Thread, metaclass=MetaClient):
             raise Exception("MP3 is of type "+ type(_MP3) + " and must be of type MP3")
         else:
             self.__MP3[_key] = _MP3
-            print("add MP3")
+
+    def addIR(self, _IR, _key = "ROBOT"):
+
+        if _key in self.__IR:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_IR, IR):
+            raise Exception("IR is of type "+ type(_IR) + " and must be of type IR")
+        else:
+            self.__IR[_key] = _IR
+
+    def addLight(self, _LightSensor, _key = "ROBOT"):
+
+        if _key in self.__LightSensors:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_LightSensor, LightSensor):
+            raise Exception("LightSensor is of type "+ type(_LightSensor) + " and must be of type LightSensor")
+        else:
+            self.__LightSensors[_key] = _LightSensor
+    
+    def addController(self, _Controller, _key = "ROBOT"):
+
+        if _key in self.__Controllers:
+            raise Exception("The key " + _key + "already exist")
+        elif not isinstance(_Controller, Controller):
+            raise Exception("Controller is of type "+ type(_Controller) + " and must be of type Controller")
+        else:
+            self.__Controllers[_key] = _Controller
 
     def __readDevices(self):
         if bool(self.__Acelerometers):
@@ -276,7 +305,15 @@ class Client(Thread, metaclass=MetaClient):
         if bool(self.__GroundSensors):
             for groundSensors in self.__GroundSensors.values():
                 groundSensors.read()
-
+        if bool(self.__IR):
+            for IR in self.__IR.values():
+                IR.read()
+        if bool(self.__LightSensors):
+            for LightSensors in self.__LightSensors.values():
+                LightSensors.read()
+        if bool(self.__Controllers):
+            for Controller in self.__Controllers.values():
+                Controller.read()
 
     def run(self):
         self.__readDevices()
@@ -299,6 +336,26 @@ class Client(Thread, metaclass=MetaClient):
         else:
             return None
 
+    def getIR(self, _keyIR="ROBOT"):
+        if _keyIR in self.__IR:
+            time.sleep(0)
+            return self.__IR[_keyIR].get()
+        else:
+            return None
+
+    def getLightSensor(self, _keyLS="ROBOT"):
+        if _keyLS in self.__LightSensor:
+            time.sleep(0)
+            return self.__LightSensor[_keyLS].get()
+        else:
+            return None
+            
+    def getController(self, _keyC="ROBOT"):
+        if _keyC in self.__Controller:
+            time.sleep(0)
+            return self.__Controller[_keyC].get()
+        else:
+            return None            
     def getGroundSensors(self, _keyGS="ROBOT"):
         if _keyGS in self.__GroundSensors:
             time.sleep(0)
