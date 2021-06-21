@@ -493,7 +493,7 @@ class LearnBlock(QtWidgets.QMainWindow):
     def undo(self):
         self.isOpen = False
         self.scene.shouldSave = False
-        if self.index is not 0:
+        if self.index != 0:
             self.index -= 1
             self.openProject(self.listBackUps[self.index], False)
         self.isOpen = True
@@ -621,7 +621,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                                                                                 self.tr('Choose a workspace directory'),
                                                                                 os.environ.get('HOME'),
                                                                                 QtWidgets.QFileDialog.ShowDirsOnly)
-                    if self.workSpace is "":
+                    if self.workSpace == "":
                         msgBox = QtWidgets.QMessageBox()
                         msgBox.setWindowTitle(self.tr("Warning"))
                         msgBox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -672,7 +672,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         newworkSpace = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose a workspace directory'),
                                                                   self.workSpace,
                                                                   QtWidgets.QFileDialog.ShowDirsOnly)
-        if newworkSpace is "":
+        if newworkSpace == "":
             return
         self.workSpace = newworkSpace
 
@@ -680,7 +680,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         newlibraryPath = QtWidgets.QFileDialog.getExistingDirectory(self, self.tr('Choose a directory for libraries'),
                                                                     self.libraryPath,
                                                                     QtWidgets.QFileDialog.ShowDirsOnly)
-        if newlibraryPath is "":
+        if newlibraryPath == "":
             return
         self.libraryPath = newlibraryPath
 
@@ -791,7 +791,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                                                           QtWidgets.QFileDialog.ShowDirsOnly)
         nameLibrary = os.path.basename(path)
         self.scene.startAllblocks()
-        if path is "":
+        if path == "":
             return
         if path not in [l[0] for l in self.listLibrary]:
             self.listLibraryWidget.append(Library(self, path))
@@ -867,6 +867,8 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.blocksToTextCode()
         self.textCodeToPython(name_Client)
         self.highlightNotification()
+        with open(os.path.join(tempfile.gettempdir(), "main_tmp.py"), "w+") as fh:
+            fh.writelines(self.ui.pythonCode.toPlainText())
 
     def btToPython(self):
         name_Client = self.ui.clientscomboBox.currentText()
@@ -886,7 +888,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def checkConnectionToBot(self, showWarning=False):
         r = os.system("ping -c 1 -W 1 " + configSSH["ip"])
-        if showWarning and r is not 0:
+        if showWarning and r != 0:
             msgBox = QtWidgets.QMessageBox()
             msgBox.setWindowTitle(self.tr("Warning"))
             msgBox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -894,7 +896,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
             msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
             msgBox.exec_()
-        return r is 0
+        return r == 0
 
     def startRobot(self):
         if self.checkConnectionToBot():
@@ -1071,7 +1073,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         currentable.clear()
         currentable.setRowCount(0)
         currentable.setColumnCount(1)
-        if len(text) is not 0:
+        if len(text) != 0:
             for button in [b for b in self.listButtons if text.lower() in b.getCurrentText().lower()]:
                 currentable.insertRow(currentable.rowCount())
                 buttonCopy = button.getCopy(currentable)
@@ -1739,7 +1741,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.addVarGui.okPushButton.clicked.connect(lambda: self.retaddVarGui(1))
 
     def retaddVarGui(self, ret):
-        if ret is 1:
+        if ret == 1:
             name = self.addVarGui.nameLineEdit.text().replace(" ", "_")
             if name == 'start':
                 msgBox = QtWidgets.QMessageBox()
@@ -1832,7 +1834,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.delVarGui.okPushButton.clicked.connect(lambda: self.retdelVarGui(1))
 
     def retdelVarGui(self, ret):
-        if ret is 1:
+        if ret == 1:
             name = self.delVarGui.listVarcomboBox.currentText()
             self.delVar(name)
         self.delVarDialgo.close()
@@ -1863,7 +1865,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.delWhenGui.okPushButton.clicked.connect(lambda: self.retdelWhenGui(1))
 
     def retdelWhenGui(self, ret):
-        if ret is 1:
+        if ret == 1:
             name = self.delWhenGui.listWhencomboBox.currentText()
             self.delWhen(name)
             self.scene.removeByNameControl(name)
@@ -1884,7 +1886,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         for n in [n for n in self.listNameWhens if n[0] == name]:
             self.listNameWhens.remove(n)
         self.scene.removeWhenByName(name)
-        if len(self.listNameWhens) is 0:
+        if len(self.listNameWhens) == 0:
             self.ui.deleteWhenpushButton.setEnabled(False)
 
     def newUserFunctions(self):
@@ -1896,7 +1898,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.userFunctionsGui.okPushButton.clicked.connect(lambda: self.retUserFunctions(1))
 
     def retUserFunctions(self, ret):
-        if ret is 1:
+        if ret == 1:
             name = self.userFunctionsGui.nameLineEdit.text()
             name = name.replace(" ", "_")
             if name == 'start':
@@ -1980,7 +1982,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.delUserFunctionsGui.okPushButton.clicked.connect(lambda: self.retdelUserFunctionsGui(1))
 
     def retdelUserFunctionsGui(self, ret):
-        if ret is 1:
+        if ret == 1:
             name = self.delUserFunctionsGui.listVarcomboBox.currentText()
             self.delUserFunction(name)
         self.delUserFunctionsDialgo.close()
