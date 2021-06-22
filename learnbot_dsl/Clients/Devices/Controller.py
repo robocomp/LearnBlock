@@ -17,7 +17,7 @@ class Controller():
 
     def read(self):
         buttonValues = self._readDevice()
-        for key in dictValues:
+        for key in buttonValues:
             self.set(key, buttonValues[key])
 
     def get(self):

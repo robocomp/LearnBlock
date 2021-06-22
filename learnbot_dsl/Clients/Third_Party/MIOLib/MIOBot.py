@@ -77,6 +77,9 @@ class MIOBot():
     
     
     def excepthook(self, exctype, value, traceback):
+        print("Excepcion",exctype)
+        print("Valor",value)
+        print("traceback",traceback)
         self.close()
         
     def start(self):
@@ -85,6 +88,7 @@ class MIOBot():
         th.start()
         
     def close(self):
+        print("Close port")
         self.device.close()
         
     def exit(self, signal, frame):
@@ -95,6 +99,7 @@ class MIOBot():
         while 1:
             if self.exiting:
                 break
+            #print("Estado del puerto en read:",self.device.isOpen())
             if self.device.isOpen():
                 n = self.device.inWaiting()
                 for i in range(n):
@@ -331,6 +336,7 @@ class MIOBot():
         self.__writePackage(bytearray([0xff,0x55,0x5,extID,0x1,0x17,port,0x0]))
 
     def onParse(self, byte):
+        #print("estado del buffer",self.buffer)
         position = 0
         value = 0    
         self.buffer+=[byte]

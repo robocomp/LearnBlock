@@ -1,5 +1,5 @@
 
-class IR():
+class Ir():
 
     __codeIR = 0
 
@@ -19,6 +19,6 @@ class IR():
             self.set(self._readDevice())
 
     def get(self):
-      return __codeIR
+        return self.__codeIR
 
 

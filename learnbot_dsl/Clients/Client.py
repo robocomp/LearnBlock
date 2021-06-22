@@ -264,7 +264,7 @@ class Client(Thread, metaclass=MetaClient):
 
         if _key in self.__IR:
             raise Exception("The key " + _key + "already exist")
-        elif not isinstance(_IR, IR):
+        elif not isinstance(_IR, Ir):
             raise Exception("IR is of type "+ type(_IR) + " and must be of type IR")
         else:
             self.__IR[_key] = _IR
@@ -300,17 +300,17 @@ class Client(Thread, metaclass=MetaClient):
             self.__apriltag_current_exist = False
             self.__emotion_current_exist = False
         if bool(self.__DistanceSensors):
-            for distSensors in self.__DistanceSensors.values():
-                distSensors.read()
+            for distSensor in self.__DistanceSensors.values():
+                distSensor.read()
         if bool(self.__GroundSensors):
-            for groundSensors in self.__GroundSensors.values():
-                groundSensors.read()
+            for groundSensor in self.__GroundSensors.values():
+                groundSensor.read()
         if bool(self.__IR):
-            for IR in self.__IR.values():
-                IR.read()
+            for ir in self.__IR.values():
+                ir.read()
         if bool(self.__LightSensors):
-            for LightSensors in self.__LightSensors.values():
-                LightSensors.read()
+            for LightSensor in self.__LightSensors.values():
+                LightSensor.read()
         if bool(self.__Controllers):
             for Controller in self.__Controllers.values():
                 Controller.read()
@@ -344,16 +344,16 @@ class Client(Thread, metaclass=MetaClient):
             return None
 
     def getLightSensor(self, _keyLS="ROBOT"):
-        if _keyLS in self.__LightSensor:
+        if _keyLS in self.__LightSensors:
             time.sleep(0)
-            return self.__LightSensor[_keyLS].get()
+            return self.__LightSensors[_keyLS].get()
         else:
             return None
             
     def getController(self, _keyC="ROBOT"):
-        if _keyC in self.__Controller:
+        if _keyC in self.__Controllers:
             time.sleep(0)
-            return self.__Controller[_keyC].get()
+            return self.__Controllers[_keyC].get()
         else:
             return None            
     def getGroundSensors(self, _keyGS="ROBOT"):

@@ -16,7 +16,7 @@ K = 35
 L = 110
 MAXSPEED = 1000
 CONSVEL = 0.615
-CONSGIRO = 0.878
+CONSGIRO = 0.748
 
 
 class Robot(Client):
@@ -29,6 +29,7 @@ class Robot(Client):
         self.lightSensor=0
         self.IRSensor=0
         self.controllerSensor={}
+        self.callback=False
         self.connectToRobot()
 
         #Añadiendo dispositivos
@@ -44,22 +45,23 @@ class Robot(Client):
         self.addMatrix(Matrix(_setState=self.deviceMatrixIcon,_setNumber=self.deviceMatrixNum,_setText=self.deviceMatrixText))
         self.addMP3(MP3(_sendAudio = self.deviceMP3Audio,_sendAction = self.deviceMP3Action,_modifyVolume = self.deviceMP3Volume, _modifyEQ = self.deviceMP3EQ,_modifyLoop = self.deviceMP3Loop))
         #Sensores
-        self.addIR(IR(_readFunction=self.deviceReadIRSensor))
+        self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
         self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
-       # self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
+        self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensor))
         self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         print("Dispositivos Registrados")
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB0")
+        self.bot.startWithSerial("/dev/ttyUSB1")
         time.sleep(4)
     def disconnect(self):
         self.bot.doMove(0,0) #parar la base
         self.bot.doMusicAction(4,"Stop")
         
-        
+    
+
     ###############################ACTUADORES###########################3
     def deviceBaseMove(self, SAdv, SRot): 
         SRot_rad = math.radians(SRot)
@@ -135,11 +137,16 @@ class Robot(Client):
 
     ##################SENSORES############################
     def callbackSonar(self,value):
-        self.distanceSensor=math.trunc(float(value)*10.0) 
+        print("efectuando callback")
+        self.distanceSensor=value
+        self.callback=False
 
-    def deviceReadSonar(self):  
+    def deviceReadSonar(self):
+        self.callback=True  
         self.bot.requestUltrasonicSensor(2,"callbackSonar")
-        time.sleep(0.1)
+        while self.callback:
+            sleep(0.01)
+        self.distanceSensor=math.trunc(float(self.distanceSensor)*10.0) 
         print( self.distanceSensor)
         return {"front": [ self.distanceSensor],  # The values must be in mm
                 "left": [2000],
@@ -147,63 +154,86 @@ class Robot(Client):
                 "back": [2000]}   
 
     def callbackGroundSensor(self,value):
-        print(value)
-        groundSensorBin={}
-        valBin=bin(value)
-        valBin=valBin.reverse()
-        #bin() devuelve 0b... hay que rellenar los ceros que no haya
-        for x in range(3):
-            if x>=valBin-2:
-               groundSensorBin.append(0)
-            else:
-                groundSensorBin.append(valBin[x+2])
-        self.groundSensor=groundSensorBin    
+        print("efectuando callback")
+        self.groundSensor=value
+        self.callback=False
 
-    def deviceReadGroundSensor(self):  
+    def deviceReadGroundSensor(self):
+        IDGround=["left","central","right"]  
+        dicGround={}
+        self.callback=True
         self.bot.requestLineFollower(3,"callbackGroundSensor")
-        time.sleep(0.1)
+        while self.callback:
+            sleep(0.01)
+        self.groundSensor=intAbin( self.groundSensor,3)
         print( self.groundSensor)
-        #cuidado porque utilizamos la funcion bin() y esta tiene en sus 
-        # dos primeras posiciones "0b"
-        return {"left": [ self.groundSensor[2]],  
-                "central": [self.groundSensor[3]],
-                "right": [self.groundSensor[4]]}  
+        for i,k in enumerate(IDGround):
+            if self.groundSensor[i]=='1':
+                dicGround[k]=100
+            else:
+                dicGround[k]=0
+        print(dicGround) 
+        return dicGround 
 
     def callbackLightSensor(self,value):
+        print("efectuando callback")
         self.lightSensor=value
+        self.callback=False
 
-    def deviceReadLightSensor(self):  
+    def deviceReadLightSensor(self): 
+        self.callback=True 
         self.bot.requestLight("callbackLightSensor")
-        time.sleep(0.1)
+        while self.callback:
+            sleep(0.01)
         print( self.lightSensor)
         return self.lightSensor  
 
     def callbackIR(self,value):
+        print("efectuando callback")
         self.IRSensor=value
+        self.callback=False
 
     def deviceReadIRSensor(self):  
+        self.callback=True 
         self.bot.requestIROnBoard("callbackIR")
-        time.sleep(0.1)
+        while self.callback:
+            sleep(0.01)
         print( self.IRSensor)
         return self.IRSensor 
 
     def callbackController(self,value):
-        print(value)
-        self.controllerSensor=bin(value)
-        
+        print("efectuando callback")
+        self.controllerSensor=value
+        self.callback=False
 
     def deviceReadControllerSensor(self):  
+        IDButton=["rback","rRight","rLeft","rUp","lback","lRight","lLeft","lUp"]
+        dicButton={}
+        self.callback=True 
         self.bot.requestButton(4,"callbackController")
-        time.sleep(0.1)
+        while self.callback:
+            sleep(0.01)    
+        self.controllerSensor=intAbin( self.controllerSensor,8)
         print( self.controllerSensor)
-        return {"lUp": self.controllerSensor[0], 
-                "lLeft": self.controllerSensor[1],
-                "lRight": self.controllerSensor[2],
-                "lback": self.controllerSensor[3],
-                "rUp": self.controllerSensor[4], 
-                "rLeft": self.controllerSensor[5],
-                "rRight": self.controllerSensor[6],
-                "rback": self.controllerSensor[7]}              
+        for i,k in enumerate(IDButton):
+            dicButton[k]=bool(self.controllerSensor[i])
+        print(dicButton)    
+        return dicButton            
+
+def intAbin(val,bits):
+    groundSensorBin=[]
+    #Conbertimos a binario 
+    valBin=bin(val)
+    #eliminamos el caracter 0b
+    valBin=valBin.lstrip("0b")
+    #Rellenamos de 0 hasta tener todos los bits
+    for x in range((bits-1),-1,-1):
+        if x>=len(valBin):
+            groundSensorBin.append(0)
+        else:
+            #la lectura de valBin tiene que que ser al reves
+            groundSensorBin.append(valBin[len(valBin)-x-1])
+    return groundSensorBin
 
 if __name__ == '__main__':
     try:
