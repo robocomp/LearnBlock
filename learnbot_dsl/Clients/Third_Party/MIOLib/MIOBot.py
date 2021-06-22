@@ -58,7 +58,7 @@ class mSerial():
         self.ser.close()
         
 class MIOBot():
-    def __init__(self):
+    def __init__(self,obj):
         signal.signal(signal.SIGINT, self.exit)
         self.manager = Manager()
         self.__selectors = self.manager.dict()
@@ -67,7 +67,7 @@ class MIOBot():
         self.isParseStart = False
         self.exiting = False
         self.isParseStartIndex = 0
-        self.obj=None
+        self.obj=obj
         
     def startWithSerial(self, port):
         print("create serial")
@@ -283,16 +283,13 @@ class MIOBot():
          
     def doIROnBoard(self,message):
         self.__writePackage(bytearray([0xff,0x55,len(message)+3,0x0,0x2,0xd,message]))
-        
-    def requestLightOnBoard(self,extID,callback):
-        self.requestLight(extID,0x0,callback)
     
     '''
     Desc:Enviará el comando para consultar el valor del luz de placa       
     '''  
-    def requestLight(self,port,callback,extID=0):
+    def requestLight(self,callback,extID=0):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x3,port]))
+        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x3,0x0]))
  
     def requestButtonOnBoard(self,callback,extID=1):
         self.__doCallback(extID,callback)
@@ -310,8 +307,8 @@ class MIOBot():
         port:Puerto conexionado en la placa mediante el rj12
     Pre:0<port<5      
     '''    
-    def requestUltrasonicSensor(self,port,callback,obj=None,extID=3):
-        self.__doCallback(extID,callback,obj)
+    def requestUltrasonicSensor(self,port,callback,extID=3):
+        self.__doCallback(extID,callback)
         self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x1,port]))
 
     '''
@@ -384,19 +381,15 @@ class MIOBot():
         return struct.unpack('<f', struct.pack('4B', *v))[0]
 
     def responseValue(self, extID, value):
-        if self.obj is None:
-            self.__selectors["callback_"+str(extID)](value)
-        else:
-            self.__selectors["callback_"+str(extID)](self.obj,value)
+        #en el selector tenemos el nombre de la funcion, la buscamos en el objeto y la 
+        #ejecutamos como callback
+        fun=getattr(self.obj,self.__selectors["callback_"+str(extID)])       
+        fun(value)   
 
 
-    def __doCallback(self, extID, callback,obj=None):
-        self.obj=obj
-        if obj is None:
-            self.__selectors["callback_"+str(extID)] = callback
-        else:
-            m=getattr(obj,callback)
-            self.__selectors["callback_"+str(extID)] = m
+    def __doCallback(self, extID, callback,):
+        print (callback)
+        self.__selectors["callback_"+str(extID)] = callback
 
     def float2bytes(self,fval):
         val = struct.pack("f",fval)
