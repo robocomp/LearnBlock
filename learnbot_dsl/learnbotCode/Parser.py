@@ -278,12 +278,20 @@ class SimpleCall(Node):
         return {var for arg in self.args
                     for var in arg.used_vars}
 
-SIMPLECALL = (Group(
+# SIMPLECALL = (Group(
+#         IDENTIFIER.addParseAction(lambda: Node.set_last_statement(SimpleCall))
+#         + OPAR
+#         - Group(Optional(delimitedList(OPERATION)))
+#         - CPAR
+#     ) + ENDLOC).setParseAction(SimpleCall)
+
+SIMPLECALL = (
         IDENTIFIER.addParseAction(lambda: Node.set_last_statement(SimpleCall))
         + OPAR
         - Group(Optional(delimitedList(OPERATION)))
         - CPAR
-    ) + ENDLOC).setParseAction(SimpleCall)
+        + ENDLOC).setParseAction(SimpleCall)
+
 
 """-----------------OPERACIONES---------------------"""
 class UnaryOp(Node):
@@ -389,7 +397,7 @@ OPTABLE = [
     (OR,                2,     opAssoc.LEFT,  BinaryOp, [bool, bool],   bool),
 ]
 
-OPERATION << infixNotation(VALUE | IDENTIFIER | CALL, OPTABLE, OPAR, CPAR)
+OPERATION << infixNotation(SIMPLECALL | VALUE | IDENTIFIER | CALL, OPTABLE, OPAR, CPAR)
 
 """-----------------PASS-------------------------"""
 class Pass(Node):
