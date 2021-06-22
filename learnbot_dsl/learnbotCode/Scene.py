@@ -199,7 +199,6 @@ class MyScene(QtWidgets.QGraphicsScene):
                 self.imgPosibleConnectH.setPos(min_c.getParent().pos + QtCore.QPointF(16, 38))
                 self.imgPosibleConnectH.setVisible(True)
                 self.imgPosibleConnectH.setZValue(1)
-                pass
 
 
         else:

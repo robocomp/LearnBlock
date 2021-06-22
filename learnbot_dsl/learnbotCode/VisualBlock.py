@@ -96,7 +96,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             c.setParent(self.parentBlock)
         self.dicTrans = parentBlock.dicTrans
         self.shouldUpdate = True
-        if len(self.dicTrans) is 0:
+        if len(self.dicTrans) == 0:
             self.showtext = self.parentBlock.name
         else:
             self.showtext = self.dicTrans[getLanguage()]
@@ -426,21 +426,21 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
     def getInstructionsRIGHT(self, inst=[]):
         for c in [conn for conn in self.connections if conn.getType() is RIGHT and conn.getIdItem() is not None]:
             inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
-        if len(inst) is 0:
+        if len(inst) == 0:
             return None
         return inst
 
     def getInstructionsBOTTOM(self, inst=[]):
         for c in [conn for conn in self.connections if conn.getType() is BOTTOM and conn.getIdItem() is not None]:
             inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
-        if len(inst) is 0:
+        if len(inst) == 0:
             return None
         return inst
 
     def getInstructionsBOTTOMIN(self, inst=[]):
         for c in [conn for conn in self.connections if conn.getType() is BOTTOMIN and conn.getIdItem() is not None]:
             inst = self.scene.getVisualItem(c.getIdItem()).getInstructions()
-        if len(inst) is 0:
+        if len(inst) == 0:
             return None
         return inst
 
@@ -463,7 +463,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
                     vars.append(self.tabVar.cellWidget(cell, 1).text())
             else:
                 vars.append(self.tabVar.cellWidget(cell, 2).currentText())
-        if len(vars) is 0:
+        if len(vars) == 0:
             vars = None
         return vars
 
@@ -472,7 +472,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         instBottom = self.getInstructionsBOTTOM()
         instBottomIn = self.getInstructionsBOTTOMIN()
         nameControl = self.parentBlock.nameControl
-        if nameControl is "":
+        if nameControl == "":
             nameControl = None
         dic = {}
         dic["NAMECONTROL"] = nameControl
@@ -493,7 +493,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         else:
             size = 34
 
-        if size is 0:
+        if size == 0:
             size = 34
         if self.sizeIn != size or self.shouldUpdate or force:
             self.sizeIn = size
@@ -510,7 +510,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             qImage = toQImage(im)
             self.img = QtGui.QPixmap(qImage)
             self.updatePixmap()
-            if self.sizeIn != size or self.shouldUpdate:
+            if self.sizeIn != size or self.shouldUpdateConnections or force:
                 for c in self.connections:
                     if c.getType() is BOTTOM:
                         c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
@@ -542,7 +542,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
             c.setConnect(None)
 
     def update(self):
-        if len(self.dicTrans) is not 0 and self.showtext is not self.dicTrans[getLanguage()]:
+        if len(self.dicTrans) != 0 and self.showtext is not self.dicTrans[getLanguage()]:
             #Language change
 
             self.create_dialogs()

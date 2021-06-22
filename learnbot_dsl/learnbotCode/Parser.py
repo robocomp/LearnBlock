@@ -585,6 +585,7 @@ class While(Node):
     def __init__(self, src, start, tokens):
         super().__init__(src, start, tokens)
 
+        # print("while condition", tokens[0])
         self.condition = tokens[0]
         self.body = tokens[1].asList()
 
