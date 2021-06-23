@@ -128,7 +128,9 @@ class MIOBot():
     Pre:0<port<5 && red,green y blue tienen que estar entre 0 y 254
     '''
     def doRGBLed(self,port,slot,index,red,green,blue):
-        self.__writePackage(bytearray([0xff,0x55,0x9,0x0,0x2,0x8,port,slot,index,red,green,blue]))
+
+        self.__writePackage(bytearray([0xff,0x55,0x9,0x0,0x2,0x8,self.limit(5,0,port),
+                            slot,index,self.limit(254,0,red),self.limit(254,0,green),self.limit(254,0,blue)]))
 
     '''
     Desc: Encenderá los led de la placa
@@ -144,7 +146,8 @@ class MIOBot():
     '''
     def doMotor(self,port,speed):
         b1 = bytearray([0xff,0x55,0x6,0x0,0x2,0xa,port])
-        b1.extend(speed.to_bytes(2, 'little',signed=True))
+        valSpeed=self.limit(32768,-32767,speed)
+        b1.extend(valSpeed.to_bytes(2, 'little',signed=True))
         self.__writePackage(b1)
 
     '''
@@ -155,8 +158,10 @@ class MIOBot():
         #Tambien es valido
         #b1 = bytearray([0xff,0x55,0x7,0x0,0x2,0x80])
         b1 = bytearray([0xff,0x55,0x8,0x0,0x2,0xa, 0x0])
-        b1.extend(leftSpeed.to_bytes(2, 'little',signed=True))
-        b1.extend(rightSpeed.to_bytes(2, 'little',signed=True))
+        valLeftSpeed=self.limit(32768,-32767,leftSpeed)
+        valRightSpeed=self.limit(32768,-32767,rightSpeed)
+        b1.extend(valLeftSpeed.to_bytes(2, 'little',signed=True))
+        b1.extend(valRightSpeed.to_bytes(2, 'little',signed=True))
         self.__writePackage(b1)
         
     def doServo(self,port,slot,angle):
@@ -181,18 +186,16 @@ class MIOBot():
         word: string a imprimir
         colum:columna donde empieza el mensaje
         brillo: brillo de los leds de la matriz
-    Pre:0<port<5 && 0<=colum y brillo<8
+    Pre:1<port<4 && 0<=colum y brillo<8
     '''
     def doMatrixWord(self, port,word, colum, brillo):
-        b1 = bytearray([0xff,0x55,len(word)+8,0x0,0x2,0x29,port,0x2, len(word)])
+        b1 = bytearray([0xff,0x55,len(word)+8,0x0,0x2,0x29,self.limit(4,1,port),0x2, len(word)])
         
         for x in range(len(word)):
             b1.append(ord(word[x]))
             
-        b1.append(colum)
-        if brillo>8: b1.append(8)
-        elif brillo<0: b1.append(0)          
-        else: b1.append(brillo)
+        b1.append(self.limit(15,0,colum))
+        b1.append(self.limit(7,0,brillo))
         self.__writePackage(b1)
 
     '''
@@ -201,15 +204,13 @@ class MIOBot():
         number: numero a imprimir
         colum:columna donde empieza el mensaje
         brillo: brillo de los leds de la matriz
-    Pre:0<port<5 && 0<=colum y brillo<8
+    Pre:1<port<4 &&  brillo<8
     '''
     def doMatrixNumber(self,port, number, brillo):
-        b1 = bytearray([0xff,0x55,0x8,0x0,0x2,0x29,port,0x1])
-
-        b1.extend(number.to_bytes(2, 'little',signed=True))
-        if brillo>8: b1.append(8)
-        elif brillo<0: b1.append(0)          
-        else: b1.append(brillo)
+        b1 = bytearray([0xff,0x55,0x8,0x0,0x2,0x29,self.limit(4,1,port),0x1])
+        valNumber=self.limit(9999,0,number)
+        b1.extend(valNumber.to_bytes(2, 'little',signed=True))
+        b1.append(self.limit(7,0,brillo))
         self.__writePackage(b1)  
 
     '''
@@ -221,7 +222,7 @@ class MIOBot():
     Pre:0<port<5 && 0<=colum y brillo<8
     '''
     def doMatrixIcon(self,port, icon, brillo):
-        b1 = bytearray([0xff,0x55,0x16,0x0,0x2,0x29,port,0x4])
+        b1 = bytearray([0xff,0x55,0x16,0x0,0x2,0x29,self.limit(4,1,port),0x4])
         for x in range(16):
             val=0
             for y in range(8):
@@ -229,9 +230,7 @@ class MIOBot():
                 #print(icon[y][x], end="")
            # print()
             b1.append(val)
-        if brillo>8: b1.append(8)
-        elif brillo<0: b1.append(0)          
-        else: b1.append(brillo)
+        b1.append(self.limit(7,0,brillo))
         self.__writePackage(b1)
 
     '''
@@ -239,10 +238,11 @@ class MIOBot():
         port:Puerto conexionado en la placa mediante el rj12
         carpeta: Numero de la carpeta donde se situa el .mp3
         archivo: Numero de archivo.mp3
-    Pre:0<port<5 && existir carpeta y archivo
+    Pre:0<port<5 && existir 0<carpeta<254 y 0<archivo<254
     '''
     def doMusicSelect(self,port, carpeta, archivo):      
-        self.__writePackage(bytearray([0xff,0x55,0x7,0x0,0x2,0x21,port,0x42,carpeta, archivo]))    
+        self.__writePackage(bytearray([0xff,0x55,0x7,0x0,0x2,0x21,self.limit(4,1,port),
+                            0x42,self.limit(254,0,carpeta), self.limit(254,0,archivo)]))    
 
     '''
     Desc:Enviará el comando para modificar el volumen del reproductor
@@ -251,7 +251,7 @@ class MIOBot():
     Pre:0<port<5 && 0<=volumen<100
     '''
     def doMusicVol(self,port, volumen):      
-        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,port,0x31,volumen]))  
+        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,self.limit(4,1,port),0x31,self.limit(100,0,volumen)]))  
 
     '''
     Desc:Enviará el comando para interactuar con el reproductor        
@@ -261,7 +261,7 @@ class MIOBot():
     '''
     def doMusicAction(self,port, action): 
         diAction={"Play":1,"Previous":4,"Next":3,"Stop":0xe,"Pause":0xf}     
-        self.__writePackage(bytearray([0xff,0x55,0x5,0x0,0x2,0x21,port,diAction.get(action)]))
+        self.__writePackage(bytearray([0xff,0x55,0x5,0x0,0x2,0x21,self.limit(4,1,port),diAction.get(action)]))
     
     '''
     Desc:Enviará el comando para modificar el EQ        
@@ -271,7 +271,7 @@ class MIOBot():
     '''
     def doMusicEQ(self,port, EQ):   
         diEQ={"No":0,"Pop":1,"Rock":2,"Jazz":3,"Classic":4,"Bass":5}
-        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,port,0x32,diEQ.get(EQ)]))    
+        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,self.limit(4,1,port),0x32,diEQ.get(EQ)]))    
 
     '''
     Desc:Enviará el comando para modificar el orden de reproducción de archivos       
@@ -281,7 +281,7 @@ class MIOBot():
     '''
     def doMusicLoop(self,port, typeLoop):
         typeloop={"Loop all":0,"Loop folder":1,"Loop single":2,"Ramdom":3,"Single":4}     
-        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,port,0x33,typeloop.get(typeLoop)]))  
+        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x21,self.limit(4,1,port),0x33,typeloop.get(typeLoop)]))  
 
     def doSevSegDisplay(self,port,display):
         self.__writePackage(bytearray([0xff,0x55,0x8,0x0,0x2,0x9,port]+self.float2bytes(display)))
@@ -294,18 +294,18 @@ class MIOBot():
     '''  
     def requestLight(self,callback,extID=0):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x3,0x0]))
+        self.__writePackage(bytearray([0xff,0x55,0x4,self.limit(254,0,extID),0x1,0x3,0x0]))
  
     def requestButtonOnBoard(self,callback,extID=1):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x1f,0x7]))
+        self.__writePackage(bytearray([0xff,0x55,0x4,self.limit(254,0,extID),0x1,0x1f,0x7]))
 
     '''
     Desc:Enviará el comando para consultar el valor del IR de placa       
     '''       
     def requestIROnBoard(self,callback,extID=2):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x10,0x0]))
+        self.__writePackage(bytearray([0xff,0x55,0x4,self.limit(254,0,extID),0x1,0x10,0x0]))
 
     '''
     Desc:Enviará el comando para consultar la distancia del sensor de ultasonido
@@ -314,7 +314,7 @@ class MIOBot():
     '''    
     def requestUltrasonicSensor(self,port,callback,extID=3):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x1,port]))
+        self.__writePackage(bytearray([0xff,0x55,0x4,self.limit(254,0,extID),0x1,0x1,self.limit(4,1,port)]))
 
     '''
     Desc:Enviará el comando para consultar el estado del siguelineas, 
@@ -324,7 +324,7 @@ class MIOBot():
     '''  
     def requestLineFollower(self,port,callback,extID=4):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x11,port]))
+        self.__writePackage(bytearray([0xff,0x55,0x4,self.limit(254,0,extID),0x1,0x11,self.limit(4,1,port)]))
 
     '''
     Desc:Enviará el comando para consultar el estado de la botonera exterior
@@ -333,7 +333,7 @@ class MIOBot():
     ''' 
     def requestButton(self,port,callback,extID=5):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x5,extID,0x1,0x17,port,0x0]))
+        self.__writePackage(bytearray([0xff,0x55,0x5,self.limit(254,0,extID),0x1,0x17,self.limit(4,1,port),0x0]))
 
     def onParse(self, byte):
         #print("estado del buffer",self.buffer)
@@ -407,3 +407,9 @@ class MIOBot():
         # val = struct.pack("h",sval)
         #print("val", ord(val[0]))
         #return [ord(val[0]),ord(val[1])]
+    def limit(self,max,min,val):
+        if val>max:
+            return max
+        if val<min:
+            return min
+        return val

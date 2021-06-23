@@ -3,11 +3,11 @@ class Controller():
     __button = {"lUp": False, 
                 "lLeft": False,
                 "lRight": False,
-                "lback": False,
+                "lDown": False,
                 "rUp": False, 
                 "rLeft": False,
                 "rRight": False,
-                "rback": False }
+                "rDown": False }
 
     def __init__(self, _readFunction):
         self._readDevice = _readFunction

@@ -12,7 +12,6 @@ import  time
 
 from learnbot_dsl.Clients.Third_Party.MIOLib.MIOBot import *
 
-K = 35
 L = 110
 MAXSPEED = 1000
 CONSVEL = 0.615
@@ -54,15 +53,20 @@ class Robot(Client):
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB1")
+        self.bot.startWithSerial("/dev/ttyUSB0")
+        self.bot.doMove(0,0) #parar la base
+        self.bot.doMusicAction(4,"Stop")
+        self.bot.doBuzzer("Stop")
         time.sleep(4)
     def disconnect(self):
         self.bot.doMove(0,0) #parar la base
         self.bot.doMusicAction(4,"Stop")
+        self.bot.doBuzzer("Stop")
         
     
 
-    ###############################ACTUADORES###########################3
+##############################ACTUADORES###########################
+#-------------------------------Base---------------------------
     def deviceBaseMove(self, SAdv, SRot): 
         SRot_rad = math.radians(SRot)
         rot=0
@@ -72,6 +76,7 @@ class Robot(Client):
         r_wheel_speed = SAdv * CONSVEL-rot*CONSGIRO
         self.bot.doMove(round(l_wheel_speed),round(r_wheel_speed))
 
+#-----------------------------LED---------------------------
     def deviceRGBLedDown(self, r, g, b):
         self.bot.doRGBLedOnBoard(1,r,g,b)
 
@@ -87,9 +92,11 @@ class Robot(Client):
     def deviceRGBLedUp(self, r, g, b):
         self.bot.doRGBLedOnBoard(5,r,g,b)
 
+#---------------------------Buzzer---------------------------
     def devicePlaySound(self,sound):
         self.bot.doBuzzer(sound)
 
+#--------------------------Matrix---------------------------
     def deviceMatrixNum(self,number,shine):
         print(number, " on matrix")
         self.bot.doMatrixNumber(1,number,shine)
@@ -100,6 +107,7 @@ class Robot(Client):
 
     def deviceMatrixIcon(self,routeIcon,shine):
         matriz=[]
+        #En la siguiente dirección se tendra que poner la ruta absoluta de los .txt que contiene las matrices booleanas
         fichero = open("/home/alfith/Documentos/Robolab/LearnBlock/learnbot_dsl/Clients/Third_Party/MIOLib/icon/"+routeIcon+".txt", 'r')
         i = 0
         #Lectura de fichero y traspase a la matriz
@@ -119,7 +127,7 @@ class Robot(Client):
         #print (matriz)
         self.bot.doMatrixIcon(1,matriz,shine)
 
-
+#----------------------------MP3---------------------------
     def deviceMP3Audio(self,folder,audio):
         self.bot.doMusicSelect(4,folder,audio)
     
@@ -135,7 +143,8 @@ class Robot(Client):
     def deviceMP3Loop(self,loop):
         self.bot.doMusicLoop(4,loop)
 
-    ##################SENSORES############################
+#############################SENSORES############################
+#-------------------------DistanceSensor---------------------------
     def callbackSonar(self,value):
         print("efectuando callback")
         self.distanceSensor=value
@@ -153,13 +162,14 @@ class Robot(Client):
                 "right": [2000],
                 "back": [2000]}   
 
+#---------------------------LineSensor---------------------------
     def callbackGroundSensor(self,value):
         print("efectuando callback")
         self.groundSensor=value
         self.callback=False
 
     def deviceReadGroundSensor(self):
-        IDGround=["left","central","right"]  
+        IDGround=["right","central","left"]  
         dicGround={}
         self.callback=True
         self.bot.requestLineFollower(3,"callbackGroundSensor")
@@ -175,6 +185,7 @@ class Robot(Client):
         print(dicGround) 
         return dicGround 
 
+#--------------------------LightSensor---------------------------
     def callbackLightSensor(self,value):
         print("efectuando callback")
         self.lightSensor=value
@@ -188,6 +199,7 @@ class Robot(Client):
         print( self.lightSensor)
         return self.lightSensor  
 
+#----------------------------IRSensor---------------------------
     def callbackIR(self,value):
         print("efectuando callback")
         self.IRSensor=value
@@ -201,13 +213,14 @@ class Robot(Client):
         print( self.IRSensor)
         return self.IRSensor 
 
+#---------------------------Controller---------------------------
     def callbackController(self,value):
         print("efectuando callback")
         self.controllerSensor=value
         self.callback=False
 
     def deviceReadControllerSensor(self):  
-        IDButton=["rback","rRight","rLeft","rUp","lback","lRight","lLeft","lUp"]
+        IDButton=["rRight","rDown","rUp","rLeft","lDown","lRight","lLeft","lUp"]
         dicButton={}
         self.callback=True 
         self.bot.requestButton(4,"callbackController")
@@ -216,13 +229,17 @@ class Robot(Client):
         self.controllerSensor=intAbin( self.controllerSensor,8)
         print( self.controllerSensor)
         for i,k in enumerate(IDButton):
-            dicButton[k]=bool(self.controllerSensor[i])
+            if self.controllerSensor[i]=='1':
+                dicButton[k]=True
+            else:
+                dicButton[k]=False
         print(dicButton)    
         return dicButton            
 
+#Funcion de conversión de int a binario
 def intAbin(val,bits):
     groundSensorBin=[]
-    #Conbertimos a binario 
+    #Convertimos a binario 
     valBin=bin(val)
     #eliminamos el caracter 0b
     valBin=valBin.lstrip("0b")
