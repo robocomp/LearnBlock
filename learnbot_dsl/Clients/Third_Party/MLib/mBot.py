@@ -7,7 +7,6 @@ from time import ctime,sleep
 import glob,struct
 from multiprocessing import Process,Manager,Array
 import threading
-import hid
 
 class mSerial():
     ser = None
@@ -58,7 +57,7 @@ class mSerial():
         self.ser.close()
         
 class mBot():
-    def __init__(self):
+    def __init__(self,obj):
         signal.signal(signal.SIGINT, self.exit)
         self.manager = Manager()
         self.__selectors = self.manager.dict()
@@ -67,6 +66,7 @@ class mBot():
         self.isParseStart = False
         self.exiting = False
         self.isParseStartIndex = 0
+        self.obj=obj
 
         
     def startWithSerial(self, port):
@@ -76,6 +76,9 @@ class mBot():
         self.start()
     
     def excepthook(self, exctype, value, traceback):
+        print("Excepcion",exctype)
+        print("Valor",value)
+        print("traceback",traceback)
         self.close()
         
     def start(self):
@@ -121,7 +124,8 @@ class mBot():
     '''
 
     def doRGBLed(self,port,slot,index,red,green,blue):
-        self.__writePackage(bytearray([0xff,0x55,0x9,0x0,0x2,0x8,port,slot,index,red,green,blue]))
+        self.__writePackage(bytearray([0xff,0x55,0x9,0x0,0x2,0x8,self.limit(5,0,port),
+                            self.limit(2,1,slot),self.limit(254,0,red),self.limit(254,0,green),self.limit(254,0,blue)]))
 
     '''
     Desc: Encenderá los led de la placa
@@ -136,7 +140,10 @@ class mBot():
     Pre:puerto=0 or 5 or 6 && 0<speed<255
     '''
     def doMotor(self,port,speed):
-        self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0xa,port]+self.short2bytes(speed)))
+        b1 = bytearray([0xff,0x55,0x6,0x0,0x2,0xa,port])
+        valSpeed=self.limit(32768,-32767,speed)
+        b1.extend(valSpeed.to_bytes(2, 'little',signed=True))
+        self.__writePackage(b1)
 
     '''
     Desc:Enviará el comando para encender los motores 
@@ -146,10 +153,10 @@ class mBot():
         #self.__writePackage(bytearray([0xff,0x55,0x7,0x0,0x2,0x5]+self.short2bytes(-leftSpeed)+self.short2bytes(rightSpeed)))
         # self.__writePackage(bytearray([0xff,0x55,0x7,0x0,0x2,0x5]+(-leftSpeed).to_bytes(2, 'little')+rightSpeed.to_bytes(2,'little')))
         b1 = bytearray([0xff,0x55,0x7,0x0,0x2,0x5])
-        lS = leftSpeed
-        rS = -rightSpeed
-        b1.extend(lS.to_bytes(2, 'little',signed=True))
-        b1.extend(rS.to_bytes(2, 'little',signed=True))
+        valLeftSpeed=self.limit(32768,-32767,leftSpeed)
+        valRightSpeed=self.limit(32768,-32767,rightSpeed)
+        b1.extend(valLeftSpeed.to_bytes(2, 'little',signed=True))
+        b1.extend(valRightSpeed.to_bytes(2, 'little',signed=True))
         self.__writePackage(b1)
         
     def doServo(self,port,slot,angle):
@@ -164,8 +171,10 @@ class mBot():
         # self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x22, 0x9, 0x0, 0xa]))#+self.short2bytes(buzzer)+self.short2bytes(time)))
         b1 = bytearray([0xff,0x55,0x7,0x0,0x2,0x22])
         # print(self.short2bytes(buzzer))
-        b1.extend(buzzer.to_bytes(2, 'little'))
-        b1.extend(time.to_bytes(2, 'little'))
+        valBuzzer=self.limit(32768,-32767,buzzer)
+        valTime=self.limit(32768,-32767,time)
+        b1.extend(valBuzzer.to_bytes(2, 'little'))
+        b1.extend(valTime.to_bytes(2, 'little'))
         self.__writePackage(b1)
 
     def doSevSegDisplay(self,port,display):
@@ -190,7 +199,7 @@ class mBot():
     '''   
     def requestIROnBoard(self,callback,extID=2):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x3,extID,0x1,0xd]))
+        self.__writePackage(bytearray([0xff,0x55,0x3,extID,0x1,0x12]))
     
     '''
     Desc:Enviará el comando para consultar la distancia del sensor de ultasonido
@@ -199,7 +208,7 @@ class mBot():
     ''' 
     def requestUltrasonicSensor(self,port,callback,extID=3):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x1,port]))
+        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x1,self.limit(4,1,port)]))
         
     '''
     Desc:Enviará el comando para consultar el estado del siguelineas, 
@@ -209,7 +218,7 @@ class mBot():
     '''
     def requestLineFollower(self,port,callback,extID=4):
         self.__doCallback(extID,callback)
-        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x11,port]))
+        self.__writePackage(bytearray([0xff,0x55,0x4,extID,0x1,0x11,self.limit(4,1,port)]))
     
     def onParse(self, byte):
         position = 0
@@ -254,7 +263,7 @@ class mBot():
         l = self.buffer[position]
         position+=1
         s = ""
-        for i in Range(l):
+        for i in range(l):
             s += self.buffer[position+i].charAt(0)
         return s
     def readDouble(self, position):
@@ -262,7 +271,10 @@ class mBot():
         return struct.unpack('<f', struct.pack('4B', *v))[0]
 
     def responseValue(self, extID, value):
-        self.__selectors["callback_"+str(extID)](value)
+        #en el selector tenemos el nombre de la funcion, la buscamos en el objeto y la 
+        #ejecutamos como callback
+        fun=getattr(self.obj,self.__selectors["callback_"+str(extID)])       
+        fun(value)  
         
     def __doCallback(self, extID, callback):
         self.__selectors["callback_"+str(extID)] = callback
@@ -277,3 +289,10 @@ class mBot():
         # val = struct.pack("h",sval)
         #print("val", ord(val[0]))
         #return [ord(val[0]),ord(val[1])]
+
+    def limit(self,max,min,val):
+        if val>max:
+            return max
+        if val<min:
+            return min
+        return val

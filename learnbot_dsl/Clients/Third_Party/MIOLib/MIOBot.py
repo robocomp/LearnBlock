@@ -130,7 +130,7 @@ class MIOBot():
     def doRGBLed(self,port,slot,index,red,green,blue):
 
         self.__writePackage(bytearray([0xff,0x55,0x9,0x0,0x2,0x8,self.limit(5,0,port),
-                            slot,index,self.limit(254,0,red),self.limit(254,0,green),self.limit(254,0,blue)]))
+                            self.limit(5,1,slot),index,self.limit(254,0,red),self.limit(254,0,green),self.limit(254,0,blue)]))
 
     '''
     Desc: Encenderá los led de la placa
@@ -407,6 +407,8 @@ class MIOBot():
         # val = struct.pack("h",sval)
         #print("val", ord(val[0]))
         #return [ord(val[0]),ord(val[1])]
+
+        
     def limit(self,max,min,val):
         if val>max:
             return max

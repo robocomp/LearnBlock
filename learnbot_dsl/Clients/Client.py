@@ -485,6 +485,11 @@ class Client(Thread, metaclass=MetaClient):
         if _keySpeaker in self.__Speakers:
             time.sleep(0)
             self.__Speakers[_keySpeaker].sendAudio(_audioData)
+    
+    def sendFrequency(self, _frequency,_time, _keySpeaker = "ROBOT"):
+        if _keySpeaker in self.__Speakers:
+            time.sleep(0)
+            self.__Speakers[_keySpeaker].sendFrequency(_frequency,_time)
 
     def getImage(self, _keyCam = "ROBOT"):
         if _keyCam in self.__Cameras:
