@@ -66,22 +66,29 @@ class Client(Thread, metaclass=MetaClient):
     def __new__(cls, *args, **kwargs):
         print("__new__")
         usedFuncts = []
+        device = []
         if "availableFunctions" in kwargs:
             usedFuncts = kwargs.pop('availableFunctions')
         print("availableFunctions", usedFuncts)
         functions = getFuntions()
+        #k= nombre de funcion/v=funcion
         for k, v in iter(functions.items()):
             if not usedFuncts or k in usedFuncts:
 #            if v["type"] in cls.devicesAvailables + ["basics"]:
-                print("add ", k, v["type"])
+                print("add ", k, v["type"])     
                 setattr(Client, k, v["function"])
+                if v["type"] not in device:
+                    device.append(v["type"])
         instance = super(Client, cls).__new__(cls, *args, **kwargs)
+        setattr(instance,'__devices',device)  
         return instance
 
     def __init__(self,_miliseconds=100):
         print("__init__")
         Thread.__init__(self)
-        self.__stop_event = Event()
+        self.__stop_event = Event() 
+        self.__devices=getattr(self,'__devices')
+        print("Used devices: ",self.__devices)
 
         # Variables of Emotion Recognition
         self.__emotion_current_exist = False
@@ -288,30 +295,30 @@ class Client(Thread, metaclass=MetaClient):
             self.__Controllers[_key] = _Controller
 
     def __readDevices(self):
-        if bool(self.__Acelerometers):
+        if bool(self.__Acelerometers) and "aceloremeter" in self.__devices:
             for acelerometer in self.__Acelerometers.values():
                 acelerometer.read()
-        if bool(self.__Gyroscopes):
+        if bool(self.__Gyroscopes) and "gyroscope" in self.__devices:
             for gyroscope in self.__Gyroscopes.values():
                 gyroscope.read()
-        if bool(self.__Cameras):
+        if bool(self.__Cameras) and "camera" in self.__devices:
             for cam in self.__Cameras.values():
                 cam.read()
             self.__apriltag_current_exist = False
             self.__emotion_current_exist = False
-        if bool(self.__DistanceSensors):
+        if bool(self.__DistanceSensors) and "distancesensors" in self.__devices:
             for distSensor in self.__DistanceSensors.values():
                 distSensor.read()
-        if bool(self.__GroundSensors):
+        if bool(self.__GroundSensors) and "groundsensors" in self.__devices:
             for groundSensor in self.__GroundSensors.values():
                 groundSensor.read()
-        if bool(self.__IR):
+        if bool(self.__IR) and "ir" in self.__devices:
             for ir in self.__IR.values():
                 ir.read()
-        if bool(self.__LightSensors):
+        if bool(self.__LightSensors) and "lightsensor" in self.__devices:
             for LightSensor in self.__LightSensors.values():
                 LightSensor.read()
-        if bool(self.__Controllers):
+        if bool(self.__Controllers) and "controller" in self.__devices:
             for Controller in self.__Controllers.values():
                 Controller.read()
 

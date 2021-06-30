@@ -394,7 +394,7 @@ class MIOBot():
 
 
     def __doCallback(self, extID, callback,):
-        print (callback)
+        print ("Callback: ",callback)
         self.__selectors["callback_"+str(extID)] = callback
 
     def float2bytes(self,fval):

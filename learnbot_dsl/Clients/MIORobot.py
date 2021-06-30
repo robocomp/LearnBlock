@@ -44,16 +44,16 @@ class Robot(Client):
         self.addMatrix(Matrix(_setState=self.deviceMatrixIcon,_setNumber=self.deviceMatrixNum,_setText=self.deviceMatrixText))
         self.addMP3(MP3(_sendAudio = self.deviceMP3Audio,_sendAction = self.deviceMP3Action,_modifyVolume = self.deviceMP3Volume, _modifyEQ = self.deviceMP3EQ,_modifyLoop = self.deviceMP3Loop))
         #Sensores
-        #self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
-        #self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
-        #self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
+        self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
+        self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
+        self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensor))
-        #self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
+        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         print("Dispositivos Registrados")
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB0")
+        self.bot.startWithSerial("/dev/ttyUSB2")
         self.bot.doMove(0,0) #parar la base
         self.bot.doMusicAction(4,"Stop")
         self.bot.doBuzzer("Stop")
