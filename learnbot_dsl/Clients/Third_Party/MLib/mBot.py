@@ -153,10 +153,11 @@ class mBot():
         #self.__writePackage(bytearray([0xff,0x55,0x7,0x0,0x2,0x5]+self.short2bytes(-leftSpeed)+self.short2bytes(rightSpeed)))
         # self.__writePackage(bytearray([0xff,0x55,0x7,0x0,0x2,0x5]+(-leftSpeed).to_bytes(2, 'little')+rightSpeed.to_bytes(2,'little')))
         b1 = bytearray([0xff,0x55,0x7,0x0,0x2,0x5])
-        valLeftSpeed=self.limit(32768,-32767,leftSpeed)
+        valLeftSpeed=self.limit(32768,-32767,-leftSpeed)
         valRightSpeed=self.limit(32768,-32767,rightSpeed)
-        b1.extend(valLeftSpeed.to_bytes(2, 'little',signed=True))
         b1.extend(valRightSpeed.to_bytes(2, 'little',signed=True))
+        b1.extend(valLeftSpeed.to_bytes(2, 'little',signed=True))
+        
         self.__writePackage(b1)
         
     def doServo(self,port,slot,angle):

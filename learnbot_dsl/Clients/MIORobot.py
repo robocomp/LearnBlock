@@ -20,7 +20,7 @@ CONSGIRO = 0.74
 
 class Robot(Client):
     def __init__(self):
-        Client.__init__(self, _miliseconds=100)
+        Client.__init__(self, _miliseconds=10)
         
         self.bot=MIOBot(self)
         self.groundSensor={}
@@ -44,11 +44,11 @@ class Robot(Client):
         self.addMatrix(Matrix(_setState=self.deviceMatrixIcon,_setNumber=self.deviceMatrixNum,_setText=self.deviceMatrixText))
         self.addMP3(MP3(_sendAudio = self.deviceMP3Audio,_sendAction = self.deviceMP3Action,_modifyVolume = self.deviceMP3Volume, _modifyEQ = self.deviceMP3EQ,_modifyLoop = self.deviceMP3Loop))
         #Sensores
-        self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
-        self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
-        self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
+        #self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
+        #self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
+        #self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensor))
-        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
+        #self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         print("Dispositivos Registrados")
         self.start()
 
@@ -180,9 +180,9 @@ class Robot(Client):
         print( self.groundSensor)
         for i,k in enumerate(IDGround):
             if self.groundSensor[i]=='1':
-                dicGround[k]=100
-            else:
                 dicGround[k]=0
+            else:
+                dicGround[k]=100
         print(dicGround) 
         return dicGround 
 

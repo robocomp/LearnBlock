@@ -20,7 +20,7 @@ CONSGIRO = 0.748
 
 class Robot(Client):
     def __init__(self):
-        Client.__init__(self, _miliseconds=100)
+        Client.__init__(self, _miliseconds=10)
         
         self.bot=mBot(self)
         self.groundSensor={}
@@ -38,15 +38,15 @@ class Robot(Client):
         self.addRGBLed(RGBLed(_setColorState=self.deviceRGBLedRight),"Right")
         self.addSpeaker(Speaker(_sendFrequency=self.devicePlaySound))
         #Sensores
-        self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
-        self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
+        #self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
+        #self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensor))
-        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
+        #self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         print("Dispositivos Registrados")
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB4")
+        self.bot.startWithSerial("/dev/ttyUSB1")
         self.bot.doMove(0,0) #parar la base
         time.sleep(0)
 
