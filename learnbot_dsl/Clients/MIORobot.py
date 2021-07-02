@@ -13,23 +13,25 @@ import  time
 from learnbot_dsl.Clients.Third_Party.MIOLib.MIOBot import *
 
 L = 110
-MAXSPEED = 1000
 CONSVEL = 0.505
 CONSGIRO = 0.74
 
 
 class Robot(Client):
     def __init__(self):
-        Client.__init__(self, _miliseconds=10)
-        
-        self.bot=MIOBot(self)
-        self.groundSensor={}
+        Client.__init__(self, _miliseconds=5)
+
+        self.debug=False
+
+        self.bot=MIOBot(self, self.debug)
+        self.groundSensor=0
         self.distanceSensor=0
         self.lightSensor=0
         self.IRSensor=0
         self.controllerSensor={}
         self.callback=False
         self.connectToRobot()
+        
 
         #Añadiendo dispositivos
         print("Registrando dispositivos")
@@ -44,16 +46,16 @@ class Robot(Client):
         self.addMatrix(Matrix(_setState=self.deviceMatrixIcon,_setNumber=self.deviceMatrixNum,_setText=self.deviceMatrixText))
         self.addMP3(MP3(_sendAudio = self.deviceMP3Audio,_sendAction = self.deviceMP3Action,_modifyVolume = self.deviceMP3Volume, _modifyEQ = self.deviceMP3EQ,_modifyLoop = self.deviceMP3Loop))
         #Sensores
-        self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
-        self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
-        self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
+        #self.addIR(Ir(_readFunction=self.deviceReadIRSensor))
+        #self.addLight(LightSensor(_readFunction=self.deviceReadLightSensor))
+        #self.addController(Controller(_readFunction=self.deviceReadControllerSensor))
         self.addGroundSensors(GroundSensors(_readFunction=self.deviceReadGroundSensor))
-        self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
+        #self.addDistanceSensors(DistanceSensors(_readFunction=self.deviceReadSonar))
         print("Dispositivos Registrados")
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB2")
+        self.bot.startWithSerial("/dev/ttyUSB1")
         self.bot.doMove(0,0) #parar la base
         self.bot.doMusicAction(4,"Stop")
         self.bot.doBuzzer("Stop")
@@ -99,11 +101,11 @@ class Robot(Client):
 
 #--------------------------Matrix---------------------------
     def deviceMatrixNum(self,number,shine):
-        print(number, " on matrix")
+        if self.debug: print(number, " on matrix")
         self.bot.doMatrixNumber(1,number,shine)
 
-    def deviceMatrixText(self,text,shine,column):
-        print(text, " on matrix")
+    def deviceMatrixText(self,text,shine,column):    
+        if self.debug: print(text, " on matrix")
         self.bot.doMatrixWord(1,text,column,shine)
 
     def deviceMatrixIcon(self,routeIcon,shine):
@@ -125,7 +127,7 @@ class Robot(Client):
                     elemento_entero = int(elemento)
                     matriz[i].append(elemento_entero)
             i += 1
-        #print (matriz)
+        #if self.debug: print (matriz)
         self.bot.doMatrixIcon(1,matriz,shine)
 
 #----------------------------MP3---------------------------
@@ -147,7 +149,7 @@ class Robot(Client):
 #############################SENSORES############################
 #-------------------------DistanceSensor---------------------------
     def callbackSonar(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.distanceSensor=value
         self.callback=False
 
@@ -157,7 +159,7 @@ class Robot(Client):
         while self.callback:
             sleep(0.01)
         self.distanceSensor=math.trunc(float(self.distanceSensor)*10.0) 
-        print( self.distanceSensor)
+        if self.debug: print( self.distanceSensor)
         return {"front": [ self.distanceSensor],  # The values must be in mm
                 "left": [2000],
                 "right": [2000],
@@ -165,30 +167,36 @@ class Robot(Client):
 
 #---------------------------LineSensor---------------------------
     def callbackGroundSensor(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.groundSensor=value
         self.callback=False
 
     def deviceReadGroundSensor(self):
         IDGround=["right","central","left"]  
         dicGround={}
+        i=0
         self.callback=True
         self.bot.requestLineFollower(3,"callbackGroundSensor")
         while self.callback:
+            i=i+1
             sleep(0.01)
-        self.groundSensor=intAbin( self.groundSensor,3)
-        print( self.groundSensor)
+            if i>200:
+                self.bot.requestLineFollower(3,"callbackGroundSensor")
+                i=0
+
+        sensor=intAbin( self.groundSensor,3)
+        if self.debug: print( sensor)
         for i,k in enumerate(IDGround):
-            if self.groundSensor[i]=='1':
+            if sensor[i]=='1':
                 dicGround[k]=0
             else:
                 dicGround[k]=100
-        print(dicGround) 
+        if self.debug: print(dicGround) 
         return dicGround 
 
 #--------------------------LightSensor---------------------------
     def callbackLightSensor(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.lightSensor=value
         self.callback=False
 
@@ -197,12 +205,12 @@ class Robot(Client):
         self.bot.requestLight("callbackLightSensor")
         while self.callback:
             sleep(0.01)
-        print( self.lightSensor)
+        if self.debug: print( self.lightSensor)
         return self.lightSensor  
 
 #----------------------------IRSensor---------------------------
     def callbackIR(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.IRSensor=value
         self.callback=False
 
@@ -211,12 +219,12 @@ class Robot(Client):
         self.bot.requestIROnBoard("callbackIR")
         while self.callback:
             sleep(0.01)
-        print( self.IRSensor)
+        if self.debug: print( self.IRSensor)
         return self.IRSensor 
 
 #---------------------------Controller---------------------------
     def callbackController(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.controllerSensor=value
         self.callback=False
 
@@ -227,14 +235,14 @@ class Robot(Client):
         self.bot.requestButton(4,"callbackController")
         while self.callback:
             sleep(0.01)    
-        self.controllerSensor=intAbin( self.controllerSensor,8)
-        print( self.controllerSensor)
+        sensor=intAbin( self.controllerSensor,8)
+        if self.debug: print( sensor)
         for i,k in enumerate(IDButton):
-            if self.controllerSensor[i]=='1':
+            if sensor[i]=='1':
                 dicButton[k]=True
             else:
                 dicButton[k]=False
-        print(dicButton)    
+        if self.debug: print(dicButton)    
         return dicButton            
 
 #Funcion de conversión de int a binario

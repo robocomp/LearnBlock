@@ -13,16 +13,17 @@ import  time
 from learnbot_dsl.Clients.Third_Party.MLib.mBot import *
 
 L = 110
-MAXSPEED = 1000
 CONSVEL = 0.468
 CONSGIRO = 0.748
 
 
 class Robot(Client):
     def __init__(self):
-        Client.__init__(self, _miliseconds=10)
+        Client.__init__(self, _miliseconds=5)
+
+        self.debug=False
         
-        self.bot=mBot(self)
+        self.bot=mBot(self, self.debug)
         self.groundSensor={}
         self.distanceSensor=0
         self.lightSensor=0
@@ -46,7 +47,7 @@ class Robot(Client):
         self.start()
 
     def connectToRobot(self):
-        self.bot.startWithSerial("/dev/ttyUSB1")
+        self.bot.startWithSerial("/dev/ttyUSB2")
         self.bot.doMove(0,0) #parar la base
         time.sleep(0)
 
@@ -80,7 +81,7 @@ class Robot(Client):
 #############################SENSORES############################
 #-------------------------DistanceSensor---------------------------
     def callbackSonar(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.distanceSensor=value
         self.callback=False
 
@@ -90,7 +91,7 @@ class Robot(Client):
         while self.callback:
             sleep(0.01)
         self.distanceSensor=math.trunc(float(self.distanceSensor)*10.0) 
-        print( self.distanceSensor)
+        if self.debug: print( self.distanceSensor)
         return {"front": [ self.distanceSensor],  # The values must be in mm
                 "left": [2000],
                 "right": [2000],
@@ -98,7 +99,7 @@ class Robot(Client):
 
 #---------------------------LineSensor---------------------------
     def callbackGroundSensor(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.groundSensor=value
         self.callback=False
 
@@ -110,18 +111,18 @@ class Robot(Client):
         while self.callback:
             sleep(0.01)
         self.groundSensor=floatAbin( self.groundSensor,2)
-        print( self.groundSensor)
+        if self.debug: print( self.groundSensor)
         for i,k in enumerate(IDGround):
             if self.groundSensor[i]=='1':
                 dicGround[k]=100
             else:
                 dicGround[k]=0
-        print(dicGround) 
+        if self.debug: print(dicGround) 
         return dicGround 
 
 #--------------------------LightSensor---------------------------
     def callbackLightSensor(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.lightSensor=value
         self.callback=False
 
@@ -130,12 +131,12 @@ class Robot(Client):
         self.bot.requestLight("callbackLightSensor")
         while self.callback:
             sleep(0.01)
-        print( self.lightSensor)
+        if self.debug: print( self.lightSensor)
         return self.lightSensor  
 
 #----------------------------IRSensor---------------------------
     def callbackIR(self,value):
-        print("efectuando callback")
+        if self.debug: print("efectuando callback")
         self.IRSensor=value
         self.callback=False
 
@@ -144,7 +145,7 @@ class Robot(Client):
         self.bot.requestIROnBoard("callbackIR")
         while self.callback:
             sleep(0.01)
-        print( self.IRSensor)
+        if self.debug: print( self.IRSensor)
         return self.IRSensor 
            
 

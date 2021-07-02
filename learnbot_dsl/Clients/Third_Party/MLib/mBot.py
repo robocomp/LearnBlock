@@ -10,7 +10,8 @@ import threading
 
 class mSerial():
     ser = None
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.debug=debug
         sleep(0)
 
     def start(self, port):
@@ -40,7 +41,7 @@ class mSerial():
         return result
 
     def writePackage(self,package):
-        print(package.hex())
+        if self.debug: print(package.hex())
         self.ser.write(package)
         sleep(0.01)
 
@@ -57,7 +58,7 @@ class mSerial():
         self.ser.close()
         
 class mBot():
-    def __init__(self,obj):
+    def __init__(self, obj, debug=False):
         signal.signal(signal.SIGINT, self.exit)
         self.manager = Manager()
         self.__selectors = self.manager.dict()
@@ -67,11 +68,12 @@ class mBot():
         self.exiting = False
         self.isParseStartIndex = 0
         self.obj=obj
+        self.debug=debug
 
         
     def startWithSerial(self, port):
         print("create serial")
-        self.device = mSerial()
+        self.device = mSerial(self.debug)
         self.device.start(port)
         self.start()
     
@@ -87,6 +89,7 @@ class mBot():
         th.start()
         
     def close(self):
+        print("Close port")
         self.device.close()
         
     def exit(self, signal, frame):
@@ -95,6 +98,7 @@ class mBot():
         
     def __onRead(self,callback):
         while 1:
+            if self.debug: print("Estado del puerto en read:",self.device.isOpen())
             if self.exiting:
                 break
             if self.device.isOpen():
@@ -167,7 +171,7 @@ class mBot():
     Desc:
     '''
     def doBuzzer(self,buzzer,time=0):
-        print("write")
+        if self.debug: print("write")
         # self.__writePackage(bytearray([0xff,0x55,0x7,0x0,0x2,0x22]+self.short2bytes(buzzer)+self.short2bytes(time)))
         # self.__writePackage(bytearray([0xff,0x55,0x6,0x0,0x2,0x22, 0x9, 0x0, 0xa]))#+self.short2bytes(buzzer)+self.short2bytes(time)))
         b1 = bytearray([0xff,0x55,0x7,0x0,0x2,0x22])
@@ -232,6 +236,7 @@ class mBot():
                 self.isParseStartIndex = bufferLength-2    
             if (self.buffer[bufferLength-1]==0xa and self.buffer[bufferLength-2]==0xd and self.isParseStart==True):            
                 self.isParseStart = False
+                if self.debug: print("estado del buffer: ",self.buffer)
                 position = self.isParseStartIndex+2
                 extID = self.buffer[position]
                 position+=1
@@ -278,7 +283,7 @@ class mBot():
         fun(value)  
         
     def __doCallback(self, extID, callback):
-        print ("Callback: ",callback)
+        if self.debug: print ("Callback: ",callback)
         self.__selectors["callback_"+str(extID)] = callback
 
     def float2bytes(self,fval):

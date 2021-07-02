@@ -11,7 +11,8 @@ import threading
 
 class mSerial():
     ser = None
-    def __init__(self):
+    def __init__(self,debug=False):
+        self.debug=debug
         sleep(0)
 
     def start(self, port):
@@ -41,7 +42,7 @@ class mSerial():
         return result
 
     def writePackage(self,package):
-        print(package.hex())
+        if self.debug: print(package.hex())
         self.ser.write(package)
         sleep(0.01)
 
@@ -58,7 +59,7 @@ class mSerial():
         self.ser.close()
         
 class MIOBot():
-    def __init__(self,obj):
+    def __init__(self,obj,debug=False):
         signal.signal(signal.SIGINT, self.exit)
         self.manager = Manager()
         self.__selectors = self.manager.dict()
@@ -68,10 +69,11 @@ class MIOBot():
         self.exiting = False
         self.isParseStartIndex = 0
         self.obj=obj
+        self.debug=debug
         
     def startWithSerial(self, port):
         print("create serial")
-        self.device = mSerial()
+        self.device = mSerial(self.debug)
         self.device.start(port)
         self.start()
     
@@ -97,9 +99,9 @@ class MIOBot():
         
     def __onRead(self,callback):
         while 1:
+            if self.debug: print("Estado del puerto en read:",self.device.isOpen())
             if self.exiting:
                 break
-            #print("Estado del puerto en read:",self.device.isOpen())
             if self.device.isOpen():
                 n = self.device.inWaiting()
                 for i in range(n):
@@ -174,7 +176,7 @@ class MIOBot():
     Pre: Sonido in tones
     '''
     def doBuzzer(self,sonido):
-        print("sound: ",sonido)
+        if self.debug: print("sound: ",sonido)
         tones ={"Do":2,"Re":3,"Mi":4,"Fa":5,"Sol":6,"La":7,"Si":8,"Warm":9,"Like":8,
                 "Curious":11,"Surprised":12,"Angry":13,"Tired":15,"Mio!":16,
                 "Doreaemon":17,"London bridge":18, "Merry christmas":19,"Smurfs":20,"Stop":21}
@@ -227,8 +229,8 @@ class MIOBot():
             val=0
             for y in range(8):
                 val=val+icon[y][x]*2**(7-y)
-                #print(icon[y][x], end="")
-           # print()
+                #if self.debug: print(icon[y][x], end="")
+           # if self.debug: print()
             b1.append(val)
         b1.append(self.limit(7,0,brillo))
         self.__writePackage(b1)
@@ -336,7 +338,6 @@ class MIOBot():
         self.__writePackage(bytearray([0xff,0x55,0x5,self.limit(254,0,extID),0x1,0x17,self.limit(4,1,port),0x0]))
 
     def onParse(self, byte):
-        #print("estado del buffer",self.buffer)
         position = 0
         value = 0    
         self.buffer+=[byte]
@@ -347,6 +348,7 @@ class MIOBot():
                 self.isParseStartIndex = bufferLength-2    
             if (self.buffer[bufferLength-1]==0xa and self.buffer[bufferLength-2]==0xd and self.isParseStart==True):            
                 self.isParseStart = False
+                if self.debug: print("estado del buffer: ",self.buffer)
                 position = self.isParseStartIndex+2
                 extID = self.buffer[position]
                 position+=1
@@ -394,7 +396,7 @@ class MIOBot():
 
 
     def __doCallback(self, extID, callback,):
-        print ("Callback: ",callback)
+        if self.debug: print ("Callback: ",callback)
         self.__selectors["callback_"+str(extID)] = callback
 
     def float2bytes(self,fval):
