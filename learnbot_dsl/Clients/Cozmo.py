@@ -20,6 +20,7 @@ def cozmo_program(_robot: cozmoR.robot.Robot):
         pass
 
 class Robot(Client):
+    devicesAvailables = ["base", "camera", "display", "jointmotor", "groundsensors", "acelerometer", "gyroscope", "speaker"]
 
     def __init__(self):
         global cozmo
@@ -43,6 +44,8 @@ class Robot(Client):
         self.current_pose_angle = 0
         self.vueltas = 0
         self.last_pose_read = 0
+        self.CozmoBehaviors = {}
+        self.setBehaviors()
         self.start()
 
     def connectToRobot(self):
@@ -95,6 +98,7 @@ class Robot(Client):
         if trigger is not None:
             self.cozmo.play_anim_trigger(trigger, in_parallel=True, ignore_body_track=True,
                                          ignore_head_track=True, ignore_lift_track=True)
+            self.cozmo.wait_for_all_actions_completed()
 
     def deviceReadGyroscope(self):
         rz_n = self.cozmo.pose.rotation.angle_z.degrees
@@ -151,6 +155,26 @@ class Robot(Client):
             r_wheel_speed = SAdv * K
         self.cozmo.drive_wheel_motors(r_wheel_speed, l_wheel_speed, 0, 0)
 
+    def setBehaviors(self):
+        self.CozmoBehaviors["bored"] = cozmoR.anim.Triggers.CodeLabBored
+        self.CozmoBehaviors["cat"] = cozmoR.anim.Triggers.CodeLabCat
+        self.CozmoBehaviors["dance_mambo"] = cozmoR.anim.Triggers.DanceMambo
+        self.CozmoBehaviors["dog"] = cozmoR.anim.Triggers.CodeLabDog
+        self.CozmoBehaviors["duck"] = cozmoR.anim.Triggers.CodeLabDuck
+        self.CozmoBehaviors["elephant"] = cozmoR.anim.Triggers.CodeLabElephant
+        self.CozmoBehaviors["idle"] = cozmoR.anim.Triggers.CodeLabIdle
+        self.CozmoBehaviors["sheep"] = cozmoR.anim.Triggers.CodeLabSheep
+        self.CozmoBehaviors["sleep"] = cozmoR.anim.Triggers.CodeLabSleep
+        self.CozmoBehaviors["sneeze"] = cozmoR.anim.Triggers.CodeLabSneeze
+        self.CozmoBehaviors["zombie"] = cozmoR.anim.Triggers.CodeLabZombie
+
+
+    def sendBehaviour(self, bhv):
+        if bhv in self.CozmoBehaviors.keys():
+            self.cozmo.wait_for_all_actions_completed()
+            self.cozmo.play_anim_trigger(self.CozmoBehaviors[bhv])
+#            self.cozmo.wait_for_all_actions_completed()
+      
 
 if __name__ == '__main__':
     robot = Robot()
