@@ -234,6 +234,10 @@ class Call(Node):
         function = self.function.to_python(gen)
         args = [arg.to_python(gen) for arg in self.args]
 
+        global usedFunctions
+        if function not in usedFunctions:
+            usedFunctions.append(function)
+
         return f'robot.{function}({", ".join(args)})'
 
     def typecheck(self, ctx):
