@@ -108,7 +108,7 @@ class Robot(Client):
             self.vueltas = self.vueltas+np.sign(self.last_pose_read-rz_n)
         self.last_pose_read = rz_n
         rz = rz_n - self.current_pose_angle + self.vueltas*360
-        print("Cozmo gyro", rz_n, rz)
+        # print("Cozmo gyro", rz_n, rz)
         return int(-rz)
 
     def deviceResetGyroscope(self):
