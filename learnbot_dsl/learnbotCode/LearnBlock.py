@@ -93,7 +93,7 @@ class DownloadingWindow(QtWidgets.QWidget):
 
 def internet_on():
     try:
-        urlopen('http://216.58.192.142', timeout=1)
+        urlopen('http://google.com', timeout=1)
         return True
     except URLError as err:
         return False
@@ -954,6 +954,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         if self.hilo is not None:
             p = self.hilo.poll()
             if p is not None:
+                stdout = self.hilo.communicate('through stdin to stdout\n')[0]                
                 self.disablestartButtons(False)
                 self.hilo = None
                 print("returned value", p)
@@ -968,6 +969,8 @@ class LearnBlock(QtWidgets.QMainWindow):
                     msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                     msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                     msgBox.exec_()
+                print('************* SUBPROCESS OUTPUT *************')
+                print(stdout.strip())
 
     def textCodeToPython(self, name_Client):
         textCode = self.ui.textCode.toPlainText()
