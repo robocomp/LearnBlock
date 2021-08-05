@@ -34,9 +34,6 @@ if __name__ == "__main__":
     # Initialize the communicator of Ice
     ic = Ice.initialize(sys.argv)
 
-    # Uncomment the following line to open automatically the component
-    #subprocess.Popen("/home/alejandro/LearnBlock/learnbot_dsl/components/Detection/src/detectioncomponent.py", shell=True, stdout=subprocess.PIPE)
-
     # Connecting to the component in the port 10010 of localhost
     component_proxy = connectComponent(ic, "detectioncomponent:tcp -h localhost -p 10010", DetectionComponentPrx,10)
 
