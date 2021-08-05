@@ -1,4 +1,4 @@
-# detection
+# Detection Component
 Intro to component here
 
 
