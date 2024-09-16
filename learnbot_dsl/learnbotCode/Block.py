@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 import copy
-from PySide2 import QtCore
+from PySide6 import QtCore
 
 import cv2
 import numpy as np
@@ -112,22 +112,22 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
     varText = ""
     if not isinstance(vars_, list):
         vars_ = []
-    if type_ in [FUNTION, USERFUNCTION, LIBRARY] or (type_ is CONTROL and len(vars_) is not 0):
+    if type_ in [FUNTION, USERFUNCTION, LIBRARY] or (type_ is CONTROL and len(vars_) != 0):
         varText = "(" + ", ".join(vars_) + ")"
-    elif type_ is VARIABLE:
-        if len(vars_) is not 0:
+    elif type_ == VARIABLE:
+        if len(vars_) != 0:
             for var in vars_:
                 varText = str(var)
                 break
     text = name + varText
 
     textSize = (len(text) * sizeleter)
-    if textSize is 0:
+    if textSize == 0:
         textSize = 22
     nameControlSize = (len(nameControl) * sizeleter)
 
 
-    if typeBlock is COMPLEXBLOCK:
+    if typeBlock == COMPLEXBLOCK:
         left = img[0:img.shape[0], 0:60]
         right = img[0:img.shape[0], img.shape[1] - 10:img.shape[1]]
         line = img[0:img.shape[0], 72:73]
@@ -167,11 +167,11 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
     if connections is not None and len(connections) > 0:
         if not isinstance(connections[0], Connection):
             for point, t in connections:
-                if t is RIGHT:
+                if t == RIGHT:
                     point.setX(im.shape[1] - 5)
         else:
             for c in connections:
-                if c.getType() is RIGHT:
+                if c.getType() == RIGHT:
                     c.getPoint().setX(im.shape[1] - 5)
     return im
 

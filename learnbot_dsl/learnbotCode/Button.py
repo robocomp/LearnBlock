@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, absolute_import
 import os, binascii
-from PySide2 import QtGui, QtWidgets
+from PySide6 import QtGui, QtWidgets
 
 from learnbot_dsl.learnbotCode.AbstractBlock import *
 from learnbot_dsl.learnbotCode.Language import getLanguage
@@ -17,9 +17,9 @@ def str2hex(text):
 class Block_Button(QtWidgets.QPushButton):
 
     def __init__(self, args):
-        if len(args) is 14:
+        if len(args) == 14:
             self.__parent, self.__text, self.__dicTrans, self.hue, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType, self.__table, self.__row, self.__type, self.__dicToolTip = args
-        elif len(args) is 6:
+        elif len(args) == 6:
             self.__parent, abstracBlock, self.__view, self.__scene, self.__table, self.__row = args
             self.__text = abstracBlock.name
             self.__dicTrans = abstracBlock.dicTrans
@@ -51,7 +51,7 @@ class Block_Button(QtWidgets.QPushButton):
             t = [c.getType() for c in self.__connections]
         tmpFile = self.__text + str(self.__type) + str(self.__blockType) + str(len(self.__connections)) + "".join(map(str, t)) + getLanguage()
         self.tmpFile = os.path.join(tempfile.gettempdir(), "." + str2hex(tmpFile) + ".png")
-        if len(self.__dicTrans) is not 0:
+        if len(self.__dicTrans) != 0:
             self.showtext = self.__dicTrans[getLanguage()]
         else:
             self.showtext = self.__text
@@ -68,7 +68,7 @@ class Block_Button(QtWidgets.QPushButton):
             r, g, b = cv2.split(im)
             im = cv2.merge((r, g, b, a))
             var = []
-            if self.__type is not VARIABLE:
+            if self.__type != VARIABLE:
                 for x in self.__vars:
                     try:
                         if getLanguage() in x.translate:
@@ -101,10 +101,10 @@ class Block_Button(QtWidgets.QPushButton):
     def updateToolTip(self):
         try:
             text = ""
-            if len(self.__dicToolTip) is not 0:
+            if len(self.__dicToolTip) != 0:
                 text = self.__dicToolTip[getLanguage()]
             sizeline = 0
-            if len(self.__dicTrans) is not 0:
+            if len(self.__dicTrans) != 0:
                 textout = self.__dicTrans[getLanguage()] + ": "
             else:
                 textout = self.__text + ": "
@@ -133,7 +133,7 @@ class Block_Button(QtWidgets.QPushButton):
             traceback.print_exc()
 
     def updateImg(self):
-        if len(self.__dicTrans) is not 0 and self.showtext is not self.__dicTrans[getLanguage()]:
+        if len(self.__dicTrans) != 0 and self.showtext != self.__dicTrans[getLanguage()]:
             self.loadImg()
             self.updateToolTip()
 
