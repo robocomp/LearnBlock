@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-from PySide2 import QtGui, QtCore
+from PySide6 import QtGui, QtCore
 reserved_words = ['def', '=', 'function', '>=', '<=',
     '<', '>', 'deactivate', 'activate', 'not', 'True',
     'False', 'or', 'and', 'main', 'if', 'else',
@@ -47,7 +47,7 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                       "\\bend\\b",
                       "\\b,\\b",
                       ]
-        self.highlightingRules = [(QtCore.QRegExp(pattern), keywordFormat) for pattern in keywordsOrange]
+        self.highlightingRules = [(QtCore.QRegularExpression(pattern), keywordFormat) for pattern in keywordsOrange]
 
         keywordFormatMagenta = QtGui.QTextCharFormat()
         keywordFormatMagenta.setForeground(QtGui.QBrush(QtGui.QColor(230, 0, 162, 255)))
@@ -58,17 +58,17 @@ class Highlighter(QtGui.QSyntaxHighlighter):
                       "\\bor\\b",
                       "\\band\\b"
                       ]
-        self.highlightingRules += [(QtCore.QRegExp(pattern), keywordFormatMagenta) for pattern in keywordsMagenta]
+        self.highlightingRules += [(QtCore.QRegularExpression(pattern), keywordFormatMagenta) for pattern in keywordsMagenta]
 
         numberFormat = QtGui.QTextCharFormat()
         numberFormat.setForeground(QtGui.QBrush(QtGui.QColor(31, 166, 255, 255)))
-        self.highlightingRules.append((QtCore.QRegExp("\\b[0-9]+.[0-9]+\\b"), numberFormat))
-        self.highlightingRules.append((QtCore.QRegExp("\\b[0-9]+\\b"), numberFormat))
+        self.highlightingRules.append((QtCore.QRegularExpression("\\b[0-9]+.[0-9]+\\b"), numberFormat))
+        self.highlightingRules.append((QtCore.QRegularExpression("\\b[0-9]+\\b"), numberFormat))
 
 
         singleLineCommentFormat = QtGui.QTextCharFormat()
         singleLineCommentFormat.setForeground(QtCore.Qt.lightGray)
-        self.highlightingRules.append((QtCore.QRegExp("#[^\n]*"),
+        self.highlightingRules.append((QtCore.QRegularExpression("#[^\n]*"),
                 singleLineCommentFormat))
 
         self.multiLineCommentFormat = QtGui.QTextCharFormat()
@@ -76,41 +76,53 @@ class Highlighter(QtGui.QSyntaxHighlighter):
 
         quotationFormat = QtGui.QTextCharFormat()
         quotationFormat.setForeground(QtCore.Qt.green)
-        self.highlightingRules.append((QtCore.QRegExp("\".*\""),
+        self.highlightingRules.append((QtCore.QRegularExpression("\".*\""),
                 quotationFormat))
 
         functionFormat = QtGui.QTextCharFormat()
         functionFormat.setFontItalic(False)
         # functionFormat.setForeground(QtGui.QBrush(QtGui.QColor(242, 185, 0, 255)))
         functionFormat.setForeground(QtGui.QBrush(QtGui.QColor(230, 190, 71, 255)))
-        self.highlightingRules.append((QtCore.QRegExp("\\b[A-Za-z0-9_]+(?=\\()"),
+        self.highlightingRules.append((QtCore.QRegularExpression("\\b[A-Za-z0-9_]+(?=\\()"),
                 functionFormat))
 
-        self.commentStartExpression = QtCore.QRegExp("'''")
-        self.commentEndExpression = QtCore.QRegExp("'''")
+        self.commentStartExpression = QtCore.QRegularExpression("'''")
+        self.commentEndExpression = QtCore.QRegularExpression("'''")
 
     def highlightBlock(self, text):
+        # Inicializar todo el bloque con el color blanco
         self.setFormat(0, len(text), QtCore.Qt.white)
+
+        # Aplicar las reglas de resaltado
         for pattern, format in self.highlightingRules:
-            expression = QtCore.QRegExp(pattern)
-            index = expression.indexIn(text)
+            # Cambiar QRegExp por QRegularExpression
+            expression = QtCore.QRegularExpression(pattern)
+            match = expression.match(text)
+            index = match.capturedStart()
+            
             while index >= 0:
-                length = expression.matchedLength()
+                length = match.capturedLength()
                 self.setFormat(index, length, format)
-                index = expression.indexIn(text, index + length)
+                # Buscar la siguiente coincidencia
+                match = expression.match(text, index + length)
+                index = match.capturedStart()
+
         self.setCurrentBlockState(0)
 
+        # Manejo de comentarios multilínea
         startIndex = 0
         if self.previousBlockState() != 1:
-            startIndex = self.commentStartExpression.indexIn(text)
+            startIndex = self.commentStartExpression.match(text).capturedStart()
+
         while startIndex >= 0:
-            endIndex = self.commentEndExpression.indexIn(text, startIndex+3)
+            endMatch = self.commentEndExpression.match(text, startIndex + 3)
+            endIndex = endMatch.capturedStart()
+
             if endIndex == -1:
                 self.setCurrentBlockState(1)
                 commentLength = len(text) - startIndex
             else:
-                commentLength = endIndex - startIndex + self.commentEndExpression.matchedLength()
+                commentLength = endIndex - startIndex + endMatch.capturedLength()
 
-            self.setFormat(startIndex, commentLength,self.multiLineCommentFormat)
-
-            startIndex = self.commentStartExpression.indexIn(text, startIndex + commentLength + 3)
+            self.setFormat(startIndex, commentLength, self.multiLineCommentFormat)
+            startIndex = self.commentStartExpression.match(text, startIndex + commentLength + 3).capturedStart()

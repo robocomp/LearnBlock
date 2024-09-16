@@ -8,12 +8,12 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide2.QtCore import (QCoreApplication, QDate, QDateTime, QMetaObject,
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QMetaObject,
     QObject, QPoint, QRect, QSize, QTime, QUrl, Qt)
-from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter,
-    QPixmap, QRadialGradient)
-from PySide2.QtWidgets import *
+    QPixmap, QRadialGradient, QAction)
+from PySide6.QtWidgets import *
 
 from learnbot_dsl.learnbotCode.CodeEdit import CodeEdit
 
@@ -403,7 +403,7 @@ class Ui_MainWindow(object):
         font1.setPointSize(9)
         font1.setBold(False)
         font1.setItalic(False)
-        font1.setWeight(50)
+        font1.setWeight(QFont.Weight(50))
         font1.setStrikeOut(False)
         font1.setKerning(True)
         self.functions.setFont(font1)

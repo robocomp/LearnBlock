@@ -63,7 +63,7 @@ else:
 # Ctrl+c handling
 import signal
 
-from PySide2 import QtGui, QtCore
+from PySide6 import QtGui, QtCore
 
 from learnbot_dsl.components.emotionrecognition2.src.specificworker import *
 

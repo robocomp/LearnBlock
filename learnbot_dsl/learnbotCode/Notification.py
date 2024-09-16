@@ -1,7 +1,7 @@
 from learnbot_dsl.learnbotCode.CodeEdit import *
 from learnbot_dsl.learnbotCode.Highlighter import *
 from enum import Enum, auto
-from PySide2 import QtWidgets
+from PySide6 import QtWidgets
 
 class Severity(Enum):
     WARNING = auto()

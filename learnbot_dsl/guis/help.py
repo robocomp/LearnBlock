@@ -4,11 +4,11 @@
 # licensing of 'help.ui' applies.
 #
 # Created: Fri Nov  8 18:48:53 2019
-#      by: pyside2-uic  running on PySide2 5.12.2
+#      by: pyside6-uic  running on PySide6 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 class Ui_Help(object):
     def setupUi(self, Help):

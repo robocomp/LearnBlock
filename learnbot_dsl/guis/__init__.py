@@ -11,9 +11,9 @@ if __name__ == '__main__':
         absPath = os.path.abspath(x)
         if os.path.isfile(absPath) and extension == ".ui":
             if not os.path.exists(name + ".py") or os.path.getmtime(absPath) > os.path.getmtime(name + ".py"):
-                if call(["pyside2-uic", "-o", name + ".py", absPath]) is 1:
+                if call(["pyside6-uic", "-o", name + ".py", absPath]) is 1:
                     print("Error al generar ", name)
                     exit(-1)
                 else:
-                    print("pyside2-uic", "-o", os.path.splitext(x)[-1] + ".py", x + "    successfully")
+                    print("pyside6-uic", "-o", os.path.splitext(x)[-1] + ".py", x + "    successfully")
 

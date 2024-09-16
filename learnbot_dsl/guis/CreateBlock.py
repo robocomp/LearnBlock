@@ -4,11 +4,11 @@
 # licensing of 'CreateBlock.ui' applies.
 #
 # Created: Sun Sep  8 19:09:48 2019
-#      by: pyside2-uic  running on PySide2 5.12.2
+#      by: pyside6-uic  running on PySide6 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):

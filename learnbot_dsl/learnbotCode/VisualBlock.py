@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-from PySide2 import QtGui,QtCore,QtWidgets
+from PySide6 import QtGui,QtCore,QtWidgets
 from math import *
 import pickle, os, json
 import learnbot_dsl.guis.EditVar as EditVar
@@ -272,21 +272,21 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         self.keyPressEater = KeyPressEater(self.popMenu)
         self.popMenu.installEventFilter(self.keyPressEater)
 
-        action1 = QtWidgets.QAction(self.tr('Edit'), self)
+        action1 = QtGui.QAction(self.tr('Edit'), self)
         action1.triggered.connect(self.on_clicked_menu_edit)
         self.popMenu.addAction(action1)
         if self.parentBlock.name not in ["main", "when"]:
             if self.parentBlock.type is USERFUNCTION and self.parentBlock.typeBlock is COMPLEXBLOCK:
-                action3 = QtWidgets.QAction(self.tr('Export Block'), self)
+                action3 = QtGui.QAction(self.tr('Export Block'), self)
                 action3.triggered.connect(self.on_clicked_menu_export_block)
                 self.popMenu.addAction(action3)
             else:
-                action0 = QtWidgets.QAction(self.tr('Duplicate'), self)
+                action0 = QtGui.QAction(self.tr('Duplicate'), self)
                 action0.triggered.connect(self.on_clicked_menu_duplicate)
                 self.popMenu.addAction(action0)
 
         self.popMenu.addSeparator()
-        action2 = QtWidgets.QAction(self.tr('Delete'), self)
+        action2 = QtGui.QAction(self.tr('Delete'), self)
         action2.triggered.connect(self.on_clicked_menu_delete)
         # action2.installEventFilter(self.keyPressEater)
         self.popMenu.addAction(action2)

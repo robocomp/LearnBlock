@@ -1,6 +1,6 @@
 from learnbot_dsl.guis.EditDictionaryTags import Ui_EditDictionaryTags
-from PySide2.QtWidgets import QApplication, QDialog, QLineEdit, QFileDialog
-from PySide2.QtGui import QIntValidator
+from PySide6.QtWidgets import QApplication, QDialog, QLineEdit, QFileDialog
+from PySide6.QtGui import QIntValidator
 import sys, json, os
 
 pathAprildict = os.path.join(os.getenv('HOME'), ".learnblock", "AprilDict.json")

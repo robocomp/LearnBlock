@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 import os, tempfile, json, sys
-from PySide2 import QtGui, QtWidgets, QtCore, Qt
+from PySide6 import QtGui, QtWidgets, QtCore, Qt
 import learnbot_dsl.guis.CreateBlock as CreateBlock
 from learnbot_dsl.blocksConfig.blocks import pathBlocks
 from learnbot_dsl.blocksConfig.parserConfigBlock import pathConfig

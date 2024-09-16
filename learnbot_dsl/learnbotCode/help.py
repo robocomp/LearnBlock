@@ -2,7 +2,7 @@
 from __future__ import print_function
 import learnbot_dsl
 from learnbot_dsl.guis.help import *
-from PySide2 import QtCore, QtGui, QtWebEngineWidgets, QtWidgets
+from PySide6 import QtCore, QtGui, QtWebEngineWidgets, QtWidgets
 import sys, os, markdown
 # path = os.path.dirname(os.path.realpath(__file__))
 from builtins import str

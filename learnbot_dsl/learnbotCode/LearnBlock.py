@@ -352,7 +352,10 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.confBlocksPath = None
         self.loadConfigFile()
         self.menuOpenRecent = QtWidgets.QMenu()
-        self.ui.actionOpen_Recent.setMenu(self.menuOpenRecent)
+        # self.ui.actionOpen_Recent.setMenu(self.menuOpenRecent)
+
+        self.menuOpenRecent.addAction(self.ui.actionOpen_Recent)
+        self.menuOpenRecent.addMenu(self.menuOpenRecent)
 
         self.updateOpenRecent()
         self.updateClients()
@@ -573,7 +576,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 break
             name, _ = os.path.splitext(f)
             name = os.path.basename(name)
-            qA = (QtWidgets.QAction(name, self.ui.actionOpen_Recent))
+            qA = (QtGui.QAction(name, self.ui.actionOpen_Recent))
             qA.setShortcut("Ctrl+Shift+" + str(i + 1))
             qA.setData(f)
             qA.triggered.connect(self.openProject)

@@ -20,7 +20,7 @@
 import sys, os, traceback, time, copy, json
 from random import randint
 
-from PySide2 import QtGui, QtCore
+from PySide6 import QtGui, QtCore
 from genericworker import *
 import numpy as np
 import cv2

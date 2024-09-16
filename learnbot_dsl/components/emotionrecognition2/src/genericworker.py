@@ -18,7 +18,7 @@
 from __future__ import print_function, absolute_import
 
 import sys, Ice, os
-from PySide2 import QtGui, QtCore
+from PySide6 import QtGui, QtCore
 
 #ROBOCOMP = ''
 #try:

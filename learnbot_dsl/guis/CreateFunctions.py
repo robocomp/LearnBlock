@@ -4,11 +4,11 @@
 # licensing of '/home/ivan/robocomp/components/learnbot/learnbot_dsl/guis/CreateFunctions.ui' applies.
 #
 # Created: Thu Mar  7 12:39:25 2019
-#      by: pyside2-uic  running on PySide2 5.12.1
+#      by: pyside6-uic  running on PySide6 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):

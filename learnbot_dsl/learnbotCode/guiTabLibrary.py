@@ -1,6 +1,6 @@
 from __future__ import print_function, absolute_import
 import os, sys, json
-from PySide2 import QtGui, QtWidgets
+from PySide6 import QtGui, QtWidgets
 import learnbot_dsl.guis.TabLibrary as TabLibrary
 from learnbot_dsl.blocksConfig.parserConfigBlock import reload_functions
 from learnbot_dsl.blocksConfig.blocks import *

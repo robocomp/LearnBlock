@@ -17,7 +17,7 @@
 #    along with RoboComp.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys, Ice, os
-from PySide2 import QtGui, QtCore
+from PySide6 import QtGui, QtCore
 
 ROBOCOMP = ''
 try:

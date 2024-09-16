@@ -1,4 +1,4 @@
-from PySide2 import QtWidgets, QtGui, QtCore
+from PySide6 import QtWidgets, QtGui, QtCore
 from math import log10, ceil
 
 class CodeEdit(QtWidgets.QPlainTextEdit):
@@ -21,8 +21,8 @@ class CodeEdit(QtWidgets.QPlainTextEdit):
         def paintEvent(self, event):
             parent = self.parentWidget()
             painter = QtGui.QPainter(self)
-            background = self.palette().color(QtGui.QPalette.Background)
-            foreground = self.palette().color(QtGui.QPalette.Foreground)
+            background = self.palette().color(QtGui.QPalette.Window)
+            foreground = self.palette().color(QtGui.QPalette.WindowText)
             painter.fillRect(event.rect(), background)
 
             block = parent.firstVisibleBlock()

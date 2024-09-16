@@ -3,6 +3,7 @@ from math import *
 
 from learnbot_dsl.learnbotCode.VisualBlock import *
 from learnbot_dsl.blocksConfig import pathImgBlocks
+from PySide6.QtGui import QPixmap
 
 class MyScene(QtWidgets.QGraphicsScene):
 
@@ -18,10 +19,10 @@ class MyScene(QtWidgets.QGraphicsScene):
         self.timer.start(5)
         self.table = None
         self.posibleConnect = []
-        self.imgPosibleConnectH = QtWidgets.QGraphicsPixmapItem(os.path.join(pathImgBlocks, "ConnectH.png"))
+        self.imgPosibleConnectH = QtWidgets.QGraphicsPixmapItem(QPixmap(os.path.join(pathImgBlocks, "ConnectH.png")))
         super(MyScene, self).addItem(self.imgPosibleConnectH)
         self.imgPosibleConnectH.setVisible(False)
-        self.imgPosibleConnectV = QtWidgets.QGraphicsPixmapItem(os.path.join(pathImgBlocks, "ConnectV.png"))
+        self.imgPosibleConnectV = QtWidgets.QGraphicsPixmapItem(QPixmap(os.path.join(pathImgBlocks, "ConnectV.png")))
         super(MyScene, self).addItem(self.imgPosibleConnectV)
         self.imgPosibleConnectV.setVisible(False)
         self.dicBlockItem = {}

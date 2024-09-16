@@ -19,7 +19,7 @@
 
 import sys, os, traceback, time, copy, json
 
-from PySide2 import QtGui, QtCore
+from PySide6 import QtGui, QtCore
 from learnbot_components.emotionalMotor.src.genericworker import *
 from PIL import Image, ImageDraw
 # If RoboComp was compiled with Python bindings you can use InnerModel in Python
