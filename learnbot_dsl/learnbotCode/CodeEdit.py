@@ -1,4 +1,6 @@
 from PySide6 import QtWidgets, QtGui, QtCore
+from PySide6.QtWidgets import QTextEdit
+
 from math import log10, ceil
 
 class CodeEdit(QtWidgets.QPlainTextEdit):
