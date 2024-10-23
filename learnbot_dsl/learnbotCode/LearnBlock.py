@@ -47,7 +47,6 @@ import qdarkstyle
 
 path = os.path.dirname(os.path.realpath(__file__))
 
-
 class DownloadThread(QtCore.QThread):
     def __init__(self, url, tmp_file_name, downloading_window):
         QtCore.QThread.__init__(self)
@@ -62,7 +61,6 @@ class DownloadThread(QtCore.QThread):
             f.write(buffer)
         self.downloading_window.finish = True
         return
-
 
 class DownloadingWindow(QtWidgets.QWidget):
     def __init__(self, parent, text, title):
@@ -90,7 +88,6 @@ class DownloadingWindow(QtWidgets.QWidget):
         if self.finish:
             self.close()
 
-
 def internet_on():
     try:
         urlopen('http://google.com', timeout=1)
@@ -98,14 +95,11 @@ def internet_on():
     except URLError as err:
         return False
 
-
 # Create de streamer
 class MySignal(QtCore.QObject):
     signalUpdateStreamer = QtCore.Signal(QtGui.QImage)
 
-
 signal = None
-
 
 def on_message(client, userdata, message):
     global signal
@@ -122,17 +116,20 @@ def on_message(client, userdata, message):
 
 functionsCategories = ["control","operator","variables","functions"]
 
-text4Categories = {"ES": {"motor": "Motor",
-                "perceptual": "Percepción",
-                "proprioceptive": "Propiocepción",
-                "express": "Expresiones",
-                "others": "Otros"},
-              "EN": {"motor": "Motor",
-                "perceptual": "Perceptual",
-                "proprioceptive": "Proprioceptive",
-                "express": "Expresions",
-                "others": "Others"}
-              }
+text4Categories = {
+    "ES": {
+        "motor": "Motor",
+        "perceptual": "Percepción",
+        "proprioceptive": "Propiocepción",
+        "express": "Expresiones",
+        "others": "Otros"},
+    "EN": {
+        "motor": "Motor",
+        "perceptual": "Perceptual",
+        "proprioceptive": "Proprioceptive",
+        "express": "Expresions",
+        "others": "Others"}
+    }
 
 type2Values = {"control": (CONTROL, HUE_CONTROL),
                "motor": (FUNTION, HUE_MOTOR),
@@ -143,8 +140,13 @@ type2Values = {"control": (CONTROL, HUE_CONTROL),
                "others": (FUNTION, HUE_OTHERS)
                }
 
-
 class LearnBlock(QtWidgets.QMainWindow):
+    """
+    LearnBlock class manages the main interface and logic for the LearnBlock application,
+    handling UI components and interactions.
+    """
+
+    # Lists for managing various elements of the UI and functionality
     listNameUserFunctions = []
     listNameVars = []
     listNameBlock = []
@@ -157,6 +159,8 @@ class LearnBlock(QtWidgets.QMainWindow):
     listLibrary = []
     listLibraryWidget = []
     listNameLibraryFunctions = []
+
+    # Other instance variables
     __fileProject = None
     hilo = None
     rcisthread = None
@@ -166,55 +170,158 @@ class LearnBlock(QtWidgets.QMainWindow):
     dicTables = {}
     notifications = []
 
+
     def __init__(self):
+        """
+        Initialize the main window and set up signals, UI components, and translations.
+        """
         global signal
+
+        # Initialize signal
         self.signal = MySignal()
         self.signal.signalUpdateStreamer[QtGui.QImage].connect(self.readCamera)
         signal = self.signal
 
-        # Create the application
+        # Create the QApplication object
         self.app = QtWidgets.QApplication(sys.argv)
 
-        # Load tranlators
-        self.translators = {}
-        pathLanguages = {'EN': "t_en.qm", "ES": "t_es.qm"}
-        for k, v in iter(pathLanguages.items()):
-            translator = QtCore.QTranslator()
-            print('Localization loaded: ', os.path.join(path, "languages", v),
-                  translator.load(v, os.path.join(path, "languages")))
-            qttranslator = QtCore.QTranslator()
-            print('Localization loaded: ', os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath), "q" + v),
-                  qttranslator.load("q" + v, QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath)))
-            self.translators[k] = (translator, qttranslator)
-        self.currentTranslator = self.translators[getLanguage()]
+        self.configureApp()
 
-        # install translators
-        translator, qttranslator = self.translators[getLanguage()]
-        self.app.installTranslator(translator)
-        self.app.installTranslator(qttranslator)
-
-        self.app.setWindowIcon(QtGui.QIcon(os.path.join(path, 'Learnbot_ico.png')))
-
+        # Set up the main window
         self.Dialog = QtWidgets.QMainWindow()
         QtWidgets.QMainWindow.__init__(self)
         self.ui = Learnblock.Ui_MainWindow()
         self.ui.setupUi(self)
         self.setWindowTitle("LearnBlock3.0")
 
+        # Show the window maximized
         self.showMaximized()
 
+        # Load image buttons
+        self.loadIcon(self.ui.savepushButton, "save.png", (24, 22))
+        self.loadIcon(self.ui.openpushButton, "open.png", (24, 22))
+        self.loadIcon(self.ui.zoompushButton, "zoom.png", (30, 30))
+
+        # Disable start buttons
+        self.disablestartButtons(False)
+
+        # Scene and view setup
+        self.ui.splitter.splitterMoved.connect(self.resizeFunctionTab)
+        self.view = MyView(self, self.ui.frame)
+        self.view.setObjectName("view")
+        self.ui.verticalLayout_3.addWidget(self.view)
+        self.scene = MyScene(self, self.view)
+        self.view.setScene(self.scene)
+        self.view.show()
+        self.view.setZoom(False)
+
+        # Trigger initial tab change
+        self.tabChanged(self.ui.Tabwi.currentIndex())
+
+        self.connectUISignals()
+        self.setupTables()
+        self.setupSyntaxHighlighters()
+
+        # Initialize backup list and table visibility
+        self.listBackUps = []
+
+        self.ui.updatepushButton.setVisible(False)
+
+        # Handle recent files and temporary directories
+        self.openRecent = []
+        self.setupTempDirectories()
+
+        self.setupSplitter()
+
+        # Load configuration and recent files
+        self.confBlocksPath = None
+        self.loadConfigFile()
+        self.menuOpenRecent = QtWidgets.QMenu()
+        self.menuOpenRecent.addAction(self.ui.actionOpen_Recent)
+        self.menuOpenRecent.addMenu(self.menuOpenRecent)
+
+        self.updateOpenRecent()
+        self.updateClients()
+        self.load_blockConfigurations(self.confBlocksPath)
+        self.activeEvents(False)
+
+        # Setup camera scene
+        self.pmlast = None
+        self.setupCamera()
+
+        # Initialize project state
+        self.client = None
+        self.isOpen = True
+        self.savetmpProject()
+
+        # Check if any program is running periodically
+        timer = QtCore.QTimer(self)
+        timer.timeout.connect(self.checkProgramRunning)
+        timer.start(200)
+
+        # Start application loop
+        r = self.app.exec_()
+        sys.exit(r)
+
+    def setupSyntaxHighlighters(self):
+        # Syntax highlighting setup
+        self.highlighter = Highlighter(self.ui.textCode.document())
+        self.updateTextCodeStyle()
+        self.highlighter2 = Highlighter(self.ui.pythonCode.document())
+        self.updatePythonCodeStyle()
+
+    def setupSplitter(self):
+        # Splitter size configuration
+        new_sizes = self.ui.splitter.sizes()
+        total_size = sum(new_sizes)
+        self.ui.splitter.setSizes([233, total_size - 233])
+        self.pre_sizes = self.ui.splitter.sizes()
+
+    def setupCamera(self):
+        """
+        Sets up the camera view and scene.
+        """
+        self.cameraScene = QtWidgets.QGraphicsScene()
+        self.ui.cameragraphicsView.setScene(self.cameraScene)
+        # Initialize robot camera connection
+        self.connectCameraRobot()
+
+    def setupTables(self):
+        """
+        Configures all the tables in the dicTables dictionary.
+        """
+        # Initialize table configurations
+        self.dicTables = {
+            'control': self.ui.tableControl,
+            'operator': self.ui.tableOperadores,
+            'variables': self.ui.tableVariables,
+            'functions': self.ui.tableUserfunctions
+        }
+        for table_name, table in self.dicTables.items():
+            self.setupTable(table)
+
+    def connectUISignals(self):
+        """
+        Connects UI signals (buttons, sliders, etc.) to their respective functions.
+        """
+
+        # Connect UI buttons to respective functions
         self.ui.stopPushButton.clicked.connect(self.stopthread)
         self.ui.stoptextPushButton.clicked.connect(self.stopthread)
         self.ui.stopPythonPushButton.clicked.connect(self.stopthread)
 
+        # Starting buttons for different modes (block, text, python)
         self.ui.startpushButton.clicked.connect(lambda: self.startProgram(2))
         self.ui.starttextPushButton.clicked.connect(lambda: self.startProgram(1))
         self.ui.startPythonPushButton.clicked.connect(lambda: self.startProgram(0))
 
+        # Connect variable-related buttons
         self.ui.addVarPushButton.clicked.connect(self.newVariable)
         self.ui.addNumberpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(1))
         self.ui.addStringpushButton.clicked.connect(lambda: self.showGuiAddNumberOrString(2))
         self.ui.addWhenpushButton.clicked.connect(self.showGuiAddWhen)
+
+        # Connect other buttons
         self.ui.zoompushButton.clicked.connect(self.setZoom)
         self.ui.openpushButton.clicked.connect(self.openProject)
         self.ui.deleteVarPushButton.clicked.connect(self.deleteVar)
@@ -222,20 +329,29 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.createFunctionsPushButton.clicked.connect(self.newUserFunctions)
         self.ui.deleteFuntionsPushButton.clicked.connect(self.deleteUserFunctions)
         self.ui.savepushButton.clicked.connect(self.saveInstance)
+
+        # Checkbox event handler for enabling/disabling events
         self.ui.useEventscheckBox.stateChanged.connect(lambda: self.activeEvents(self.ui.useEventscheckBox.isChecked()))
+
+        # Handle language change
         self.ui.language.currentIndexChanged.connect(self.changeLanguage)
+
+        # Search functionality
         self.ui.SearchlineEdit.textChanged.connect(lambda: self.searchUpdate(self.ui.SearchlineEdit.text()))
+
+        # Other button handlers for configuration
         self.ui.addClientPushButton.clicked.connect(self.addClient)
         self.ui.configRobotPushButton.clicked.connect(self.configureRobot)
 
+        # Tab change handler
         self.ui.Tabwi.currentChanged.connect(self.tabChanged)
+
+        # Notification and text editor handlers
         self.ui.notificationList.itemDoubleClicked.connect(self.errorPressed)
         self.ui.textCode.cursorPositionChanged.connect(lambda: self.updateLineCol(self.ui.textCode))
         self.ui.pythonCode.cursorPositionChanged.connect(lambda: self.updateLineCol(self.ui.pythonCode))
 
-        self.tabChanged(self.ui.Tabwi.currentIndex())
-
-        # Actions
+        # Menu actions
         self.ui.actionCreate_New_block.triggered.connect(self.showCreateBlock)
         self.ui.actionSave.triggered.connect(self.saveInstance)
         self.ui.actionSave_As.triggered.connect(self.saveAs)
@@ -244,6 +360,8 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionSave_Block_Text_Code.triggered.connect(self.saveBlockTextCode)
         self.ui.actionLoad_Python_Code.triggered.connect(self.loadPythonCode)
         self.ui.actionSave_Python_Code.triggered.connect(self.savePythonCode)
+
+        # Additional robot controls
         self.ui.actionStart_components.triggered.connect(self.startRobot)
         self.ui.actionStart.triggered.connect(lambda: self.startProgram(self.ui.Tabwi.currentIndex()))
         self.ui.actionStart_Simulator.triggered.connect(self.startSimulatorRobot)
@@ -251,11 +369,17 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.actionReboot.triggered.connect(self.rebootRobot)
         self.ui.actionShutdown.triggered.connect(self.shutdownRobot)
         self.ui.actionNew_project.triggered.connect(self.newProject)
+
+        # Block library controls
         self.ui.actionLoad_Library.triggered.connect(self.addLibrary)
         self.ui.actionLoad_Sets_of_Blocks.triggered.connect(self.loadSetsOfBlocks)
         self.ui.actionAdd_Set_of_Blocks.triggered.connect(self.addSetOfBlocks)
+
+        # Update UI after all settings are applied
         self.ui.actionSelect_Visible_Blocks.triggered.connect(self.selectVisibleBlocks)
         self.ui.actionSave_Visible_Blocks.triggered.connect(self.saveVisibleBlocks)
+
+        # Action triggers
         self.ui.actionDownload_xmls.triggered.connect(self.downloadXMLs)
         self.ui.actionDownload_examples.triggered.connect(self.downloadExamples)
         self.ui.actionDownload_libraries.triggered.connect(self.downloadLibraries)
@@ -267,120 +391,102 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.textCode.textChanged.connect(self.updateTextCodeStyle)
         self.ui.actionDark.changed.connect(self.enbleDarkTheme)
 
+        # Redo, Undo, Stop, Blocks to Text, Help
         self.ui.actionRedo.triggered.connect(self.redo)
         self.ui.actionUndo.triggered.connect(self.undo)
         self.ui.actionStop.triggered.connect(self.stopthread)
         self.ui.actionBlocks_to_text.triggered.connect(self.blocksToText)
         self.ui.actionHelp.triggered.connect(self.openHelp)
-
-        # Load image buttons
-        self.ui.savepushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis, "save.png")))
-        self.ui.openpushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis, "open.png")))
-        self.ui.openpushButton.setFixedSize(QtCore.QSize(24, 22))
-        self.ui.savepushButton.setFixedSize(QtCore.QSize(24, 22))
-        self.ui.openpushButton.setIconSize(QtCore.QSize(24, 22))
-        self.ui.savepushButton.setIconSize(QtCore.QSize(24, 22))
-        self.ui.zoompushButton.setIcon(QtGui.QIcon(os.path.join(pathGuis, "zoom.png")))
-        self.ui.zoompushButton.setIconSize(QtCore.QSize(30, 30))
-        self.ui.zoompushButton.setFixedSize(QtCore.QSize(30, 30))
-
         self.ui.spinBoxPythonSize.valueChanged.connect(self.updatePythonCodeStyle)
         self.ui.pythonCode.textChanged.connect(self.updatePythonCodeStyle)
 
-        self.disablestartButtons(False)
-
-        self.ui.splitter.splitterMoved.connect(self.resizeFunctionTab)
-        self.view = MyView(self, self.ui.frame)
-        self.view.setObjectName("view")
-        self.ui.verticalLayout_3.addWidget(self.view)
-        self.scene = MyScene(self, self.view)
-        self.view.setScene(self.scene)
-        self.view.show()
-        self.view.setZoom(False)
-
+        # Scene actions
         self.ui.actionDuplicate.triggered.connect(self.scene.duplicateBlock)
         self.ui.actionEdit.triggered.connect(self.scene.editBlock)
         self.ui.actionDelete.triggered.connect(self.scene.deleteBlock)
         self.ui.actionExport_Block.triggered.connect(self.scene.exportBlock)
         self.ui.actionDictionary_Tags.triggered.connect(self.editDictTags)
 
+        # Block-to-text and Python button connections
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.ui.bt2pythonpushButton.clicked.connect(self.btToPython)
-        self.dicTables = {'control': self.ui.tableControl, 'operator': self.ui.tableOperadores,
-                          'variables': self.ui.tableVariables,
-                          'functions': self.ui.tableUserfunctions}
 
-# Test code for including new tabs associated to new types of blocks
-#        tableNew = QtWidgets.QTableWidget()
-#        self.ui.functions.addTab(tableNew, "new")
+    def configureApp(self):
+        """
+        Configures the application settings, including translators and window icons.
+        """
+        # Load language translators
+        self.translators = {}
+        languageFiles = {'EN': "t_en.qm", "ES": "t_es.qm"}  # Dictionary of language files
+        for langCode, fileName in languageFiles.items():
+            translator = QtCore.QTranslator()
+            print('Localization loaded: ', os.path.join(path, "languages", fileName),
+                  translator.load(fileName, os.path.join(path, "languages")))
+            qttranslator = QtCore.QTranslator()
+            print('Localization loaded: ',
+                  os.path.join(QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath), "q" + fileName),
+                  qttranslator.load("q" + fileName, QtCore.QLibraryInfo.location(QtCore.QLibraryInfo.TranslationsPath)))
+            self.translators[langCode] = (translator, qttranslator)
+        # Set current translator based on language preference
+        self.currentTranslator = self.translators[getLanguage()]
+        # Install translators in the application
+        translator, qttranslator = self.translators[getLanguage()]
+        self.app.installTranslator(translator)
+        self.app.installTranslator(qttranslator)
+        # Set window icon
+        self.app.setWindowIcon(QtGui.QIcon(os.path.join(path, 'Learnbot_ico.png')))
 
-        self.highlighter = Highlighter(self.ui.textCode.document())
-        self.updateTextCodeStyle()
-
-        self.highlighter2 = Highlighter(self.ui.pythonCode.document())
-        self.updatePythonCodeStyle()
-
-        self.listBackUps = []
-        for t in self.dicTables:
-            table = self.dicTables[t]
-            table.verticalHeader().setVisible(False)
-            table.horizontalHeader().setVisible(False)
-            table.setColumnCount(1)
-            table.setRowCount(0)
-
-        self.ui.updatepushButton.setVisible(False)
-
-        self.lopenRecent = []
-
+    def setupTempDirectories(self):
+        # Set the temporary directory for the application to a subdirectory in the user's home directory
         tempfile.tempdir = os.path.join(os.getenv('HOME'), ".learnblock")
+
+        # Check if the temporary directory already exists
         if not os.path.exists(tempfile.gettempdir()):
-            tempfile.tempdir = os.path.join(os.getenv('HOME'), ".learnblock")
+            # If it doesn't exist, create the main temporary directory
             os.mkdir(tempfile.gettempdir())
+
+            # Create a subdirectory for block files
             os.mkdir(os.path.join(tempfile.gettempdir(), "block"))
+
+            # Create a subdirectory for client files
             os.mkdir(os.path.join(tempfile.gettempdir(), "clients"))
+
+            # Copy the EBO.py and EBOv2.py file from the PATHCLIENT to the clients directory in the temp folder
             shutil.copyfile(os.path.join(PATHCLIENT, "EBO.py"),
                             os.path.join(os.getenv('HOME'), ".learnblock", "clients", "EBO.py"))
+            shutil.copyfile(os.path.join(PATHCLIENT, "EBOv2.py"),
+                            os.path.join(os.getenv('HOME'), ".learnblock", "clients", "EBOv2.py"))
+
+            # Create a subdirectory for function files
             os.mkdir(os.path.join(tempfile.gettempdir(), "functions"))
+
+            # Create an __init__.py file in the temporary directory to mark it as a package
             with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
-                f.write("")
+                f.write("")  # Write an empty file to indicate that this directory is a package
 
-        new_sizes = self.ui.splitter.sizes()
-        size = sum(new_sizes)
-        self.ui.splitter.setSizes([233, size - 233])
-        self.pre_sizes = self.ui.splitter.sizes()
+    def setupTable(self, table_widget):
+        """
+        Configures a QTableWidget by hiding headers and setting an initial column and row count.
 
-        self.confBlocksPath = None
-        self.loadConfigFile()
-        self.menuOpenRecent = QtWidgets.QMenu()
-        # self.ui.actionOpen_Recent.setMenu(self.menuOpenRecent)
+        :param table_widget: QTableWidget instance to configure.
+        """
+        table_widget.verticalHeader().setVisible(False)
+        table_widget.horizontalHeader().setVisible(False)
+        table_widget.setColumnCount(1)
+        table_widget.setRowCount(0)
 
-        self.menuOpenRecent.addAction(self.ui.actionOpen_Recent)
-        self.menuOpenRecent.addMenu(self.menuOpenRecent)
+    def loadIcon(self, button, icon_name, size):
+        """
+        Set an icon for a QPushButton with a given size.
 
-        self.updateOpenRecent()
-        self.updateClients()
-        self.load_blockConfigurations(self.confBlocksPath)
-        self.activeEvents(False)
-        self.pmlast = None
-        self.cameraScene = QtWidgets.QGraphicsScene()
-        self.ui.cameragraphicsView.setScene(self.cameraScene)
-
-        self.connectCameraRobot()
-
-        self.client = None
-        self.isOpen = True
-        self.savetmpProject()
-
-        # Execute the application
-        # subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
-        # subprocess.Popen("emotionrecognition2.py", shell=True, stdout=subprocess.PIPE)
-
-        timer = QtCore.QTimer(self)
-        timer.timeout.connect(self.checkProgramRunning)
-        timer.start(200)
-
-        r = self.app.exec_()
-        sys.exit(r)
+        :param button: QPushButton to which the icon will be applied.
+        :param icon_name: Filename of the icon (located in the pathGuis directory).
+        :param size: Tuple representing the size (width, height) of the icon and button.
+        """
+        icon_path = os.path.join(pathGuis, icon_name)
+        button.setIcon(QtGui.QIcon(icon_path))
+        button.setFixedSize(QtCore.QSize(*size))
+        button.setIconSize(QtCore.QSize(*size))
 
     def errorPressed(self, item):
         index = self.ui.notificationList.indexFromItem(item).row()
@@ -565,13 +671,13 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def updateOpenRecent(self):  # TODO Fixed line lambda
         if self.__fileProject is not None:
-            if self.__fileProject not in self.lopenRecent:
-                self.lopenRecent.insert(0, self.__fileProject)
+            if self.__fileProject not in self.openRecent:
+                self.openRecent.insert(0, self.__fileProject)
             else:
-                self.lopenRecent.insert(0, self.lopenRecent.pop(self.lopenRecent.index(self.__fileProject)))
+                self.openRecent.insert(0, self.openRecent.pop(self.openRecent.index(self.__fileProject)))
         self.menuOpenRecent.clear()
-        self.lopenRecent = [p for p in self.lopenRecent if os.path.exists(p)]
-        for f, i in zip(self.lopenRecent, range(len(self.lopenRecent))):
+        self.openRecent = [p for p in self.openRecent if os.path.exists(p)]
+        for f, i in zip(self.openRecent, range(len(self.openRecent))):
             if i == 9:
                 break
             name, _ = os.path.splitext(f)
@@ -656,7 +762,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 self.ui.language.setCurrentIndex(d[1])
                 self.libraryPath = d[2]
                 try:
-                    self.lopenRecent = d[3]
+                    self.openRecent = d[3]
                 except Exception as e:
                     pass
                 try:
@@ -689,7 +795,7 @@ class LearnBlock(QtWidgets.QMainWindow):
 
     def saveConfigFile(self):
         with open(self.confFile, 'wb') as fichero:
-            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.lopenRecent, self.ui.actionDark.isChecked(), self.confBlocksPath), fichero, protocol=0)
+            pickle.dump((self.workSpace, self.ui.language.currentIndex(), self.libraryPath, self.openRecent, self.ui.actionDark.isChecked(), self.confBlocksPath), fichero, protocol=0)
 
     def downloadLibraries(self):
         if internet_on():
