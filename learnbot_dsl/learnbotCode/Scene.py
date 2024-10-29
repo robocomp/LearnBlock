@@ -8,27 +8,72 @@ from PySide6.QtGui import QPixmap
 class MyScene(QtWidgets.QGraphicsScene):
 
     def __init__(self, parent, view):
+        """
+        Initializes the MyScene object, setting up the scene for the graphical interface.
+
+        Parameters:
+        - parent: The parent widget of the scene, typically the main application window.
+        - view: The view associated with this scene, which displays the graphical elements.
+        """
+
+        # Store a reference to the parent widget for access to its methods and properties
         self.parent = parent
+
+        # Flag indicating whether the scene should be saved; initially set to False
         self.shouldSave = False
+
+        # Store a reference to the view, allowing access to view-specific methods
         self.view = view
+
+        # Initialize the base QGraphicsScene with the parent
         QtWidgets.QGraphicsScene.__init__(self, self.parent)
+
+        # Set the background color of the scene to gray
         self.setBackgroundBrush(QtCore.Qt.gray)
+
+        # Initialize an identifier for items; set to None initially
         self.idItemS = None
+
+        # Create a QTimer to trigger periodic updates of the scene
         self.timer = QtCore.QTimer()
+
+        # Connect the timer's timeout signal to the update method of the scene
         self.timer.timeout.connect(self.update)
+
+        # Start the timer with a 5 ms interval for frequent updates
         self.timer.start(5)
+
+        # Placeholder for an optional table, initially set to None
         self.table = None
+
+        # List to track possible connections for block items within the scene
         self.posibleConnect = []
+
+        # Load and create a horizontal connection graphic item, adding it to the scene
         self.imgPosibleConnectH = QtWidgets.QGraphicsPixmapItem(QPixmap(os.path.join(pathImgBlocks, "ConnectH.png")))
         super(MyScene, self).addItem(self.imgPosibleConnectH)
+
+        # Initially hide the horizontal connection graphic
         self.imgPosibleConnectH.setVisible(False)
+
+        # Load and create a vertical connection graphic item, adding it to the scene
         self.imgPosibleConnectV = QtWidgets.QGraphicsPixmapItem(QPixmap(os.path.join(pathImgBlocks, "ConnectV.png")))
         super(MyScene, self).addItem(self.imgPosibleConnectV)
+
+        # Initially hide the vertical connection graphic
         self.imgPosibleConnectV.setVisible(False)
+
+        # Dictionaries to map block items and their visual representations by ID
         self.dicBlockItem = {}
         self.dictVisualItem = {}
+
+        # Initialize the next available ID for items to be added to the scene
         self.nextIdItem = 0
+
+        # List to store variable names for potential use within the scene
         self.listNameVars = []
+
+        # Variable to track the last selected item in the scene; initialized to None
         self.lastItemSelect = None
 
     def duplicateBlock(self):
@@ -71,20 +116,46 @@ class MyScene(QtWidgets.QGraphicsScene):
         self.table = table
 
     def addItem(self, blockItem, shouldstart = True, saveTmp=True, iniPos=True):
+        """
+        Adds a VisualBlock item to the scene with optional initialization behaviors.
+
+        Parameters:
+        - blockItem: The logical block to be visually represented in the scene.
+        - shouldstart (bool): If True, initializes the VisualBlock's process when added.
+        - saveTmp (bool): If True, triggers saving the project state after adding the block.
+        - iniPos (bool): If True, positions the block at the scene's center upon addition.
+        """
+
+        # Assign a unique ID to the block item and set it for tracking purposes
         id = str(self.nextIdItem)
-        # poner ide del bloque
         blockItem.setId(id)
+
+        # Create a VisualBlock to represent the logical block item visually within the scene
         visualItem = VisualBlock(blockItem, self.view, self)
+
+        # Start the VisualBlock process if shouldstart is True
         if shouldstart:
             visualItem.start()
+
+        # Activate connections for the new VisualBlock item
         visualItem.activeUpdateConections()
+
+        # Add the VisualBlock item to the scene using the superclass method
         super(MyScene, self).addItem(visualItem)
+
+        # If iniPos is True, place the VisualBlock at the scene's center
         if iniPos:
             pos = self.view.mapToScene(self.view.viewport().rect().center())
             visualItem.moveToPos(pos)
+
+        # Store references to the logical and visual block items by ID for quick access
         self.dicBlockItem[id] = blockItem
         self.dictVisualItem[id] = visualItem
+
+        # Increment ID for the next item to ensure uniqueness
         self.nextIdItem += 1
+
+        # If saveTmp is True, invoke the parent's method to save the current project state
         if saveTmp:
             self.parent.savetmpProject()
 

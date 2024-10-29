@@ -11,14 +11,23 @@ from learnbot_dsl.functions import getFuntions
 listBlock = []
 listNameBlocks = []
 functions = getFuntions()
+
+# Traverse the directory tree starting from pathBlocks
 for base, dirs, files in os.walk(pathBlocks):
+    # Iterate through each file in the current directory
     for f in files:
+        # Split file name and extension
         archivo, extension = os.path.splitext(base + "/" + f)
+
+        # Check for PNG files containing 'block' and not 'azul'
         if extension == ".png" and "block" in f and "azul" not in f:
+            # Split file name again for further processing
             archivo, extension = os.path.splitext(f)
+
+            # If the file name matches specific blocks, add to the lists
             if archivo in ["block1", "block3", "block4"]:
-                listBlock.append(os.path.join(base,f))
-                listNameBlocks.append(getOrigNameBlock(archivo))
+                listBlock.append(os.path.join(base, f))  # Add full path to listBlock
+                listNameBlocks.append(getOrigNameBlock(archivo))  # Get and add original name
 
 listTypeBlock = ["express",
                  "motor",

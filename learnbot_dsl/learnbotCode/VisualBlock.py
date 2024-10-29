@@ -82,77 +82,116 @@ class VarGui(QtWidgets.QDialog, EditVar.Ui_Dialog):
 class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
     def __init__(self, parentBlock, parent=None, scene=None):
+        """
+        Initializes a VisualBlock instance based on a given parent block, setting up
+        display attributes, connections, image properties, and interactions within the scene.
+
+        Parameters:
+        - parentBlock: The block this visual representation is based on.
+        - parent: Optional parent widget, if applicable.
+        - scene: The scene where this VisualBlock is displayed.
+        """
+
+        # Initialize offsets for positioning connections
         self.startOffset = None
         self.endOffset = None
+
+        # List to store any active notifications for this block
         self._notifications = []
+
+        # Reference to the associated logical block (parentBlock)
         self.parentBlock = parentBlock
+
+        # Store block type and ID for quick access
         self.__typeBlock = self.parentBlock.typeBlock
         self.__type = self.parentBlock.type
         self.id = self.parentBlock.id
+
+        # Initialize connection information and mark block as not highlighted
         self.connections = self.parentBlock.connections
         self.highlighted = False
 
+        # Set each connection’s parent to the current block
         for c in self.connections:
             c.setParent(self.parentBlock)
+
+        # Dictionary to store translations, if available
         self.dicTrans = parentBlock.dicTrans
+
+        # Determine if an update is needed initially
         self.shouldUpdate = True
-        if len(self.dicTrans) == 0:
-            self.showtext = self.parentBlock.name
-        else:
-            self.showtext = self.dicTrans[getLanguage()]
+
+        # Set display text based on the available translations or block name
+        self.showtext = self.dicTrans.get(getLanguage(), self.parentBlock.name) if self.dicTrans else self.parentBlock.name
+
+        # Initialize as both a QGraphicsPixmapItem and QWidget
         QtWidgets.QGraphicsPixmapItem.__init__(self)
         QtWidgets.QWidget.__init__(self)
 
-        def foo(x):
-            return 32
-
+        ###
         # Load Image of block
+        # Load the block’s image and extract RGB and Alpha channels for customization
         im = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
         r, g, b, a = cv2.split(im)
+
+        # Convert image to RGB format for hue and saturation adjustment
         rgb = cv2.merge((r, g, b))
         hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
+
+        # Adjust hue and increase saturation for visual distinction
         h, s, v = cv2.split(hsv)
         h = h + self.parentBlock.hue
         s = s + 160
         hsv = cv2.merge((h, s, v))
+
+        # Convert back to RGB and merge with alpha channel to preserve transparency
         im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
         r, g, b = cv2.split(im)
         self.cvImg = cv2.merge((r, g, b, a))
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
-        # if self.parentBlock.type is VARIABLE:
-        #     self.showtext = self.parentBlock.name + " "+ self.showtext
 
+        # Generate final image with text overlay, using block’s characteristics
         img = generateBlock(self.cvImg, 34, self.showtext, self.parentBlock.typeBlock, None, self.parentBlock.type,
                             self.parentBlock.nameControl)
         qImage = toQImage(img)
 
-        # Al multiplicar por 0 obtenemos facilmente un ndarray inicializado a 0
-        # similar al original
-
+        # Attempt to save the header and footer sections of the image
         try:
             self.header = copy.copy(self.cvImg[0:39, 0:149])
             self.foot = copy.copy(self.cvImg[69:104, 0:149])
-        except:
+        except Exception:
             pass
 
+        # Set the pixmap representation for this VisualBlock
         self.img = QtGui.QPixmap(qImage)
 
+        # Store a reference to the scene in which this block is located
         self.scene = scene
 
+        # Enable movement of the block and set its stacking order
         self.setFlags(QtWidgets.QGraphicsItem.ItemIsMovable)
         self.setZValue(1)
+
+        # Place the block at the initial position of the logical block
         self.setPos(self.parentBlock.pos)
+
+        # Notify the scene that changes may need to be saved
         self.scene.activeShouldSave()
         self.updatePixmap()
 
+        # Timer setup to trigger periodic updates for this block
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update)
-        self.posmouseinItem = None
 
+        # Initialize variables for managing mouse position and dialog interactions
+        self.posmouseinItem = None
         self.DialogVar = None
         self.popMenu = None
+
+        # Create any necessary dialogs related to this block
         self.create_dialogs()
 
+        # Initialize connection management variables
         self.sizeIn = 0
         self.shouldUpdateConnections = False
 

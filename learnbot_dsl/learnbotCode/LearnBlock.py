@@ -389,7 +389,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.connectCameraRobotpushButton.clicked.connect(self.connectCameraRobot)
         self.ui.spinBoxLeterSize.valueChanged.connect(self.updateTextCodeStyle)
         self.ui.textCode.textChanged.connect(self.updateTextCodeStyle)
-        self.ui.actionDark.changed.connect(self.enbleDarkTheme)
+        self.ui.actionDark.changed.connect(self.enableDarkTheme)
 
         # Redo, Undo, Stop, Blocks to Text, Help
         self.ui.actionRedo.triggered.connect(self.redo)
@@ -529,7 +529,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.editDictionaryTagsUI = EditDictionaryTags(self)
         self.editDictionaryTagsUI.show()
 
-    def enbleDarkTheme(self):
+    def enableDarkTheme(self):
         sender = self.sender()
         if sender.isChecked():
             self.app.setStyleSheet(qdarkstyle.load_stylesheet_pyside2())
@@ -646,10 +646,16 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.updateClients()
 
     def updateClients(self):
+        # Clear the current items in the clients combo box
         self.ui.clientscomboBox.clear()
+
+        # Iterate over all files in the "clients" subdirectory within the application's temporary directory
         for file in os.listdir(os.path.join(os.getenv('HOME'), ".learnblock", "clients")):
+
+            # Check if the item is a file and has a .py extension (Python script)
             if os.path.isfile(os.path.join(os.getenv('HOME'), ".learnblock", "clients", file)) and \
                     os.path.splitext(file)[-1].lower() == ".py":
+                # Add the filename (without the .py extension) to the clients combo box
                 self.ui.clientscomboBox.addItem(os.path.splitext(file)[0])
 
     def configureRobot(self):
@@ -1270,21 +1276,48 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.load_blocks()
 
     def selectVisibleBlocks(self):
+        """
+        Selects and prepares a list of visible blocks based on the current language settings.
+
+        This method filters blocks from various categories, checking their visibility
+        and language availability. It constructs a dictionary of visible blocks categorized
+        by their respective categories and then opens a dialog for users to select these blocks.
+        """
+
+        # Get the current language setting from the language configuration
         lang = getLanguage()
+
+        # Initialize a dictionary to store visible blocks for each category
         self.visibleBlockLists = {}
+
+        # Iterate through each category in the blocks categorization
         for cat in self.blocksInCategories.keys():
+            # Skip categories that are defined in the functionsCategories list
             if not cat in functionsCategories:
+                # Initialize a new list to store visible blocks for the current category
                 newList = []
+
+                # Iterate through the blocks and their visibility status in the category
                 for b, visible in self.blocksInCategories[cat]:
+                    # Check if the block has a 'languages' key
                     if "languages" in b.keys():
+                        # If the current language is available, use its corresponding name
                         if lang in b["languages"].keys():
                             newList.append((b["languages"][lang], visible))
                         else:
+                            # If the language is not available, fall back to the default name
                             newList.append((b["name"], visible))
                     else:
+                        # If there is no 'languages' key, simply append the block name
                         newList.append((b["name"], visible))
+
+                # Store the list of visible blocks for the current category in the dictionary
                 self.visibleBlockLists[cat] = newList
+
+        # Create a dialog for selecting blocks, passing the visible block lists and a callback method
         self.dialogSelectBlocks = guiSelectBlocks(self.visibleBlockLists, self.setVisibleBlocks)
+
+        # Show the dialog for selecting visible blocks to the user
         self.dialogSelectBlocks.show()
 
     def setVisibleBlocks(self):
