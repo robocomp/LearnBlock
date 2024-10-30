@@ -1490,82 +1490,126 @@ class LearnBlock(QtWidgets.QMainWindow):
             self.saveInstance()
 
     def openProject(self, file=None, changeFileName=True):
+        file = self._getProjectFile(file)
+
+        if not file:
+            return
+
+        if self._handleUnsavedChanges():
+            self._prepareNewProject(file, changeFileName)
+            self._loadProjectFile(file)
+            self._finalizeProjectLoad()
+
+    def _getProjectFile(self, file):
+        """Retrieve the project file from the sender or file dialog."""
         sender = self.sender()
-        if hasattr(sender, "data"):
-            data = sender.data()
-            if data is not None:
-                file = data
-        if self.scene.shouldSave is False:
-            if file is None:
-                self.scene.stopAllblocks()
-                fileName = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Open Project'), self.workSpace,
-                                                                 self.tr('Block Project file (*.blockProject)'))
-                self.scene.startAllblocks()
-            if file is not None or fileName[0] != "":
-                self.newProject()#(resetAll=False)
-                if file is None:
-                    file = fileName[0]
-                if changeFileName:
-                    self.__fileProject = file
-                    for f in self.listBackUps:
-                        os.remove(f)
-                    self.listBackUps = []
-                    self.index = -1
-                if self.__fileProject is not None:
-                    self.setWindowTitle("LearnBlock3.0 " + self.__fileProject)
-                with open(file, 'rb') as fichero:
-                    d = pickle.load(fichero)
-                    # Load Libraries
-                    try:
-                        for path in d[5]:
-                            nameLibrary = os.path.basename(path)
-                            l = Library(self, path)
-                            if l.pathLibrary is not None:
-                                self.listLibraryWidget.append(l)
-                                self.listLibrary.append(
-                                    (l.pathLibrary, self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)))
-                    except Exception as e:
-                        traceback.print_exc()
+        if hasattr(sender, "data") and sender.data() is not None:
+            file = sender.data()
 
-                    dictBlock = d[0]
-                    for block in dictBlock.values():
-                        block.file = os.path.join(pathImgBlocks, os.path.basename(block.file))
-                    # Load Whens
-                    for name, configFile in d[1]:
-                        self.addButtonsWhens(configFile, name)
-                    self.listNameWhens = d[1]
-                    # Load Variable
-                    for name in d[3]:
-                        self.addVariable(name)
-                    self.listNameVars = d[3]
-                    # Load UserFunctions
-                    for name in d[4]:
-                        self.addUserFunction(name)
-                    self.listNameUserFunctions = d[4]
+        if not file and not self.scene.shouldSave:
+            self.scene.stopAllblocks()
+            fileName, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self, self.tr('Open Project'), self.workSpace,
+                self.tr('Block Project file (*.blockProject)')
+            )
+            self.scene.startAllblocks()
+            file = fileName if fileName else None
+        return file
 
-                    self.scene.setBlockDict(d[0])
-                    self.scene.startAllblocks()
-                    self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
-                self.updateOpenRecent()
-                if self.scene.thereisMain() and (self.mainButton is not None):
-                    self.mainButton.setEnabled(False)
-                self.savetmpProject()
+    def _handleUnsavedChanges(self):
+        """Prompt user to save if there are unsaved changes. Return True to proceed."""
+        if not self.scene.shouldSave:
+            return True
 
-        else:
-            msgBox = QtWidgets.QMessageBox()
-            msgBox.setWindowTitle(self.tr("Warning"))
-            msgBox.setIcon(QtWidgets.QMessageBox.Warning)
-            msgBox.setText(self.tr("The document has been modified."))
-            msgBox.setInformativeText(self.tr("Do you want to save your changes?"))
-            msgBox.setStandardButtons(
-                QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel)
-            msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
-            ret = msgBox.exec_()
-            if ret == QtWidgets.QMessageBox.Save:
-                self.saveInstance()
-            elif ret == QtWidgets.QMessageBox.Discard:
-                self.scene.shouldSave = False
-                self.openProject(file)
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setWindowTitle(self.tr("Warning"))
+        msgBox.setIcon(QtWidgets.QMessageBox.Warning)
+        msgBox.setText(self.tr("The document has been modified."))
+        msgBox.setInformativeText(self.tr("Do you want to save your changes?"))
+        msgBox.setStandardButtons(
+            QtWidgets.QMessageBox.Save | QtWidgets.QMessageBox.Discard | QtWidgets.QMessageBox.Cancel
+        )
+        msgBox.setDefaultButton(QtWidgets.QMessageBox.Save)
+
+        ret = msgBox.exec_()
+
+        if ret == QtWidgets.QMessageBox.Save:
+            self.saveInstance()
+            return True
+        elif ret == QtWidgets.QMessageBox.Discard:
+            self.scene.shouldSave = False
+            return True
+        return False
+
+    def _prepareNewProject(self, file, changeFileName):
+        """Reset the project state and optionally update the file name."""
+        self.newProject()
+
+        if changeFileName:
+            self.__fileProject = file
+            self._clearBackupFiles()
+            self.setWindowTitle(f"LearnBlock3.0 {self.__fileProject}")
+
+    def _clearBackupFiles(self):
+        """Clear backup files for the current project."""
+        for f in self.listBackUps:
+            os.remove(f)
+        self.listBackUps = []
+        self.index = -1
+
+    def _loadProjectFile(self, file):
+        """Load project data from the specified file."""
+        with open(file, 'rb') as fichero:
+            project_data = pickle.load(fichero)
+
+        self._loadLibraries(project_data[5])
+        self._loadBlocks(project_data[0])
+        self._loadWhens(project_data[1])
+        self._loadVariables(project_data[3])
+        self._loadUserFunctions(project_data[4])
+        self.scene.setBlockDict(project_data[0])
+
+    def _loadLibraries(self, library_paths):
+        """Load libraries from given paths."""
+        for path in library_paths:
+            nameLibrary = os.path.basename(path)
+            library = Library(self, path)
+            if library.pathLibrary is not None:
+                self.listLibraryWidget.append(library)
+                tab = self.ui.functions.addTab(self.listLibraryWidget[-1], nameLibrary)
+                self.listLibrary.append((library.pathLibrary, tab))
+
+    def _loadBlocks(self, blocks):
+        """Update block paths and load into scene."""
+        for block in blocks.values():
+            block.file = os.path.join(pathImgBlocks, os.path.basename(block.file))
+
+    def _loadWhens(self, whens):
+        """Load 'when' conditions from project data."""
+        for name, configFile in whens:
+            self.addButtonsWhens(configFile, name)
+        self.listNameWhens = whens
+
+    def _loadVariables(self, variables):
+        """Load variables from project data."""
+        for name in variables:
+            self.addVariable(name)
+        self.listNameVars = variables
+
+    def _loadUserFunctions(self, user_functions):
+        """Load user functions from project data."""
+        for name in user_functions:
+            self.addUserFunction(name)
+        self.listNameUserFunctions = user_functions
+
+    def _finalizeProjectLoad(self):
+        """Final adjustments and UI updates after loading a project."""
+        self.scene.startAllblocks()
+        self.scene.useEvents(self.ui.useEventscheckBox.isChecked())
+        self.updateOpenRecent()
+        if self.scene.thereisMain() and (self.mainButton is not None):
+            self.mainButton.setEnabled(False)
+        self.savetmpProject()
 
     def loadBlockTextCode(self):
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, self.tr('Load Block-Text code'), self.workSpace, self.tr('Block-Text file (*.bt)'))

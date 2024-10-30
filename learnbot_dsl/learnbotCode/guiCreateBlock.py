@@ -83,7 +83,7 @@ class guiCreateBlock(QtWidgets.QDialog):
         code = pythonCode.replace("<name>", name)
         args = ""
         vars = None
-        if self.ui.tableWidgetVars.rowCount() is not 0:
+        if self.ui.tableWidgetVars.rowCount() != 0:
             vars = []
             args = ", "
             for row in range(0, self.ui.tableWidgetVars.rowCount()):
@@ -203,7 +203,7 @@ class guiCreateBlock(QtWidgets.QDialog):
         print("selection of config file", configFile)
 
     def __buttons(self, ret):
-        if ret is 1:
+        if ret == 1:
             ret = None
             name = self.ui.lineEditName.text().replace(" ", "_")
             category = self.ui.lineEditCategory.text()
@@ -224,7 +224,7 @@ class guiCreateBlock(QtWidgets.QDialog):
                 msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
                 msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
                 ret = msgBox.exec_()
-            elif len(self.listImg) is 0:
+            elif len(self.listImg) == 0:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle(self.tr("Error"))
                 msgBox.setIcon(QtWidgets.QMessageBox.Warning)
@@ -265,7 +265,7 @@ class guiCreateBlock(QtWidgets.QDialog):
             dictBlock["type"] = self.blockType
             dictBlock["category"] = category
             dictBlock["name"] = self.ui.lineEditName.text()
-            if self.ui.tableWidgetVars.rowCount() is not 0:
+            if self.ui.tableWidgetVars.rowCount() != 0:
                 listVariables = []
                 for row in range(0, self.ui.tableWidgetVars.rowCount()):
                     v = {}
@@ -279,12 +279,12 @@ class guiCreateBlock(QtWidgets.QDialog):
                 listImgs.append(img)
             dictBlock["shape"] = listImgs
             
-            if self.ui.tableWidgetlanguages.rowCount() is not 0:
+            if self.ui.tableWidgetlanguages.rowCount() != 0:
                 dictLanguages = {}
                 for row in range(0, self.ui.tableWidgetlanguages.rowCount()):
                     dictLanguages[self.ui.tableWidgetlanguages.cellWidget(row, 0).text()] = self.ui.tableWidgetlanguages.cellWidget(row, 1).text()
                 dictBlock["languages"] = dictLanguages
-            if self.ui.tableWidgetToolTip.rowCount() is not 0:
+            if self.ui.tableWidgetToolTip.rowCount() != 0:
                 dictToolTip = {}
                 for row in range(0, self.ui.tableWidgetToolTip.rowCount()):
                     dictToolTip[self.ui.tableWidgetToolTip.cellWidget(row, 0).text()] = self.ui.tableWidgetToolTip.cellWidget(row, 1).text()
@@ -316,7 +316,7 @@ class guiCreateBlock(QtWidgets.QDialog):
 
     def __repeatNameVar(self):
         varlist = []
-        if self.ui.tableWidgetVars.rowCount() is not 0:
+        if self.ui.tableWidgetVars.rowCount() != 0:
             for row in range(0, self.ui.tableWidgetVars.rowCount()):
                 if self.ui.tableWidgetVars.cellWidget(row, 1).text() in varlist or self.ui.tableWidgetVars.cellWidget(
                         row, 1).text() == "" \

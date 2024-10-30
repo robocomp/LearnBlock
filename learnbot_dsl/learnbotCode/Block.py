@@ -161,8 +161,8 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
             im[0:line.shape[0], i:i + 1] = copy.copy(line)
 
 
-    cv2.putText(im, text, (10, 27), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 2, 25)
-    cv2.putText(im, nameControl, (10, im.shape[0] - 10), cv2.FONT_HERSHEY_TRIPLEX, 0.75, (0, 0, 0, 255), 2, 25)
+    cv2.putText(im, text, (20, 27), cv2.FONT_HERSHEY_DUPLEX, 0.70, (0, 0, 0, 255), 1, cv2.LINE_AA)
+    cv2.putText(im, nameControl, (20, im.shape[0] - 10), cv2.FONT_HERSHEY_DUPLEX, 0.70, (0, 0, 0, 255), 1, cv2.LINE_AA)
 
     if connections is not None and len(connections) > 0:
         if not isinstance(connections[0], Connection):
@@ -223,7 +223,7 @@ def loadConfigBlock(img):
 
 
 if __name__ == '__main__':
-    img = cv2.imread("/home/ivan/robocomp/components/LearnBlock/learnbot_dsl/blocksConfig/blocks/block7.png", -1)
+    img = cv2.imread("~/LearnBlock/learnbot_dsl/blocksConfig/blocks/block7.png", -1)
     img_error = generate_error_block(img)
     cv2.imshow("img_error", img_error)
     cv2.waitKey(0)
