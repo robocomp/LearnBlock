@@ -13,7 +13,7 @@ except KeyError:
     print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
     ROBOCOMP = os.path.join('opt', 'robocomp')
 
-ICEs = ["Laser.ice", "DifferentialRobot.ice"]
+ICEs = ["Laser.ice", "DifferentialRobot.ice", "LEDArray.ice"]
 icePaths = []
 
 icePaths.append(PATHINTERFACES)
@@ -24,7 +24,7 @@ for ice in ICEs:
             Ice.loadSlice(wholeStr)
             break
 
-import RoboCompLaser, RoboCompDifferentialRobot
+import RoboCompLaser, RoboCompDifferentialRobot, RoboCompLEDArray
 
 class Robot(Client):
     def __init__(self):
@@ -37,9 +37,16 @@ class Robot(Client):
         # Añadir los dispositivos necesarios: base y sensores de distancia (láser)
         self.addDistanceSensors(Devices.DistanceSensors(_readFunction=self.deviceReadLaser))
         self.addBase(Devices.Base(_callFunction=self.deviceMove))
+        self.addLed(Devices.Led(_setState=self.setLeds))
         
         # Comenzar el loop de control
         self.start()
+
+    def setLeds(self, _red=0, _green=0, _blue=0):
+
+
+
+        pass
 
     def connectToRobot(self):
         # Conexión a differentialrobot en localhost:10004
@@ -50,6 +57,10 @@ class Robot(Client):
         # Conexión a laser en localhost:10005
         self.laser_proxy = connectComponent(
             "laser:tcp -p 10005", RoboCompLaser.LaserPrx)
+
+        # Conexión a ledarray en localhost:10006
+        self.ledarray_proxy = connectComponent(
+            "ledarray:tcp -p 10006", RoboCompLEDArray.LEDArrayPrx)
 
     def disconnect(self):
         # Parar el movimiento del robot al desconectar

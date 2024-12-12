@@ -45,50 +45,66 @@ class Block_Button(QtWidgets.QPushButton):
         self.setFlat(True)
 
     def loadImg(self):
-        try:
-            t = [type for _, type in self.__connections]
-        except:
-            t = [c.getType() for c in self.__connections]
-        tmpFile = self.__text + str(self.__type) + str(self.__blockType) + str(len(self.__connections)) + "".join(map(str, t)) + getLanguage()
-        self.tmpFile = os.path.join(tempfile.gettempdir(), "." + str2hex(tmpFile) + ".png")
-        if len(self.__dicTrans) != 0:
-            self.showtext = self.__dicTrans[getLanguage()]
-        else:
-            self.showtext = self.__text
+        """Load or generate the image for the block and apply translations and styles."""
+        self.tmpFile = self._generateTmpFilename()
+        self.showtext = self._getShowText()
+
         if not os.path.exists(self.tmpFile):
-            im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
-            r, g, b, a = cv2.split(im)
-            rgb = cv2.merge((r, g, b))
-            hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
-            h, s, v = cv2.split(hsv)
-            h = h + self.hue
-            s = s + 130
-            hsv = cv2.merge((h, s, v))
-            im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
-            r, g, b = cv2.split(im)
-            im = cv2.merge((r, g, b, a))
-            var = []
-            if self.__type != VARIABLE:
-                for x in self.__vars:
-                    try:
-                        if getLanguage() in x.translate:
-                            var.append(x.translate[getLanguage()])
-                        else:
-                            var.append(x.name)
-                    except:
-                        var.append(x.name)
-            img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, var, self.__type)
+            im = self._loadAndModifyImage()
+            variables = self._getVariablesForImage()
+            img = generateBlock(im, 34, self.showtext, self.__blockType, self.__connections, variables, self.__type)
             cv2.imwrite(self.tmpFile, img, (cv2.IMWRITE_PNG_COMPRESSION, 9))
         else:
             img = cv2.imread(self.tmpFile, cv2.IMREAD_UNCHANGED)
-        width = self.__parent.ui.functions.width()-51
+
+        self._updateIconDisplay(img)
+
+    def _generateTmpFilename(self):
+        """Create a unique filename for the block's temporary image file."""
+        try:
+            connection_types = [type for _, type in self.__connections]
+        except:
+            connection_types = [c.getType() for c in self.__connections]
+        tmpString = (
+            f"{self.__text}{self.__type}{self.__blockType}{len(self.__connections)}"
+            f"{''.join(map(str, connection_types))}{getLanguage()}"
+        )
+        return os.path.join(tempfile.gettempdir(), f".{str2hex(tmpString)}.png")
+
+    def _getShowText(self):
+        """Retrieve the display text based on available translations."""
+        if self.__dicTrans:
+            return self.__dicTrans.get(getLanguage(), self.__text)
+        return self.__text
+
+    def _loadAndModifyImage(self):
+        """Load the base image and apply hue adjustments."""
+        im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
+        rgb = cv2.cvtColor(cv2.merge(cv2.split(im)[:3]), cv2.COLOR_RGB2HSV)
+        h, s, v = cv2.split(rgb)
+        hsv = cv2.merge((h + self.hue, s + 130, v))
+        modified_img = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+
+        #return cv2.merge((*cv2.split(modified_img), cv2.split(im)[-1]))
+        return im
+
+    def _getVariablesForImage(self):
+        """Retrieve translated variable names for the block."""
+        if self.__type != VARIABLE:
+            return [
+                x.translate.get(getLanguage(), x.name) if hasattr(x, "translate") else x.name
+                for x in self.__vars
+            ]
+        return []
+
+    def _updateIconDisplay(self, img):
+        """Update icon display settings in the UI."""
+        width = self.__parent.ui.functions.width() - 51
         self.__table.setColumnWidth(0, width - 20)
         self.setIconSize(QtCore.QSize(width - 20, img.shape[0]))
-        # self.setFixedSize(QtCore.QSize(150, img.shape[0]))
         self.__table.setRowHeight(self.__row, img.shape[0])
         self.setIcon(QtGui.QIcon(self.tmpFile))
         self.setStyleSheet("QPushButton { text-align: left; }")
-        # self.icon
 
     def updateIconSize(self, width):
         size = self.iconSize()

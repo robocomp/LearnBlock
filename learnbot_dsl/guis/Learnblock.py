@@ -3,20 +3,28 @@
 ################################################################################
 ## Form generated from reading UI file 'Learnblock.ui'
 ##
-## Created by: Qt User Interface Compiler version 5.15.0
+## Created by: Qt User Interface Compiler version 6.8.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QMetaObject,
-    QObject, QPoint, QRect, QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
-    QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter,
-    QPixmap, QRadialGradient, QAction)
-from PySide6.QtWidgets import *
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
+    QCursor, QFont, QFontDatabase, QGradient,
+    QIcon, QImage, QKeySequence, QLinearGradient,
+    QPainter, QPalette, QPixmap, QRadialGradient,
+    QTransform)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QComboBox,
+    QFrame, QGraphicsView, QGridLayout, QHBoxLayout,
+    QHeaderView, QLabel, QLineEdit, QListWidget,
+    QListWidgetItem, QMainWindow, QMenu, QMenuBar,
+    QPushButton, QSizePolicy, QSpacerItem, QSpinBox,
+    QSplitter, QStatusBar, QTabWidget, QTableWidget,
+    QTableWidgetItem, QVBoxLayout, QWidget)
 
 from learnbot_dsl.learnbotCode.CodeEdit import CodeEdit
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -24,7 +32,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.setEnabled(True)
         MainWindow.resize(955, 790)
-        MainWindow.setCursor(QCursor(Qt.ArrowCursor))
+        MainWindow.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.actionExit = QAction(MainWindow)
         self.actionExit.setObjectName(u"actionExit")
         self.actionCreate_New_block = QAction(MainWindow)
@@ -113,6 +121,8 @@ class Ui_MainWindow(object):
         self.actionAdd_Set_of_Blocks.setObjectName(u"actionAdd_Set_of_Blocks")
         self.actionConfigure_Robot = QAction(MainWindow)
         self.actionConfigure_Robot.setObjectName(u"actionConfigure_Robot")
+        self.actionBlock_Themes = QAction(MainWindow)
+        self.actionBlock_Themes.setObjectName(u"actionBlock_Themes")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.verticalLayout_4 = QVBoxLayout(self.centralwidget)
@@ -170,7 +180,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.configRobotPushButton)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
@@ -178,7 +188,7 @@ class Ui_MainWindow(object):
         self.language.addItem("")
         self.language.addItem("")
         self.language.setObjectName(u"language")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.language.sizePolicy().hasHeightForWidth())
@@ -247,7 +257,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_20.addLayout(self.gridLayout_3)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_20.addItem(self.verticalSpacer_2)
 
@@ -348,7 +358,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_5.addLayout(self.gridLayout_2)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.verticalLayout_5.addItem(self.verticalSpacer)
 
@@ -383,7 +393,7 @@ class Ui_MainWindow(object):
         self.gridLayout.setObjectName(u"gridLayout")
         self.splitter = QSplitter(self.program_visual)
         self.splitter.setObjectName(u"splitter")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
@@ -403,7 +413,6 @@ class Ui_MainWindow(object):
         font1.setPointSize(9)
         font1.setBold(False)
         font1.setItalic(False)
-        font1.setWeight(QFont.Weight(50))
         font1.setStrikeOut(False)
         font1.setKerning(True)
         self.functions.setFont(font1)
@@ -642,6 +651,8 @@ class Ui_MainWindow(object):
         self.menuEdit.addAction(self.menuTheme.menuAction())
         self.menuEdit.addAction(self.actionDictionary_Tags)
         self.menuTheme.addAction(self.actionDark)
+        self.menuTheme.addSeparator()
+        self.menuTheme.addAction(self.actionBlock_Themes)
         self.menuProject.addAction(self.actionBlocks_to_text)
         self.menuProject.addAction(self.actionStart)
         self.menuProject.addAction(self.actionStop)
@@ -766,7 +777,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(shortcut)
         self.actionAdd_client_robot.setText(QCoreApplication.translate("MainWindow", u"Add Robot Client", None))
         self.actionStart.setText(QCoreApplication.translate("MainWindow", u"Start", None))
-        self.actionDark.setText(QCoreApplication.translate("MainWindow", u"Dark", None))
+        self.actionDark.setText(QCoreApplication.translate("MainWindow", u"Enable Dark Theme", None))
         self.actionDictionary_Tags.setText(QCoreApplication.translate("MainWindow", u"Dictionary of Tags", None))
         self.actionLoad_Sets_of_Blocks.setText(QCoreApplication.translate("MainWindow", u"Load Sets of Blocks", None))
         self.actionSelect_Visible_Blocks.setText(QCoreApplication.translate("MainWindow", u"Select Visible Blocks", None))
@@ -777,6 +788,7 @@ class Ui_MainWindow(object):
         self.actionSave_Python_Code.setText(QCoreApplication.translate("MainWindow", u"Save Python Code", None))
         self.actionAdd_Set_of_Blocks.setText(QCoreApplication.translate("MainWindow", u"Add Set of Blocks", None))
         self.actionConfigure_Robot.setText(QCoreApplication.translate("MainWindow", u"Configure Robot", None))
+        self.actionBlock_Themes.setText(QCoreApplication.translate("MainWindow", u"Block Themes", None))
 #if QT_CONFIG(tooltip)
         self.openpushButton.setToolTip(QCoreApplication.translate("MainWindow", u"Open", None))
 #endif // QT_CONFIG(tooltip)

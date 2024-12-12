@@ -790,6 +790,8 @@
       <string>&amp;Theme</string>
      </property>
      <addaction name="actionDark"/>
+     <addaction name="separator"/>
+     <addaction name="actionBlock_Themes"/>
     </widget>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
@@ -1081,7 +1083,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Dark</string>
+    <string>Enable Dark Theme</string>
    </property>
   </action>
   <action name="actionDictionary_Tags">
@@ -1132,6 +1134,11 @@
   <action name="actionConfigure_Robot">
    <property name="text">
     <string>Configure Robot</string>
+   </property>
+  </action>
+  <action name="actionBlock_Themes">
+   <property name="text">
+    <string>Block Themes</string>
    </property>
   </action>
  </widget>

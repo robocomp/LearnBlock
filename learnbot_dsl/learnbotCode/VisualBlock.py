@@ -1,5 +1,5 @@
 from __future__ import print_function, absolute_import
-from PySide6 import QtGui,QtCore,QtWidgets
+from PySide6 import QtGui,QtWidgets
 from math import *
 import pickle, os, json
 import learnbot_dsl.guis.EditVar as EditVar
@@ -7,7 +7,6 @@ from learnbot_dsl.learnbotCode.Block import *
 from learnbot_dsl.learnbotCode.Language import getLanguage
 from learnbot_dsl.learnbotCode.toQImage import *
 from learnbot_dsl.learnbotCode.Parser import parserLearntBotCodeOnlyUserFuntion
-from learnbot_dsl.blocksConfig import pathImgBlocks
 from  learnbot_dsl.learnbotCode import getAprilTextDict
 class KeyPressEater(QtCore.QObject):
     def eventFilter(self, obj, event):
@@ -128,7 +127,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         QtWidgets.QGraphicsPixmapItem.__init__(self)
         QtWidgets.QWidget.__init__(self)
 
-        ###
+
         # Load Image of block
         # Load the block’s image and extract RGB and Alpha channels for customization
         im = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
@@ -527,41 +526,77 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         return self.parentBlock.id
 
     def updateImg(self, force=False):
+        size = self.calculateSize()
+
+        # Check if image needs to be updated
+        if self.needsImageUpdate(size, force):
+            self.sizeIn = size
+            self.updateMainImage(size)
+
+            # Adjust connections if needed
+            if self.sizeIn != size or self.shouldUpdateConnections or force:
+                self.adjustConnections()
+
+        self.shouldUpdate = False
+
+    def calculateSize(self):
+        """Determine the required size for the image, defaulting to 34."""
         if self.__typeBlock is COMPLEXBLOCK:
-            nSubBlock, size = self.getNumSub()
+            _, size = self.getNumSub()
         else:
             size = 34
+        return max(size, 34)
 
-        if size == 0:
-            size = 34
-        if self.sizeIn != size or self.shouldUpdate or force:
-            self.sizeIn = size
-            im = generateBlock(self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
-                               self.parentBlock.nameControl)
-            if self.highlighted:
-                im = generate_error_block(im)
-            if not self.isEnabled():
-                r, g, b, a = cv2.split(im)
-                im = cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY)
-                im = cv2.cvtColor(im, cv2.COLOR_GRAY2RGB)
-                r, g, b= cv2.split(im)
-                im = cv2.merge((r, g, b, a))
-            qImage = toQImage(im)
-            self.img = QtGui.QPixmap(qImage)
-            self.updatePixmap()
-            if self.sizeIn != size or self.shouldUpdateConnections or force:
-                for c in self.connections:
-                    if c.getType() is BOTTOM:
-                        c.setPoint(QtCore.QPointF(c.getPoint().x(), im.shape[0] - 5))
-                        if c.getIdItem() is not None:
-                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
-                                self.pos() + QtCore.QPointF(0, self.img.height() - 5))
-                    if c.getType() is RIGHT:
-                        c.setPoint(QtCore.QPointF(im.shape[1] - 5, c.getPoint().y()))
-                        if c.getIdItem() is not None:
-                            self.scene.getVisualItem(c.getIdItem()).moveToPos(
-                                self.pos() + QtCore.QPointF(self.img.width() - 5, 0))
-        self.shouldUpdate = False
+    def needsImageUpdate(self, size, force):
+        """Check if image update is required based on size or update flags."""
+        return self.sizeIn != size or self.shouldUpdate or force
+
+    def updateMainImage(self, size):
+        """Generate and set the main image for the block."""
+        im = generateBlock(
+            self.cvImg, size, self.showtext, self.__typeBlock, None, self.getVars(), self.__type,
+            self.parentBlock.nameControl
+        )
+        if self.highlighted:
+            im = generate_error_block(im)
+
+        if not self.isEnabled():
+            im = self.applyDisabledEffect(im)
+
+        qImage = toQImage(im)
+        self.img = QtGui.QPixmap(qImage)
+        self.updatePixmap()
+
+    def applyDisabledEffect(self, im):
+        """Convert image to grayscale to indicate disabled state."""
+        r, g, b, a = cv2.split(im)
+        gray = cv2.cvtColor(im, cv2.COLOR_RGBA2GRAY)
+        im = cv2.cvtColor(gray, cv2.COLOR_GRAY2RGB)
+        return cv2.merge((r, g, b, a))
+
+    def adjustConnections(self):
+        """Adjust the positions of connected items based on connection type."""
+        for connection in self.connections:
+            if connection.getType() is BOTTOM:
+                self.adjustBottomConnection(connection)
+            elif connection.getType() is RIGHT:
+                self.adjustRightConnection(connection)
+
+    def adjustBottomConnection(self, connection):
+        """Set the bottom connection point and reposition connected item if necessary."""
+        connection.setPoint(QtCore.QPointF(connection.getPoint().x(), self.img.height() - 5))
+        if connection.getIdItem() is not None:
+            self.scene.getVisualItem(connection.getIdItem()).moveToPos(
+                self.pos() + QtCore.QPointF(0, self.img.height() - 5)
+            )
+
+    def adjustRightConnection(self, connection):
+        """Set the right connection point and reposition connected item if necessary."""
+        connection.setPoint(QtCore.QPointF(self.img.width() - 5, connection.getPoint().y()))
+        if connection.getIdItem() is not None:
+            self.scene.getVisualItem(connection.getIdItem()).moveToPos(
+                self.pos() + QtCore.QPointF(self.img.width() - 5, 0)
+            )
 
     def updateVarValues(self):
         vars = self.getVars()
