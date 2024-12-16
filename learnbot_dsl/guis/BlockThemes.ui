@@ -33,7 +33,7 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="addThemeButton">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -65,7 +65,7 @@
       </spacer>
      </item>
      <item row="2" column="0">
-      <widget class="QComboBox" name="comboBox"/>
+      <widget class="QComboBox" name="themesBox"/>
      </item>
      <item row="3" column="0">
       <spacer name="horizontalSpacer">
@@ -83,13 +83,13 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="themeInfoBox">
      <property name="title">
       <string>Theme colors</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="10" column="0">
-       <widget class="QLabel" name="label_11">
+       <widget class="QLabel" name="libraryLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -101,40 +101,8 @@
         </property>
        </widget>
       </item>
-      <item row="10" column="1">
-       <widget class="QLabel" name="label_23">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="14" column="1">
-       <widget class="QLabel" name="label_29">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="7" column="0">
-       <widget class="QLabel" name="label_8">
+       <widget class="QLabel" name="expressLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -146,24 +114,8 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
-       <widget class="QLabel" name="label_20">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="13" column="0">
-       <widget class="QLabel" name="label_14">
+       <widget class="QLabel" name="numberLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -175,56 +127,8 @@
         </property>
        </widget>
       </item>
-      <item row="13" column="1">
-       <widget class="QLabel" name="label_26">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLabel" name="label_16">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="label_3">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="14" column="0">
-       <widget class="QLabel" name="label_15">
+       <widget class="QLabel" name="whenLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -237,7 +141,7 @@
        </widget>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="label_28">
+       <widget class="QLabel" name="perceptualLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -250,7 +154,7 @@
        </widget>
       </item>
       <item row="11" column="0">
-       <widget class="QLabel" name="label_12">
+       <widget class="QLabel" name="variableLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -263,7 +167,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="label_27">
+       <widget class="QLabel" name="motorLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -275,24 +179,8 @@
         </property>
        </widget>
       </item>
-      <item row="11" column="1">
-       <widget class="QLabel" name="label_24">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit">
+       <widget class="QLineEdit" name="themeNameInput">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -301,24 +189,8 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="1">
-       <widget class="QLabel" name="label_21">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="controlLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -331,7 +203,7 @@
        </widget>
       </item>
       <item row="9" column="0">
-       <widget class="QLabel" name="label_10">
+       <widget class="QLabel" name="userFunctionsLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -344,7 +216,7 @@
        </widget>
       </item>
       <item row="8" column="0">
-       <widget class="QLabel" name="label_9">
+       <widget class="QLabel" name="othersLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -356,40 +228,8 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
-       <widget class="QLabel" name="label_17">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QLabel" name="label_18">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="0">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="propioPerceptiveLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -402,7 +242,7 @@
        </widget>
       </item>
       <item row="6" column="0">
-       <widget class="QLabel" name="label_7">
+       <widget class="QLabel" name="operatorLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -414,24 +254,8 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="1">
-       <widget class="QLabel" name="label_19">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="12" column="0">
-       <widget class="QLabel" name="label_13">
+       <widget class="QLabel" name="stringLabel">
         <property name="maximumSize">
          <size>
           <width>150</width>
@@ -456,38 +280,6 @@
         </property>
        </widget>
       </item>
-      <item row="12" column="1">
-       <widget class="QLabel" name="label_25">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QLabel" name="label_22">
-        <property name="maximumSize">
-         <size>
-          <width>60</width>
-          <height>20</height>
-         </size>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: red;</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <spacer name="verticalSpacer_2">
         <property name="orientation">
@@ -503,6 +295,214 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="controlButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="motorButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="perceptualButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QPushButton" name="propioPerceptiveButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QPushButton" name="operatorButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QPushButton" name="expressButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QPushButton" name="othersButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QPushButton" name="usersFunctionsButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="QPushButton" name="libraryButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1">
+       <widget class="QPushButton" name="variableButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="12" column="1">
+       <widget class="QPushButton" name="stringButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="1">
+       <widget class="QPushButton" name="numberButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="14" column="1">
+       <widget class="QPushButton" name="whenButton">
+        <property name="maximumSize">
+         <size>
+          <width>100</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: red;</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

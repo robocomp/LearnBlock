@@ -8,7 +8,6 @@ from pyunpack import Archive
 from pyparsing import ParseException
 from multiprocessing import Process
 
-from learnbot_dsl.learnbotCode.AbstractBlock import *
 from learnbot_dsl.learnbotCode.Button import *
 from learnbot_dsl.learnbotCode.Scene import *
 from learnbot_dsl.learnbotCode.View import *
@@ -17,6 +16,7 @@ from learnbot_dsl.blocksConfig import pathConfig
 from learnbot_dsl.learnbotCode.checkFile import compile
 from learnbot_dsl.learnbotCode.dialogAddNumberOrString import *
 from learnbot_dsl.learnbotCode.guiCreateBlock import *
+from learnbot_dsl.learnbotCode.guiBlockThemes import *
 from learnbot_dsl.learnbotCode.guiSelectBlocks import *
 from learnbot_dsl.learnbotCode.guiJsonEditor import guiJsonEditor
 from learnbot_dsl.learnbotCode.guiaddWhen import *
@@ -30,7 +30,6 @@ from learnbot_dsl.learnbotCode.Language import changeLanguageTo
 from learnbot_dsl.learnbotCode.parserConfig import configSSH
 from learnbot_dsl.blocksConfig.blocks import *
 from learnbot_dsl.learnbotCode.guiTabLibrary import Library
-from learnbot_dsl.learnbotCode.Highlighter import *
 from learnbot_dsl.learnbotCode.Notification import *
 from learnbot_dsl.learnbotCode.VisualBlock import toLBotPy
 from learnbot_dsl.learnbotCode.help import helper
@@ -390,6 +389,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.ui.spinBoxLeterSize.valueChanged.connect(self.updateTextCodeStyle)
         self.ui.textCode.textChanged.connect(self.updateTextCodeStyle)
         self.ui.actionDark.changed.connect(self.enableDarkTheme)
+        self.ui.actionBlock_Themes.triggered.connect(self.showBlockThemes)
 
         # Redo, Undo, Stop, Blocks to Text, Help
         self.ui.actionRedo.triggered.connect(self.redo)
@@ -410,6 +410,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         # Block-to-text and Python button connections
         self.ui.block2textpushButton.clicked.connect(self.blocksToText)
         self.ui.bt2pythonpushButton.clicked.connect(self.btToPython)
+
 
     def configureApp(self):
         """
@@ -1672,6 +1673,10 @@ class LearnBlock(QtWidgets.QMainWindow):
                 self.blocksInCategories[btype].append((b,True))
                 self.addBlock(b)
 
+
+    def showBlockThemes(self):
+        self.blockThemesGui = guiBlockThemes()
+        self.blockThemesGui.open()
 
     def showCreateBlock(self):
         self.createBlockGui = guiCreateBlock(self.addBlock)
