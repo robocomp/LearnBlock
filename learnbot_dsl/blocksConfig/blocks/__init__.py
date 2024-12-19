@@ -19,7 +19,6 @@ __all__ = ["pathBlocks",
 
 # HUE values
 HUE_CONTROL = 0
-
 HUE_MOTOR = 0
 HUE_PERCEPTUAL = 0
 HUE_PROPIOPERCEPTIVE = 0
