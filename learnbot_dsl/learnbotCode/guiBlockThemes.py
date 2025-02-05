@@ -1,5 +1,5 @@
-from PySide6 import QtWidgets
-from PySide6.QtGui import QColor
+from PySide6 import QtWidgets, QtGui
+from PySide6.QtGui import QColor, QPalette
 import json
 from typing import List, Dict
 
@@ -37,17 +37,59 @@ class BlockTheme:
 class guiBlockThemes(QtWidgets.QDialog):
 
     ui = BlockThemes.Ui_BlockThemes()
+    filepath = "/home/usuario/LearnBlock/learnbot_dsl/blocksConfig/blockThemes.json"
 
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self)
         self.ui.setupUi(self)
+        self.actualTheme = "Default Theme"
 
-        #TODO: Conectar señales
+        self.load_block_themes(self.filepath)
 
-        filepath = "/home/usuario/LearnBlock/learnbot_dsl/blocksConfig/blockThemes.json"
-        themes = self.load_block_themes(filepath)
+        # Setting theme box values
+        self.ui.themesBox.addItems([theme.name for theme in self.themes])
+        index = self.ui.themesBox.findText(self.actualTheme)
+        if index != -1:
+            self.ui.themesBox.setCurrentIndex(index)
+        else:
+            print(f"Theme not found: {self.actualTheme}")
 
-        self.printBlockThemes(themes)
+        # Signal connection
+        self.ui.themesBox.currentIndexChanged.connect(self.refreshCategoriesButton)
+
+        print(self.actualTheme)
+
+        # Setting button color for the actual theme
+        self.settingGuiActualTheme(next((theme for theme in self.themes if theme.name == self.actualTheme), None))
+
+    def refreshCategoriesButton(self):
+        self.actualTheme = self.ui.themesBox.currentText()
+        self.settingGuiActualTheme(
+            next((theme for theme in self.themes if theme.name == self.actualTheme), None))
+
+    def settingGuiActualTheme(self, theme : BlockTheme):
+
+        self.ui.themeInfoBox.setEnabled(theme.editable)
+
+        self.ui.themeNameInput.setText(theme.name)
+
+        self.settingGuiCategorieButton(theme, self.ui.controlButton, "CONTROL")
+        self.settingGuiCategorieButton(theme, self.ui.motorButton, "MOTOR")
+        self.settingGuiCategorieButton(theme, self.ui.perceptualButton, "PERCEPTUAL")
+        self.settingGuiCategorieButton(theme, self.ui.propioPerceptiveButton, "PROPIOPERCEPTIVE")
+        self.settingGuiCategorieButton(theme, self.ui.operatorButton, "OPERATOR")
+        self.settingGuiCategorieButton(theme, self.ui.expressButton, "EXPRESS")
+        self.settingGuiCategorieButton(theme, self.ui.othersButton, "OTHERS")
+        self.settingGuiCategorieButton(theme, self.ui.usersFunctionsButton, "USERFUNCTION")
+        self.settingGuiCategorieButton(theme, self.ui.libraryButton, "LIBRARY")
+        self.settingGuiCategorieButton(theme, self.ui.variableButton, "VARIABLE")
+        self.settingGuiCategorieButton(theme, self.ui.stringButton, "STRING")
+        self.settingGuiCategorieButton(theme, self.ui.numberButton, "NUMBER")
+        self.settingGuiCategorieButton(theme, self.ui.whenButton, "WHEN")
+
+    def settingGuiCategorieButton(self, theme: BlockTheme, button: QtWidgets.QPushButton, category: str):
+        button.setStyleSheet("background-color: {}".format(theme.categories[category].name()))
+        self.refreshButtonColor(button)
 
     def printBlockThemes(self, themes):
         # Mostrar los temas cargados
@@ -73,13 +115,13 @@ class guiBlockThemes(QtWidgets.QDialog):
         # Establecer el texto del botón
         button.setText(hex_color)
 
-    # Método para leer y deserializar el JSON
-    def load_block_themes(self, filepath: str) -> List[BlockTheme]:
+    # Method to read and desealize JSON
+    def load_block_themes(self, filepath: str) -> None:
         try:
             with open(filepath, "r", encoding="utf-8") as file:
                 raw_data = json.load(file)
-                themes = [BlockTheme.from_dict(theme_data) for theme_data in raw_data["themes"]]
-                return themes
+                self.actualTheme = raw_data["actualTheme"]
+                self.themes = [BlockTheme.from_dict(theme_data) for theme_data in raw_data["themes"]]
         except FileNotFoundError:
             print(f"The file '{filepath}' doesn't exist.")
             return []

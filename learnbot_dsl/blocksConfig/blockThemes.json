@@ -38,5 +38,6 @@
         "WHEN": { "Red": 64, "Green": 64, "Blue": 64 }
       }
     }
-  ]
+  ],
+  "actualTheme": "Custom Theme"
 }
