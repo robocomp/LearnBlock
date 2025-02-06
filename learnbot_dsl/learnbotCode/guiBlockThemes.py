@@ -54,13 +54,28 @@ class guiBlockThemes(QtWidgets.QDialog):
         else:
             print(f"Theme not found: {self.actualTheme}")
 
-        # Signal connection
-        self.ui.themesBox.currentIndexChanged.connect(self.refreshCategoriesButton)
-
-        print(self.actualTheme)
+        self.signal_connection()
 
         # Setting button color for the actual theme
         self.settingGuiActualTheme(next((theme for theme in self.themes if theme.name == self.actualTheme), None))
+
+    def signal_connection(self):
+        self.ui.themesBox.currentIndexChanged.connect(self.refreshCategoriesButton)
+        self.ui.controlButton.clicked.connect(lambda: self.openColorPicker(self.ui.controlButton, "CONTROL"))
+        self.ui.motorButton.clicked.connect(lambda: self.openColorPicker(self.ui.motorButton, "MOTOR"))
+        self.ui.perceptualButton.clicked.connect(lambda: self.openColorPicker(self.ui.perceptualButton, "PERCEPTUAL"))
+        self.ui.propioPerceptiveButton.clicked.connect(
+            lambda: self.openColorPicker(self.ui.propioPerceptiveButton, "PROPIOPERCEPTIVE"))
+        self.ui.operatorButton.clicked.connect(lambda: self.openColorPicker(self.ui.operatorButton, "OPERATOR"))
+        self.ui.expressButton.clicked.connect(lambda: self.openColorPicker(self.ui.expressButton, "EXPRESS"))
+        self.ui.othersButton.clicked.connect(lambda: self.openColorPicker(self.ui.othersButton, "OTHERS"))
+        self.ui.usersFunctionsButton.clicked.connect(
+            lambda: self.openColorPicker(self.ui.usersFunctionsButton, "USERFUNCTION"))
+        self.ui.libraryButton.clicked.connect(lambda: self.openColorPicker(self.ui.libraryButton, "LIBRARY"))
+        self.ui.variableButton.clicked.connect(lambda: self.openColorPicker(self.ui.variableButton, "VARIABLE"))
+        self.ui.stringButton.clicked.connect(lambda: self.openColorPicker(self.ui.stringButton, "STRING"))
+        self.ui.numberButton.clicked.connect(lambda: self.openColorPicker(self.ui.numberButton, "NUMBER"))
+        self.ui.whenButton.clicked.connect(lambda: self.openColorPicker(self.ui.whenButton, "WHEN"))
 
     def refreshCategoriesButton(self):
         self.actualTheme = self.ui.themesBox.currentText()
@@ -98,14 +113,25 @@ class guiBlockThemes(QtWidgets.QDialog):
             for category, color in theme.categories.items():
                 print(f"  - Categoría: {category}, Color (RGB): ({color.red()}, {color.green()}, {color.blue()})")
 
-    def openColorPicker(self, button) -> QColor:
+    def openColorPicker(self, button : QtWidgets.QPushButton, category: str) -> QColor:
         color = QtWidgets.QColorDialog.getColor()
-        if color.isValid():
-            button.setStyleSheet("background-color: {}".format(color.name()))  # Convertir a hexadecimal
-            self.refreshButtonColor(button)
-            return color
-        else:
+
+        if not color.isValid():
+            print("ERROR: Invalid color selected.")
             return None
+
+        # Changing the category in actual theme
+        next((theme for theme in self.themes if theme.name == self.actualTheme), None).categories[category] = color
+
+        # Applying the color change to the button
+        button.setStyleSheet("background-color: {}".format(color.name()))  # Convertir a hexadecimal
+        self.refreshButtonColor(button)
+
+        return color
+
+
+
+
 
 
     def refreshButtonColor(self, button):
