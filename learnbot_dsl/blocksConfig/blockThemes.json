@@ -1,43 +1,147 @@
 {
-  "themes": [
-    {
-      "name": "Default Theme",
-      "editable": false,
-      "categories": {
-        "CONTROL": { "Red": 0, "Green": 0, "Blue": 0 },
-        "MOTOR": { "Red": 0, "Green": 0, "Blue": 0 },
-        "PERCEPTUAL": { "Red": 0, "Green": 0, "Blue": 0 },
-        "PROPIOPERCEPTIVE": { "Red": 0, "Green": 0, "Blue": 0 },
-        "OPERATOR": { "Red": 0, "Green": 0, "Blue": 0 },
-        "EXPRESS": { "Red": 0, "Green": 0, "Blue": 0 },
-        "OTHERS": { "Red": 0, "Green": 0, "Blue": 0 },
-        "USERFUNCTION": { "Red": 0, "Green": 0, "Blue": 0 },
-        "LIBRARY": { "Red": 0, "Green": 0, "Blue": 0 },
-        "VARIABLE": { "Red": 0, "Green": 0, "Blue": 0 },
-        "STRING": { "Red": 0, "Green": 0, "Blue": 0 },
-        "NUMBER": { "Red": 0, "Green": 0, "Blue": 0 },
-        "WHEN": { "Red": 0, "Green": 0, "Blue": 0 }
-      }
-    },
-    {
-      "name": "Custom Theme",
-      "editable": true,
-      "categories": {
-        "CONTROL": { "Red": 255, "Green": 0, "Blue": 0 },
-        "MOTOR": { "Red": 0, "Green": 255, "Blue": 0 },
-        "PERCEPTUAL": { "Red": 0, "Green": 0, "Blue": 255 },
-        "PROPIOPERCEPTIVE": { "Red": 255, "Green": 255, "Blue": 0 },
-        "OPERATOR": { "Red": 255, "Green": 0, "Blue": 255 },
-        "EXPRESS": { "Red": 0, "Green": 255, "Blue": 255 },
-        "OTHERS": { "Red": 128, "Green": 128, "Blue": 128 },
-        "USERFUNCTION": { "Red": 255, "Green": 128, "Blue": 0 },
-        "LIBRARY": { "Red": 128, "Green": 0, "Blue": 255 },
-        "VARIABLE": { "Red": 0, "Green": 128, "Blue": 255 },
-        "STRING": { "Red": 128, "Green": 255, "Blue": 0 },
-        "NUMBER": { "Red": 255, "Green": 255, "Blue": 255 },
-        "WHEN": { "Red": 64, "Green": 64, "Blue": 64 }
-      }
-    }
-  ],
-  "actualTheme": "Custom Theme"
+    "actualTheme": "Custom Theme 477",
+    "themes": [
+        {
+            "name": "Default Theme",
+            "editable": false,
+            "categories": {
+                "CONTROL": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "MOTOR": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "PERCEPTUAL": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "PROPIOPERCEPTIVE": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "OPERATOR": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "EXPRESS": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "OTHERS": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "USERFUNCTION": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "LIBRARY": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "VARIABLE": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "STRING": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "NUMBER": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "WHEN": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 0
+                }
+            }
+        },
+        {
+            "name": "Custom Theme 477",
+            "editable": true,
+            "categories": {
+                "CONTROL": {
+                    "Red": 255,
+                    "Green": 0,
+                    "Blue": 0
+                },
+                "MOTOR": {
+                    "Red": 0,
+                    "Green": 255,
+                    "Blue": 0
+                },
+                "PERCEPTUAL": {
+                    "Red": 0,
+                    "Green": 0,
+                    "Blue": 255
+                },
+                "PROPIOPERCEPTIVE": {
+                    "Red": 255,
+                    "Green": 255,
+                    "Blue": 0
+                },
+                "OPERATOR": {
+                    "Red": 255,
+                    "Green": 0,
+                    "Blue": 255
+                },
+                "EXPRESS": {
+                    "Red": 0,
+                    "Green": 255,
+                    "Blue": 255
+                },
+                "OTHERS": {
+                    "Red": 128,
+                    "Green": 128,
+                    "Blue": 128
+                },
+                "USERFUNCTION": {
+                    "Red": 255,
+                    "Green": 128,
+                    "Blue": 0
+                },
+                "LIBRARY": {
+                    "Red": 128,
+                    "Green": 0,
+                    "Blue": 255
+                },
+                "VARIABLE": {
+                    "Red": 0,
+                    "Green": 128,
+                    "Blue": 255
+                },
+                "STRING": {
+                    "Red": 128,
+                    "Green": 255,
+                    "Blue": 0
+                },
+                "NUMBER": {
+                    "Red": 255,
+                    "Green": 255,
+                    "Blue": 255
+                },
+                "WHEN": {
+                    "Red": 64,
+                    "Green": 64,
+                    "Blue": 64
+                }
+            }
+        }
+    ]
 }

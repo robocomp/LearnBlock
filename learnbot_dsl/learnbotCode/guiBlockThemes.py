@@ -1,5 +1,6 @@
 from PySide6 import QtWidgets, QtGui
 from PySide6.QtGui import QColor, QPalette
+from PySide6.QtWidgets import QMessageBox
 import json
 from typing import List, Dict
 
@@ -12,6 +13,7 @@ def color_to_hex(color):
 # Estructura de datos
 # Clase Theme
 class BlockTheme:
+
     def __init__(self, name: str, editable: bool, categories: Dict[str, QColor]):
         self.name = name
         self.editable = editable
@@ -33,6 +35,21 @@ class BlockTheme:
             editable=data["editable"],
             categories=categories
         )
+
+    def to_dict(self) -> Dict:
+        """Convierte el objeto BlockTheme en un diccionario serializable en JSON."""
+        return {
+            "name": self.name,
+            "editable": self.editable,
+            "categories": {
+                category_name: {
+                    "Red": color.red(),
+                    "Green": color.green(),
+                    "Blue": color.blue()
+                }
+                for category_name, color in self.categories.items()
+            }
+        }
 
 class guiBlockThemes(QtWidgets.QDialog):
 
@@ -61,6 +78,9 @@ class guiBlockThemes(QtWidgets.QDialog):
 
     def signal_connection(self):
         self.ui.themesBox.currentIndexChanged.connect(self.refreshCategoriesButton)
+
+        self.ui.themeNameInput.textChanged.connect(self.changeThemeName)
+
         self.ui.controlButton.clicked.connect(lambda: self.openColorPicker(self.ui.controlButton, "CONTROL"))
         self.ui.motorButton.clicked.connect(lambda: self.openColorPicker(self.ui.motorButton, "MOTOR"))
         self.ui.perceptualButton.clicked.connect(lambda: self.openColorPicker(self.ui.perceptualButton, "PERCEPTUAL"))
@@ -76,6 +96,45 @@ class guiBlockThemes(QtWidgets.QDialog):
         self.ui.stringButton.clicked.connect(lambda: self.openColorPicker(self.ui.stringButton, "STRING"))
         self.ui.numberButton.clicked.connect(lambda: self.openColorPicker(self.ui.numberButton, "NUMBER"))
         self.ui.whenButton.clicked.connect(lambda: self.openColorPicker(self.ui.whenButton, "WHEN"))
+
+        self.ui.acceptButton.clicked.connect(self.saveThemes)
+
+
+
+    def changeThemeName(self):
+        next((theme for theme in self.themes if theme.name == self.actualTheme), None).name = self.ui.themeNameInput.text()
+        self.actualTheme = self.ui.themeNameInput.text()
+
+        self.ui.themesBox.setItemText(self.ui.themesBox.currentIndex(), self.ui.themeNameInput.text())
+
+
+
+
+    def saveThemes(self):
+
+        """Guarda los temas actuales en un archivo JSON."""
+        try:
+            data = {
+                "actualTheme": self.actualTheme,
+                "themes": [theme.to_dict() for theme in self.themes]
+            }
+            with open(self.filepath, "w", encoding="utf-8") as file:
+                json.dump(data, file, indent=4, ensure_ascii=False)
+            print(f"Themes successfully saved to {self.filepath}")
+        except Exception as e:
+            print(f"Error saving JSON: {e}")
+
+
+        self.showChangesOnStartupMessage()
+        self.close()
+
+    def showChangesOnStartupMessage(self):
+        dlg = QMessageBox(self)
+        dlg.setWindowTitle("Information")
+        dlg.setText("Changes will be applied in Learnblock's startup.")
+        button = dlg.exec()
+        if button == QMessageBox.Ok:
+            print("OK!")
 
     def refreshCategoriesButton(self):
         self.actualTheme = self.ui.themesBox.currentText()
@@ -128,11 +187,6 @@ class guiBlockThemes(QtWidgets.QDialog):
         self.refreshButtonColor(button)
 
         return color
-
-
-
-
-
 
     def refreshButtonColor(self, button):
         bg_color = button.palette().color(button.backgroundRole())

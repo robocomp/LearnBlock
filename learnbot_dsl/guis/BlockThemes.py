@@ -24,16 +24,19 @@ class Ui_BlockThemes(object):
         if not BlockThemes.objectName():
             BlockThemes.setObjectName(u"BlockThemes")
         BlockThemes.setEnabled(True)
-        BlockThemes.resize(653, 425)
+        BlockThemes.resize(653, 432)
         BlockThemes.setMinimumSize(QSize(0, 0))
         self.horizontalLayout = QHBoxLayout(BlockThemes)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.label = QLabel(BlockThemes)
-        self.label.setObjectName(u"label")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
+        self.gridLayout.addItem(self.horizontalSpacer, 3, 0, 1, 1)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout.addItem(self.verticalSpacer, 4, 0, 1, 1)
 
         self.addThemeButton = QPushButton(BlockThemes)
         self.addThemeButton.setObjectName(u"addThemeButton")
@@ -42,18 +45,20 @@ class Ui_BlockThemes(object):
 
         self.gridLayout.addWidget(self.addThemeButton, 2, 1, 1, 1)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.label = QLabel(BlockThemes)
+        self.label.setObjectName(u"label")
 
-        self.gridLayout.addItem(self.verticalSpacer, 4, 0, 1, 1)
+        self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
 
         self.themesBox = QComboBox(BlockThemes)
         self.themesBox.setObjectName(u"themesBox")
 
         self.gridLayout.addWidget(self.themesBox, 2, 0, 1, 1)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.acceptButton = QPushButton(BlockThemes)
+        self.acceptButton.setObjectName(u"acceptButton")
 
-        self.gridLayout.addItem(self.horizontalSpacer, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.acceptButton, 5, 0, 1, 1)
 
 
         self.horizontalLayout.addLayout(self.gridLayout)
@@ -258,8 +263,9 @@ class Ui_BlockThemes(object):
 
     def retranslateUi(self, BlockThemes):
         BlockThemes.setWindowTitle(QCoreApplication.translate("BlockThemes", u"Form", None))
-        self.label.setText(QCoreApplication.translate("BlockThemes", u"Block Themes", None))
         self.addThemeButton.setText(QCoreApplication.translate("BlockThemes", u"+", None))
+        self.label.setText(QCoreApplication.translate("BlockThemes", u"Block Themes", None))
+        self.acceptButton.setText(QCoreApplication.translate("BlockThemes", u"Accept", None))
         self.themeInfoBox.setTitle(QCoreApplication.translate("BlockThemes", u"Theme colors", None))
         self.libraryLabel.setText(QCoreApplication.translate("BlockThemes", u"Library", None))
         self.expressLabel.setText(QCoreApplication.translate("BlockThemes", u"Express", None))
