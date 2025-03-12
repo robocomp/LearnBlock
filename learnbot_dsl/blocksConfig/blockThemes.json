@@ -77,9 +77,9 @@
             "editable": true,
             "categories": {
                 "CONTROL": {
-                    "Red": 255,
-                    "Green": 0,
-                    "Blue": 0
+                    "Red": 191,
+                    "Green": 117,
+                    "Blue": 64
                 },
                 "MOTOR": {
                     "Red": 230,
