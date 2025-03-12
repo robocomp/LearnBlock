@@ -82,14 +82,14 @@
                     "Blue": 0
                 },
                 "MOTOR": {
-                    "Red": 0,
-                    "Green": 255,
+                    "Red": 230,
+                    "Green": 97,
                     "Blue": 0
                 },
                 "PERCEPTUAL": {
-                    "Red": 0,
-                    "Green": 0,
-                    "Blue": 255
+                    "Red": 255,
+                    "Green": 120,
+                    "Blue": 0
                 },
                 "PROPIOPERCEPTIVE": {
                     "Red": 255,

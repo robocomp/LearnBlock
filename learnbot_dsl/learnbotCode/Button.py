@@ -4,6 +4,7 @@ from __future__ import print_function, absolute_import
 import os, binascii
 from PySide6 import QtGui, QtWidgets
 
+from learnbot_dsl.blocksConfig.blocks import hsv_color
 from learnbot_dsl.learnbotCode.AbstractBlock import *
 from learnbot_dsl.learnbotCode.Language import getLanguage
 import tempfile, uuid, sys, traceback
@@ -80,13 +81,28 @@ class Block_Button(QtWidgets.QPushButton):
     def _loadAndModifyImage(self):
         """Load the base image and apply hue adjustments."""
         im = cv2.imread(self.__file, cv2.IMREAD_UNCHANGED)
-        rgb = cv2.cvtColor(cv2.merge(cv2.split(im)[:3]), cv2.COLOR_RGB2HSV)
-        h, s, v = cv2.split(rgb)
-        hsv = cv2.merge((h + self.hue, s + 130, v))
-        modified_img = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
-        #return cv2.merge((*cv2.split(modified_img), cv2.split(im)[-1]))
-        return im
+        if im is None:
+            raise ValueError("Error: No se pudo cargar la imagen. Verifica la ruta del archivo.")
+
+        # Convertir a HSV solo los primeros 3 canales (R, G, B)
+        hsv = cv2.cvtColor(im[:, :, :3], cv2.COLOR_BGR2HSV)
+
+        # Modificar el tono (hue) y la saturación
+        hsv[:, :, 0] = (hsv[:, :, 0] + self.hue) % 180  # Hue está en un rango de 0-179 en OpenCV
+        hsv[:, :, 1] = np.clip(hsv[:, :, 1] + 255, 0, 255)  # Evitar saturación fuera de rango
+
+        # Convertir de vuelta a RGB
+        modified_img = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+
+        # Verificar si la imagen original tenía un canal alfa
+        if im.shape[2] == 4:
+            # Si tiene canal alfa, fusionarlo con la imagen modificada
+            result = np.dstack((modified_img, im[:, :, 3]))
+        else:
+            result = modified_img
+
+        return result
 
     def _getVariablesForImage(self):
         """Retrieve translated variable names for the block."""

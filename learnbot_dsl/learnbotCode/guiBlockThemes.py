@@ -54,6 +54,7 @@ class BlockTheme:
 class guiBlockThemes(QtWidgets.QDialog):
 
     ui = BlockThemes.Ui_BlockThemes()
+    #TODO: Eliminar duplicación de ruta.
     filepath = "/home/usuario/LearnBlock/learnbot_dsl/blocksConfig/blockThemes.json"
 
     def __init__(self, parent=None):
