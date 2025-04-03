@@ -18,8 +18,11 @@ def str2hex(text):
 class Block_Button(QtWidgets.QPushButton):
 
     def __init__(self, args):
-        if len(args) == 14:
-            self.__parent, self.__text, self.__dicTrans, self.hue, self.__view, self.__scene, self.__file, self.__connections, self.__vars, self.__blockType, self.__table, self.__row, self.__type, self.__dicToolTip = args
+        if len(args) == 16:
+            (self.__parent, self.__text, self.__dicTrans, self.hue, self.__view,
+             self.__scene, self.__file, self.__connections, self.__vars, self.__blockType,
+             self.__table, self.__row, self.__type, self.__dicToolTip,
+             self.saturation, self.brightness) = args
         elif len(args) == 6:
             self.__parent, abstracBlock, self.__view, self.__scene, self.__table, self.__row = args
             self.__text = abstracBlock.name
@@ -31,6 +34,10 @@ class Block_Button(QtWidgets.QPushButton):
             self.__blockType = abstracBlock.typeBlock
             self.__type = abstracBlock.type
             self.hue = abstracBlock.hue
+            self.saturation = abstracBlock.saturation
+            self.brightness = abstracBlock.brightness
+        else:
+            raise ValueError(f"Número incorrecto de argumentos: esperado 6 o 16, recibido {len(args)}")
 
         QtWidgets.QPushButton.__init__(self)
         #change color block
@@ -88,9 +95,11 @@ class Block_Button(QtWidgets.QPushButton):
         # Convertir a HSV solo los primeros 3 canales (R, G, B)
         hsv = cv2.cvtColor(im[:, :, :3], cv2.COLOR_BGR2HSV)
 
-        # Modificar el tono (hue) y la saturación
-        hsv[:, :, 0] = (hsv[:, :, 0] + self.hue) % 180  # Hue está en un rango de 0-179 en OpenCV
-        hsv[:, :, 1] = np.clip(hsv[:, :, 1] + 255, 0, 255)  # Evitar saturación fuera de rango
+        # Modificar el tono (hue), saturación y brillo
+        hsv[:, :, 0] = (hsv[:, :, 0] + self.hue) % 180  # Hue en rango de 0-179
+        hsv[:, :, 1] = np.clip(hsv[:, :, 1] + self.saturation, 0, 255)  # Saturación en rango de 0-255
+        v = hsv[:, :, 2]
+        v[v>200] = self.brightness #np.clip(hsv[:, :, 2] + self.brightness, 0, 255)  # Brillo en rango de 0-255
 
         # Convertir de vuelta a RGB
         modified_img = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
@@ -171,14 +180,14 @@ class Block_Button(QtWidgets.QPushButton):
 
     def on_clickedButton(self):
         block = AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.hue, "",
-                              self.__connections, self.__blockType, self.__type)
+                              self.__connections, self.__blockType, self.__type, saturation=self.saturation, brightness=self.brightness)
         self.__scene.addItem(copy.deepcopy(block))
         if self.__text == "main":
             self.setEnabled(False)
 
     def getAbstracBlockItem(self):
         return AbstractBlock(0, 0, self.__text, self.__dicTrans, self.__file, copy.deepcopy(self.__vars), self.hue, "",
-                             self.__connections, self.__blockType, self.__type, dicToolTip=self.__dicToolTip)
+                             self.__connections, self.__blockType, self.__type, dicToolTip=self.__dicToolTip, saturation=self.saturation, brightness=self.brightness)
 
     def delete(self, row):
         self.__table.removeCellWidget(row, 0)

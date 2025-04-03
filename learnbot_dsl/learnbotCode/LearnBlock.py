@@ -130,13 +130,13 @@ text4Categories = {
         "others": "Others"}
     }
 
-type2Values = {"control": (CONTROL, HSV_CONTROL[0]),
-               "motor": (FUNTION, HSV_MOTOR[0]),
-               "perceptual": (FUNTION, HSV_PERCEPTUAL[0]),
-               "proprioceptive": (FUNTION, HSV_PROPIOPERCEPTIVE[0]),
-               "operator": (OPERATOR, HSV_OPERATOR[0]),
-               "express": (FUNTION, HSV_EXPRESS[0]),
-               "others": (FUNTION, HSV_OTHERS[0])
+type2Values = {"control": (CONTROL, HSV_CONTROL),
+               "motor": (FUNTION, HSV_MOTOR),
+               "perceptual": (FUNTION, HSV_PERCEPTUAL),
+               "proprioceptive": (FUNTION, HSV_PROPIOPERCEPTIVE),
+               "operator": (OPERATOR, HSV_OPERATOR),
+               "express": (FUNTION, HSV_EXPRESS),
+               "others": (FUNTION, HSV_OTHERS)
                }
 
 class LearnBlock(QtWidgets.QMainWindow):
@@ -1408,7 +1408,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         if "variables" in b:
             for v in b["variables"]:
                 variables.append(Variable(dict=copy.copy(v)))
-        funtionType, HUE = type2Values[b["type"]]
+        funtionType, HSV = type2Values[b["type"]]
         for img in b["shape"]:
             img = renameBlock(img)
             blockType, connections = loadConfigBlock(os.path.join(pathBlocks, img))
@@ -1421,7 +1421,22 @@ class LearnBlock(QtWidgets.QMainWindow):
             if "tooltip" in b:
                 tooltip = b["tooltip"]
             button = Block_Button(
-                (self, b["name"], languages, HUE, self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections, variables, blockType, table, table.rowCount() - 1, funtionType, tooltip))
+                (self,
+                 b["name"],
+                 languages,
+                 HSV[0],
+                 self.view,
+                 self.scene,
+                 os.path.join(pathBlocks, img + ".png"),
+                 connections,
+                 variables,
+                 blockType,
+                 table,
+                 table.rowCount() - 1,
+                 funtionType,
+                 tooltip,
+                 HSV[1],
+                 HSV[2]))
             if b["name"] == "main":
                 self.mainButton = button
             self.listButtons.append(button)
@@ -1766,7 +1781,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 (self, "activate " + name, {'ES': "Activar " + name, 'EN': "Activate " + name}, HSV_WHEN[0],
                  self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections, [], blockType,
                  table, table.rowCount() - 1, VARIABLE,
-                 {'ES': "Activa el evento " + name, 'EN': "Activate the event " + name}))
+                 {'ES': "Activa el evento " + name, 'EN': "Activate the event " + name}, HSV_WHEN[1], HSV_WHEN[2]))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1776,7 +1791,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                 (self, "deactivate " + name, {'ES': "Desactivar " + name, 'EN': "Deactivate " + name}, HSV_WHEN[0],
                  self.view, self.scene, os.path.join(pathBlocks, "block1.png"), connections, [], blockType,
                  table, table.rowCount() - 1, VARIABLE,
-                 {'ES': "Desactiva el evento " + name, 'EN': "Deactivate the event " + name}))
+                 {'ES': "Desactiva el evento " + name, 'EN': "Deactivate the event " + name}, HSV_WHEN[1], HSV_WHEN[2]))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1790,7 +1805,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                                    self.view, self.scene, os.path.join(pathBlocks, img + ".png"), connections, [],
                                    blockType,
                                    table, table.rowCount() - 1, VARIABLE,
-                                   {'ES': "Variable que dice si el evento " + name + " esta activo", 'EN': ""}))
+                                   {'ES': "Variable que dice si el evento " + name + " esta activo", 'EN': ""}, HSV_WHEN[1], HSV_WHEN[2]))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1804,7 +1819,7 @@ class LearnBlock(QtWidgets.QMainWindow):
                  self.scene, os.path.join(pathBlocks, x + ".png"), connections, [], blockType, table,
                  table.rowCount() - 1, VARIABLE,
                  {'ES': "Es el numero de segundos que lleva en ejecucion el evento " + name,
-                  'EN': " " + name}))
+                  'EN': " " + name}, HSV_WHEN[1], HSV_WHEN[2]))
             self.listButtonsWhen.append(button)
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
@@ -1999,7 +2014,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         variables.append(Variable("float", "set to ", "0", {"ES": " poner a ", "EN": " set to "}))
         button = Block_Button((self, name, {"ES": name + " poner a ", "EN": name + " set to "}, HSV_WHEN[0], self.view,
                                self.scene, os.path.join(pathBlocks, "block1.png"), connections,
-                               variables, blockType, table, table.rowCount() - 1, VARIABLE, {}))
+                               variables, blockType, table, table.rowCount() - 1, VARIABLE, {}, HSV_WHEN[1], HSV_WHEN[2]))
         self.listButtons.append(button)
         table.setCellWidget(table.rowCount() - 1, 0, button)
         self.listVars.append(button.getAbstracBlockItem())
@@ -2009,7 +2024,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             table.insertRow(table.rowCount())
             button = Block_Button((self, name, {}, HSV_VARIABLE[0], self.view, self.scene,
                                    os.path.join(pathBlocks, img + ".png"), connections,
-                                   [], blockType, table, table.rowCount() - 1, VARIABLE, {}))
+                                   [], blockType, table, table.rowCount() - 1, VARIABLE, {}, HSV_VARIABLE[1], HSV_VARIABLE[2]))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listVars.append(button.getAbstracBlockItem())
@@ -2157,7 +2172,7 @@ class LearnBlock(QtWidgets.QMainWindow):
             table.insertRow(table.rowCount())
             button = Block_Button((self, name, {}, HSV_USERFUNCTION[0], self.view, self.scene,
                                    os.path.join(pathBlocks, img + ".png"), connections,
-                                   [], blockType, table, table.rowCount() - 1, USERFUNCTION, {}))
+                                   [], blockType, table, table.rowCount() - 1, USERFUNCTION, {}, HSV_USERFUNCTION[1], HSV_USERFUNCTION[2]))
             self.listButtons.append(button)
             table.setCellWidget(table.rowCount() - 1, 0, button)
             self.listUserFunctions.append(button.getAbstracBlockItem())

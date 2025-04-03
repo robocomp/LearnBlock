@@ -50,4 +50,4 @@ class AbstractBlock:
     def copy(self):
         return AbstractBlock(self.pos.x(), self.pos.y(), self.name, self.dicTrans, self.file, copy.deepcopy(self.vars),
                              self.hue, self.nameControl, copy.deepcopy(self.connections),
-                             self.typeBlock, self.type, self.dicToolTip)
+                             self.typeBlock, self.type, self.dicToolTip, self.saturation, self.brightness)

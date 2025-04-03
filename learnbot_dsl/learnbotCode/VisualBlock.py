@@ -131,7 +131,7 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         # Load Image of block
         # Load the block’s image and extract RGB and Alpha channels for customization
         im = cv2.imread(self.parentBlock.file, cv2.IMREAD_UNCHANGED)
-        r, g, b, a = cv2.split(im)
+        b, g, r, a = cv2.split(im)
 
         # Convert image to RGB format for hue and saturation adjustment
         rgb = cv2.merge((r, g, b))
@@ -139,14 +139,33 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
 
         # Adjust hue and increase saturation for visual distinction
         h, s, v = cv2.split(hsv)
+
+        print("ANTES:")
+        print(h)
+        print(s)
+        print(v)
+
         h = h + self.parentBlock.hue
-        s = s + 160
+        s = s + self.parentBlock.saturation
+        v[v>200] = self.parentBlock.brightness
+
         hsv = cv2.merge((h, s, v))
+
+        print("DESPUES:")
+        print(h)
+        print(s)
+        print(v)
+        print(a)
+
+        print("VALORES:")
+        print(self.parentBlock.hue)
+        print(self.parentBlock.saturation)
+        print(self.parentBlock.brightness)
 
         # Convert back to RGB and merge with alpha channel to preserve transparency
         im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
         r, g, b = cv2.split(im)
-        self.cvImg = cv2.merge((r, g, b, a))
+        self.cvImg = cv2.merge((b, g, r, a))
         self.cvImg = np.require(self.cvImg, np.uint8, 'C')
 
         # Generate final image with text overlay, using block’s characteristics
