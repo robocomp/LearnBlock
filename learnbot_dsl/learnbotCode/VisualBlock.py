@@ -140,27 +140,11 @@ class VisualBlock(QtWidgets.QGraphicsPixmapItem, QtWidgets.QWidget):
         # Adjust hue and increase saturation for visual distinction
         h, s, v = cv2.split(hsv)
 
-        print("ANTES:")
-        print(h)
-        print(s)
-        print(v)
-
         h = h + self.parentBlock.hue
         s = s + self.parentBlock.saturation
         v[v>200] = self.parentBlock.brightness
 
         hsv = cv2.merge((h, s, v))
-
-        print("DESPUES:")
-        print(h)
-        print(s)
-        print(v)
-        print(a)
-
-        print("VALORES:")
-        print(self.parentBlock.hue)
-        print(self.parentBlock.saturation)
-        print(self.parentBlock.brightness)
 
         # Convert back to RGB and merge with alpha channel to preserve transparency
         im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)

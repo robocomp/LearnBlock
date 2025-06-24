@@ -34,18 +34,10 @@ try:
 
                 # RGB to HSV conversion
                 bgr_color = np.uint8([[[color["Blue"], color["Green"], color["Red"]]]])
-                #TODO: Remove
-                #print(f"bgr_color: {bgr_color}")
                 hsv_color = cv2.cvtColor(bgr_color, cv2.COLOR_BGR2HSV)
-                # TODO: Remove
-                #print(f"hsv_color: {hsv_color}")
 
                 h, s, v = hsv_color[0][0]  # Extraer H, S y V
                 globals()[key] = (int(h), int(s), int(v))  # Guardar como tupla (H, S, V)
-
-                # TODO: Remove
-                # Printing category name and HUE value
-                #print(f"{category_name}: HUE = {globals()[key]}")
             else:
                 globals()[key] = 0  # Valor por defecto si no se encuentra
 
