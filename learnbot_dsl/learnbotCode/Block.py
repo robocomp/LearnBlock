@@ -108,10 +108,14 @@ class Variable:
 
 def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=None, nameControl=""):
     im = None
-    sizeleter = 15
+    sizeleter = 15  # Approximate width per character for layout
     varText = ""
+
+    # Ensure vars_ is a list
     if not isinstance(vars_, list):
         vars_ = []
+
+    # Determine how to format the variable text based on block type
     if type_ in [FUNTION, USERFUNCTION, LIBRARY] or (type_ is CONTROL and len(vars_) != 0):
         varText = "(" + ", ".join(vars_) + ")"
     elif type_ == VARIABLE:
@@ -119,51 +123,72 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
             for var in vars_:
                 varText = str(var)
                 break
+
+    # Combine name and variable list into the main label text
     text = name + varText
 
+    # Estimate text width (fallback to 22 if empty)
     textSize = (len(text) * sizeleter)
     if textSize == 0:
         textSize = 22
+
     nameControlSize = (len(nameControl) * sizeleter)
 
-
     if typeBlock == COMPLEXBLOCK:
+        # Extract parts from the base image to assemble a complex block
         left = img[0:img.shape[0], 0:60]
         right = img[0:img.shape[0], img.shape[1] - 10:img.shape[1]]
         line = img[0:img.shape[0], 72:73]
         h = left.shape[0]
+
+        # Ensure enough width for both main text and control name
         textSize = max([textSize, nameControlSize])
         w = left.shape[1] + right.shape[1] + textSize - 22
 
+        # Create new image and paste parts
         im = np.ones((h, w, 4), dtype=np.uint8)
         im[0:h, 0:left.shape[1]] = copy.copy(left)
         im[0:right.shape[0], im.shape[1] - right.shape[1]:im.shape[1]] = copy.copy(right)
+
+        # Fill the middle section with the repeating line
         for i in range(left.shape[1], im.shape[1] - right.shape[1]):
             im[0:line.shape[0], i:i + 1] = copy.copy(line)
 
+        # Extract and reuse header, footer, and center line from original image
         header = copy.copy(im[0:39, 0:im.shape[1]])
         foot = copy.copy(im[69:104, 0:im.shape[1]])
         line = copy.copy(im[50:51, 0:im.shape[1]])
+
+        # Construct final image with dynamic height
         im = np.ones((header.shape[0] + foot.shape[0] + x - 4, header.shape[1], 4), dtype=np.uint8)
         im[0:header.shape[0], 0:header.shape[1]] = header
         im[im.shape[0] - foot.shape[0]:im.shape[0], 0:foot.shape[1]] = foot
+
+        # Fill the center with the line pattern
         for i in range(39, im.shape[0] - foot.shape[0]):
             im[i:i + line.shape[0], 0:header.shape[1]] = copy.copy(line[::, :header.shape[1]])
     else:
+        # Simple block generation (non-complex)
         left = img[0:img.shape[0], 0:43]
         right = img[0:img.shape[0], img.shape[1] - 10:img.shape[1]]
         line = img[0:img.shape[0], 43:44]
-        im = np.ones((left.shape[0], left.shape[1] + right.shape[1] + textSize, 4),
-                     dtype=np.uint8)
+
+        # Compose new image with calculated width
+        im = np.ones((left.shape[0], left.shape[1] + right.shape[1] + textSize, 4), dtype=np.uint8)
         im[0:left.shape[0], 0:left.shape[1]] = copy.copy(left)
         im[0:right.shape[0], im.shape[1] - right.shape[1]:im.shape[1]] = copy.copy(right)
+
+        # Fill center area with repeated line pattern
         for i in range(left.shape[1], im.shape[1] - right.shape[1]):
             im[0:line.shape[0], i:i + 1] = copy.copy(line)
 
-
+    # Draw main text (top)
     cv2.putText(im, text, (20, 27), cv2.FONT_HERSHEY_DUPLEX, 0.70, (0, 0, 0, 255), 1, cv2.LINE_AA)
+
+    # Draw control name (bottom)
     cv2.putText(im, nameControl, (20, im.shape[0] - 10), cv2.FONT_HERSHEY_DUPLEX, 0.70, (0, 0, 0, 255), 1, cv2.LINE_AA)
 
+    # Adjust connection points if present
     if connections is not None and len(connections) > 0:
         if not isinstance(connections[0], Connection):
             for point, t in connections:
@@ -173,6 +198,7 @@ def generateBlock(img, x, name, typeBlock, connections=None, vars_=None, type_=N
             for c in connections:
                 if c.getType() == RIGHT:
                     c.getPoint().setX(im.shape[1] - 5)
+
     return im
 
 def generate_error_block(img):
