@@ -1,4 +1,5 @@
 {
+    "restartNeeded": false,
     "actualTheme": "Custom Theme 477",
     "themes": [
         {
@@ -82,14 +83,14 @@
                     "Blue": 137
                 },
                 "MOTOR": {
-                    "Red": 230,
-                    "Green": 97,
+                    "Red": 0,
+                    "Green": 255,
                     "Blue": 0
                 },
                 "PERCEPTUAL": {
-                    "Red": 255,
-                    "Green": 120,
-                    "Blue": 0
+                    "Red": 224,
+                    "Green": 27,
+                    "Blue": 36
                 },
                 "PROPIOPERCEPTIVE": {
                     "Red": 255,

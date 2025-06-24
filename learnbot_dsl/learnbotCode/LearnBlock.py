@@ -44,6 +44,9 @@ from urllib.request import urlopen
 from urllib.error import URLError
 import qdarkstyle
 
+#TODO: Eliminar duplicidad de ruta
+themesFilePath = "/home/usuario/LearnBlock/learnbot_dsl/blocksConfig/blockThemes.json"
+
 path = os.path.dirname(os.path.realpath(__file__))
 
 class DownloadThread(QtCore.QThread):
@@ -438,32 +441,52 @@ class LearnBlock(QtWidgets.QMainWindow):
         self.app.setWindowIcon(QtGui.QIcon(os.path.join(path, 'Learnbot_ico.png')))
 
     def setupTempDirectories(self):
-        # Set the temporary directory for the application to a subdirectory in the user's home directory
-        tempfile.tempdir = os.path.join(os.getenv('HOME'), ".learnblock")
 
-        # Check if the temporary directory already exists
-        if not os.path.exists(tempfile.gettempdir()):
-            # If it doesn't exist, create the main temporary directory
-            os.mkdir(tempfile.gettempdir())
+        try:
+            with open(themesFilePath, "r", encoding="utf-8") as file:
+                data = json.load(file)
 
-            # Create a subdirectory for block files
-            os.mkdir(os.path.join(tempfile.gettempdir(), "block"))
+            # Checking if the .learnblock folder needs to be re-created
+            restartNeeded = data.get("restartNeeded", "")
 
-            # Create a subdirectory for client files
-            os.mkdir(os.path.join(tempfile.gettempdir(), "clients"))
+            # Set the temporary directory for the application to a subdirectory in the user's home directory
+            temp_dir = os.path.join(os.getenv('HOME'), ".learnblock")
+            tempfile.tempdir = temp_dir
 
-            # Copy the EBO.py and EBOv2.py file from the PATHCLIENT to the clients directory in the temp folder
-            shutil.copyfile(os.path.join(PATHCLIENT, "EBO.py"),
-                            os.path.join(os.getenv('HOME'), ".learnblock", "clients", "EBO.py"))
-            shutil.copyfile(os.path.join(PATHCLIENT, "EBOv2.py"),
-                            os.path.join(os.getenv('HOME'), ".learnblock", "clients", "EBOv2.py"))
+            if restartNeeded and os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
 
-            # Create a subdirectory for function files
-            os.mkdir(os.path.join(tempfile.gettempdir(), "functions"))
+            # Check if the temporary directory already exists
+            if not os.path.exists(tempfile.gettempdir()):
+                # If it doesn't exist, create the main temporary directory
+                os.mkdir(tempfile.gettempdir())
 
-            # Create an __init__.py file in the temporary directory to mark it as a package
-            with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
-                f.write("")  # Write an empty file to indicate that this directory is a package
+                # Create a subdirectory for block files
+                os.mkdir(os.path.join(tempfile.gettempdir(), "block"))
+
+                # Create a subdirectory for client files
+                os.mkdir(os.path.join(tempfile.gettempdir(), "clients"))
+
+                # Copy the EBO.py and EBOv2.py file from the PATHCLIENT to the clients directory in the temp folder
+                shutil.copyfile(os.path.join(PATHCLIENT, "EBO.py"),
+                                os.path.join(os.getenv('HOME'), ".learnblock", "clients", "EBO.py"))
+                shutil.copyfile(os.path.join(PATHCLIENT, "EBOv2.py"),
+                                os.path.join(os.getenv('HOME'), ".learnblock", "clients", "EBOv2.py"))
+
+                # Create a subdirectory for function files
+                os.mkdir(os.path.join(tempfile.gettempdir(), "functions"))
+
+                # Create an __init__.py file in the temporary directory to mark it as a package
+                with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
+                    f.write("")  # Write an empty file to indicate that this directory is a package
+
+                # Set restartNeeded to false and save the updated JSON file
+                data["restartNeeded"] = False
+                with open(themesFilePath, "w", encoding="utf-8") as file:
+                    json.dump(data, file, indent=4)
+
+        except Exception as e:
+            print(f"Error al leer el archivo de configuración: {e}")
 
     def setupTable(self, table_widget):
         """

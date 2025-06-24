@@ -116,6 +116,7 @@ class guiBlockThemes(QtWidgets.QDialog):
         """Guarda los temas actuales en un archivo JSON."""
         try:
             data = {
+                "restartNeeded": True,
                 "actualTheme": self.actualTheme,
                 "themes": [theme.to_dict() for theme in self.themes]
             }
