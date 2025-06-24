@@ -43,7 +43,7 @@ class guiAddWhen(QtWidgets.QDialog):
         self.ui = AddWhen.Ui_Dialog()
         self.value = None
         self.ui.setupUi(self)
-        self.hue = HUE_WHEN
+        self.hue = HSV_WHEN[0]
         self.__updateBlockType(0)
         self.__updateImage(0)
         for name in listNameBlocks:
@@ -164,7 +164,7 @@ class guiAddWhen(QtWidgets.QDialog):
 
     def __repitNameVar(self):
         varlist = []
-        if self.ui.tableWidgetVars.rowCount() is not 0:
+        if self.ui.tableWidgetVars.rowCount() != 0:
             for row in range(0, self.ui.tableWidgetVars.rowCount()):
                 if self.ui.tableWidgetVars.cellWidget(row, 1).text() in varlist or self.ui.tableWidgetVars.cellWidget(
                         row, 1).text() == "" \

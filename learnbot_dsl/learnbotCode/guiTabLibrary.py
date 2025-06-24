@@ -58,7 +58,7 @@ class Library(QtWidgets.QWidget):
             self.parent.listNameLibraryFunctions.append(b["name"])
             variables = []
             funtionType = LIBRARY
-            HUE = HUE_LIBRARY
+            HUE = HSV_LIBRARY[0]
             for img in b["shape"]:
                 img = os.path.join(imgPath, img)
                 blockType, connections = loadConfigBlock(img)
@@ -77,7 +77,7 @@ class Library(QtWidgets.QWidget):
                 self.parent.listButtons.append(button)
                 self.listButons.append((button, table.rowCount() - 1))
                 table.setCellWidget(table.rowCount() - 1, 0, button)
-        if len(listRepitFuntions) is not 0:
+        if len(listRepitFuntions) != 0:
             text = ""
             for name in listRepitFuntions:
                 text += "\t * " + name + "\n"

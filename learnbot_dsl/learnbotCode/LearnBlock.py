@@ -1730,7 +1730,7 @@ class LearnBlock(QtWidgets.QMainWindow):
         imgPath = self.addNumberOrStringGui.imgName
         configImgPath = os.path.splitext(imgPath)[0]
         blockType, connections = loadConfigBlock(configImgPath)
-        block = AbstractBlock(0, 0, text, {}, imgPath, [], HSV_NUMBER[0], "", connections, blockType, VARIABLE, saturation=HSV_NUMBER[1], brightness=HSV_NUMBER[2])
+        block = AbstractBlock(x=0, y=0, nameFunction=text, dicTrans={}, file=imgPath, vars=[], hue=HSV_NUMBER[0], nameControl="", connections=connections, typeBlock=blockType, type=VARIABLE, saturation=HSV_NUMBER[1], brightness=HSV_NUMBER[2])
         self.scene.addItem(block)
 
     def showGuiAddWhen(self):

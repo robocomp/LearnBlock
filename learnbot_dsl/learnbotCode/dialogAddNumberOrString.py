@@ -42,9 +42,9 @@ class guiAddNumberOrString(QtWidgets.QDialog):
         self.imgName = []
         self.ui = AddNumberOrString.Ui_Dialog()
         self.value = None
-        self.hue = HUE_STRING
-        if type is 1:
-            self.hue = HUE_NUMBER
+        self.hsv = HSV_STRING
+        if type == 1:
+            self.hsv = HSV_NUMBER
         self.ui.setupUi(self)
         self.__updateBlockType(0)
         self.__updateImage(0)
@@ -54,12 +54,12 @@ class guiAddNumberOrString(QtWidgets.QDialog):
         self.ui.pushButtonOK.clicked.connect(lambda: self.__buttons(1))
         self.ui.pushButtonCancel.clicked.connect(lambda: self.__buttons(0))
         self.ui.lineEditName.textChanged.connect(lambda: self.__updateImage(self.ui.comboBoxBlockImage.currentIndex()))
-        if type is 1:
+        if type == 1:
             self.ui.lineEditName.setValidator(QtGui.QDoubleValidator())
 
     def __updateImage(self, index):
         self.value = self.ui.lineEditName.text()
-        if self.type is 2:
+        if self.type == 2:
             self.value = '"' + self.value + '"'
         self.img = listNameBlocks[index]
         self.imgName = listBlock[index]
@@ -72,8 +72,9 @@ class guiAddNumberOrString(QtWidgets.QDialog):
         rgb = cv2.merge((r, g, b))
         hsv = cv2.cvtColor(rgb, cv2.COLOR_RGB2HSV)
         h, s, v = cv2.split(hsv)
-        h = h + self.hue
-        s = s + 130
+        h = h + self.hsv[0]
+        s = s + self.hsv[1]
+        v = v + self.hsv[2]
         hsv = cv2.merge((h, s, v))
         im = cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
         r, g, b = cv2.split(im)
@@ -126,7 +127,7 @@ class guiAddNumberOrString(QtWidgets.QDialog):
         self.ui.comboBoxBlockImage.setCurrentIndex(0)
 
     def __buttons(self, ret):
-        if ret is 1:
+        if ret == 1:
             ret = None
             if self.ui.lineEditName.text() == "":
                 msgBox = QtWidgets.QMessageBox()
@@ -142,7 +143,7 @@ class guiAddNumberOrString(QtWidgets.QDialog):
 
     def __repitNameVar(self):
         varlist = []
-        if self.ui.tableWidgetVars.rowCount() is not 0:
+        if self.ui.tableWidgetVars.rowCount() != 0:
             for row in range(0, self.ui.tableWidgetVars.rowCount()):
                 if self.ui.tableWidgetVars.cellWidget(row, 1).text() in varlist or self.ui.tableWidgetVars.cellWidget(
                         row, 1).text() == "" \
