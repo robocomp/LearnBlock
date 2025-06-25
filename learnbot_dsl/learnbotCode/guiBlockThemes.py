@@ -82,6 +82,8 @@ class guiBlockThemes(QtWidgets.QDialog):
 
         self.ui.themeNameInput.textChanged.connect(self.changeThemeName)
 
+        self.ui.addThemeButton.clicked.connect(self.addNewTheme)
+
         self.ui.controlButton.clicked.connect(lambda: self.openColorPicker(self.ui.controlButton, "CONTROL"))
         self.ui.motorButton.clicked.connect(lambda: self.openColorPicker(self.ui.motorButton, "MOTOR"))
         self.ui.perceptualButton.clicked.connect(lambda: self.openColorPicker(self.ui.perceptualButton, "PERCEPTUAL"))
@@ -100,6 +102,36 @@ class guiBlockThemes(QtWidgets.QDialog):
 
         self.ui.acceptButton.clicked.connect(self.saveThemes)
 
+    def addNewTheme(self):
+        # Obtener tema actual
+        current_theme = next((theme for theme in self.themes if theme.name == self.actualTheme), None)
+        if not current_theme:
+            QMessageBox.warning(self, "Error", "No current theme selected.")
+            return
+
+        # Crear copia del tema actual
+        new_categories = {cat: QColor(color) for cat, color in current_theme.categories.items()}
+
+        # Generar nombre único
+        base_name = "New Theme"
+        existing_names = {theme.name for theme in self.themes}
+        new_name = base_name
+        i = 1
+        while new_name in existing_names:
+            new_name = f"{base_name} {i}"
+            i += 1
+
+        # Crear nuevo tema editable
+        new_theme = BlockTheme(name=new_name, editable=True, categories=new_categories)
+        self.themes.append(new_theme)
+
+        # Agregar al combo y seleccionar
+        self.ui.themesBox.addItem(new_name)
+        self.ui.themesBox.setCurrentText(new_name)
+
+        # Activar campos de edición
+        self.ui.themeNameInput.setText(new_name)
+        self.ui.themeInfoBox.setEnabled(True)
 
 
     def changeThemeName(self):
