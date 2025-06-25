@@ -77,7 +77,7 @@ class Block_Button(QtWidgets.QPushButton):
             f"{self.__text}{self.__type}{self.__blockType}{len(self.__connections)}"
             f"{''.join(map(str, connection_types))}{getLanguage()}"
         )
-        return os.path.join(tempfile.gettempdir(), f".{str2hex(tmpString)}.png")
+        return os.path.join(tempfile.gettempdir(), "block", f".{str2hex(tmpString)}.png")
 
     def _getShowText(self):
         """Retrieve the display text based on available translations."""

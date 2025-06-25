@@ -451,10 +451,17 @@ class LearnBlock(QtWidgets.QMainWindow):
 
             # Set the temporary directory for the application to a subdirectory in the user's home directory
             temp_dir = os.path.join(os.getenv('HOME'), ".learnblock")
+            blocks_temp_dir = os.path.join(temp_dir, "block")
             tempfile.tempdir = temp_dir
 
-            if restartNeeded and os.path.exists(temp_dir):
-                shutil.rmtree(temp_dir)
+            if restartNeeded and os.path.exists(blocks_temp_dir):
+                print("Uploading blocks in temporal folder...")
+                shutil.rmtree(blocks_temp_dir)
+                os.mkdir(blocks_temp_dir)
+                # Set restartNeeded to false and save the updated JSON file
+                data["restartNeeded"] = False
+                with open(themesFilePath, "w", encoding="utf-8") as file:
+                    json.dump(data, file, indent=4)
 
             # Check if the temporary directory already exists
             if not os.path.exists(tempfile.gettempdir()):
@@ -479,11 +486,6 @@ class LearnBlock(QtWidgets.QMainWindow):
                 # Create an __init__.py file in the temporary directory to mark it as a package
                 with open(os.path.join(tempfile.gettempdir(), "__init__.py"), 'w') as f:
                     f.write("")  # Write an empty file to indicate that this directory is a package
-
-                # Set restartNeeded to false and save the updated JSON file
-                data["restartNeeded"] = False
-                with open(themesFilePath, "w", encoding="utf-8") as file:
-                    json.dump(data, file, indent=4)
 
         except Exception as e:
             print(f"Error al leer el archivo de configuración: {e}")
