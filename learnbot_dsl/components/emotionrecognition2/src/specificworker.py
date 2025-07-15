@@ -27,8 +27,8 @@ from tensorflow.python.platform import gfile
 from learnbot_dsl.components.emotionrecognition2.src.genericworker import *
 from learnbot_dsl.components.emotionrecognition2.src.face_alignment import FaceAligner
 import learnbot_dsl.components.emotionrecognition2.src.face_detector as face_detector
-import tempfile
-from pyunpack import Archive
+from deepface import DeepFace
+
 configPath = os.path.join(os.path.dirname(os.path.dirname(__file__)),'etc','config')
 
 MODEL_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)),'assets','emotion_classifier.pb')
@@ -85,6 +85,7 @@ class SpecificWorker(GenericWorker):
     # processimage
     #
     def processimage(self, frame):
+        print("emotionrecognition2: processimage")
         emotions_temp = list()
         try:
             arr = np.fromstring(frame.image, np.uint8)
@@ -122,7 +123,7 @@ class SpecificWorker(GenericWorker):
                 cropped_frame = (cropped_frame-np.mean(cropped_frame))/np.std(cropped_frame)
 
                 # Feed the cropped and preprocessed frame to classifier
-                result = self.sess.run(self.output, {self.x_input:cropped_frame})
+                result = DeepFace.analyze(img_path=cropped_frame, actions=['emotion'])
 
                 # Get the emotion
                 emotion = EMOTIONS[np.argmax(result)]

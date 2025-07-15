@@ -13,7 +13,7 @@ except KeyError:
     print('$ROBOCOMP environment variable not set, using the default value /opt/robocomp')
     ROBOCOMP = os.path.join('opt', 'robocomp')
 
-ICEs = ["Laser.ice", "DifferentialRobot.ice", "LEDArray.ice"]
+ICEs = ["Laser.ice", "DifferentialRobot.ice", "LEDArray.ice", "CameraSimple.ice"]
 icePaths = []
 
 icePaths.append(PATHINTERFACES)
@@ -28,13 +28,19 @@ import RoboCompLaser, RoboCompDifferentialRobot, RoboCompLEDArray
 
 class Robot(Client):
     def __init__(self):
+
         # Conectarse a los componentes de RoboComp
         self.connectToRobot()
         
         # Inicializar la clase padre
         Client.__init__(self)
 
+        #Variables para la cámara
+        self.open_cv_image = np.zeros((240, 320, 3), np.uint8)
+        self.newImage = False
+
         # Añadir los dispositivos necesarios: base y sensores de distancia (láser)
+        self.addCamera(Devices.Camera(_readFunction=self.deviceReadCamera))
         self.addDistanceSensors(Devices.DistanceSensors(_readFunction=self.deviceReadLaser))
         self.addBase(Devices.Base(_callFunction=self.deviceMove))
         self.addLed(Devices.Led(_setState=self.setLeds))
@@ -42,11 +48,13 @@ class Robot(Client):
         # Comenzar el loop de control
         self.start()
 
+
     def setLeds(self, _red=0, _green=0, _blue=0):
-
-
-
+        #TODO Setear rgb de los leds
         pass
+
+    def deviceReadCamera(self, ):
+        return self.open_cv_image, self.newImage
 
     def connectToRobot(self):
         # Conexión a differentialrobot en localhost:10004

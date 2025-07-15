@@ -124,7 +124,10 @@ class Client(Thread, metaclass=MetaClient):
     def __launchComponents(self):
         global IceLoaded
 
+        #TODO Remove debug prints
+        print("__launchComponents")
         if IceLoaded:
+            print("Ice Loaded")
             try:
                 subprocess.Popen("aprilTag.py", shell=True, stdout=subprocess.PIPE)
                 self.__apriltagRunning = True
@@ -396,6 +399,7 @@ class Client(Thread, metaclass=MetaClient):
 
     def express(self, _keyEmotion, _keyDisplay = "ROBOT"):
         if _keyDisplay in self.__Displays:
+            print("EXPRESSING...")
             time.sleep(0)
             self.__currentEmotion = _keyEmotion
             self.__Displays[_keyDisplay].setEmotion(_keyEmotion)
@@ -547,6 +551,7 @@ class Client(Thread, metaclass=MetaClient):
         return self.__listAprilIDs
 
     def getEmotions(self, _keyCam = "ROBOT"):
+        print(self.__emotionRecRunning, not self.__emotion_current_exist, _keyCam in self.__Cameras)
         if self.__emotionRecRunning and not self.__emotion_current_exist and _keyCam in self.__Cameras:
             time.sleep(0)
             img = self.__Cameras[_keyCam].getImage()
@@ -557,6 +562,7 @@ class Client(Thread, metaclass=MetaClient):
             frame.image = np.fromstring(img, np.uint8)
             self.__current_emotions = self.__emotionrecognition_proxy.processimage(frame)
             self.__emotion_current_exist = True
+            print("CURRENT EMOTIONS: ", self.__current_emotions)
         return self.__current_emotions
 
     def __del__(self):
