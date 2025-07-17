@@ -54,11 +54,11 @@ class SpecificWorker(GenericWorker):
         # self.timer.start(self.Period)
 
         # Create a tensorflow session
-        self.sess=tf.Session()
+        self.sess=tf.compat.v1.Session()
 
         # Read the frozen graph from the model file
         with gfile.FastGFile(MODEL_FILE,'rb') as f:
-            graph_def = tf.GraphDef()
+            graph_def = tf.compat.v1.GraphDef()
             graph_def.ParseFromString(f.read())
             self.sess.graph.as_default()
             tf.import_graph_def(graph_def, name='')

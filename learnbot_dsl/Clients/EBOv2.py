@@ -24,7 +24,7 @@ for ice in ICEs:
             Ice.loadSlice(wholeStr)
             break
 
-import RoboCompLaser, RoboCompDifferentialRobot, RoboCompLEDArray
+import RoboCompLaser, RoboCompDifferentialRobot, RoboCompLEDArray, RoboCompCameraSimple
 
 class Robot(Client):
     def __init__(self):
@@ -35,9 +35,10 @@ class Robot(Client):
         # Inicializar la clase padre
         Client.__init__(self)
 
-        #Variables para la cámara
-        self.open_cv_image = np.zeros((240, 320, 3), np.uint8)
+        #Variables para almacenar la imagen de la cámara
+        self.cameraImage = np.zeros((240, 320, 3), np.uint8)
         self.newImage = False
+
 
         # Añadir los dispositivos necesarios: base y sensores de distancia (láser)
         self.addCamera(Devices.Camera(_readFunction=self.deviceReadCamera))
@@ -54,7 +55,8 @@ class Robot(Client):
         pass
 
     def deviceReadCamera(self, ):
-        return self.open_cv_image, self.newImage
+        self.cameraImage = self.camerasimple_proxy.getImage()
+        return self.cameraImage, self.newImage
 
     def connectToRobot(self):
         # Conexión a differentialrobot en localhost:10004
@@ -69,6 +71,10 @@ class Robot(Client):
         # Conexión a ledarray en localhost:10006
         self.ledarray_proxy = connectComponent(
             "ledarray:tcp -p 10006", RoboCompLEDArray.LEDArrayPrx)
+
+        # Conexión a simplecamera en localhost:10003
+        self.camerasimple_proxy = connectComponent(
+            "camerasimple:tcp -p 10003", RoboCompCameraSimple.CameraSimplePrx)
 
     def disconnect(self):
         # Parar el movimiento del robot al desconectar

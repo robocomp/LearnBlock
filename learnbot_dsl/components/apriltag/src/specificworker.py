@@ -18,8 +18,7 @@
 #
 from __future__ import print_function, absolute_import
 
-import sys, os, traceback, time
-from PySide6 import QtGui, QtCore
+import traceback
 from learnbot_dsl.components.apriltag.src.genericworker import *
 import apriltag
 import cv2

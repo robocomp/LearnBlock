@@ -17,3 +17,5 @@ paho_mqtt>=1.4.0
 qdarkstyle>=3.2.3
 deepface
 zeroc-ice
+tf-keras
+apriltag

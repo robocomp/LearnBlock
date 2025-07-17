@@ -35,7 +35,10 @@ if IceLoaded:
 
 
 def connectComponent(stringProxy, _class, tries=4):
-    ic = Ice.initialize(sys.argv)
+    init_data = Ice.InitializationData()
+    init_data.properties = Ice.createProperties()
+    init_data.properties.setProperty("Ice.MessageSizeMax", "100000")  # en KB
+    ic = Ice.initialize(sys.argv, init_data)
     i = 0
     while (True):
         try:
@@ -64,12 +67,10 @@ class MetaClient(type):
 class Client(Thread, metaclass=MetaClient):
 
     def __new__(cls, *args, **kwargs):
-        print("__new__")
         usedFuncts = []
         device = []
         if "availableFunctions" in kwargs:
             usedFuncts = kwargs.pop('availableFunctions')
-        print("availableFunctions", usedFuncts)
         functions = getFuntions()
         #k= nombre de funcion/v=funcion
         for k, v in iter(functions.items()):
@@ -84,11 +85,9 @@ class Client(Thread, metaclass=MetaClient):
         return instance
 
     def __init__(self,_miliseconds=100):
-        print("__init__")
         Thread.__init__(self)
         self.__stop_event = Event() 
         self.__devices=getattr(self,'__devices')
-        print("Used devices: ",self.__devices)
 
         # Variables of Emotion Recognition
         self.__emotion_current_exist = False
@@ -124,8 +123,6 @@ class Client(Thread, metaclass=MetaClient):
     def __launchComponents(self):
         global IceLoaded
 
-        #TODO Remove debug prints
-        print("__launchComponents")
         if IceLoaded:
             print("Ice Loaded")
             try:
@@ -139,6 +136,8 @@ class Client(Thread, metaclass=MetaClient):
                 self.__emotionRecRunning = True
             except Exception as e:
                 self.__emotionRecRunning = False
+
+            print("EmotionRecognitionRunning: ", self.__emotionRecRunning)
 
             # Remote object connection for EmotionRecognition
             if self.__emotionRecRunning:
@@ -399,7 +398,6 @@ class Client(Thread, metaclass=MetaClient):
 
     def express(self, _keyEmotion, _keyDisplay = "ROBOT"):
         if _keyDisplay in self.__Displays:
-            print("EXPRESSING...")
             time.sleep(0)
             self.__currentEmotion = _keyEmotion
             self.__Displays[_keyDisplay].setEmotion(_keyEmotion)
